@@ -89,6 +89,14 @@ public class SClassNode extends Node {
         return scope;
     }
 
+    /**
+     * Gets the receiverNode.
+     * @return Returns a Node
+     */
+    public Node getReceiverNode() {
+        return receiverNode;
+    }
+    
     public List<Node> childNodes() {
         return Node.createList(receiverNode, bodyNode);
     }

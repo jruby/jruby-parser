@@ -1,5 +1,4 @@
-/*
- ***** BEGIN LICENSE BLOCK *****
+/***** BEGIN LICENSE BLOCK *****
  * Version: CPL 1.0/GPL 2.0/LGPL 2.1
  *
  * The contents of this file are subject to the Common Public
@@ -12,8 +11,8 @@
  * implied. See the License for the specific language governing
  * rights and limitations under the License.
  *
- * Copyright (C) 2009 Thomas E. Enebo <tom.enebo@gmail.com>
- * 
+ * Copyright (C) 2006 Mirko Stocker <me@misto.ch>
+ *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
  * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
@@ -26,58 +25,44 @@
  * the provisions above, a recipient may use your version of this file under
  * the terms of any one of the CPL, the GPL or the LGPL.
  ***** END LICENSE BLOCK *****/
-package org.jrubyparser.ast;
+package org.jrubyparser.rewriter;
 
-import java.util.List;
+import org.jrubyparser.rewriter.utils.DRegxReWriteVisitor;
+import org.jrubyparser.rewriter.utils.HereDocReWriteVisitor;
+import org.jrubyparser.rewriter.utils.IgnoreCommentsReWriteVisitor;
+import org.jrubyparser.rewriter.utils.MultipleAssignmentReWriteVisitor;
+import org.jrubyparser.rewriter.utils.ReWriterContext;
+import org.jrubyparser.rewriter.utils.ShortIfNodeReWriteVisitor;
 
-import org.jrubyparser.NodeVisitor;
-import org.jrubyparser.SourcePosition;
+public class ReWriterFactory {
+	
+	private ReWriterContext config;
 
-public class Match2Node extends Node {
-    private final Node receiverNode;
-    private final Node valueNode;
-
-    public Match2Node(SourcePosition position, Node receiverNode, Node valueNode) {
-        super(position);
-        
-        assert receiverNode != null : "receiverNode is not null";
-        assert valueNode != null : "valueNode is not null";
-
-        this.receiverNode = receiverNode;
-        this.valueNode = valueNode;
-    }
-
-    public NodeType getNodeType() {
-        return NodeType.MATCH2NODE;
-    }
-
-    /**
-     * Gets the receiverNode.
-     * @return Returns a Node
-     */
-    public Node getReceiverNode() {
-        return receiverNode;
-    }
-
-
-    /**
-     * Gets the valueNode.
-     * @return Returns a Node
-     */
-    public Node getValueNode() {
-        return valueNode;
-    }
-
-    public List<Node> childNodes() {
-        return Node.createList(receiverNode, valueNode);
-    }
-
-    /**
-     * Accept for the visitor pattern.
-     * @param iVisitor the visitor
-     **/
-    public Object accept(NodeVisitor iVisitor) {
-        return iVisitor.visitMatch2Node(this);
-    }
-
+	public ReWriterFactory(ReWriterContext config) {
+		this.config = config;
+	}
+	
+	public ReWriteVisitor createShortIfNodeReWriteVisitor() {
+		return new ShortIfNodeReWriteVisitor(config);
+	}
+	
+	public ReWriteVisitor createMultipleAssignmentReWriteVisitor() {
+		return new MultipleAssignmentReWriteVisitor(config);
+	}
+	
+	public ReWriteVisitor createDRegxReWriteVisitor() {
+		return new DRegxReWriteVisitor(config);
+	}
+	
+	public ReWriteVisitor createHereDocReWriteVisitor() {
+		return new HereDocReWriteVisitor(config);
+	}
+	
+	public ReWriteVisitor createIgnoreCommentsReWriteVisitor() {
+		return new IgnoreCommentsReWriteVisitor(config);
+	}
+	
+	public ReWriteVisitor createReWriteVisitor() {
+		return new ReWriteVisitor(config);
+	}
 }

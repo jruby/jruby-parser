@@ -1,5 +1,4 @@
-/*
- ***** BEGIN LICENSE BLOCK *****
+/***** BEGIN LICENSE BLOCK *****
  * Version: CPL 1.0/GPL 2.0/LGPL 2.1
  *
  * The contents of this file are subject to the Common Public
@@ -12,7 +11,7 @@
  * implied. See the License for the specific language governing
  * rights and limitations under the License.
  *
- * Copyright (C) 2009 Thomas E. Enebo <tom.enebo@gmail.com>
+ * Copyright (C) 2006 Mirko Stocker <me@misto.ch>
  * 
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
@@ -26,58 +25,50 @@
  * the provisions above, a recipient may use your version of this file under
  * the terms of any one of the CPL, the GPL or the LGPL.
  ***** END LICENSE BLOCK *****/
-package org.jrubyparser.ast;
 
-import java.util.List;
+package org.jrubyparser.rewriter.utils;
 
-import org.jrubyparser.NodeVisitor;
-import org.jrubyparser.SourcePosition;
+import java.io.PrintWriter;
 
-public class Match2Node extends Node {
-    private final Node receiverNode;
-    private final Node valueNode;
+public class Indenter {
+	
+	private int indentation;
 
-    public Match2Node(SourcePosition position, Node receiverNode, Node valueNode) {
-        super(position);
-        
-        assert receiverNode != null : "receiverNode is not null";
-        assert valueNode != null : "valueNode is not null";
+	private int indentationSteps;
 
-        this.receiverNode = receiverNode;
-        this.valueNode = valueNode;
-    }
+	private char indentationChar;
 
-    public NodeType getNodeType() {
-        return NodeType.MATCH2NODE;
-    }
+	public Indenter(int indentationSteps, char indentationChar) {
+		this.indentationSteps = indentationSteps;
+		this.indentationChar = indentationChar;
+	}
 
-    /**
-     * Gets the receiverNode.
-     * @return Returns a Node
-     */
-    public Node getReceiverNode() {
-        return receiverNode;
-    }
+	public void indent() {
+		indentation += indentationSteps;
+	}
 
+	public void outdent() {
+		indentation -= indentationSteps;
+	}
+	
+	public void printIndentation(PrintWriter out) {
+		for (int i = 0; i < indentation; i++)
+			out.print(indentationChar);
+	}
 
-    /**
-     * Gets the valueNode.
-     * @return Returns a Node
-     */
-    public Node getValueNode() {
-        return valueNode;
-    }
+	public char getIndentationChar() {
+		return indentationChar;
+	}
 
-    public List<Node> childNodes() {
-        return Node.createList(receiverNode, valueNode);
-    }
+	public void setIndentationChar(char indentationChar) {
+		this.indentationChar = indentationChar;
+	}
 
-    /**
-     * Accept for the visitor pattern.
-     * @param iVisitor the visitor
-     **/
-    public Object accept(NodeVisitor iVisitor) {
-        return iVisitor.visitMatch2Node(this);
-    }
+	public int getIndentationSteps() {
+		return indentationSteps;
+	}
 
+	public void setIndentationSteps(int indentationSteps) {
+		this.indentationSteps = indentationSteps;
+	}
 }

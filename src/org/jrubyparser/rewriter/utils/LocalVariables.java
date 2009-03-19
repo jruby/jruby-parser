@@ -1,5 +1,4 @@
-/*
- ***** BEGIN LICENSE BLOCK *****
+/***** BEGIN LICENSE BLOCK *****
  * Version: CPL 1.0/GPL 2.0/LGPL 2.1
  *
  * The contents of this file are subject to the Common Public
@@ -12,7 +11,7 @@
  * implied. See the License for the specific language governing
  * rights and limitations under the License.
  *
- * Copyright (C) 2009 Thomas E. Enebo <tom.enebo@gmail.com>
+ * Copyright (C) 2006 Mirko Stocker <me@misto.ch>
  * 
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
@@ -26,58 +25,28 @@
  * the provisions above, a recipient may use your version of this file under
  * the terms of any one of the CPL, the GPL or the LGPL.
  ***** END LICENSE BLOCK *****/
-package org.jrubyparser.ast;
 
-import java.util.List;
+package org.jrubyparser.rewriter.utils;
 
-import org.jrubyparser.NodeVisitor;
-import org.jrubyparser.SourcePosition;
+import java.util.HashMap;
 
-public class Match2Node extends Node {
-    private final Node receiverNode;
-    private final Node valueNode;
+import org.jrubyparser.StaticScope;
 
-    public Match2Node(SourcePosition position, Node receiverNode, Node valueNode) {
-        super(position);
-        
-        assert receiverNode != null : "receiverNode is not null";
-        assert valueNode != null : "valueNode is not null";
+public class LocalVariables {
+	
+	private final HashMap<Integer, String> localVariablesMap = new HashMap<Integer, String>();
 
-        this.receiverNode = receiverNode;
-        this.valueNode = valueNode;
-    }
+	public void addLocalVariable(int count, String name) {
+		localVariablesMap.put(new Integer(count), name);
+	}
 
-    public NodeType getNodeType() {
-        return NodeType.MATCH2NODE;
-    }
+	public void addLocalVariable(StaticScope scope) {
+		for (int i = 0; i < scope.getVariables().length; i++) {
+			addLocalVariable(i, scope.getVariables()[i]);
+		}
+	}
 
-    /**
-     * Gets the receiverNode.
-     * @return Returns a Node
-     */
-    public Node getReceiverNode() {
-        return receiverNode;
-    }
-
-
-    /**
-     * Gets the valueNode.
-     * @return Returns a Node
-     */
-    public Node getValueNode() {
-        return valueNode;
-    }
-
-    public List<Node> childNodes() {
-        return Node.createList(receiverNode, valueNode);
-    }
-
-    /**
-     * Accept for the visitor pattern.
-     * @param iVisitor the visitor
-     **/
-    public Object accept(NodeVisitor iVisitor) {
-        return iVisitor.visitMatch2Node(this);
-    }
-
+	public String getLocalVariable(int index) {
+		return (String) localVariablesMap.get(new Integer(index));
+	}
 }

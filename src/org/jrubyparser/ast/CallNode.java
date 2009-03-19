@@ -113,6 +113,15 @@ public class CallNode extends Node implements INameNode, IArgumentNode, BlockAcc
         return name;
     }
 
+    /**
+     * Gets the receiverNode.
+	 * receiverNode is the object on which the method is being called
+     * @return receiverNode
+     */
+    public Node getReceiverNode() {
+        return receiverNode;
+    }
+
     public List<Node> childNodes() {
         return Node.createList(receiverNode, argsNode, iterNode);
     }

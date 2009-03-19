@@ -39,7 +39,8 @@ import org.jrubyparser.SourcePosition;
 public class OpAsgnNode extends Node {
     private final Node receiverNode;
     private final Node valueNode;
-    private String name;
+    private String operatorName;
+    private String variableName;
 
     public OpAsgnNode(SourcePosition position, Node receiverNode, Node valueNode, String variableName, String operatorName) {
         super(position);
@@ -49,7 +50,8 @@ public class OpAsgnNode extends Node {
         
         this.receiverNode = receiverNode;
         this.valueNode = valueNode;
-        this.name = operatorName;
+        this.operatorName = operatorName;
+        this.variableName = variableName;
     }
 
     public NodeType getNodeType() {
@@ -69,7 +71,23 @@ public class OpAsgnNode extends Node {
      * @return Returns a String
      */
     public String getOperatorName() {
-        return name;
+        return operatorName;
+    }
+
+    /**
+     * Gets the varibaleName.
+     * @return Returns a String
+     */
+    public String getVariableName() {
+        return variableName;
+    }
+
+    /**
+     * Gets the receiverNode.
+     * @return Returns a Node
+     */
+    public Node getReceiverNode() {
+        return receiverNode;
     }
 
     /**

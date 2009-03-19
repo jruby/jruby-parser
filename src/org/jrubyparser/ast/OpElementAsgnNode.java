@@ -91,7 +91,15 @@ public class OpElementAsgnNode extends Node {
         return name;
     }
 
-        /**
+    /**
+     * Gets the receiverNode.
+     * @return Returns a Node
+     */
+    public Node getReceiverNode() {
+        return receiverNode;
+    }
+
+    /**
      * Gets the valueNode.
      * @return Returns a Node
      */
