@@ -163,11 +163,6 @@ public class ArgsNode extends Node {
         return restArgNode;
     }
 
-    @Deprecated
-    public BlockArgNode getBlockArgNode() {
-        return blockArgNode;
-    }
-
     /**
      * Gets the explicit block argument of the parameter list (&block).
      * 
