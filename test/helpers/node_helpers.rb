@@ -108,9 +108,35 @@ module HaveNameAndPosition
     AstNameAndPositionMatcher.new(*args)
   end
 end
+
+class ArgCountsMatcher
+  def initialize(pre, optional, rest, block)
+    @args = [pre, optional, rest, block]
+  end
+
+  def matches?(args)
+    @actual = [args.pre_count, args.optional_count, args.rest != nil, args.block != nil]
+    @args == @actual
+  end
+
+  def failure_message
+    return %[expected #{@actual.inspect} to have name #{@args.inspect}]
+  end
+
+  def negative_failure_message
+    return %[expected #{@actual.inspect} to not have name #{@args.inspect}]
+  end
+end
+
+module HaveArgCounts
+  def have_arg_counts(*args)
+    ArgCountsMatcher.new(*args)
+  end
+end
  
 module Spec::Example::ExampleMethods
   include HavePosition
   include HaveName
   include HaveNameAndPosition
+  include HaveArgCounts
 end

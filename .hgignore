@@ -1,8 +1,6 @@
-\.orig$
-\.orig\..*$
-\.chg\..*$
-\.rej$
-\.conflict\~$
+syntax: glob
+
+nbproject
 dist/
 build/
-\~$
+*~

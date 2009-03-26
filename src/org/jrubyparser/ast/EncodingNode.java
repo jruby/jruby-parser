@@ -13,7 +13,7 @@
  * rights and limitations under the License.
  *
  * Copyright (C) 2009 Thomas E. Enebo <tom.enebo@gmail.com>
- * 
+ *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
  * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
@@ -28,70 +28,30 @@
  ***** END LICENSE BLOCK *****/
 package org.jrubyparser.ast;
 
-/**
- * Base class for DefnNode and DefsNode 
- */
+import java.util.List;
+import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
-import org.jrubyparser.StaticScope;
 
-public abstract class MethodDefNode extends Node implements INameNode {
-	protected final ArgumentNode nameNode;
-	protected final ArgsNode argsNode;
-	protected final StaticScope scope;
-	protected final Node bodyNode;
+/**
+ * Represents __ENCODING__.
+ */
+public class EncodingNode extends Node {
+    public EncodingNode(SourcePosition position) {
+        super(position);
+    }
 
-	public MethodDefNode(SourcePosition position, ArgumentNode nameNode, ArgsNode argsNode, 
-	        StaticScope scope, Node bodyNode) {
-            super(position);
-            
-            // TODO: Adding implicit nils caused multiple problems in compiler -- revist after landing
-            //assert bodyNode != null : "bodyNode is not null";
-            
-            this.nameNode = nameNode;
-            this.argsNode = argsNode;
-            this.scope = scope;
-            this.bodyNode = bodyNode;
-	}
+    @Override
+    public Object accept(NodeVisitor visitor) {
+        return visitor.visitEncodingNode(this);
+    }
 
-	/**
-	 * Gets the argsNode.
-	 * @return Returns a Node
-	 */
-	public ArgsNode getArgsNode() {
-	    return argsNode;
-	}
+    @Override
+    public List<Node> childNodes() {
+        return Node.EMPTY_LIST;
+    }
 
-	/**
-	 * Get the static scoping information.
-	 * 
-	 * @return the scoping info
-	 */
-	public StaticScope getScope() {
-	    return scope;
-	}
-
-	/**
-	 * Gets the body of this class.
-	 * 
-	 * @return the contents
-	 */
-	public Node getBodyNode() {
-	    return bodyNode;
-	}
-
-	/**
-	 * Gets the name's node.
-	 * @return Returns an ArgumentNode
-	 */
-	public ArgumentNode getNameNode() {
-	    return nameNode;
-	}
-
-	/**
-	 * Gets the name.
-	 * @return Returns a String
-	 */
-	public String getName() {
-	    return nameNode.getName();
-	}
+    @Override
+    public NodeType getNodeType() {
+        return NodeType.ENCODINGNODE;
+    }
 }

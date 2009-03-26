@@ -79,6 +79,7 @@ import org.jrubyparser.ast.DefinedNode;
 import org.jrubyparser.ast.DefnNode;
 import org.jrubyparser.ast.DefsNode;
 import org.jrubyparser.ast.DotNode;
+import org.jrubyparser.ast.EncodingNode;
 import org.jrubyparser.ast.EnsureNode;
 import org.jrubyparser.ast.EvStrNode;
 import org.jrubyparser.ast.FCallNode;
@@ -387,9 +388,9 @@ public class ReWriteVisitor implements NodeVisitor {
 		ArrayList<Node> arguments = new ArrayList<Node>();
         
 		if (iVisited.getPre() != null) arguments.addAll(iVisited.getPre().childNodes());
-        if (iVisited.getOptArgs() != null) arguments.addAll(iVisited.getOptArgs().childNodes());
-        if (iVisited.getRestArgNode() != null) {
-            arguments.add(new ConstNode(iVisited.getRestArgNode().getPosition(), '*' + iVisited.getRestArgNode().getName()));
+        if (iVisited.getOptional() != null) arguments.addAll(iVisited.getOptional().childNodes());
+        if (iVisited.getRest() != null) {
+            arguments.add(new ConstNode(iVisited.getRest().getPosition(), '*' + iVisited.getRest().getName()));
         }
         if (iVisited.getPost() != null) arguments.addAll(iVisited.getPost().childNodes());
 		if (iVisited.getBlock() != null) arguments.add(iVisited.getBlock());
@@ -774,8 +775,8 @@ public class ReWriteVisitor implements NodeVisitor {
 	private boolean hasArguments(Node n) {
 		if (n instanceof ArgsNode) {
 			ArgsNode args = (ArgsNode) n;
-			return (args.getPre() != null || args.getOptArgs() != null
-					|| args.getBlock() != null || args.getRestArgNode() != null);
+			return (args.getPre() != null || args.getOptional() != null
+					|| args.getBlock() != null || args.getRest() != null);
 		} else if (n instanceof ArrayNode && n.childNodes().isEmpty()) {
 			return false;
 		}
@@ -1777,6 +1778,11 @@ public class ReWriteVisitor implements NodeVisitor {
 
     public Object visitRestArgNode(RestArgNode iVisited) {
         print("*" + iVisited.getName());
+        return null;
+    }
+
+    public Object visitEncodingNode(EncodingNode iVisited) {
+        print("__ENCODING__");
         return null;
     }
 }

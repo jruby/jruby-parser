@@ -59,15 +59,6 @@ public abstract class StaticScope implements Serializable {
     
     private boolean[] variableCaptured;
     
-    // number of variables in this scope representing required arguments
-    private int requiredArgs = 0;
-    
-    // number of variables in this scope representing optional arguments
-    private int optionalArgs = 0;
-    
-    // index of variable that represents a "rest" arg
-    private int restArg = -1;
-    
     // Whether this scope is used as the "argument scope" for e.g. zsuper
     private boolean isArgumentScope = false;
     
@@ -212,26 +203,6 @@ public abstract class StaticScope implements Serializable {
     public StaticScope getPreviousCRefScope() {
         return previousCRefScope;
     }
-
-    public int getOptionalArgs() {
-        return optionalArgs;
-    }
-
-    public int getRequiredArgs() {
-        return requiredArgs;
-    }
-
-    public void setRequiredArgs(int requiredArgs) {
-        this.requiredArgs = requiredArgs;
-    }
-
-    public int getRestArg() {
-        return restArg;
-    }
-
-    public void setRestArg(int restArg) {
-        this.restArg = restArg;
-    }
     
     public boolean isArgumentScope() {
         return isArgumentScope;
@@ -239,12 +210,6 @@ public abstract class StaticScope implements Serializable {
     
     public void setArgumentScope(boolean isArgumentScope) {
         this.isArgumentScope = isArgumentScope;
-    }
-    
-    public void setArities(int required, int optional, int rest) {
-        this.requiredArgs = required;
-        this.optionalArgs = optional;
-        this.restArg = rest;
     }
 
     private void growVariableNames(String name) {

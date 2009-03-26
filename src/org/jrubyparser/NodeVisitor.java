@@ -61,6 +61,7 @@ import org.jrubyparser.ast.DefinedNode;
 import org.jrubyparser.ast.DefnNode;
 import org.jrubyparser.ast.DefsNode;
 import org.jrubyparser.ast.DotNode;
+import org.jrubyparser.ast.EncodingNode;
 import org.jrubyparser.ast.EnsureNode;
 import org.jrubyparser.ast.EvStrNode;
 import org.jrubyparser.ast.FCallNode;
@@ -159,6 +160,7 @@ public interface NodeVisitor {
     public Object visitDefnNode(DefnNode iVisited);
     public Object visitDefsNode(DefsNode iVisited);
     public Object visitDotNode(DotNode iVisited);
+    public Object visitEncodingNode(EncodingNode iVisited);
     public Object visitEnsureNode(EnsureNode iVisited);
     public Object visitEvStrNode(EvStrNode iVisited);
     public Object visitFCallNode(FCallNode iVisited);

@@ -43,64 +43,33 @@ import org.jrubyparser.SourcePosition;
  * q1...qn = post arguments (only in 1.9)
  */
 public class ArgsNode extends Node {
-    private final ListNode pre;
-    private final int preCount;
-    private final ListNode optArgs;
-    protected final ArgumentNode restArgNode;
-    protected final int restArg;
-    private final BlockArgNode blockArgNode;
-    private final int requiredArgsCount;
-    protected final boolean hasOptArgs;
-    protected final boolean hasMasgnArgs;
-    protected int maxArgsCount;
-
-    // Only in ruby 1.9 methods
-    private final ListNode post;
-    private final int postCount;
-    private final int postIndex;
+    private ListNode pre;
+    private ListNode optional;
+    private ListNode post; // Only in ruby 1.9 methods
+    protected ArgumentNode rest;
+    private BlockArgNode block;
+    
     /**
-     * 
-     * @param optionalArguments  Node describing the optional arguments
-     * 				This Block will contain assignments to locals (LAsgnNode)
-     * @param restArguments  index of the rest argument in the local table
-     * 				(the array argument prefixed by a * which collects 
-     * 				all additional params)
-     * 				or -1 if there is none.
-     * @param argsCount number of regular arguments
-     * @param restArgNode The rest argument (*args).
-     * @param blockArgNode An optional block argument (&amp;arg).
+     * @param position of the arguments
+     * @param pre Required nodes at the beginning of the method definition
+     * @param optional Node describing the optional arguments
+     * @param rest The rest argument (*args).
+     * @param post Required nodes at the end of the method definition
+     * @param block An optional block argument (&amp;arg).
      **/
-    public ArgsNode(SourcePosition position, ListNode pre, ListNode optionalArguments,
-            RestArgNode rest, ListNode post, BlockArgNode blockArgNode) {
+    public ArgsNode(SourcePosition position, ListNode pre, ListNode optional, RestArgNode rest,
+            ListNode post, BlockArgNode block) {
         super(position);
 
         this.pre = pre;
-        this.preCount = pre == null ? 0 : pre.size();
+        this.optional = optional;
         this.post = post;
-        this.postCount = post == null ? 0 : post.size();
-        this.postIndex = rest == null ? 0 : rest.getIndex() + 1;
-        this.optArgs = optionalArguments;
-        this.restArg = rest == null ? -1 : rest.getIndex();
-        this.restArgNode = rest;
-        this.blockArgNode = blockArgNode;
-        this.requiredArgsCount = preCount + postCount;
-        this.hasOptArgs = getOptArgs() != null;
-        this.hasMasgnArgs = hasMasgnArgs();
-        this.maxArgsCount = getRestArg() >= 0 ? -1 : getRequiredArgsCount() + getOptionalArgsCount();
+        this.rest = rest;
+        this.block = block;
     }
 
     public NodeType getNodeType() {
         return NodeType.ARGSNODE;
-    }
-
-    protected boolean hasMasgnArgs() {
-        if (preCount > 0) for (Node node : pre.childNodes()) {
-            if (node instanceof AssignableNode) return true;
-        }
-        if (postCount > 0) for (Node node : post.childNodes()) {
-            if (node instanceof AssignableNode) return true;
-        }
-        return false;
     }
     
     /**
@@ -111,6 +80,39 @@ public class ArgsNode extends Node {
         return iVisitor.visitArgsNode(this);
     }
 
+    public int getPreCount() {
+        return pre == null ? 0 : pre.size();
+    }
+
+    public int getOptionalCount() {
+        return optional == null ? 0 : optional.size();
+    }
+
+    public int getPostCount() {
+        return post == null ? 0 : post.size();
+    }
+
+    public int getRequiredCount() {
+        return getPreCount() + getPostCount();
+    }
+
+    public int getMaxArgumentsCount() {
+        return getRequiredCount() + getOptionalCount();
+    }
+
+    /**
+     * Gets the optional Arguments.
+     * 
+     * @return Returns a ListNode
+     */
+    public ListNode getOptional() {
+        return optional;
+    }
+
+    public ListNode getPost() {
+        return post;
+    }
+
     /**
      * Gets the required arguments at the beginning of the argument definition
      */
@@ -118,49 +120,13 @@ public class ArgsNode extends Node {
         return pre;
     }
 
-    @Deprecated
-    public ListNode getArgs() {
-        return pre;
-    }
-    
-    public int getRequiredArgsCount() {
-        return requiredArgsCount;
-    }
-    
-    public int getOptionalArgsCount() {
-        return optArgs == null ? 0 : optArgs.size();
-    }
-
-    public ListNode getPost() {
-        return post;
-    }
-
-    public int getMaxArgumentsCount() {
-        return maxArgsCount;
-    }
-
     /**
-     * Gets the optArgs.
-     * @return Returns a ListNode
-     */
-    public ListNode getOptArgs() {
-        return optArgs;
-    }
-
-    /**
-     * Gets the restArg.
-     * @return Returns a int
-     */
-    public int getRestArg() {
-        return restArg;
-    }
-
-    /**
-     * Gets the restArgNode.
+     * Gets the rest node.
+     * 
      * @return Returns an ArgumentNode
      */
-    public ArgumentNode getRestArgNode() {
-        return restArgNode;
+    public ArgumentNode getRest() {
+        return rest;
     }
 
     /**
@@ -169,24 +135,12 @@ public class ArgsNode extends Node {
      * @return Returns a BlockArgNode
      */
     public BlockArgNode getBlock() {
-        return blockArgNode;
-    }
-
-    public int getPostCount() {
-        return postCount;
-    }
-
-    public int getPostIndex() {
-        return postIndex;
-    }
-
-    public int getPreCount() {
-        return preCount;
+        return block;
     }
 
     public List<Node> childNodes() {
-        if (post != null) return Node.createList(pre, optArgs, restArgNode, post, blockArgNode);
+        if (post != null) return Node.createList(pre, optional, rest, post, block);
 
-        return Node.createList(pre, optArgs, restArgNode, blockArgNode);
+        return Node.createList(pre, optional, rest, block);
     }
 }
