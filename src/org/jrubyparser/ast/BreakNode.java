@@ -37,7 +37,7 @@ import org.jrubyparser.SourcePosition;
  * Represents a 'break' statement.
  */
 public class BreakNode extends Node {
-    private final Node valueNode;
+    private Node valueNode;
     
     public BreakNode(SourcePosition position, Node valueNode) {
         super(position);

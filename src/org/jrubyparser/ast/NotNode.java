@@ -37,7 +37,7 @@ import org.jrubyparser.SourcePosition;
  * not is !
  */
 public class NotNode extends Node {
-    private final Node conditionNode;
+    private Node conditionNode;
 
     public NotNode(SourcePosition position, Node conditionNode) {
         super(position);

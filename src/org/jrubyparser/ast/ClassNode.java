@@ -38,10 +38,10 @@ import org.jrubyparser.StaticScope;
  * A class statement (name, superClass, body). Classes bodies also define their own scope. 
  */
 public class ClassNode extends Node implements IScopingNode {
-    private final Colon3Node cpath;
-    private final StaticScope scope;
-    private final Node bodyNode;
-    private final Node superNode;
+    private Colon3Node cpath;
+    private StaticScope scope;
+    private Node bodyNode;
+    private Node superNode;
     
     public ClassNode(SourcePosition position, Colon3Node cpath, StaticScope scope, Node bodyNode, Node superNode) {
         super(position);

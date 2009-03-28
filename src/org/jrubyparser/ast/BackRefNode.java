@@ -43,8 +43,8 @@ import org.jrubyparser.SourcePosition;
 public class BackRefNode extends Node {
     /**
      * the character which generated the back reference
-     **/
-    private final char type;
+     */
+    private char type;
 
     public BackRefNode(SourcePosition position, int type) {
         super(position);

@@ -37,7 +37,7 @@ import org.jrubyparser.SourcePosition;
  * A call to super(...) with arguments to a method.
  */
 public class SuperNode extends Node implements BlockAcceptingNode {
-    private final Node argsNode;
+    private Node argsNode;
     private Node iterNode;
 
     public SuperNode(SourcePosition position, Node argsNode) {

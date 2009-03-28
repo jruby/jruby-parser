@@ -34,7 +34,7 @@ import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 
 public class SplatNode extends Node {
-    private final Node node;
+    private Node node;
 
     public SplatNode(SourcePosition position, Node node) {
         super(position);

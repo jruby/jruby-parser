@@ -37,7 +37,7 @@ import org.jrubyparser.SourcePosition;
  * A method or operator call.
  */
 public class CallNode extends Node implements INameNode, IArgumentNode, BlockAcceptingNode {
-    private final Node receiverNode;
+    private Node receiverNode;
     private Node argsNode;
     protected Node iterNode;
     protected String name;

@@ -44,7 +44,7 @@ import org.jrubyparser.SourcePosition;
  * The parser generates such a node around each separate statement.  
  */
 public class NewlineNode extends Node {
-    private final Node nextNode;
+    private Node nextNode;
 
     public NewlineNode(SourcePosition position, Node nextNode) {
         super(position);

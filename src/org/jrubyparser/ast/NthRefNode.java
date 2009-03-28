@@ -37,7 +37,7 @@ import org.jrubyparser.SourcePosition;
  * Represents a $number ($0..$9) variable.
   */
 public class NthRefNode extends Node {
-    private final int matchNumber;
+    private int matchNumber;
 
     public NthRefNode(SourcePosition position, int matchNumber) {
         super(position);

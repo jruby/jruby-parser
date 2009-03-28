@@ -37,7 +37,7 @@ import org.jrubyparser.SourcePosition;
  * Represents a '::' constant access or method call (Java::JavaClass).
  */
 public abstract class Colon2Node extends Colon3Node implements INameNode {
-    protected final Node leftNode;
+    protected Node leftNode;
 
     public Colon2Node(SourcePosition position, Node leftNode, String name) {
         super(position, name);

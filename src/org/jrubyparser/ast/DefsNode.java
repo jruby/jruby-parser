@@ -38,7 +38,8 @@ import org.jrubyparser.StaticScope;
  * Represents a singleton method definition.
  */
 public class DefsNode extends MethodDefNode implements INameNode {
-    private final Node receiverNode;
+    private Node receiverNode;
+    
     public DefsNode(SourcePosition position, Node receiverNode, ArgumentNode nameNode, ArgsNode argsNode, 
             StaticScope scope, Node bodyNode) {
         super(position, nameNode, argsNode, scope, bodyNode);

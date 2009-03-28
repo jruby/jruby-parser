@@ -38,7 +38,7 @@ import org.jrubyparser.SourcePosition;
  * A block passing argument in a method call (last argument prefixed by an ampersand).
  */
 public class BlockPassNode extends Node {
-    private final Node bodyNode;
+    private Node bodyNode;
 
     /** Used by the arg_blk_pass and new_call, new_fcall and new_super
      * methods in ParserSupport to temporary save the args node.

@@ -43,10 +43,10 @@ import org.jrubyparser.SourcePosition;
  * </pre>
  */
 public class OpElementAsgnNode extends Node {
-    private final Node receiverNode;
-    private final Node argsNode;
-    private final Node valueNode;
-    private final String name;
+    private Node receiverNode;
+    private Node argsNode;
+    private Node valueNode;
+    private String name;
 
     public OpElementAsgnNode(SourcePosition position, Node receiverNode, String operatorName, Node argsNode, Node valueNode) {
         super(position);

@@ -34,8 +34,8 @@ import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 
 public class ArgsCatNode extends Node {
-	private final Node firstNode;
-    private final Node secondNode;
+	private Node firstNode;
+    private Node secondNode;
 
     public ArgsCatNode(SourcePosition position, Node firstNode, Node secondNode) {
         super(position);

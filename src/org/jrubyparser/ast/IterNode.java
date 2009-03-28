@@ -38,8 +38,8 @@ import org.jrubyparser.StaticScope;
  * Represents a block.  
  */
 public class IterNode extends Node {
-    private final Node varNode;
-    private final Node bodyNode;
+    private Node varNode;
+    private Node bodyNode;
     
     // What static scoping relationship exists when it comes into being.
     private StaticScope scope;

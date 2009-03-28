@@ -37,8 +37,7 @@ import org.jrubyparser.SourcePosition;
  * Represents a return statement.
  */
 public class ReturnNode extends Node {
-    private final Node valueNode;
-    private Object target;
+    private Node valueNode;
 
     public ReturnNode(SourcePosition position, Node valueNode) {
         super(position);
@@ -62,14 +61,6 @@ public class ReturnNode extends Node {
 
     public Node getValueNode() {
         return valueNode;
-    }
-
-    public Object getTarget() {
-        return target;
-    }
-
-    public void setTarget(Object target) {
-        this.target = target;
     }
     
     public List<Node> childNodes() {

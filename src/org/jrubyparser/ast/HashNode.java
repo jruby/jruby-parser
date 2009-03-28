@@ -38,7 +38,7 @@ import org.jrubyparser.SourcePosition;
  * of default values in a method call.
  */
 public class HashNode extends Node {
-    private final ListNode listNode;
+    private ListNode listNode;
     
     public HashNode(SourcePosition position, ListNode listNode) {
         super(position);

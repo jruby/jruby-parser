@@ -34,8 +34,8 @@ import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 
 public class MultipleAsgnNode extends AssignableNode {
-    private final ListNode headNode;
-    private final Node argsNode;
+    private ListNode headNode;
+    private Node argsNode;
     
     public MultipleAsgnNode(SourcePosition position, ListNode headNode, Node argsNode) {
         super(position);

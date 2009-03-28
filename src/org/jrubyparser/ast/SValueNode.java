@@ -34,7 +34,7 @@ import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 
 public class SValueNode extends Node {
-    private final Node node;
+    private Node node;
     
     public SValueNode(SourcePosition position, Node node) {
         super(position);

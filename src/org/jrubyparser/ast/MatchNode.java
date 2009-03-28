@@ -34,7 +34,7 @@ import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 
 public class MatchNode extends Node {
-    private final Node regexpNode;
+    private Node regexpNode;
 
     public MatchNode(SourcePosition position, Node regexpNode) {
         super(position);

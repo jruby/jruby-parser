@@ -37,9 +37,9 @@ import org.jrubyparser.SourcePosition;
  * Represents a when condition
  */
 public class WhenNode extends Node {
-    protected final Node expressionNodes;
-    protected final Node bodyNode;
-    private final Node nextCase;
+    protected Node expressionNodes;
+    protected Node bodyNode;
+    private Node nextCase;
 
     public WhenNode(SourcePosition position, Node expressionNodes, Node bodyNode, Node nextCase) {
         super(position);

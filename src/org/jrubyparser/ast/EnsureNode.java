@@ -37,8 +37,8 @@ import org.jrubyparser.SourcePosition;
  *	An 'ensure' statement.
  */
 public class EnsureNode extends Node {
-    private final Node bodyNode;
-    private final Node ensureNode;
+    private Node bodyNode;
+    private Node ensureNode;
 
     public EnsureNode(SourcePosition position, Node bodyNode, Node ensureNode) {
         super(position);

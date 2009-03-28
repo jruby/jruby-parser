@@ -37,8 +37,8 @@ import org.jrubyparser.SourcePosition;
  * represents '||' (or) statements
  */
 public class OrNode extends Node implements BinaryOperatorNode {
-    private final Node firstNode;
-    private final Node secondNode;
+    private Node firstNode;
+    private Node secondNode;
 
     public OrNode(SourcePosition position, Node firstNode, Node secondNode) {
         super(position);

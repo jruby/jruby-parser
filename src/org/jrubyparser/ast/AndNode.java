@@ -37,8 +37,8 @@ import org.jrubyparser.SourcePosition;
  * Represents a && (and) operator.
  */
 public class AndNode extends Node implements BinaryOperatorNode {
-    private final Node firstNode;
-    private final Node secondNode;
+    private Node firstNode;
+    private Node secondNode;
 
     public AndNode(SourcePosition position, Node firstNode, Node secondNode) {
         super(position);

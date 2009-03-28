@@ -41,11 +41,11 @@ public class CaseNode extends Node {
 	/**
 	 * the case expression.
 	 **/
-    private final Node caseNode;
+    private Node caseNode;
 	/**
 	 * A list of all choices including else
 	 */
-    private final ListNode cases;
+    private ListNode cases;
     private Node elseNode = null;
     
     public CaseNode(SourcePosition position, Node caseNode, ListNode cases) {

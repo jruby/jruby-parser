@@ -36,8 +36,8 @@ import org.jrubyparser.SourcePosition;
  * is used for a match.
  */
 public class DRegexpNode extends ListNode implements ILiteralNode {
-    private final int options;
-    private final boolean once;
+    private int options;
+    private boolean once;
     
     public DRegexpNode(SourcePosition position) {
         this(position, 0, false);

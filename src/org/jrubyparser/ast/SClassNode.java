@@ -44,9 +44,9 @@ import org.jrubyparser.StaticScope;
  * </pre>
  */
 public class SClassNode extends Node {
-    private final Node receiverNode;
-    private final StaticScope scope;
-    private final Node bodyNode;
+    private Node receiverNode;
+    private StaticScope scope;
+    private Node bodyNode;
 
     public SClassNode(SourcePosition position, Node recvNode, StaticScope scope, Node bodyNode) {
         super(position);

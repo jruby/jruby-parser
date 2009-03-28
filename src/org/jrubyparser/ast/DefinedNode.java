@@ -37,7 +37,7 @@ import org.jrubyparser.SourcePosition;
  * a defined statement.
  */
 public class DefinedNode extends Node {
-    private final Node expressionNode;
+    private Node expressionNode;
 
     public DefinedNode(SourcePosition position, Node expressionNode) {
         super(position);

@@ -39,8 +39,8 @@ import org.jrubyparser.SourcePosition;
 // FIXME: ConstDecl could be two seperate classes (or done differently since constNode and name
 // never exist at the same time.
 public class ConstDeclNode extends AssignableNode implements INameNode {
-    private final String name;
-    private final INameNode constNode;
+    private String name;
+    private INameNode constNode;
 
     // TODO: Split this into two sub-classes so that name and constNode can be specified seperately.
     public ConstDeclNode(SourcePosition position, String name, INameNode constNode, Node valueNode) {

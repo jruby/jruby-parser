@@ -35,10 +35,10 @@ import org.jrubyparser.SourcePosition;
 import org.jrubyparser.StaticScope;
 
 public abstract class MethodDefNode extends Node implements INameNode {
-	protected final ArgumentNode nameNode;
-	protected final ArgsNode argsNode;
-	protected final StaticScope scope;
-	protected final Node bodyNode;
+	protected ArgumentNode nameNode;
+	protected ArgsNode argsNode;
+	protected StaticScope scope;
+	protected Node bodyNode;
 
 	public MethodDefNode(SourcePosition position, ArgumentNode nameNode, ArgsNode argsNode, 
 	        StaticScope scope, Node bodyNode) {

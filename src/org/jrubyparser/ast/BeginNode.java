@@ -37,7 +37,7 @@ import org.jrubyparser.SourcePosition;
  * Begin/End block.  A Begin ... End block without rescue.
  */
 public class BeginNode extends Node {
-    private final Node bodyNode;
+    private Node bodyNode;
 
     public BeginNode(SourcePosition position, Node bodyNode) {
         super(position);

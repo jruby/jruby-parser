@@ -37,10 +37,10 @@ import org.jrubyparser.SourcePosition;
  * Represents a range literal.
  */
 public class DotNode extends Node {
-    private final Node beginNode;
-    private final Node endNode;
-    private final boolean exclusive;
-    private final boolean isLiteral;
+    private Node beginNode;
+    private Node endNode;
+    private boolean exclusive;
+    private boolean isLiteral;
 
     public DotNode(SourcePosition position, Node beginNode, Node endNode, boolean exclusive, 
             boolean isLiteral) {

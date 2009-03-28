@@ -34,8 +34,8 @@ import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 
 public class Match3Node extends Node {
-    private final Node receiverNode;
-    private final Node valueNode;
+    private Node receiverNode;
+    private Node valueNode;
 
     public Match3Node(SourcePosition position, Node receiverNode, Node valueNode) {
         super(position);

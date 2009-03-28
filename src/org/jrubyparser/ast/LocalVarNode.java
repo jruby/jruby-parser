@@ -42,7 +42,7 @@ public class LocalVarNode extends Node implements INameNode {
     
     // A scoped location of this variable (high 16 bits is how many scopes down and low 16 bits
     // is what index in the right scope to set the value.
-    private final int location;
+    private int location;
 
     public LocalVarNode(SourcePosition position, int location, String name) {
         super(position);

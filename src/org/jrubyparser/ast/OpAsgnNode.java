@@ -37,8 +37,8 @@ import org.jrubyparser.SourcePosition;
  *
  */
 public class OpAsgnNode extends Node {
-    private final Node receiverNode;
-    private final Node valueNode;
+    private Node receiverNode;
+    private Node valueNode;
     private String operatorName;
     private String variableName;
 

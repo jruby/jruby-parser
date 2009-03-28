@@ -40,7 +40,7 @@ import org.jrubyparser.SourcePosition;
  * the first evaluation this String is parsed into the evaluatedNode Node.
  */
 public class EvStrNode extends Node {
-    private final Node body;
+    private Node body;
 
     public EvStrNode(SourcePosition position, Node body) {
         super(position);

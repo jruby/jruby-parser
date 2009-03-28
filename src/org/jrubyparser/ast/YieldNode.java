@@ -37,8 +37,8 @@ import org.jrubyparser.SourcePosition;
  * Represents a yield statement.
  */
 public class YieldNode extends Node {
-    private final Node argsNode;
-    private final boolean expandedArguments;
+    private Node argsNode;
+    private boolean expandedArguments;
 
     /**
      * Construct a new YieldNode.

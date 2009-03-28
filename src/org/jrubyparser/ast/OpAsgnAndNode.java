@@ -34,8 +34,8 @@ import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 
 public class OpAsgnAndNode extends Node implements BinaryOperatorNode {
-    private final Node firstNode;
-    private final Node secondNode;
+    private Node firstNode;
+    private Node secondNode;
 
     public OpAsgnAndNode(SourcePosition position, Node headNode, Node valueNode) {
         super(position);

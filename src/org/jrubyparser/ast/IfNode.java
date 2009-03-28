@@ -37,9 +37,9 @@ import org.jrubyparser.SourcePosition;
  * an 'if' statement.
  */
 public class IfNode extends Node {
-    private final Node condition;
-    private final Node thenBody;
-    private final Node elseBody;
+    private Node condition;
+    private Node thenBody;
+    private Node elseBody;
 
     public IfNode(SourcePosition position, Node condition, Node thenBody, Node elseBody) {
         super(position);

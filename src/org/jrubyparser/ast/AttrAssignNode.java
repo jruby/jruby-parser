@@ -37,7 +37,7 @@ import org.jrubyparser.SourcePosition;
  * Node that represents an assignment of either an array element or attribute.
  */
 public class AttrAssignNode extends Node implements INameNode, IArgumentNode {
-    protected final Node receiverNode;
+    protected Node receiverNode;
     private String name;
     private Node argsNode;
 

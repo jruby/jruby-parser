@@ -37,12 +37,12 @@ import org.jrubyparser.SourcePosition;
  * A Range in a boolean expression (named after a FlipFlop component in electronic?).
  */
 public class FlipNode extends Node {
-    private final Node beginNode;
-    private final Node endNode;
-    private final boolean exclusive;
+    private Node beginNode;
+    private Node endNode;
+    private boolean exclusive;
     // A scoped location of this variable (high 16 bits is how many scopes down and low 16 bits
     // is what index in the right scope to set the value.
-    private final int location;
+    private int location;
     
     public FlipNode(SourcePosition position, Node beginNode, Node endNode, boolean exclusive, int location) {
         super(position);

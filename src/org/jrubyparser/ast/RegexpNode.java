@@ -37,8 +37,8 @@ import org.jrubyparser.SourcePosition;
  * Represents a simple regular expression literal.
  */
 public class RegexpNode extends Node implements ILiteralNode {
-    private final String value;
-    private final int options;
+    private String value;
+    private int options;
 
     public RegexpNode(SourcePosition position, String value, int options) {
         super(position);

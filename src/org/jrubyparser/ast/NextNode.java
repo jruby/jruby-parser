@@ -37,7 +37,7 @@ import org.jrubyparser.SourcePosition;
  * Represents a 'next' statement.
  */
 public class NextNode extends Node {
-    private final Node valueNode;
+    private Node valueNode;
 
     public NextNode(SourcePosition position, Node valueNode) {
         super(position);

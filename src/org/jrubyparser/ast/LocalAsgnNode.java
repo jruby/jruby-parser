@@ -42,7 +42,7 @@ public class LocalAsgnNode extends AssignableNode implements INameNode {
     
     // A scoped location of this variable (high 16 bits is how many scopes down and low 16 bits
     // is what index in the right scope to set the value.
-    private final int location;
+    private int location;
 
     public LocalAsgnNode(SourcePosition position, String name, int location, Node valueNode) {
         super(position, valueNode);

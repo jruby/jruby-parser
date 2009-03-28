@@ -45,9 +45,9 @@ import org.jrubyparser.SourcePosition;
  * &lt;body&gt; 'while' &lt;condition&gt;
  */
 public class WhileNode extends Node {
-    private final Node conditionNode;
-    private final Node bodyNode;
-    private final boolean evaluateAtStart;
+    private Node conditionNode;
+    private Node bodyNode;
+    private boolean evaluateAtStart;
     
     public boolean containsNonlocalFlow = false;
 

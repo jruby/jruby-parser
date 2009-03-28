@@ -37,9 +37,9 @@ import org.jrubyparser.SourcePosition;
  * Represents a rescue statement
  */
 public class RescueNode extends Node {
-    private final Node bodyNode;
-    private final RescueBodyNode rescueNode;
-    private final Node elseNode;
+    private Node bodyNode;
+    private RescueBodyNode rescueNode;
+    private Node elseNode;
     
     public RescueNode(SourcePosition position, Node bodyNode, RescueBodyNode rescueNode, Node elseNode) {
         super(position);
