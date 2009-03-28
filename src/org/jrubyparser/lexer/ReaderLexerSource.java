@@ -295,4 +295,27 @@ public class ReaderLexerSource extends LexerSource {
         
         return list.toString();
     }
+
+    @Override
+    public int chompReadAhead() {
+        int result = bufLength + 1;
+        bufLength = -1;
+        return result;
+    }
+
+    @Override
+    public boolean isANewLine() {
+        return oneAgo == '\n';
+    }
+
+    // Various places where we call LexerSource.unread(), the nextCharIsOnANewline value gets inaccurate (column/line too, but I don't care about those)
+    @Override
+    public void setIsANewLine(boolean nextCharIsOnANewLine) {
+        oneAgo = nextCharIsOnANewLine ? '\n' : oneAgo;
+    }
+
+    @Override
+    public void setOffset(int offset) {
+        this.offset = offset;
+    }
 }

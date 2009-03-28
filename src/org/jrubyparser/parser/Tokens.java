@@ -156,6 +156,9 @@ public interface Tokens {
     int tLAMBDA     = Ruby18Parser.tLAMBDA;
     int tLAMBEG     = Ruby18Parser.tLAMBEG;
     int tLABEL      = Ruby18Parser.tLABEL;
+    int tCOMMENT    = Ruby18Parser.tCOMMENT;
+    int tWHITESPACE = Ruby18Parser.tWHITESPACE;
+    int tDOCUMENTATION = Ruby18Parser.tDOCUMENTATION;
 
     String[] operators = {"+@", "-@", "**", "<=>", "==", "===", "!=", ">=", "<=", "&&",
                           "||", "=~", "!~", "..", "...", "[]", "[]=", "<<", ">>", "::"};

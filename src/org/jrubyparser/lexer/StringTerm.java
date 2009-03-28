@@ -27,6 +27,7 @@
  ***** END LICENSE BLOCK *****/
 package org.jrubyparser.lexer;
 
+import org.jrubyparser.SourcePosition;
 import org.jrubyparser.ast.RegexpNode;
 import org.jrubyparser.ast.StrNode;
 import org.jrubyparser.lexer.SyntaxException.PID;
@@ -72,8 +73,16 @@ public class StringTerm extends StrTerm {
             spaceSeen = true;
         }
 
-        if (c == end && nest == 0) {
+        if ((processingEmbedded == IGNORE_EMBEDDED || processingEmbedded == LOOKING_FOR_EMBEDDED) && (c == end) && (nest == 0)) {
             if ((flags & Lexer.STR_FUNC_QWORDS) != 0) {
+                if (processingEmbedded == LOOKING_FOR_EMBEDDED) { // Only make this change when lexing, not parsing
+                    // I want the terminating ")" to be passed as a string closure token,
+                    // not as a plain rparen, since I want it to match up with the
+                    // string opening tag (and I don't want an unbalanced right paren)
+                    lexer.setValue(new Token(""+end, lexer.getPosition()));
+                    return Tokens.tSTRING_END;
+                }
+                
                 flags = -1;
                 lexer.getPosition();
                 return ' ';
@@ -92,6 +101,12 @@ public class StringTerm extends StrTerm {
             src.unread(c);
             lexer.getPosition();
             return ' ';
+        }
+
+        if ((processingEmbedded == EMBEDDED_DEXPR) && (c == '}')) {
+            processingEmbedded = LOOKING_FOR_EMBEDDED;
+            lexer.setValue(new Token("}", lexer.getPosition()));
+            return Tokens.tSTRING_CONTENT;
         }
 
         // Single-quote fast path
@@ -120,10 +135,14 @@ public class StringTerm extends StrTerm {
             switch (c) {
             case '$':
             case '@':
+                if (processingEmbedded == LOOKING_FOR_EMBEDDED) processingEmbedded = EMBEDDED_DVAR;
+                
                 src.unread(c);
                 lexer.setValue(new Token("#" + c, lexer.getPosition()));
                 return Tokens.tSTRING_DVAR;
             case '{':
+                if (processingEmbedded == LOOKING_FOR_EMBEDDED) processingEmbedded = EMBEDDED_DEXPR;
+                
                 lexer.setValue(new Token("#" + c, lexer.getPosition())); 
                 return Tokens.tSTRING_DBEG;
             }
@@ -131,11 +150,49 @@ public class StringTerm extends StrTerm {
         }
         src.unread(c);
         
-        if (parseStringIntoBuffer(lexer, src, buffer) == Lexer.EOF) {
-            throw new SyntaxException(PID.STRING_HITS_EOF, src.getPosition(), "unterminated string meets end of file");
+        int parsed;
+        if (processingEmbedded == EMBEDDED_DEXPR) {
+            parsed = parseDExprIntoBuffer(lexer, src, buffer);
+        } else {
+            parsed = parseStringIntoBuffer(lexer, src, buffer);
+        }
+
+        if (parsed == Lexer.EOF) {
+            // We've read to the end of input and haven't found a corresponding String
+            // terminator. However, we don't always want to return the rest of the input as
+            // erroneous; in lexing mode, we want to stop at the first newline
+            // (at least or normal quoted strings, possibly not for heredocs etc.)
+            // and resume parsing from there, since it's likely that we're in the middle
+            // of typing a string.
+            // We've gotta push the "unused portion" of the string back into the input;
+            // the unused portion is the portion after the first newline.
+//            int n = buffer.length();
+//            for (int j = 0; j < n; j++) {
+//                if (buffer.charAt(j) == '\n') {
+//                    // Found it.
+//                    j++; // Include at least one
+//                    for (int k = n-1; k >= j; k--) {
+//                        // push input back in reverse order
+//                        src.unread(buffer.charAt(k));
+//                    }
+//                    // Fall through outer loop and throw SyntaxException
+//                    break;
+//                }
+//            }
+            //throw new SyntaxException(PID.STRING_HITS_EOF, src.getPosition(), "unterminated string meets end of file");
+            throw new UnterminatedStringException(src.getPosition(), "unterminated string meets end of file");
         }
 
         lexer.setValue(new StrNode(lexer.getPosition(), buffer.toString()));
+
+        // DVARs last only for a single string token so shut if off here.
+        if (processingEmbedded == EMBEDDED_DVAR) {
+            processingEmbedded = LOOKING_FOR_EMBEDDED;
+        } else if ((processingEmbedded == EMBEDDED_DEXPR) && (buffer.length() == 0)) {
+            // Unbalanced expression - see NB #96485
+            processingEmbedded = LOOKING_FOR_EMBEDDED;
+        }
+
         return Tokens.tSTRING_CONTENT;
     }
 
@@ -217,6 +274,12 @@ public class StringTerm extends StrTerm {
         while ((c = src.read()) != Lexer.EOF) {
             if (begin != '\0' && c == begin) {
                 nest++;
+            } else if (processingEmbedded == EMBEDDED_DEXPR && c == '}') {
+                src.unread(c);
+                break;
+            } else if (processingEmbedded == EMBEDDED_DVAR && !((c == '_') || c == '$' || c == '@' || Character.isLetter(c))) {
+                 src.unread(c);
+                 break;
             } else if (c == end) {
                 if (nest == 0) {
                     src.unread(c);
@@ -268,6 +331,70 @@ public class StringTerm extends StrTerm {
         }
         
         return c;
+    }
+
+    public int parseDExprIntoBuffer(Lexer lexer, LexerSource src, StringBuilder buffer) throws java.io.IOException {
+        boolean qwords = (flags & Lexer.STR_FUNC_QWORDS) != 0;
+        boolean expand = (flags & Lexer.STR_FUNC_EXPAND) != 0;
+        boolean escape = (flags & Lexer.STR_FUNC_ESCAPE) != 0;
+        boolean regexp = (flags & Lexer.STR_FUNC_REGEXP) != 0;
+        int c;
+
+        while ((c = src.read()) != Lexer.EOF) {
+            if (c == '{') {
+                nest++;
+            } else if (c == '}') {
+                if (nest == 0) {
+                    src.unread(c);
+                    break;
+                }
+                nest--;
+//            } else if (c == end) {
+//                if (nest == 0) {
+//                    src.unread(c);
+//                    break;
+//                }
+//                nest--;
+            } else if (c == '\\') {
+                c = src.read();
+                switch (c) {
+                case '\n':
+                    if (qwords) break;
+                    if (expand) continue;
+                    buffer.append('\\');
+                    break;
+
+                case '\\':
+                    if (escape) buffer.append(c);
+                    break;
+
+                default:
+                    if (regexp) {
+                        src.unread(c);
+                        parseEscapeIntoBuffer(src, buffer);
+                        continue;
+                    } else if (expand) {
+                        src.unread(c);
+                        if (escape) buffer.append('\\');
+                        c = lexer.readEscape();
+                    } else if (qwords && Character.isWhitespace(c)) {
+                        /* ignore backslashed spaces in %w */
+                    } else if (c != end && !(begin != '\0' && c == begin)) {
+                        buffer.append('\\');
+                    }
+                }
+            } else if (qwords && Character.isWhitespace(c)) {
+                src.unread(c);
+                break;
+            }
+            buffer.append(c);
+        }
+
+        return c;
+    }
+
+    public boolean isSubstituting() {
+        return (flags & Lexer.STR_FUNC_EXPAND) != 0;
     }
 
     // Was a goto in original ruby lexer
@@ -353,6 +480,112 @@ public class StringTerm extends StrTerm {
                 buffer.append('\\');
             }
             buffer.append(c);
+        }
+    }
+
+    public Object getMutableState() {
+        return new MutableTermState(processingEmbedded, nest);
+    }
+
+    public void setMutableState(Object o) {
+        MutableTermState state = (MutableTermState)o;
+        if (state != null) {
+            this.processingEmbedded = state.processingEmbedded;
+            this.nest = state.nest;
+        }
+    }
+
+    public void splitEmbeddedTokens() {
+        if (processingEmbedded == IGNORE_EMBEDDED) processingEmbedded = LOOKING_FOR_EMBEDDED;
+    }
+
+    private class MutableTermState {
+        private MutableTermState(int embeddedCode, int nest) {
+            this.processingEmbedded = embeddedCode;
+            this.nest = nest;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj == null || getClass() != obj.getClass()) return false;
+
+            final MutableTermState other = (MutableTermState) obj;
+
+            if (this.nest != other.nest) return false;
+
+            return this.processingEmbedded == other.processingEmbedded;
+        }
+
+        @Override
+        public int hashCode() {
+            int hash = 7;
+
+            hash = 83 * hash + this.nest;
+            hash = 83 * hash + this.processingEmbedded;
+            return hash;
+        }
+
+        @Override
+        public String toString() {
+            return "StringTermState[nest=" + nest + ",embed=" + processingEmbedded + "]";
+        }
+
+        private int nest;
+        private int processingEmbedded;
+    }
+
+    // Equals - primarily for unit testing (incremental lexing tests
+    // where we do full-file-lexing and compare state to incremental lexing)
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null || getClass() != obj.getClass()) return false;
+
+        final StringTerm other = (StringTerm) obj;
+
+        return this.flags == other.flags && this.end == other.end && this.begin == other.begin &&
+            this.processingEmbedded == other.processingEmbedded && this.nest == other.nest;
+    }
+
+    private static String toFuncString(int flags) {
+        StringBuilder builder = new StringBuilder();
+        
+        if ((flags & Lexer.STR_FUNC_ESCAPE) != 0) builder.append("escape|");
+        if ((flags & Lexer.STR_FUNC_EXPAND) != 0) builder.append("expand|");
+        if ((flags & Lexer.STR_FUNC_REGEXP) != 0) builder.append("regexp|");
+        if ((flags & Lexer.STR_FUNC_QWORDS) != 0) builder.append("qwords|");
+        if ((flags & Lexer.STR_FUNC_SYMBOL) != 0) builder.append("symbol|");
+        if ((flags & Lexer.STR_FUNC_INDENT) != 0) builder.append("indent|");
+
+        String string = builder.toString();
+
+        if (string.endsWith("|")) string = string.substring(0, string.length()-1);
+        if (string.length() == 0) string = "-";
+
+        return string;
+    }
+
+    @Override
+    public String toString() {
+        return "StringTerm[flags=" + toFuncString(flags) + ",end=" + end + ",begin=" + (int)begin +
+                ",nest=" + nest + ",embed=" + processingEmbedded + "]";
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+
+        hash = 13 * hash + this.flags;
+        hash = 13 * hash + this.end;
+        hash = 13 * hash + this.begin;
+        hash = 13 * hash + this.nest;
+        hash = 13 * hash + this.processingEmbedded;
+        return hash;
+    }
+
+    public static class UnterminatedStringException extends SyntaxException {
+        public UnterminatedStringException(SourcePosition pos, String message) {
+            // TODO - get rid of this class now that I have an id? I can switch on normal SyntaxExceptions!
+            super(PID.STRING_HITS_EOF, pos, message);
         }
     }
 }

@@ -1,6 +1,6 @@
 syntax: glob
 
-nbproject
+nbproject/
 dist/
 build/
 *~

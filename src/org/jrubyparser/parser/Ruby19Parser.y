@@ -199,6 +199,7 @@ public class Ruby19Parser implements RubyParser {
 %token <Node> tNTH_REF tBACK_REF tSTRING_CONTENT tINTEGER
 %token <FloatNode> tFLOAT  
 %token <RegexpNode>  tREGEXP_END
+%token <Token> tCOMMENT tWHITESPACE tDOCUMENTATION
 %type <RestArgNode> f_rest_arg 
 %type <Node> singleton strings string string1 xstring regexp
 %type <Node> string_contents xstring_contents string_content method_call

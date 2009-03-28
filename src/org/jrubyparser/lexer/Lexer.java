@@ -55,7 +55,8 @@ import org.jrubyparser.parser.ParserSupport;
 import org.jrubyparser.parser.Tokens;
 
 
-/** This is a port of the MRI lexer to Java it is compatible to Ruby 1.8.x and Ruby 1.9.x
+/**
+ *  This is a port of the MRI lexer to Java it is compatible to Ruby 1.8.x and Ruby 1.9.x
  *  depending on compatibility flag.
  */
 public class Lexer {
@@ -188,8 +189,34 @@ public class Lexer {
     }
     
     public enum LexState {
-        EXPR_BEG, EXPR_END, EXPR_ARG, EXPR_CMDARG, EXPR_ENDARG, EXPR_MID,
-        EXPR_FNAME, EXPR_DOT, EXPR_CLASS, EXPR_VALUE
+        EXPR_BEG(0), EXPR_END(1), EXPR_ARG(2), EXPR_CMDARG(3), EXPR_ENDARG(4), EXPR_MID(5),
+        EXPR_FNAME(6), EXPR_DOT(7), EXPR_CLASS(8), EXPR_VALUE(9);
+
+        private int ordinal;
+
+        LexState(int ordinal) {
+            this.ordinal = ordinal;
+        }
+
+        public int getOrdinal() {
+            return ordinal;
+        }
+
+        public static LexState fromOrdinal(int ordinal) {
+            switch (ordinal) {
+                case 0: return EXPR_BEG;
+                case 1: return EXPR_END;
+                case 2: return EXPR_ARG;
+                case 3: return EXPR_CMDARG;
+                case 4: return EXPR_ENDARG;
+                case 5: return EXPR_MID;
+                case 6: return EXPR_FNAME;
+                case 7: return EXPR_DOT;
+                case 8: return EXPR_CLASS;
+                case 9: return EXPR_VALUE;
+            }
+            return null;
+        }
     }
     
     public static Keyword getKeyword(String str) {
@@ -214,7 +241,117 @@ public class Lexer {
     // Additional context surrounding tokens that both the lexer and
     // grammar use.
     private LexState lex_state;
+
+    // Whether or not the lexer should be "space preserving" - see {set,get}PreserveSpaces
+    // the parser should consider whitespace sequences and code comments to be separate
+    // tokens to return to the client. Parsers typically do not want to see any
+    // whitespace or comment tokens - but an IDE trying to tokenize a chunk of source code
+    // does want to identify these separately. The default, false, means the parser mode.
+    private boolean preserveSpaces;
+
+    // List of HeredocTerms to be applied when we see a new line.
+    // This is done to be able to handle heredocs in input source order (instead of
+    // the normal JRuby operation of handling it out of order by stashing the rest of
+    // the line on the side while searching for the end of the heredoc, and then pushing
+    // the line back on the input before proceeding). Out-of-order handling of tokens
+    // is difficult for the IDE to handle, so in syntax highlighting mode we process the
+    // output differently. When we see a heredoc token, we return a normal string-begin
+    // token, but we also push the heredoc term (without line-state) into the "newline-list"
+    // and continue processing normally (with no string strterm in effect).
+    // Whenever we get to a new line, we look at the newline list, and if we find something
+    // there, we pull it off and set it as the current string term and use it to process
+    // the string literal and end token.
+    // NOTE:: This list should not be modified but rather duplicated, in order to ensure
+    // that incremental lexing (which relies on pulling out these lists at token boundaries)
+    // will not interfere with each other.
+    public static class HeredocContext {
+        private HeredocTerm[] heredocTerms;
+
+        private boolean[] lookingForEnds;
+
+        public HeredocContext(HeredocTerm term) {
+            heredocTerms = new HeredocTerm[] {term, term};
+            lookingForEnds = new boolean[] {false, true};
+        }
+
+        private HeredocContext(HeredocTerm[] terms, boolean[] lookingForEnds) {
+            heredocTerms = terms;
+            this.lookingForEnds = lookingForEnds;
+        }
+
+        private HeredocContext add(HeredocTerm h) {
+            // Add 2 entries: one for starting lexing of the string, one for the end token
+            HeredocTerm[] copy = new HeredocTerm[heredocTerms.length + 2];
+            System.arraycopy(heredocTerms, 0, copy, 0, heredocTerms.length);
+            copy[heredocTerms.length] = h;
+            copy[heredocTerms.length + 1] = h;
+
+            boolean[] copy2 = new boolean[lookingForEnds.length + 2];
+            System.arraycopy(lookingForEnds, 0, copy2, 0, lookingForEnds.length);
+            copy2[lookingForEnds.length] = false;
+            copy2[lookingForEnds.length + 1] = true;
+
+            return new HeredocContext(copy, copy2);
+        }
+
+        private HeredocTerm getTerm() {
+            return heredocTerms[0];
+        }
+
+        private HeredocContext pop() {
+            if (heredocTerms.length > 1) {
+                HeredocTerm[] copy = new HeredocTerm[heredocTerms.length - 1];
+                System.arraycopy(heredocTerms, 1, copy, 0, copy.length);
+
+                boolean[] copy2 = new boolean[lookingForEnds.length - 1];
+                System.arraycopy(lookingForEnds, 1, copy2, 0, copy2.length);
+
+                HeredocContext hc = new HeredocContext(copy, copy2);
+                return hc;
+            }
+
+            return null;
+        }
+
+        public boolean isLookingForEnd() {
+            return lookingForEnds[0];
+        }
+
+        @Override
+        public String toString() {
+            StringBuilder buffer = new StringBuilder("HeredocContext(count=");
+            buffer.append(Integer.toString(heredocTerms.length));
+            buffer.append("):");
+            for (int i = 0; i < heredocTerms.length; i++) {
+                if (i > 0) buffer.append(",");
+
+                buffer.append("end:").append(lookingForEnds[i]);
+                buffer.append(",term:").append(heredocTerms[i]);
+            }
+            
+            return buffer.toString();
+        }
+
+        @Override
+        public int hashCode() {
+            return heredocTerms[0].getMutableState().hashCode();
+        }
+
+        @Override
+        public boolean equals(Object other) {
+            if (other instanceof HeredocContext) {
+                HeredocContext o = (HeredocContext) other;
+                if (o.heredocTerms.length != heredocTerms.length) return false;
+
+                return heredocTerms[0].getMutableState().equals(o.heredocTerms[0].getMutableState());
+            }
+
+            return false;
+        }
+    }
     
+    public HeredocContext heredocContext;
+
     // Tempory buffer to build up a potential token.  Consumer takes responsibility to reset 
     // this before use.
     private StringBuilder tokenBuffer = new StringBuilder(60);
@@ -253,6 +390,74 @@ public class Lexer {
     // 1.9 only
     private int leftParenBegin = 0;
 
+
+    /* In normal JRuby, there is a "spaceSeen" flag which is local to yylex. It is
+     * used to interpret input based on whether a space was recently seen.
+     * Since I now bail -out- of yylex() when I see space, I need to be able
+     * to preserve this flag across yylex() calls. In most cases, "spaceSeen"
+     * should be set to false (as it previous was at the beginning of yylex().
+     * However, when I've seen a space and have bailed out, I need to set spaceSeen=true
+     * on the next call to yylex(). This is what the following flag is all about.
+     * It is set to true when we bail out on space (or other states that didn't
+     * previous bail out and spaceSeen is true).
+     */
+    private boolean setSpaceSeen;
+
+    /**
+     * Set whether or not the lexer should be "space preserving" - in other words, whether
+     * the parser should consider whitespace sequences and code comments to be separate
+     * tokens to return to the client. Parsers typically do not want to see any
+     * whitespace or comment tokens - but an IDE trying to tokenize a chunk of source code
+     * does want to identify these separately. The default, false, means the parser mode.
+     *
+     * @param preserveSpaces If true, return space and comment sequences as tokens, if false, skip these
+     * @see #getPreserveSpaces
+     */
+    public void setPreserveSpaces(final boolean preserveSpaces) {
+        this.preserveSpaces = preserveSpaces;
+    }
+
+    /**
+     * Return whether or not the lexer should be "space preserving". For a description
+     * of what this means, see {@link #setPreserveSpaces}.
+     *
+     * @return preserveSpaces True iff space and comment sequences will be returned as
+     * tokens, and false otherwise.
+     *
+     * @see #setPreserveSpaces
+     */
+    public boolean getPreserveSpaces() {
+       return preserveSpaces;
+    }
+
+    public LexState getLexState() {
+        return lex_state;
+    }
+
+    public void setLexState(final LexState lex_state) {
+        this.lex_state = lex_state;
+    }
+
+    public boolean isSetSpaceSeen() {
+        return setSpaceSeen;
+    }
+
+    public void setSpaceSeen(boolean setSpaceSeen) {
+        this.setSpaceSeen = setSpaceSeen;
+    }
+
+    public boolean isCommandStart() {
+        return commandStart;
+    }
+
+    public void setCommandStart(boolean commandStart) {
+        this.commandStart = commandStart;
+    }
+
+    public LexerSource getSource() {
+        return this.src;
+    }
+
     public int incrementParenNest() {
         parenNest++;
 
@@ -280,7 +485,7 @@ public class Lexer {
     	token = 0;
     	yaccValue = null;
     	src = null;
-        lex_state = null;
+        lex_state = LexState.EXPR_BEG;
         resetStacks();
         lex_strterm = null;
         commandStart = true;
@@ -585,6 +790,35 @@ public class Lexer {
             src.unread(c);
         }
 
+        // See issue nb #93990
+        // It is very difficult for the IDE (especially with incremental lexing)
+        // to handle heredocs with additional input on the line, where the
+        // input end up getting processed out of order (JRuby will read the rest
+        // of the line, process up to the end token, then stash the rest of the line
+        // back on the input and continue (which could process another heredoc)
+        // and then just jump over the heredocs since input is processed out of order.
+        // Instead, use our own HeredocTerms which behave differently; they don't
+        // mess with the output, and will be handled differently from within
+        // the lexer in that it gets invited back on the next line (in order)
+        if (preserveSpaces) {
+            HeredocTerm h = new HeredocTerm(markerValue.toString(), func, null);
+
+            if (term == '`') {
+                yaccValue = new Token("`", getPosition());
+                return Tokens.tXSTRING_BEG;
+            }
+
+            yaccValue = new Token("\"", getPosition());
+
+            if (heredocContext == null) {
+                heredocContext = new HeredocContext(h);
+            } else {
+                heredocContext = heredocContext.add(h);
+            }
+
+            return Tokens.tSTRING_BEG;
+        }
+
         String lastLine = src.readLineBytes();
         lastLine.concat("\n");
         lex_strterm = new HeredocTerm(markerValue.toString(), func, lastLine);
@@ -663,11 +897,16 @@ public class Lexer {
             tokenBuffer.append((char) c);
         }
         src.unread(c);
-        
-        // Store away each comment to parser result so IDEs can do whatever they want with them.
-        SourcePosition position = startPosition.union(getPosition());
-        
-        parserSupport.getResult().addComment(new CommentNode(position, tokenBuffer.toString()));
+
+        // ENEBO: When is parserSupport actually null?
+        if (parserSupport != null) {
+            // Store away each comment to parser result so IDEs can do whatever they want with them.
+            SourcePosition position = startPosition.union(getPosition());
+
+            parserSupport.getResult().addComment(new CommentNode(position, tokenBuffer.toString()));
+        } else {
+            getPosition();
+        }
         
         return c;
     }
@@ -828,13 +1067,45 @@ public class Lexer {
         boolean spaceSeen = false;
         boolean commandState;
         
+        if (setSpaceSeen) {
+            spaceSeen = true;
+            setSpaceSeen = false;
+        }
+        
+        // On new lines, possibly resume heredoc processing (see docs for newlineTerms for more)
+        if (heredocContext != null) {
+            if (heredocContext.isLookingForEnd()) {
+                HeredocTerm ht = heredocContext.getTerm();
+                lex_strterm = ht;
+            } else if (src.isANewLine()) {
+                // Can be triggered, disabling for now to cause
+                // less severe symptoms
+                //assert lex_strterm == null;
+
+                HeredocTerm ht = heredocContext.getTerm();
+                lex_strterm = ht;
+                heredocContext = heredocContext.pop();
+            }
+        }
+
         if (lex_strterm != null) {
-            int tok = lex_strterm.parseString(this, src);
-            if (tok == Tokens.tSTRING_END || tok == Tokens.tREGEXP_END) {
+            try {
+                int tok = lex_strterm.parseString(this, src);
+                if (tok == Tokens.tSTRING_END || tok == Tokens.tREGEXP_END) {
+                    lex_strterm = null;
+                    lex_state = LexState.EXPR_END;
+
+                    if (heredocContext != null && heredocContext.isLookingForEnd()) {
+                        heredocContext = heredocContext.pop();
+                    }
+                }
+                return tok;
+            } catch (SyntaxException se) {
+                // If we abort in string parsing, throw away the str term
+                // such that we don't try again on restart
                 lex_strterm = null;
                 lex_state = LexState.EXPR_END;
             }
-            return tok;
         }
 
         commandState = commandStart;
@@ -851,12 +1122,46 @@ public class Lexer {
                 /* white spaces */
             case ' ': case '\t': case '\f': case '\r':
             case '\13': /* '\v' */
+                if (preserveSpaces) {
+                    // Collapse all whitespace into one token
+                    while (true) {
+                        c = src.read();
+                        if (c != ' ' && c != '\t' && c != '\f' && c != '\r' && c != '\13') break;
+                    }
+                    src.unread(c);
+                    yaccValue = new Token("whitespace", getPosition());
+                    setSpaceSeen = true;
+
+                    return Tokens.tWHITESPACE;
+                }
+                
                 getPosition();
                 spaceSeen = true;
                 continue;
             case '#':		/* it's a comment */
-                // FIXME: Need to detect magic_comment in 1.9 here for encoding
-                if (readComment(c) == EOF) return EOF;
+                if (preserveSpaces) {
+                    // Skip to end of the comment
+                    while ((c = src.read()) != '\n') {
+                        if (c == EOF) break;
+                    }
+
+                    yaccValue = new Token("line-comment", getPosition());
+                    setSpaceSeen = spaceSeen;
+                    // Ensure that commandStart and lex_state is updated
+                    // as it otherwise would have if preserveSpaces was false
+                    if (!(lex_state == LexState.EXPR_BEG ||
+                            lex_state == LexState.EXPR_FNAME ||
+                            lex_state == LexState.EXPR_DOT ||
+                            lex_state == LexState.EXPR_CLASS)) {
+                        commandStart = true;
+                        lex_state = LexState.EXPR_BEG;
+                    }
+
+                    return Tokens.tCOMMENT;
+                } else {
+                    // FIXME: Need to detect magic_comment in 1.9 here for encoding
+                    if (readComment(c) == EOF) return EOF;
+                }
                     
                 /* fall through */
             case '\n':
@@ -912,6 +1217,8 @@ public class Lexer {
             case '=':
                 // documentation nodes
                 if (src.wasBeginOfLine()) {
+                    boolean doComments = preserveSpaces;
+                    
                     if (src.matchMarker(BEGIN_DOC_MARKER, false, false)) {
                         if (doComments) {
                             tokenBuffer.setLength(0);
@@ -946,7 +1253,9 @@ public class Lexer {
                             }
 
                             if (doComments) {
-                                parserSupport.getResult().addComment(new CommentNode(getPosition(), tokenBuffer.toString()));
+                                yaccValue = new Token("here-doc", getPosition());
+                                return Tokens.tDOCUMENTATION;
+//                                parserSupport.getResult().addComment(new CommentNode(getPosition(), tokenBuffer.toString()));
                             }
                             continue;
                         }
@@ -1049,7 +1358,7 @@ public class Lexer {
                 return at();
             case '_':
                 if (src.wasBeginOfLine() && src.matchMarker(END_MARKER, false, true)) {
-                	parserSupport.getResult().setEndOffset(src.getOffset());
+                	if (parserSupport != null) parserSupport.getResult().setEndOffset(src.getOffset());
                     return EOF;
                 }
                 return identifier(c, commandState);
@@ -1061,8 +1370,9 @@ public class Lexer {
 
     private int identifierToken(LexState last_state, int result, String value) {
 
+        // FIXME: Parsersupport should always be hooked up.  No need for null check
         if (result == Tokens.tIDENTIFIER && last_state != LexState.EXPR_DOT &&
-                parserSupport.getCurrentScope().isDefined(value) >= 0) {
+                parserSupport != null && parserSupport.getCurrentScope().isDefined(value) >= 0) {
             lex_state = LexState.EXPR_END;
         }
 
@@ -1447,6 +1757,9 @@ public class Lexer {
         tokenBuffer.setLength(0);
         int first = c;
 
+        // Need to undo newline status after reading too far
+        boolean wasNewline = src.wasBeginOfLine();
+
         c = getIdentifier(c);
         boolean lastBangOrPredicate = false;
 
@@ -1462,6 +1775,8 @@ public class Lexer {
             src.unread(c);
         }
         
+        src.setIsANewLine(wasNewline);
+
         int result = 0;
 
         LexState last_state = lex_state;

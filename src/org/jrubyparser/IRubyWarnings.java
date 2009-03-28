@@ -79,7 +79,8 @@ public interface IRubyWarnings {
         TOO_MANY_ARGUMENTS("TOO_MANY_ARGUMENTS"),
         UNDEFINING_BAD("UNDEFINING_BAD"),
         USELESS_EXPRESSION("USELESS_EXPRESSION"),
-        VOID_VALUE_EXPRESSION("VOID_VALUE_EXPRESSION");
+        VOID_VALUE_EXPRESSION("VOID_VALUE_EXPRESSION"),
+        SYNTAX_ERROR("SYNTAX_ERROR");
         
         private final String id;
         

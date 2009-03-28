@@ -29,4 +29,44 @@ package org.jrubyparser.lexer;
 
 public abstract class StrTerm {
     public abstract int parseString(Lexer lexer, LexerSource src) throws java.io.IOException;
+
+    /** Tell this string term to return separate tokens for embedded ruby code (#$foo, #@foo, #{foo}) */
+    public abstract void splitEmbeddedTokens();
+
+    /**
+     * Report whether this string should be substituting things like \n into newlines (double
+     * quoting rules).
+     * E.g. are we dealing with a "" string or a '' string (or their alternate representations)
+     */
+    public abstract boolean isSubstituting();
+
+    // When StringTerm processes a string with an embedded code fragment (or variable),
+    // such as #{thiscode()}, it splits the string up at the beginning of the boundary
+    // and returns Tokens.tSTRING_DBEG or Tokens.tSTRING_DVAR. However, it doesn't
+    // split the string up where the embedded code ends, it just processes to the end.
+    // For my lexing purposes that's not good enough; I want to know where the embedded
+    // fragment ends (so I can lex that String as real Ruby code rather than just
+    // a String literal).
+    // However,
+    /** Default; ignore embedded fragments */
+    final static int IGNORE_EMBEDDED = 0;
+    /** Flag set in embeddedCode when we are processing an embedded code expression: #{foo} */
+    final static int LOOKING_FOR_EMBEDDED = 1;
+    /** Flag set in embeddedCode when we are processing an embedded code expression: #{foo} */
+    final static int EMBEDDED_DEXPR = 2;
+    /** Flag set in embeddedCode when we are processing an embedded variable: #@foo */
+    final static int EMBEDDED_DVAR = 3;
+    /** Flag set while we're processing embedded Ruby expressions. It will be 0 when we are not,
+     * or otherwise set to the the relevant embedded type (EMBEDDED_DVAR or EMBEDDED_DEXPR) */
+    protected int processingEmbedded;
+    /**
+     * Record any mutable state from this StrTerm such that it can
+     * be set back to this exact state through a call to {@link #setMutableState}
+     * later on. Necessary for incremental lexing where we may restart
+     * lexing parts of a string (since they can be split up due to
+     * Ruby embedding like "Evaluated by Ruby: #{foo}".
+     */
+    public abstract Object getMutableState();
+    /** Support for incremental lexing: set current state of the term. See {@link #getMutableState} */
+    public abstract void setMutableState(Object o);
 }

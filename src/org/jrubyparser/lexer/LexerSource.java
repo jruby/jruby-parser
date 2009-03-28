@@ -164,4 +164,9 @@ public abstract class LexerSource {
     public abstract boolean peek(int c) throws IOException;
     public abstract boolean lastWasBeginOfLine();
     public abstract boolean wasBeginOfLine();
+    public abstract int chompReadAhead();
+    public abstract boolean isANewLine();
+    // Various places where we call LexerSource.unread(), the nextCharIsOnANewline value gets inaccurate (column/line too, but I don't care about those)
+    public abstract void setIsANewLine(boolean nextCharIsOnANewLine);
+    public abstract void setOffset(int offset);
 }

@@ -153,7 +153,7 @@ public class Ruby18Parser implements RubyParser {
   kREDO kRETRY kIN kDO kDO_COND kDO_BLOCK kRETURN kYIELD kSUPER kSELF kNIL
   kTRUE kFALSE kAND kOR kNOT kIF_MOD kUNLESS_MOD kWHILE_MOD kUNTIL_MOD
   kRESCUE_MOD kALIAS kDEFINED klBEGIN klEND k__LINE__ k__FILE__ 
-  k__ENCODING__ kDO_LAMBDA 
+  k__ENCODING__ kDO_LAMBDA
 
 %token <Token> tIDENTIFIER tFID tGVAR tIVAR tCONSTANT tCVAR tLABEL tCHAR
 %type <Token> variable 
@@ -210,6 +210,7 @@ public class Ruby18Parser implements RubyParser {
 %token <Node> tNTH_REF tBACK_REF tSTRING_CONTENT tINTEGER 
 %token <FloatNode> tFLOAT
 %token <RegexpNode> tREGEXP_END
+%token <Token> tCOMMENT tWHITESPACE tDOCUMENTATION
 
 %type <Node>  singleton strings string string1 xstring regexp
 %type <Node>  string_contents xstring_contents string_content method_call
