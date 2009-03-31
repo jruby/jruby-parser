@@ -56,9 +56,6 @@ public class OpElementAsgnNode extends Node {
         
         this.receiverNode = receiverNode;
         this.argsNode = argsNode;
-        if (argsNode instanceof ArrayNode) {
-            ((ArrayNode)argsNode).setLightweight(true);
-        }
         this.valueNode = valueNode;
         this.name = operatorName;
     }

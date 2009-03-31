@@ -56,10 +56,6 @@ public class YieldNode extends Node {
         //assert argsNode != null : "argsNode is not null";
         
         this.argsNode = argsNode;
-        // If we have more than one argument, then make sure the array is not ObjectSpaced.
-        if (argsNode instanceof ArrayNode) {
-            ((ArrayNode)argsNode).setLightweight(true);
-        }
         this.expandedArguments = expandedArguments;
     }
 
@@ -81,11 +77,6 @@ public class YieldNode extends Node {
      */
     public Node getArgsNode() {
         return argsNode;
-    }
-
-    @Deprecated
-    public boolean getCheckState() {
-        return expandedArguments;
     }
 
     public boolean getExpandArguments() {

@@ -517,18 +517,6 @@ public class ParserSupport {
             warnings.warning(ID.VOID_VALUE_EXPRESSION, node.getPosition(), "void value expression");
         }
     }
-
-    private Node compactNewlines(Node head) {
-        while (head instanceof NewlineNode) {
-            Node nextNode = ((NewlineNode) head).getNextNode();
-
-            if (!(nextNode instanceof NewlineNode)) {
-                break;
-            }
-            head = nextNode;
-        }
-        return head;
-    }
     
     private boolean isExpression(Node node) {
         do {
@@ -872,6 +860,11 @@ public class ParserSupport {
     
     public Node new_fcall(Token operation, Node args, Node iter) {
         SourcePosition position = union(operation, (iter != null ? iter : args));
+
+        // If we have no arguments we will construct an empty list to avoid null checking.
+        // Notes: 1) We cannot share empty lists because of rewriting 2) Position of an empty
+        // list is undefined so we use any position just to satisfy node requirements.
+        if (args == null) args = new ListNode(operation.getPosition());
         
         return new FCallNode(position, (String) operation.getValue(), args, (IterNode) iter);
     }

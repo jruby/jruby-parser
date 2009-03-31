@@ -43,13 +43,10 @@ public class WhenNode extends Node {
 
     public WhenNode(SourcePosition position, Node expressionNodes, Node bodyNode, Node nextCase) {
         super(position);
-        this.expressionNodes = expressionNodes;
-        if (expressionNodes instanceof ArrayNode) {
-            ((ArrayNode)expressionNodes).setLightweight(true);
-        }
 
         assert bodyNode != null : "bodyNode is not null";
-        
+
+        this.expressionNodes = expressionNodes;
         this.bodyNode = bodyNode;
         this.nextCase = nextCase;
     }

@@ -46,7 +46,10 @@ public class FCallNode extends Node implements INameNode, IArgumentNode, BlockAc
     
     public FCallNode(SourcePosition position, String name, Node argsNode, Node iterNode) {
         super(position);
-        setArgsNode(argsNode);
+
+        assert argsNode != null : "argsNode is not null";
+        
+        this.argsNode = argsNode;
         this.iterNode = iterNode;
         this.name = name;
     }
@@ -85,16 +88,12 @@ public class FCallNode extends Node implements INameNode, IArgumentNode, BlockAc
     }
     
     /**
-     * Set the argsNode.  This is for re-writer and general interpretation.
+     * Set the argsNode.
      * 
      * @param argsNode set the arguments for this node.
      */
     public Node setArgsNode(Node argsNode) {
         this.argsNode = argsNode;
-        // If we have more than one arg, make sure the array created to contain them is not ObjectSpaced
-        if (argsNode instanceof ArrayNode) {
-            ((ArrayNode)argsNode).setLightweight(true);
-        }
         
         return argsNode;
     }

@@ -51,9 +51,10 @@ public class CallNode extends Node implements INameNode, IArgumentNode, BlockAcc
         super(position);
         
         assert receiverNode != null : "receiverNode is not null";
+        assert argsNode != null : "argsNode is not null";
         
         this.receiverNode = receiverNode;
-        setArgsNode(argsNode);
+        this.argsNode = argsNode;
         this.iterNode = iterNode;
         this.name = name;
     }
@@ -90,16 +91,12 @@ public class CallNode extends Node implements INameNode, IArgumentNode, BlockAcc
     }
     
     /**
-     * Set the argsNode.  This is for re-writer and not general interpretation.
+     * Set the argsNode.
      * 
      * @param argsNode set the arguments for this node.
      */
     public Node setArgsNode(Node argsNode) {
         this.argsNode = argsNode;
-        // If we have more than one arg, make sure the array created to contain them is not ObjectSpaced
-        if (argsNode instanceof ArrayNode) {
-            ((ArrayNode)argsNode).setLightweight(true);
-        }
         
         return argsNode;
     }

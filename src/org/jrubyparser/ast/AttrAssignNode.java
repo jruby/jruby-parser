@@ -37,22 +37,22 @@ import org.jrubyparser.SourcePosition;
  * Node that represents an assignment of either an array element or attribute.
  */
 public class AttrAssignNode extends Node implements INameNode, IArgumentNode {
-    protected Node receiverNode;
+    protected Node receiver;
     private String name;
-    private Node argsNode;
+    private Node arg;
 
-    public AttrAssignNode(SourcePosition position, Node receiverNode, String name, Node argsNode) {
+    public AttrAssignNode(SourcePosition position, Node receiver, String name, Node arg) {
         super(position);
         
-        assert receiverNode != null : "receiverNode is not null";
+        assert receiver != null : "receiverNode is not null";
         // TODO: At least ParserSupport.attrset passes argsNode as null.  ImplicitNil is wrong magic for 
         // setupArgs since it will IRubyObject[] { nil }.  So we need to figure out a nice fast
         // null pattern for setupArgs.
         // assert argsNode != null : "receiverNode is not null";
         
-        this.receiverNode = receiverNode;
+        this.receiver = receiver;
         this.name = name;
-        this.argsNode = argsNode;
+        this.arg = arg;
     }
 
     public NodeType getNodeType() {
@@ -82,7 +82,7 @@ public class AttrAssignNode extends Node implements INameNode, IArgumentNode {
      * @return receiverNode
      */
     public Node getReceiverNode() {
-        return receiverNode;
+        return receiver;
     }
     
     /**
@@ -91,7 +91,7 @@ public class AttrAssignNode extends Node implements INameNode, IArgumentNode {
      * @return argsNode
      */
     public Node getArgsNode() {
-        return argsNode;
+        return arg;
     }
     
     
@@ -101,13 +101,13 @@ public class AttrAssignNode extends Node implements INameNode, IArgumentNode {
      * @param argsNode set the arguments for this node.
      */
     public Node setArgsNode(Node argsNode) {
-        this.argsNode = argsNode;
+        this.arg = argsNode;
         
         return this;
     }
 
 
     public List<Node> childNodes() {
-        return Node.createList(receiverNode, argsNode);
+        return Node.createList(receiver, arg);
     }
 }

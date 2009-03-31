@@ -75,4 +75,37 @@ Array.new
     defn.receiver_node.should have_name_and_position("Array", 0, 0, 0, 5)
     defn.args_node.size.should == 0
   end
+
+  it "should parse a no-arg object.method call with parens" do
+    ast = parse(<<-EOF)
+Array.new()
+    EOF
+
+    defn = ast.find_node(:call)
+    defn.should have_name_and_position("new", 0, 0, 0, 11)
+    defn.receiver_node.should have_name_and_position("Array", 0, 0, 0, 5)
+    defn.args_node.size.should == 0
+  end
+
+  it "should parse a no-arg object.method call without parens" do
+    ast = parse(<<-EOF)
+Array.new 1
+    EOF
+
+    defn = ast.find_node(:call)
+    defn.should have_name_and_position("new", 0, 0, 0, 11)
+    defn.receiver_node.should have_name_and_position("Array", 0, 0, 0, 5)
+    defn.args_node.size.should == 1
+  end
+
+  it "should parse a no-arg object.method call with parens" do
+    ast = parse(<<-EOF)
+Array.new(1)
+    EOF
+
+    defn = ast.find_node(:call)
+    defn.should have_name_and_position("new", 0, 0, 0, 12)
+    defn.receiver_node.should have_name_and_position("Array", 0, 0, 0, 5)
+    defn.args_node.size.should == 1
+  end
 end
