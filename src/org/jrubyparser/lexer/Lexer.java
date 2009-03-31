@@ -767,7 +767,7 @@ public class Lexer {
             markerValue = new StringBuilder();
             term = c;
             while ((c = src.read()) != EOF && c != term) {
-                markerValue.append(c);
+                markerValue.append((char) c);
             }
             if (c == EOF) {
                 throw new SyntaxException(PID.STRING_MARKER_MISSING, getPosition(), "unterminated here document identifier");
@@ -784,7 +784,7 @@ public class Lexer {
             term = '"';
             func |= str_dquote;
             do {
-                markerValue.append(c);
+                markerValue.append((char) c);
             } while ((c = src.read()) != EOF && isIdentifierChar(c));
 
             src.unread(c);
@@ -1075,15 +1075,10 @@ public class Lexer {
         // On new lines, possibly resume heredoc processing (see docs for newlineTerms for more)
         if (heredocContext != null) {
             if (heredocContext.isLookingForEnd()) {
-                HeredocTerm ht = heredocContext.getTerm();
-                lex_strterm = ht;
+                lex_strterm = heredocContext.getTerm();
             } else if (src.isANewLine()) {
-                // Can be triggered, disabling for now to cause
-                // less severe symptoms
-                //assert lex_strterm == null;
+                lex_strterm = heredocContext.getTerm();
 
-                HeredocTerm ht = heredocContext.getTerm();
-                lex_strterm = ht;
                 heredocContext = heredocContext.pop();
             }
         }

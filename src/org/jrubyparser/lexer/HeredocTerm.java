@@ -55,7 +55,8 @@ public class HeredocTerm extends StrTerm {
     // Expand variables, Indentation of final marker
     private final int flags;
 
-    // Portion of line right after beginning marker
+    // Portion of line right after beginning marker.  In preserve spaces mode this is not used
+    // since it parses in order (so it has no need to put lastLine back).
     private final String lastLine;
     
     public HeredocTerm(String marker, int func, String lastLine) {
@@ -81,11 +82,7 @@ public class HeredocTerm extends StrTerm {
 
         // Found end marker for this heredoc
         if (src.lastWasBeginOfLine() && src.matchMarker(marker, indent, true)) {
-            // Put back lastLine for any elements past start of heredoc marker
-            //src.unreadMany(lastLine);
-            if (lastLine != null) {
-                src.unreadMany(lastLine);
-            }
+            unreadLastLine(src); // push back last line to lex stuff after initial heredoc marker
             
             lexer.yaccValue = new Token(marker, lexer.getPosition());
             return Tokens.tSTRING_END;
@@ -125,11 +122,9 @@ public class HeredocTerm extends StrTerm {
 
             src.unread(c);
 
-            // MRI has extra pointer which makes our code look a little bit
-            // more strange in
-            // comparison
+            // MRI has extra pointer which makes our code look a little bit more strange 
+            // in comparison.
             do {
-                //if ((c = new StringTerm(flags, '\0', '\n').parseStringIntoBuffer(lexer, src, str)) == Lexer.EOF) {
                 StringTerm stringTerm = new StringTerm(flags, '\0', '\n');
                 stringTerm.processingEmbedded = processingEmbedded;
                 if ((c = stringTerm.parseStringIntoBuffer(lexer, src, str)) == Lexer.EOF) {
@@ -152,18 +147,14 @@ public class HeredocTerm extends StrTerm {
             } while (!src.matchMarker(marker, indent, true));
         }
 
-        //src.unreadMany(lastLine);
         // DVARs last only for a single string token so shut if off here.
-        if (processingEmbedded == EMBEDDED_DVAR) {
-            processingEmbedded = LOOKING_FOR_EMBEDDED;
-        }
+        if (processingEmbedded == EMBEDDED_DVAR) processingEmbedded = LOOKING_FOR_EMBEDDED;
 
-        if (lastLine != null)
-            src.unreadMany(lastLine);
+        unreadLastLine(src); // push back last line to lex stuff after initial heredoc marker
+
         // When handling heredocs in syntax highlighting mode, process the end marker separately
         if (lastLine == null) {
             src.unreadMany(marker+"\n"); // \r?
-            //done = true;
         } else {
             lexer.setStrTerm(new StringTerm(-1, '\0', '\0'));
         }
@@ -210,6 +201,10 @@ public class HeredocTerm extends StrTerm {
         if (processingEmbedded == IGNORE_EMBEDDED) processingEmbedded = LOOKING_FOR_EMBEDDED;
     }
 
+    private void unreadLastLine(LexerSource src) {
+        if (lastLine != null) src.unreadMany(lastLine);
+    }
+
     private class MutableTermState {
         private MutableTermState(int embeddedCode) {
             this.processingEmbedded = embeddedCode;
@@ -226,10 +221,7 @@ public class HeredocTerm extends StrTerm {
 
         @Override
         public int hashCode() {
-            int hash = 7;
-
-            hash = 83 * hash + this.processingEmbedded;
-            return hash;
+            return 83 * 7 + this.processingEmbedded;
         }
 
         @Override
@@ -242,24 +234,18 @@ public class HeredocTerm extends StrTerm {
 
     // Equals - primarily for unit testing (incremental lexing tests
     // where we do full-file-lexing and compare state to incremental lexing)
+    @Override
     public boolean equals(Object obj) {
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
+        if (obj == null || getClass() != obj.getClass()) return false;
+
         final HeredocTerm other = (HeredocTerm) obj;
 
-        if (this.marker != other.marker &&
-            (this.marker == null || !this.marker.equals(other.marker)))
-            return false;
-        if (this.flags != other.flags)
-            return false;
-        if (this.lastLine != other.lastLine &&
-            (this.lastLine == null || !this.lastLine.equals(other.lastLine)))
-            return false;
-        return true;
+        return (marker == other.marker || (marker != null && marker.equals(other.marker)) &&
+               this.flags == other.flags &&
+               (lastLine == other.lastLine || (lastLine != null && lastLine.equals(other.lastLine))));
     }
 
+    @Override
     public int hashCode() {
         int hash = 7;
 
@@ -269,6 +255,7 @@ public class HeredocTerm extends StrTerm {
         return hash;
     }
 
+    @Override
     public String toString() {
         return "HeredocTerm[" + flags + "," + marker + "," + lastLine + "," + processingEmbedded + "]";
     }
