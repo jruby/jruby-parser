@@ -167,7 +167,7 @@ public class ReaderLexerSource extends LexerSource {
         StringBuilder list = new StringBuilder(80);
 
         for (int c = read(); c != '\n' && c != Lexer.EOF; c = read()) {
-            list.append(c);
+            list.append((char) c);
         }
         
         return list.toString();

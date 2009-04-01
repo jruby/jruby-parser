@@ -52,4 +52,26 @@ hello
     str = ast.find_node(:str)
     str.should have_position(0, 3, 0, 20)
   end
+
+  it "should parse a heredoc in double quotes with minus(-) and marker not at beginning of line" do
+    ast = parse(<<-EOF)
+<<-"end;"
+hello
+ end;
+    EOF
+
+    str = ast.find_node(:str)
+    str.should have_position(0, 3, 0, 22)
+  end
+
+  it "should parse a heredoc in method call with other arguments" do
+    ast = parse(<<-EOF)
+module_eval <<-"end;", "file", 123
+ end;
+    EOF
+
+    str = ast.find_node(:str)
+    # this fails; the end offset doesn't get computed correctly
+    str.should have_position(0, 3, 12, 41)
+  end
 end
