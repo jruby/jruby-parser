@@ -208,7 +208,7 @@ public class ReaderLexerSource extends LexerSource {
                 unread(c);
                 break;
             }
-            buffer.append(c);
+            buffer.append((char) c);
         }
     }
     
@@ -216,7 +216,7 @@ public class ReaderLexerSource extends LexerSource {
         int c;
         for (int i = 0; i < length; i++) {
             c = read();
-            buffer.append(c);
+            buffer.append((char) c);
             if (match.charAt(i) != c) {
                 unreadMany(buffer);
                 return false;
@@ -235,7 +235,7 @@ public class ReaderLexerSource extends LexerSource {
         if (c == Lexer.EOF || c == '\n') {
             return true;
         }
-        buffer.append(c);
+        buffer.append((char) c);
         unreadMany(buffer);
 
         return false;
@@ -268,7 +268,7 @@ public class ReaderLexerSource extends LexerSource {
                     i--;
                     break;
                 }
-                buffer.append(c);
+                buffer.append((char) c);
             }
             for (; i >= 0; i++) {
                 unread(buffer.charAt(i));
@@ -286,7 +286,7 @@ public class ReaderLexerSource extends LexerSource {
         int c;
         
         for (c = read(); c != marker && c != Lexer.EOF; c = read()) {
-            list.append(c);
+            list.append((char) c);
         }
         
         if (c == Lexer.EOF) return null;

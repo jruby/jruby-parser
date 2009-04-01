@@ -258,7 +258,7 @@ public class StringTerm extends StrTerm {
                 if ((c == '\n' || c != end) && c != '\\') buffer.append('\\');
             } 
 
-            buffer.append(c);
+            buffer.append((char) c);
         }
         
         return c;
@@ -305,7 +305,7 @@ public class StringTerm extends StrTerm {
                     break;
 
                 case '\\':
-                    if (escape) buffer.append(c);
+                    if (escape) buffer.append((char) c);
                     break;
 
                 default:
@@ -327,7 +327,7 @@ public class StringTerm extends StrTerm {
                 src.unread(c);
                 break;
             }
-            buffer.append(c);
+            buffer.append((char) c);
         }
         
         return c;
@@ -365,7 +365,7 @@ public class StringTerm extends StrTerm {
                     break;
 
                 case '\\':
-                    if (escape) buffer.append(c);
+                    if (escape) buffer.append((char) c);
                     break;
 
                 default:
@@ -387,7 +387,7 @@ public class StringTerm extends StrTerm {
                 src.unread(c);
                 break;
             }
-            buffer.append(c);
+            buffer.append((char) c);
         }
 
         return c;
@@ -408,7 +408,7 @@ public class StringTerm extends StrTerm {
         case Lexer.EOF:
             throw new SyntaxException(PID.INVALID_ESCAPE_SYNTAX, src.getPosition(), "Invalid escape character syntax");
         default:
-            buffer.append(c);
+            buffer.append((char) c);
         }
     }
 
@@ -427,7 +427,7 @@ public class StringTerm extends StrTerm {
         case '6':
         case '7':
             buffer.append('\\');
-            buffer.append(c);
+            buffer.append((char) c);
             for (int i = 0; i < 2; i++) {
                 c = src.read();
                 if (c == Lexer.EOF) {
@@ -437,20 +437,20 @@ public class StringTerm extends StrTerm {
                     src.unread(c);
                     break;
                 }
-                buffer.append(c);
+                buffer.append((char) c);
             }
             break;
         case 'x': /* hex constant */
             buffer.append('\\');
-            buffer.append(c);
+            buffer.append((char) c);
             c = src.read();
             if (!Lexer.isHexChar(c)) {
                 throw new SyntaxException(PID.INVALID_ESCAPE_SYNTAX, src.getPosition(), "Invalid escape character syntax");
             }
-            buffer.append(c);
+            buffer.append((char) c);
             c = src.read();
             if (Lexer.isHexChar(c)) {
-                buffer.append(c);
+                buffer.append((char) c);
             } else {
                 src.unread(c);
             }
@@ -479,7 +479,7 @@ public class StringTerm extends StrTerm {
             if (c != '\\' || c != end) {
                 buffer.append('\\');
             }
-            buffer.append(c);
+            buffer.append((char) c);
         }
     }
 
