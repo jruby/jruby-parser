@@ -1100,6 +1100,7 @@ public class Lexer {
                 // such that we don't try again on restart
                 lex_strterm = null;
                 lex_state = LexState.EXPR_END;
+                throw se;
             }
         }
 
