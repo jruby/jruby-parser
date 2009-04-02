@@ -58,9 +58,6 @@ public abstract class LexerSource {
     
     // How many bytes into the source are we?
     protected int offset = 0;
-    
-    // For 'list' and only populated if list is not null.
-    private StringBuilder lineBuffer;
 
     /**
      * Create our food-source for the lexer
@@ -72,7 +69,6 @@ public abstract class LexerSource {
         this.sourceName = sourceName;
         lastPosition = new SourcePosition("", line, line);
         this.line = line;
-        lineBuffer = new StringBuilder();
     }
 
     /**

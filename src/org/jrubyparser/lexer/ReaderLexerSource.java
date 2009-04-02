@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.Reader;
 
 import org.jrubyparser.parser.ParserConfiguration;
+import org.jrubyparser.util.CStringBuilder;
 
 public class ReaderLexerSource extends LexerSource {
     private static final int INITIAL_PUSHBACK_SIZE = 100;
@@ -164,7 +165,7 @@ public class ReaderLexerSource extends LexerSource {
 
     @Override
     public String readLineBytes() throws IOException {
-        StringBuilder list = new StringBuilder(80);
+        CStringBuilder list = new CStringBuilder(80);
 
         for (int c = read(); c != '\n' && c != Lexer.EOF; c = read()) {
             list.append((char) c);
@@ -190,7 +191,7 @@ public class ReaderLexerSource extends LexerSource {
     @Override
     public boolean matchMarker(String match, boolean indent, boolean checkNewline) throws IOException {
         int length = match.length();
-        StringBuilder buffer = new StringBuilder(length + 1);
+        CStringBuilder buffer = new CStringBuilder(length + 1);
         
         if (indent) {
             indentLoop(buffer);
@@ -201,7 +202,7 @@ public class ReaderLexerSource extends LexerSource {
         return finishMarker(checkNewline, buffer); 
     }
 
-    private void indentLoop(StringBuilder buffer) throws IOException {
+    private void indentLoop(CStringBuilder buffer) throws IOException {
         int c;
         while ((c = read()) != Lexer.EOF) {
             if (!Character.isWhitespace(c) || c == '\n') {
@@ -212,7 +213,7 @@ public class ReaderLexerSource extends LexerSource {
         }
     }
     
-    private boolean matches(String match, StringBuilder buffer, int length) throws IOException {
+    private boolean matches(String match, CStringBuilder buffer, int length) throws IOException {
         int c;
         for (int i = 0; i < length; i++) {
             c = read();
@@ -225,7 +226,7 @@ public class ReaderLexerSource extends LexerSource {
         return true;
     }
 
-    private boolean finishMarker(boolean checkNewline, StringBuilder buffer) throws IOException {
+    private boolean finishMarker(boolean checkNewline, CStringBuilder buffer) throws IOException {
 
         if (!checkNewline) {
             return true;
@@ -257,7 +258,7 @@ public class ReaderLexerSource extends LexerSource {
     @Override
     public String toString() {
         try {
-            StringBuilder buffer = new StringBuilder(20);
+            CStringBuilder buffer = new CStringBuilder(20);
             buffer.append(twoAgo);
             buffer.append(oneAgo);
             buffer.append(new byte[] {'-', '>'});
@@ -282,7 +283,7 @@ public class ReaderLexerSource extends LexerSource {
 
     @Override
     public String readUntil(char marker) throws IOException {
-        StringBuilder list = new StringBuilder(20);
+        CStringBuilder list = new CStringBuilder(20);
         int c;
         
         for (c = read(); c != marker && c != Lexer.EOF; c = read()) {

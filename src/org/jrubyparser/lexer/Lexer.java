@@ -53,6 +53,7 @@ import org.jrubyparser.SourcePosition;
 import org.jrubyparser.lexer.SyntaxException.PID;
 import org.jrubyparser.parser.ParserSupport;
 import org.jrubyparser.parser.Tokens;
+import org.jrubyparser.util.CStringBuilder;
 
 
 /**
@@ -319,7 +320,7 @@ public class Lexer {
 
         @Override
         public String toString() {
-            StringBuilder buffer = new StringBuilder("HeredocContext(count=");
+            CStringBuilder buffer = new CStringBuilder("HeredocContext(count=");
             buffer.append(Integer.toString(heredocTerms.length));
             buffer.append("):");
             for (int i = 0; i < heredocTerms.length; i++) {
@@ -354,7 +355,7 @@ public class Lexer {
 
     // Tempory buffer to build up a potential token.  Consumer takes responsibility to reset 
     // this before use.
-    private StringBuilder tokenBuffer = new StringBuilder(60);
+    private CStringBuilder tokenBuffer = new CStringBuilder(60);
 
     private StackState conditionState = new StackState();
     private StackState cmdArgumentState = new StackState();
@@ -509,7 +510,7 @@ public class Lexer {
         return token;
     }
 
-    public StringBuilder getTokenBuffer() {
+    public CStringBuilder getTokenBuffer() {
         return tokenBuffer;
     }
     
@@ -754,7 +755,7 @@ public class Lexer {
             func = STR_FUNC_INDENT;
         }
         
-        StringBuilder markerValue;
+        CStringBuilder markerValue;
         if (c == '\'' || c == '"' || c == '`') {
             if (c == '\'') {
                 func |= str_squote;
@@ -764,10 +765,10 @@ public class Lexer {
                 func |= str_xquote; 
             }
 
-            markerValue = new StringBuilder();
+            markerValue = new CStringBuilder();
             term = c;
             while ((c = src.read()) != EOF && c != term) {
-                markerValue.append((char) c);
+                markerValue.append(c);
             }
             if (c == EOF) {
                 throw new SyntaxException(PID.STRING_MARKER_MISSING, getPosition(), "unterminated here document identifier");
@@ -780,11 +781,11 @@ public class Lexer {
                 }
                 return 0;
             }
-            markerValue = new StringBuilder();
+            markerValue = new CStringBuilder();
             term = '"';
             func |= str_dquote;
             do {
-                markerValue.append((char) c);
+                markerValue.append(c);
             } while ((c = src.read()) != EOF && isIdentifierChar(c));
 
             src.unread(c);
@@ -888,13 +889,13 @@ public class Lexer {
     private int readCommentLong(int c) throws IOException {
         SourcePosition startPosition = src.getPosition();
         tokenBuffer.setLength(0);
-        tokenBuffer.append((char) c);
+        tokenBuffer.append(c);
 
         // FIXME: Consider making a better LexerSource.readLine
         while ((c = src.read()) != '\n') {
             if (c == EOF) break;
 
-            tokenBuffer.append((char) c);
+            tokenBuffer.append(c);
         }
         src.unread(c);
 
@@ -1242,13 +1243,13 @@ public class Lexer {
                             src.unread(c);
                             for (;;) {
                                 c = src.read();
-                                if (doComments) tokenBuffer.append((char) c);
+                                if (doComments) tokenBuffer.append(c);
 
                                 // If a line is followed by a blank line put
                                 // it back.
                                 while (c == '\n') {
                                     c = src.read();
-                                    if (doComments) tokenBuffer.append((char) c);
+                                    if (doComments) tokenBuffer.append(c);
                                 }
                                 if (c == EOF) {
                                     throw new SyntaxException(PID.STRING_HITS_EOF, getPosition(), "embedded document meets end of file");
@@ -1393,7 +1394,7 @@ public class Lexer {
 
     private int getIdentifier(int c) throws IOException {
         do {
-            tokenBuffer.append((char) c);
+            tokenBuffer.append(c);
             /* no special multibyte character handling is needed in Java
              * if (ismbchar(c)) {
                 int i, len = mbclen(c)-1;
@@ -1637,10 +1638,10 @@ public class Lexer {
         case '-':
             tokenBuffer.setLength(0);
             tokenBuffer.append('$');
-            tokenBuffer.append((char) c);
+            tokenBuffer.append(c);
             c = src.read();
             if (isIdentifierChar(c)) {
-                tokenBuffer.append((char) c);
+                tokenBuffer.append(c);
             } else {
                 src.unread(c);
             }
@@ -1666,7 +1667,7 @@ public class Lexer {
             tokenBuffer.setLength(0);
             tokenBuffer.append('$');
             do {
-                tokenBuffer.append((char) c);
+                tokenBuffer.append(c);
                 c = src.read();
             } while (Character.isDigit(c));
             src.unread(c);
@@ -1778,7 +1779,7 @@ public class Lexer {
         if (c == '!' || c == '?') {
             if (!src.peek('=')) {
                 lastBangOrPredicate = true;
-                tokenBuffer.append((char) c);
+                tokenBuffer.append(c);
             } else {
                 src.unread(c);
             }
@@ -1801,7 +1802,7 @@ public class Lexer {
                     if (c2 != '~' && c2 != '>' &&
                             (c2 != '=' || (c2 == '\n' && src.peek('>')))) {
                         result = Tokens.tIDENTIFIER;
-                        tokenBuffer.append((char) c);
+                        tokenBuffer.append(c);
                         src.unread(c2);
                     } else { 
                         src.unread(c2);
@@ -2321,7 +2322,7 @@ public class Lexer {
         tokenBuffer.setLength(0);
 
         if (c == '-') {
-        	tokenBuffer.append((char) c);
+        	tokenBuffer.append(c);
             c = src.read();
         } else if (c == '+') {
         	// We don't append '+' since Java number parser gets confused
@@ -2344,7 +2345,7 @@ public class Lexer {
                                 nondigit = c;
                             } else if (isHexChar(c)) {
                                 nondigit = '\0';
-                                tokenBuffer.append((char) c);
+                                tokenBuffer.append(c);
                             } else {
                                 break;
                             }
@@ -2369,7 +2370,7 @@ public class Lexer {
 								nondigit = c;
                             } else if (c == '0' || c == '1') {
                                 nondigit = '\0';
-                                tokenBuffer.append((char) c);
+                                tokenBuffer.append(c);
                             } else {
                                 break;
                             }
@@ -2394,7 +2395,7 @@ public class Lexer {
 								nondigit = c;
                             } else if (Character.isDigit(c)) {
                                 nondigit = '\0';
-                                tokenBuffer.append((char) c);
+                                tokenBuffer.append(c);
                             } else {
                                 break;
                             }
@@ -2420,7 +2421,7 @@ public class Lexer {
 							nondigit = c;
                         } else if (c >= '0' && c <= '7') {
                             nondigit = '\0';
-                            tokenBuffer.append((char) c);
+                            tokenBuffer.append(c);
                         } else {
                             break;
                         }
@@ -2466,7 +2467,7 @@ public class Lexer {
                 case '8' :
                 case '9' :
                     nondigit = '\0';
-                    tokenBuffer.append((char) c);
+                    tokenBuffer.append(c);
                     break;
                 case '.' :
                     if (nondigit != '\0') {
@@ -2489,7 +2490,7 @@ public class Lexer {
                             }
                         } else {
                             tokenBuffer.append('.');
-                            tokenBuffer.append((char) c2);
+                            tokenBuffer.append(c2);
                             seen_point = true;
                             nondigit = '\0';
                         }
@@ -2503,12 +2504,12 @@ public class Lexer {
                         src.unread(c);
                         return getNumberToken(tokenBuffer.toString(), true, nondigit);
                     } else {
-                        tokenBuffer.append((char) c);
+                        tokenBuffer.append(c);
                         seen_e = true;
                         nondigit = c;
                         c = src.read();
                         if (c == '-' || c == '+') {
-                            tokenBuffer.append((char) c);
+                            tokenBuffer.append(c);
                             nondigit = c;
                         } else {
                             src.unread(c);

@@ -33,6 +33,7 @@ import org.jrubyparser.ast.StrNode;
 import org.jrubyparser.lexer.SyntaxException.PID;
 import org.jrubyparser.parser.ReOptions;
 import org.jrubyparser.parser.Tokens;
+import org.jrubyparser.util.CStringBuilder;
 
 public class StringTerm extends StrTerm {
     // Expand variables, Indentation of final marker
@@ -111,24 +112,17 @@ public class StringTerm extends StrTerm {
 
         // Single-quote fast path
         if (begin == '\0' && flags == 0) {
-            StringBuilder buffer = new StringBuilder();
+            CStringBuilder buffer = new CStringBuilder();
             src.unread(c);
             if (parseSimpleStringIntoBuffer(src, buffer) == Lexer.EOF) {
                 throw new SyntaxException(PID.STRING_HITS_EOF, src.getPosition(), "unterminated string meets end of file");
             }
-            
-            /*
-            StringBuilder buffer;
-            src.unread(c);
-            if ((buffer = src.readUntil(end)) == null) {
-                throw new SyntaxException(src.getPosition(), "unterminated string meets end of file");
-            }
-            */
+
             lexer.setValue(new StrNode(lexer.getPosition(), buffer.toString()));
             return Tokens.tSTRING_CONTENT;
         }
         
-        StringBuilder buffer = new StringBuilder();
+        CStringBuilder buffer = new CStringBuilder();
 
         if ((flags & Lexer.STR_FUNC_EXPAND) != 0 && c == '#') {
             c = src.read();
@@ -200,7 +194,7 @@ public class StringTerm extends StrTerm {
         char kcode = 0;
         int options = 0;
         int c;
-        StringBuilder unknownFlags = new StringBuilder(10);
+        CStringBuilder unknownFlags = new CStringBuilder(10);
 
         for (c = src.read(); c != Lexer.EOF
                 && Character.isLetter(c); c = src.read()) {
@@ -233,7 +227,7 @@ public class StringTerm extends StrTerm {
                 options |= 256; // Regexp engine 'java'
                 break;
             default:
-                unknownFlags.append((char) c);
+                unknownFlags.append(c);
                 break;
             }
         }
@@ -246,7 +240,7 @@ public class StringTerm extends StrTerm {
         return options | kcode;
     }
     
-    public int parseSimpleStringIntoBuffer(LexerSource src, StringBuilder buffer) throws java.io.IOException {
+    public int parseSimpleStringIntoBuffer(LexerSource src, CStringBuilder buffer) throws java.io.IOException {
         int c;
 
         while ((c = src.read()) != Lexer.EOF) {
@@ -264,7 +258,7 @@ public class StringTerm extends StrTerm {
         return c;
     }
     
-    public int parseStringIntoBuffer(Lexer lexer, LexerSource src, StringBuilder buffer) throws java.io.IOException {
+    public int parseStringIntoBuffer(Lexer lexer, LexerSource src, CStringBuilder buffer) throws java.io.IOException {
         boolean qwords = (flags & Lexer.STR_FUNC_QWORDS) != 0;
         boolean expand = (flags & Lexer.STR_FUNC_EXPAND) != 0;
         boolean escape = (flags & Lexer.STR_FUNC_ESCAPE) != 0;
@@ -333,7 +327,7 @@ public class StringTerm extends StrTerm {
         return c;
     }
 
-    public int parseDExprIntoBuffer(Lexer lexer, LexerSource src, StringBuilder buffer) throws java.io.IOException {
+    public int parseDExprIntoBuffer(Lexer lexer, LexerSource src, CStringBuilder buffer) throws java.io.IOException {
         boolean qwords = (flags & Lexer.STR_FUNC_QWORDS) != 0;
         boolean expand = (flags & Lexer.STR_FUNC_EXPAND) != 0;
         boolean escape = (flags & Lexer.STR_FUNC_ESCAPE) != 0;
@@ -398,7 +392,7 @@ public class StringTerm extends StrTerm {
     }
 
     // Was a goto in original ruby lexer
-    private void escaped(LexerSource src, StringBuilder buffer) throws java.io.IOException {
+    private void escaped(LexerSource src, CStringBuilder buffer) throws java.io.IOException {
         int c;
 
         switch (c = src.read()) {
@@ -412,7 +406,7 @@ public class StringTerm extends StrTerm {
         }
     }
 
-    private void parseEscapeIntoBuffer(LexerSource src, StringBuilder buffer) throws java.io.IOException {
+    private void parseEscapeIntoBuffer(LexerSource src, CStringBuilder buffer) throws java.io.IOException {
         int c;
 
         switch (c = src.read()) {
@@ -547,7 +541,7 @@ public class StringTerm extends StrTerm {
     }
 
     private static String toFuncString(int flags) {
-        StringBuilder builder = new StringBuilder();
+        CStringBuilder builder = new CStringBuilder();
         
         if ((flags & Lexer.STR_FUNC_ESCAPE) != 0) builder.append("escape|");
         if ((flags & Lexer.STR_FUNC_EXPAND) != 0) builder.append("expand|");

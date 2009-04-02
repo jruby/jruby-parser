@@ -33,6 +33,7 @@ import org.jrubyparser.SourcePosition;
 import org.jrubyparser.ast.StrNode;
 import org.jrubyparser.lexer.SyntaxException.PID;
 import org.jrubyparser.parser.Tokens;
+import org.jrubyparser.util.CStringBuilder;
 
 /**
  * A lexing unit for scanning a heredoc element.
@@ -88,7 +89,7 @@ public class HeredocTerm extends StrTerm {
             return Tokens.tSTRING_END;
         }
 
-        StringBuilder str = new StringBuilder();
+        CStringBuilder str = new CStringBuilder();
         SourcePosition position;
         
         if ((flags & Lexer.STR_FUNC_EXPAND) == 0) {
