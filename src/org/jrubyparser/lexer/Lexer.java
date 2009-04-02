@@ -1193,10 +1193,25 @@ public class Lexer {
                     }
                 }
 
-                if (c == -1) return EOF;
+                if (c == -1 && !preserveSpaces) return EOF;
 
                 src.unread(c);
                 getPosition();
+
+                if (preserveSpaces) {
+                    src.setIsANewLine(true);
+                    yaccValue = new Token("whitespace", getPosition());
+                    // Ensure that commandStart and lex_state is updated
+                    // as it otherwise would have if preserveSpaces was false
+                    if (!(lex_state == LexState.EXPR_BEG ||
+                        lex_state == LexState.EXPR_FNAME ||
+                        lex_state == LexState.EXPR_DOT ||
+                        lex_state == LexState.EXPR_CLASS)) {
+                        commandStart = true;
+                        lex_state = LexState.EXPR_BEG;
+                    }
+                    return Tokens.tWHITESPACE;
+                }
 
                 switch (lex_state) {
                 case EXPR_BEG: case EXPR_FNAME: case EXPR_DOT: case EXPR_CLASS:
