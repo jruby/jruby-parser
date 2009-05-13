@@ -176,4 +176,10 @@ end
 
     # FIXME: Need arg tests
   end
+
+  it "should parse an nil reciever" do
+   ast = parse("().foo")
+   call = ast.find_node(:call)
+   call.receiver_node.should_not be_nil 
+  end
 end

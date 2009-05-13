@@ -825,13 +825,20 @@ public class ParserSupport {
         // We need to union with rightmost existing element.
         ISourcePositionHolder holder = getRightmostHolderForCall(name, args, iter);
 
+        SourcePosition position;
+        if (receiver == null) {
+            receiver = NilImplicitNode.NIL;
+            position = holder.getPosition();
+        } else {
+            position = union(receiver, holder);
+        }
+
         // If we have no arguments we will construct an empty list to avoid null checking.
         // Notes: 1) We cannot share empty lists because of rewriting 2) Position of an empty
         // list is undefined so we use any position just to satisfy node requirements.
         if (args == null) args = new ListNode(name.getPosition());
 
-
-        return new CallNode(union(receiver, holder), receiver,(String) name.getValue(), args, (IterNode) iter);
+        return new CallNode(position, receiver,(String) name.getValue(), args, (IterNode) iter);
     }
 
     private ISourcePositionHolder getRightmostHolderForCall(Token name, Node args, Node iter) {
