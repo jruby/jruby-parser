@@ -71,7 +71,6 @@ module_eval <<-"end;", "file", 123
     EOF
 
     str = ast.find_node(:str)
-    # this fails; the end offset doesn't get computed correctly
     str.should have_position(0, 2, 12, 41)
   end
 end
