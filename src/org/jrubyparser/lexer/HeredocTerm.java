@@ -83,11 +83,8 @@ public class HeredocTerm extends StrTerm {
 
         // Found end marker for this heredoc
         if (src.lastWasBeginOfLine() && src.matchMarker(marker, indent, true)) {
-            SourcePosition position = lexer.getPosition();
-            
             unreadLastLine(src); // push back last line to lex stuff after initial heredoc marker
-            
-            lexer.yaccValue = new Token(marker, position);
+            lexer.yaccValue = new Token(marker, lexer.getPosition());
             return Tokens.tSTRING_END;
         }
 

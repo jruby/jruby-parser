@@ -821,7 +821,7 @@ public class Lexer {
         }
 
         String lastLine = src.readLineBytes();
-        lastLine.concat("\n");
+        lastLine = lastLine.concat("\n");
         lex_strterm = new HeredocTerm(markerValue.toString(), func, lastLine);
 
         if (term == '`') {
