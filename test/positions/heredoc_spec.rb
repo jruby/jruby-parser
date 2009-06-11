@@ -17,7 +17,17 @@ END
     EOF
 
     str = ast.find_node(:str)
-    str.should have_position(0, 3, 0, 16)
+    str.should have_position(0, 2, 0, 15)
+  end
+
+  it "should parse an empty heredoc with marker at beginning of line" do
+    ast = parse(<<-EOF)
+<<END
+END
+    EOF
+
+    str = ast.find_node(:str)
+    str.should have_position(0, 1, 0, 9)
   end
 
   it "should parse a heredoc with minus(-) and marker not at beginning of line" do
@@ -28,7 +38,17 @@ hello
     EOF
 
     str = ast.find_node(:str)
-    str.should have_position(0, 3, 0, 18)
+    str.should have_position(0, 2, 0, 17)
+  end
+
+  it "should parse an empty heredoc with minus(-) and marker not at beginning of line" do
+    ast = parse(<<-EOF)
+<<-END
+ END
+    EOF
+
+    str = ast.find_node(:str)
+    str.should have_position(0, 1, 0, 11)
   end
 
   it "should parse a heredoc in quotes with marker at beginning of line" do
@@ -39,7 +59,7 @@ END
     EOF
 
     str = ast.find_node(:str)
-    str.should have_position(0, 3, 0, 18)
+    str.should have_position(0, 2, 0, 17)
   end
 
   it "should parse a heredoc in quotes with minus(-) and marker not at beginning of line" do
@@ -50,7 +70,7 @@ hello
     EOF
 
     str = ast.find_node(:str)
-    str.should have_position(0, 3, 0, 20)
+    str.should have_position(0, 2, 0, 19)
   end
 
   it "should parse a heredoc in double quotes with minus(-) and marker not at beginning of line" do
@@ -61,16 +81,38 @@ hello
     EOF
 
     str = ast.find_node(:str)
-    str.should have_position(0, 3, 0, 22)
+    str.should have_position(0, 2, 0, 21)
+  end
+
+  it "should parse an empty heredoc in double quotes with minus(-) and marker not at beginning of line" do
+    ast = parse(<<-EOF)
+<<-"end;"
+ end;
+    EOF
+
+    str = ast.find_node(:str)
+    str.should have_position(0, 1, 0, 15)
   end
 
   it "should parse a heredoc in method call with other arguments" do
     ast = parse(<<-EOF)
 module_eval <<-"end;", "file", 123
+  hello world
  end;
     EOF
 
     str = ast.find_node(:str)
     str.should have_position(0, 2, 12, 41)
   end
+
+  it "should parse an empty heredoc in method call with other arguments" do
+    ast = parse(<<-EOF)
+module_eval <<-"end;", "file", 123
+ end;
+    EOF
+
+    str = ast.find_node(:str)
+    str.should have_position(0, 1, 12, 27)
+  end
+
 end
