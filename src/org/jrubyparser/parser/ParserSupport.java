@@ -829,6 +829,8 @@ public class ParserSupport {
         if (receiver == null) {
             receiver = NilImplicitNode.NIL;
             position = holder.getPosition();
+        } else if (receiver instanceof NilImplicitNode) {
+            position = holder.getPosition();
         } else {
             position = union(receiver, holder);
         }

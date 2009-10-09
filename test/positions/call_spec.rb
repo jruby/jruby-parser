@@ -182,4 +182,11 @@ end
    call = ast.find_node(:call)
    call.receiver_node.should_not be_nil 
   end
+
+  it "should parse an nil receiver in 1.9 mode" do
+   ast = parse("().foo", $config_1_9)
+   call = ast.find_node(:call)
+   call.receiver_node.should_not be_nil
+  end
+
 end
