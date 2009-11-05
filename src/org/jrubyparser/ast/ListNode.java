@@ -107,10 +107,24 @@ public class ListNode extends Node {
     public ListNode addAll(ListNode other) {
         if (other != null && other.size() > 0) {
             list.addAll(other.list);
-            
-            setPosition(getPosition().union(getLast().getPosition()));
+            setPosition(getPosition().union(getLastNodePosition()));
         }
         return this;
+    }
+
+    /**
+     * @return the position of the last node in this list that has a valid position
+     * (i.e. is not a NilImplicitNode).
+     */
+    private SourcePosition getLastNodePosition() {
+        // sometimes the last node is a NilImplicitNode which has no valid position
+        for (int i = list.size() - 1; i >= 0; i--) {
+            Node last = list.get(i);
+            if (last != NilImplicitNode.NIL) {
+                return last.getPosition();
+            }
+        }
+        return null;
     }
     
     /**
