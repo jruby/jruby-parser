@@ -322,7 +322,7 @@ stmts           : none
 stmt            : kALIAS fitem {
                     lexer.setState(LexState.EXPR_FNAME);
                 } fitem {
-                    $$ = support.newAlias(getPosition($1), $2, $4);
+                    $$ = support.newAlias(support.union($1, $4), $2, $4);
                 }
                 | kALIAS tGVAR tGVAR {
                     $$ = new VAliasNode(getPosition($1), (String) $2.getValue(), (String) $3.getValue());

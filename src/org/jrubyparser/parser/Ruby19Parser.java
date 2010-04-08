@@ -4125,7 +4125,7 @@ public Object case25_line388(Object yyVal, Object[] yyVals, int yyTop) {
     return yyVal;
 }
 public Object case10_line324(Object yyVal, Object[] yyVals, int yyTop) {
-                    yyVal = support.newAlias(getPosition(((Token)yyVals[-3+yyTop])), ((Node)yyVals[-2+yyTop]), ((Node)yyVals[0+yyTop]));
+                    yyVal = support.newAlias(support.union(((Token)yyVals[-3+yyTop]), ((Node)yyVals[0+yyTop])), ((Node)yyVals[-2+yyTop]), ((Node)yyVals[0+yyTop]));
     return yyVal;
 }
 public Object case442_line1709(Object yyVal, Object[] yyVals, int yyTop) {
