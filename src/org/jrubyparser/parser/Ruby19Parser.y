@@ -30,7 +30,6 @@ package org.jrubyparser.parser;
 
 import java.io.IOException;
 
-import org.jrubyparser.ast.AliasNode;
 import org.jrubyparser.ast.ArgsNode;
 import org.jrubyparser.ast.ArgumentNode;
 import org.jrubyparser.ast.ArrayNode;
@@ -66,6 +65,7 @@ import org.jrubyparser.ast.InstVarNode;
 import org.jrubyparser.ast.IterNode;
 import org.jrubyparser.ast.LambdaNode;
 import org.jrubyparser.ast.ListNode;
+import org.jrubyparser.ast.LiteralNode;
 import org.jrubyparser.ast.ModuleNode;
 import org.jrubyparser.ast.MultipleAsgn19Node;
 import org.jrubyparser.ast.NextNode;
@@ -146,7 +146,7 @@ public class Ruby19Parser implements RubyParser {
 
 %token <Token> tIDENTIFIER tFID tGVAR tIVAR tCONSTANT tCVAR tLABEL tCHAR
 %type <Token> variable
-%type <Token> fitem sym symbol operation operation2 operation3 cname fname op 
+%type <Token> sym symbol operation operation2 operation3 cname fname op
 %type <Token> f_norm_arg dot_or_colon restarg_mark blkarg_mark
 %token <Token> tUPLUS         /* unary+ */
 %token <Token> tUMINUS        /* unary- */
@@ -224,13 +224,15 @@ public class Ruby19Parser implements RubyParser {
 %type <MultipleAsgn19Node> mlhs mlhs_basic 
 %type <RescueBodyNode> opt_rescue
 %type <AssignableNode> var_lhs
+%type <LiteralNode> fsym
+%type <Node> fitem
    // ENEBO: begin all new types
 %type <Node> f_arg_item
 %type <Node> bv_decls opt_bv_decl lambda_body 
 %type <LambdaNode> lambda
 %type <Node> mlhs_inner f_block_opt for_var
 %type <Node> opt_call_args f_marg f_margs 
-%type <Token> bvar fsym
+%type <Token> bvar
    // ENEBO: end all new types
 
 %type <Token> rparen rbracket reswords f_bad_arg
@@ -320,7 +322,7 @@ stmts           : none
 stmt            : kALIAS fitem {
                     lexer.setState(LexState.EXPR_FNAME);
                 } fitem {
-                    $$ = new AliasNode(support.union($1, $4), (String) $2.getValue(), (String) $4.getValue());
+                    $$ = support.newAlias(getPosition($1), $2, $4);
                 }
                 | kALIAS tGVAR tGVAR {
                     $$ = new VAliasNode(getPosition($1), (String) $2.getValue(), (String) $3.getValue());
@@ -673,15 +675,15 @@ fname          : tIDENTIFIER | tCONSTANT | tFID
                    $$ = $1;
                }
 
-// Token:fsym
+// LiteralNode:fsym
 fsym           : fname {
-                    $$ = $1;
+                    $$ = new LiteralNode($1);
                 }
                 | symbol {
-                    $$ = $1;
+                    $$ = new LiteralNode($1);
                 }
 
-// Token:fitem
+// Node:fitem
 fitem           : fsym {
                     $$ = $1;
                 }
@@ -690,12 +692,12 @@ fitem           : fsym {
                 }
 
 undef_list      : fitem {
-                    $$ = new UndefNode(getPosition($1), (String) $1.getValue());
+                    $$ = support.newUndef(getPosition($1), $1);
                 }
                 | undef_list ',' {
                     lexer.setState(LexState.EXPR_FNAME);
                 } fitem {
-                    $$ = support.appendToBlock($1, new UndefNode(getPosition($1), (String) $4.getValue()));
+                    $$ = support.appendToBlock($1, support.newUndef(getPosition($1), $4));
                 }
 
 // Token:op

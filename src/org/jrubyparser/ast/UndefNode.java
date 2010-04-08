@@ -37,9 +37,9 @@ import org.jrubyparser.SourcePosition;
  * Represents an 'undef' statement.
  */
 public class UndefNode extends Node {
-    private String name;
+    private Node name;
 
-    public UndefNode(SourcePosition position, String name) {
+    public UndefNode(SourcePosition position, Node name) {
         super(position);
         this.name = name;
     }
@@ -60,12 +60,12 @@ public class UndefNode extends Node {
      * Gets the name.
      * @return Returns a String
      */
-    public String getName() {
+    public Node getName() {
         return name;
     }
     
     public List<Node> childNodes() {
-        return EMPTY_LIST;
+        return Node.createList(name);
     }
     
 }

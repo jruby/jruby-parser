@@ -117,6 +117,9 @@ import org.jrubyparser.lexer.Token;
 import org.jrubyparser.BlockStaticScope;
 import org.jrubyparser.LocalStaticScope;
 import org.jrubyparser.StaticScope;
+import org.jrubyparser.ast.AliasNode;
+import org.jrubyparser.ast.LiteralNode;
+import org.jrubyparser.ast.UndefNode;
 
 /** 
  *
@@ -1081,5 +1084,13 @@ public class ParserSupport {
     public Node new_args(SourcePosition position, ListNode pre, ListNode optional, RestArgNode rest,
             ListNode post, BlockArgNode block) {
         return new ArgsNode(position, pre, optional, rest, post, block);
+    }
+
+    public Node newAlias(SourcePosition position, Node newNode, Node oldNode) {
+        return new AliasNode(position, newNode, oldNode);
+    }
+
+    public Node newUndef(SourcePosition position, Node nameNode) {
+        return new UndefNode(position, nameNode);
     }
 }

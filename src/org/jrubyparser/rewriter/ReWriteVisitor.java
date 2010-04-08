@@ -96,6 +96,7 @@ import org.jrubyparser.ast.IfNode;
 import org.jrubyparser.ast.InstAsgnNode;
 import org.jrubyparser.ast.InstVarNode;
 import org.jrubyparser.ast.IterNode;
+import org.jrubyparser.ast.LiteralNode;
 import org.jrubyparser.ast.LocalAsgnNode;
 import org.jrubyparser.ast.LocalVarNode;
 import org.jrubyparser.ast.Match2Node;
@@ -353,9 +354,9 @@ public class ReWriteVisitor implements NodeVisitor {
 
 	public Object visitAliasNode(AliasNode iVisited) {
 		print("alias ");
-		print(iVisited.getNewName());
+		visitNode(iVisited.getNewName());
 		print(' ');
-		print(iVisited.getOldName());
+		visitNode(iVisited.getOldName());
 		printCommentsAtEnd(iVisited);
 		return null;
 	}
@@ -1573,7 +1574,7 @@ public class ReWriteVisitor implements NodeVisitor {
 
 	public Object visitUndefNode(UndefNode iVisited) {
 		print("undef ");
-		print(iVisited.getName());
+		visitNode(iVisited.getName());
 		return null;
 	}
 
@@ -1783,6 +1784,11 @@ public class ReWriteVisitor implements NodeVisitor {
 
     public Object visitEncodingNode(EncodingNode iVisited) {
         print("__ENCODING__");
+        return null;
+    }
+
+    public Object visitLiteralNode(LiteralNode iVisited) {
+        print("literal");
         return null;
     }
 }

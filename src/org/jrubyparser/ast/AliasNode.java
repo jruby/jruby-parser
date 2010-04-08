@@ -36,10 +36,10 @@ import org.jrubyparser.SourcePosition;
 /** Represents an alias statement (<code>alias newName oldName</code>).
  */
 public class AliasNode extends Node {
-    private String oldName;
-    private String newName;
+    private Node oldName;
+    private Node newName;
 
-    public AliasNode(SourcePosition position, String newName, String oldName) {
+    public AliasNode(SourcePosition position, Node newName, Node oldName) {
         super(position);
         this.oldName = oldName;
         this.newName = newName;
@@ -61,7 +61,7 @@ public class AliasNode extends Node {
      * Gets the newName.
      * @return the newName as in the alias statement :  <code> alias <b>newName</b> oldName </code>
      */
-    public String getNewName() {
+    public Node getNewName() {
         return newName;
     }
 
@@ -69,12 +69,12 @@ public class AliasNode extends Node {
      * Gets the oldName.
      * @return the oldName as in the alias statement :  <code> alias newName <b>oldName</b></code>
      */
-    public String getOldName() {
+    public Node getOldName() {
         return oldName;
     }
     
     public List<Node> childNodes() {
-        return EMPTY_LIST;
+        return Node.createList(newName, oldName);
     }
     
 }
