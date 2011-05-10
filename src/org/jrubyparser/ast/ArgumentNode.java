@@ -39,11 +39,19 @@ import org.jrubyparser.SourcePosition;
  */
 public class ArgumentNode extends Node implements INameNode {
     private String identifier;
+    private int location;
 
     public ArgumentNode(SourcePosition position, String identifier) {
         super(position);
 
         this.identifier = identifier;
+    }
+    
+    public ArgumentNode(SourcePosition position, String identifier, int location) {
+        super(position);
+
+        this.identifier = identifier;
+        this.location = location;
     }
 
     public NodeType getNodeType() {
@@ -52,6 +60,25 @@ public class ArgumentNode extends Node implements INameNode {
     
     public Object accept(NodeVisitor visitor) {
         throw new RuntimeException("ArgumentNode should never be evaluated");
+    }
+
+    /**
+     * How many scopes should we burrow down to until we need to set the block variable value.
+     *
+     * @return 0 for current scope, 1 for one down, ...
+     */
+    public int getDepth() {
+        return location >> 16;
+    }
+
+    /**
+     * Gets the index within the scope construct that actually holds the eval'd value
+     * of this local variable
+     *
+     * @return Returns an int offset into storage structure
+     */
+    public int getIndex() {
+        return location & 0xffff;
     }
     
     public String getName() {

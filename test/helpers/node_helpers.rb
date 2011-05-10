@@ -134,7 +134,8 @@ module HaveArgCounts
   end
 end
  
-module Spec::Example::ExampleMethods
+#module Spec::Example::ExampleMethods
+class Object
   include HavePosition
   include HaveName
   include HaveNameAndPosition

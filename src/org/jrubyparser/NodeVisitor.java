@@ -37,6 +37,7 @@ import org.jrubyparser.ast.AttrAssignNode;
 import org.jrubyparser.ast.BackRefNode;
 import org.jrubyparser.ast.BeginNode;
 import org.jrubyparser.ast.BignumNode;
+import org.jrubyparser.ast.BlockArg18Node;
 import org.jrubyparser.ast.BlockArgNode;
 import org.jrubyparser.ast.BlockNode;
 import org.jrubyparser.ast.BlockPassNode;
@@ -138,6 +139,7 @@ public interface NodeVisitor {
     public Object visitBeginNode(BeginNode iVisited);
     public Object visitBignumNode(BignumNode iVisited);
     public Object visitBlockArgNode(BlockArgNode iVisited);
+    public Object visitBlockArg18Node(BlockArg18Node iVisited);
     public Object visitBlockNode(BlockNode iVisited);
     public Object visitBlockPassNode(BlockPassNode iVisited);
     public Object visitBreakNode(BreakNode iVisited);

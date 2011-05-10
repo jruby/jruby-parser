@@ -12,8 +12,8 @@ alias :'<==>' :"foo"
     EOF
 
     aliasn = ast.find_node(:alias)
-    aliasn.new_name.find_node(:str).value.should == "<==>"
-    aliasn.old_name.find_node(:str).value.should == "foo"
+    aliasn.new_name.find_node(:symbol).name.should == "<==>"
+    aliasn.old_name.find_node(:symbol).name.should == "foo"
 
     aliasn.should have_position(0,0,0,20)
   end

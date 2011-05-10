@@ -12,8 +12,11 @@
  * implied. See the License for the specific language governing
  * rights and limitations under the License.
  *
- * Copyright (C) 2008 Thomas E Enebo <enebo@acm.org>
- *
+ * Copyright (C) 2001-2002 Jan Arne Petersen <jpetersen@uni-bonn.de>
+ * Copyright (C) 2001-2002 Benoit Cerrina <b.cerrina@wanadoo.fr>
+ * Copyright (C) 2002 Anders Bengtsson <ndrsbngtssn@yahoo.se>
+ * Copyright (C) 2004 Thomas E Enebo <enebo@acm.org>
+ * 
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
  * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
@@ -26,16 +29,17 @@
  * the provisions above, a recipient may use your version of this file under
  * the terms of any one of the CPL, the GPL or the LGPL.
  ***** END LICENSE BLOCK *****/
-package org.jrubyparser.parser;
+package org.jrubyparser.ast;
 
-import java.io.IOException;
-import org.jrubyparser.IRubyWarnings;
-import org.jrubyparser.lexer.LexerSource;
+import org.jrubyparser.SourcePosition;
 
 /**
- * Common interface specifying the contract of Ruby parsers (1.8.6 + 1.9)
+ * A Literal Hash that can represent either a {a=&amp;b, c=&amp;d} type expression or the list 
+ * of default values in a method call.
  */
-public interface RubyParser {
-    public ParserResult parse(ParserConfiguration configuration, LexerSource source) throws IOException;
-    public void setWarnings(IRubyWarnings warnings);
+public class Hash19Node extends HashNode {
+    
+    public Hash19Node(SourcePosition position, ListNode listNode) {
+        super(position, listNode);
+    }
 }

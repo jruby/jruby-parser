@@ -32,6 +32,7 @@ import java.util.List;
 
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
+import org.jrubyparser.StaticScope;
 
 /**
  * A 'for' statement.  This is implemented using iter and that is how MRI does things,
@@ -43,12 +44,12 @@ public class ForNode extends IterNode {
 
     private Node iterNode;
 
-    public ForNode(SourcePosition position, Node varNode, Node bodyNode, Node iterNode) {
+    public ForNode(SourcePosition position, Node varNode, Node bodyNode, Node iterNode, StaticScope scope) {
         // For nodes do not have their own scope so we pass null to indicate this.
         // 'For's are implemented as blocks in evaluation, but they have no scope so we
         // just deal with this lack of scope throughout its lifespan.  We should probably
         // change the way this works to get rid of multiple null checks.
-        super(position, varNode, null, bodyNode);
+        super(position, varNode, scope, bodyNode);
         
         assert iterNode != null : "iterNode is not null";
         

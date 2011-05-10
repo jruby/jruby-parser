@@ -40,6 +40,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.jrubyparser.NodeVisitor;
+import org.jrubyparser.RegexpOptions;
 import org.jrubyparser.SourcePosition;
 import org.jrubyparser.StaticScope;
 import org.jrubyparser.ast.AliasNode;
@@ -54,6 +55,7 @@ import org.jrubyparser.ast.AttrAssignNode;
 import org.jrubyparser.ast.BackRefNode;
 import org.jrubyparser.ast.BeginNode;
 import org.jrubyparser.ast.BignumNode;
+import org.jrubyparser.ast.BlockArg18Node;
 import org.jrubyparser.ast.BlockArgNode;
 import org.jrubyparser.ast.BlockNode;
 import org.jrubyparser.ast.BlockPassNode;
@@ -479,6 +481,13 @@ public class ReWriteVisitor implements NodeVisitor {
 		print(iVisited.getName());
 		return null;
 	}
+        
+
+        public Object visitBlockArg18Node(BlockArg18Node iVisited) {
+            print('&');
+            visitNode(iVisited.getBlockArg());
+            return null;
+        }        
 
 	public Object visitBlockNode(BlockNode iVisited) {
 		visitIter(iVisited.childNodes().iterator());
@@ -1315,10 +1324,10 @@ public class ReWriteVisitor implements NodeVisitor {
 			&& config.getSource().charAt(getStartOffset(n) - 3) == '%';
 	}
 
-	private void printRegexpOptions(int option) {
-		if ((option & 1) == 1) print('i');
-		if ((option & 2) == 2) print('x');
-		if ((option & 4) == 4) print('m');
+	private void printRegexpOptions(RegexpOptions option) {
+		if (option.isIgnorecase()) print('i');
+		if (option.isExtended()) print('x');
+		if (option.isMultiline()) print('m');
 	}
 
 	public Object visitRegexpNode(RegexpNode iVisited) {

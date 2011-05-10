@@ -46,6 +46,10 @@ public class BlockArgNode extends Node implements INameNode {
         this.name = name;
     }
 
+    public BlockArgNode(ArgumentNode argNode) {
+        this(argNode.getPosition(), argNode.getIndex(), argNode.getName());
+    }
+    
     public NodeType getNodeType() {
         return NodeType.BLOCKARGNODE;
     }

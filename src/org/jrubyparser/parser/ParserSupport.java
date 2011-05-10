@@ -49,7 +49,6 @@ import org.jrubyparser.ast.BignumNode;
 import org.jrubyparser.ast.BlockArgNode;
 import org.jrubyparser.ast.BlockNode;
 import org.jrubyparser.ast.BlockPassNode;
-import org.jrubyparser.ast.BreakNode;
 import org.jrubyparser.ast.CallNode;
 import org.jrubyparser.ast.CaseNode;
 import org.jrubyparser.ast.ClassVarAsgnNode;
@@ -116,15 +115,20 @@ import org.jrubyparser.lexer.SyntaxException.PID;
 import org.jrubyparser.lexer.Token;
 import org.jrubyparser.BlockStaticScope;
 import org.jrubyparser.LocalStaticScope;
+import org.jrubyparser.RegexpOptions;
 import org.jrubyparser.StaticScope;
 import org.jrubyparser.ast.AliasNode;
-import org.jrubyparser.ast.LiteralNode;
+import org.jrubyparser.ast.BinaryOperatorNode;
+import org.jrubyparser.ast.BlockArg18Node;
+import org.jrubyparser.ast.EncodingNode;
 import org.jrubyparser.ast.UndefNode;
+import org.jrubyparser.lexer.Lexer;
 
 /** 
  *
  */
 public class ParserSupport {
+    protected Lexer lexer;
     // Parser states:
     protected StaticScope currentScope;
     
@@ -192,7 +196,7 @@ public class ParserSupport {
         case LOCALASGNNODE:
             return currentScope.declare(node.getPosition(), ((INameNode) node).getName());
         case CONSTDECLNODE: // CONSTANT
-            return currentScope.declare(node.getPosition(), ((INameNode) node).getName());
+            return new ConstNode(node.getPosition(), ((INameNode) node).getName());
         case INSTASGNNODE: // INSTANCE VARIABLE
             return new InstVarNode(node.getPosition(), ((INameNode) node).getName());
         case CLASSVARDECLNODE:
@@ -227,9 +231,7 @@ public class ParserSupport {
         case Tokens.k__LINE__:
             return new FixnumNode(token.getPosition(), token.getPosition().getEndLine()+1);
         case Tokens.k__ENCODING__:
-            // ENEBO: 1.8 will never see this, but 1.9 can
-            // TODO: Replace with proper encoding support
-            return new FixnumNode(token.getPosition(), token.getPosition().getEndLine()+1);            
+            return new EncodingNode(token.getPosition());
         case Tokens.tIDENTIFIER:
             return currentScope.declare(token.getPosition(), (String) token.getValue());
         case Tokens.tCONSTANT:
@@ -325,7 +327,7 @@ public class ParserSupport {
     public Node addRootNode(Node topOfAST, SourcePosition position) {
         position = topOfAST != null ? topOfAST.getPosition() : position;
 
-        if (result.getBeginNodes().size() == 0) {
+        if (result.getBeginNodes().isEmpty()) {
             if (topOfAST == null) topOfAST = NilImplicitNode.NIL;
             
             return new RootNode(position, result.getScope(), topOfAST);
@@ -515,39 +517,45 @@ public class ParserSupport {
      * @param node to be checked
      * @return true if an expression, false otherwise
      */
-    public void checkExpression(Node node) {
-        if (warnings.isVerbose() && !isExpression(node)) {
-            warnings.warning(ID.VOID_VALUE_EXPRESSION, node.getPosition(), "void value expression");
-        }
-    }
-    
-    private boolean isExpression(Node node) {
-        do {
-            if (node == null) return true;
-            
+    public boolean checkExpression(Node node) {
+        boolean conditional = false;
+
+        while (node != null) {
             switch (node.getNodeType()) {
-            case BEGINNODE:
-                node = ((BeginNode) node).getBodyNode();
-                break;
+            case DEFNNODE: case DEFSNODE:
+                warnings.warning(ID.VOID_VALUE_EXPRESSION, node.getPosition(),
+                        "void value expression");
+                return false;
+            case RETURNNODE: case BREAKNODE: case NEXTNODE: case REDONODE:
+            case RETRYNODE:
+                if (!conditional) {
+                    throw new SyntaxException(PID.VOID_VALUE_EXPRESSION,
+                            node.getPosition(), "void value expression");
+                }
+                return false;
             case BLOCKNODE:
                 node = ((BlockNode) node).getLast();
                 break;
-            case BREAKNODE:
-                node = ((BreakNode) node).getValueNode();
+            case BEGINNODE:
+                node = ((BeginNode) node).getBodyNode();
                 break;
-            case CLASSNODE: case DEFNNODE: case DEFSNODE: case MODULENODE: case NEXTNODE: 
-            case REDONODE: case RETRYNODE: case RETURNNODE: case UNTILNODE: case WHILENODE:
-                return false;
             case IFNODE:
-                return isExpression(((IfNode) node).getThenBody()) &&
-                  isExpression(((IfNode) node).getElseBody());
+                if (!checkExpression(((IfNode) node).getThenBody())) return false;
+                node = ((IfNode) node).getElseBody();
+                break;
+            case ANDNODE: case ORNODE:
+                conditional = true;
+                node = ((BinaryOperatorNode) node).getSecondNode();
+                break;
             case NEWLINENODE:
                 node = ((NewlineNode) node).getNextNode();
                 break;
             default: // Node
                 return true;
             }
-        } while (true);
+        }
+
+        return true;
     }
     
     /**
@@ -561,8 +569,7 @@ public class ParserSupport {
     public boolean isLiteral(Node node) {
         return node != null && (node instanceof FixnumNode || node instanceof BignumNode || 
                 node instanceof FloatNode || node instanceof SymbolNode || 
-                (node instanceof RegexpNode && 
-                        (((RegexpNode) node).getOptions() & ~ReOptions.RE_OPTION_ONCE) == 0));
+                (node instanceof RegexpNode && ((RegexpNode) node).getOptions().isLiteral()));
     }
 
     private void handleUselessWarn(Node node, String useless) {
@@ -856,6 +863,17 @@ public class ParserSupport {
         return name;
     }
 
+    public Node new_aref(Node receiver, Token name, Node argsNode) {
+        if (argsNode instanceof ArrayNode) {
+            ArrayNode args = (ArrayNode) argsNode;
+ 
+            if (args.size() == 1 && args.get(0) instanceof FixnumNode) {
+                return new CallNode(union(receiver, args), receiver, "[]", args);
+            }
+         }
+         return new_call(receiver, name, argsNode, null);
+    }
+    
     public Colon2Node new_colon2(SourcePosition position, Node leftNode, String name) {
         if (isConstant(name)) {
             if (leftNode == null) return new Colon2ImplicitNode(position, name);
@@ -950,6 +968,10 @@ public class ParserSupport {
         this.configuration = configuration;
     }
 
+    public void setLexer(Lexer lexer) {
+        this.lexer = lexer;
+    }
+    
     public void setWarnings(IRubyWarnings warnings) {
         this.warnings = warnings;
     }
@@ -1070,17 +1092,6 @@ public class ParserSupport {
         return (node == null) ? new NilNode(defaultPosition) : node; 
     }
 
-    public ArgumentNode getRestArgNode(Token token) {
-        int index = ((Integer) token.getValue()).intValue();
-        if(index < 0) {
-            return null;
-        }
-        String name = getCurrentScope().getLocalScope().getVariables()[index];
-        // FIXME: We should not need to specify IDESourcePosition here...
-        SourcePosition position = new SourcePosition(token.getPosition().getFile(), token.getPosition().getStartLine(), token.getPosition().getEndLine(), token.getPosition().getStartOffset(), token.getPosition().getEndOffset() + name.length());
-        return new ArgumentNode(position, name);
-    }
-
     public Node new_args(SourcePosition position, ListNode pre, ListNode optional, RestArgNode rest,
             ListNode post, BlockArgNode block) {
         return new ArgsNode(position, pre, optional, rest, post, block);
@@ -1089,8 +1100,228 @@ public class ParserSupport {
     public Node newAlias(SourcePosition position, Node newNode, Node oldNode) {
         return new AliasNode(position, newNode, oldNode);
     }
-
+    
     public Node newUndef(SourcePosition position, Node nameNode) {
         return new UndefNode(position, nameNode);
     }
+    
+    public BlockArg18Node newBlockArg18(SourcePosition position, Node blockValue, Node args) {
+        return new BlockArg18Node(position, blockValue, args);
+    }    
+    
+    public BlockArgNode newBlockArg(SourcePosition position, Token nameToken) {
+        String identifier = (String) nameToken.getValue();
+
+        if (getCurrentScope().getLocalScope().isDefined(identifier) >= 0) {
+            throw new SyntaxException(PID.BAD_IDENTIFIER, position, lexer.getCurrentLine(),
+                    "duplicate block argument name");
+        }
+
+        return new BlockArgNode(position, getCurrentScope().getLocalScope().addVariable(identifier), identifier);
+    }
+    
+    public IterNode new_iter(SourcePosition position, Node vars, StaticScope scope, Node body) {
+        if (vars != null && vars instanceof BlockPassNode) {
+            vars = ((BlockPassNode)vars).getArgsNode();
+        }
+         
+        return new IterNode(position, vars, scope, body);
+    }    
+    
+     /**
+      * generate parsing error
+      */
+     public void yyerror(String message) {
+         throw new SyntaxException(PID.GRAMMAR_ERROR, lexer.getPosition(), message);
+     }
+ 
+     /**
+      * generate parsing error
+      * @param message text to be displayed.
+      * @param expected list of acceptable tokens, if available.
+      */
+     public void yyerror(String message, String[] expected, String found) {
+         String text = message + ", unexpected " + found + "\n";
+         throw new SyntaxException(PID.GRAMMAR_ERROR, lexer.getPosition(), text, found);
+     }
+     public void warn(ID id, SourcePosition position, String message, Object... data) {
+         warnings.warn(id, position, message, data);
+     }
+ 
+     public void warning(ID id, SourcePosition position, String message, Object... data) {
+         if (warnings.isVerbose()) {
+             warnings.warning(id, position, message, data);
+         }
+     }
+ 
+     // ENEBO: Totally weird naming (in MRI is not allocated and is a local var name) [1.9]
+     public boolean is_local_id(Token identifier) {
+         String name = (String) identifier.getValue();
+ 
+         return lexer.isIdentifierChar(name.charAt(0));
+     }
+ 
+     // 1.9
+     public ListNode list_append(Node list, Node item) {
+         if (list == null) return new ArrayNode(item.getPosition(), item);
+         if (!(list instanceof ListNode)) return new ArrayNode(list.getPosition(), list).add(item);
+ 
+         return ((ListNode) list).add(item);
+     }
+ 
+     // 1.9
+     public Node new_bv(Token identifier) {
+         if (!is_local_id(identifier)) {
+             getterIdentifierError(identifier.getPosition(), (String) identifier.getValue());
+         }
+         shadowing_lvar(identifier);
+         
+         return arg_var(identifier);
+     }
+ 
+     // 1.9
+     public ArgumentNode arg_var(Token identifier) {
+        String name = (String) identifier.getValue();
+        StaticScope current = getCurrentScope();
+
+        // Multiple _ arguments are allowed.  To not screw with tons of arity
+        // issues in our runtime we will allocate unnamed bogus vars so things
+        // still work. MRI does not use name as intern'd value so they don't
+        // have this issue.
+        if (name == "_") {
+            int count = 0;
+            while (current.exists(name) >= 0) {
+                name = "_$" + count++;
+            }
+        }
+        return new ArgumentNode(identifier.getPosition(), name,
+                getCurrentScope().addVariableThisScope(name));
+     }
+     
+     public Token formal_argument(Token identifier) {
+         if (!is_local_id(identifier)) yyerror("formal argument must be local variable");
+ 
+         return shadowing_lvar(identifier);
+     }
+ 
+     // 1.9
+     public Token shadowing_lvar(Token identifier) {
+         String name = (String) identifier.getValue();
+ 
+         if (name == "_") return identifier;
+ 
+         StaticScope current = getCurrentScope();
+         if (current instanceof BlockStaticScope) {
+             if (current.exists(name) >= 0) yyerror("duplicated argument name");
+ 
+             if (warnings.isVerbose() && current.isDefined(name) >= 0) {
+                 warnings.warning(ID.STATEMENT_NOT_REACHED, identifier.getPosition(),
+                         "shadowing outer local variable - " + name);
+             }
+         } else if (current.exists(name) >= 0) {
+             yyerror("duplicated argument name");
+         }
+ 
+         return identifier;
+     }
+ 
+     // 1.9
+     public ListNode list_concat(Node first, Node second) {
+         if (first instanceof ListNode) {
+             if (second instanceof ListNode) {
+                 return ((ListNode) first).addAll((ListNode) second);
+             } else {
+                 return ((ListNode) first).addAll(second);
+             }
+         }
+ 
+         return new ArrayNode(first.getPosition(), first).add(second);
+     }
+ 
+     // 1.9
+     /**
+      * If node is a splat and it is splatting a literal array then return the literal array.
+      * Otherwise return null.  This allows grammar to not splat into a Ruby Array if splatting
+      * a literal array.
+      */
+     public Node splat_array(Node node) {
+         if (node instanceof SplatNode) node = ((SplatNode) node).getValue();
+         if (node instanceof ArrayNode) return node;
+         return null;
+     }
+ 
+     // 1.9
+     public Node arg_append(Node node1, Node node2) {
+         if (node1 == null) return new ArrayNode(node2.getPosition(), node2);
+         if (node1 instanceof ListNode) return ((ListNode) node1).add(node2);
+         if (node1 instanceof BlockPassNode) return arg_append(((BlockPassNode) node1).getBodyNode(), node2);
+         if (node1 instanceof ArgsPushNode) {
+             ArgsPushNode pushNode = (ArgsPushNode) node1;
+             Node body = pushNode.getSecondNode();
+ 
+             return new ArgsCatNode(pushNode.getPosition(), pushNode.getFirstNode(),
+                     new ArrayNode(body.getPosition(), body).add(node2));
+         }
+ 
+         return new ArgsPushNode(union(node1, node2), node1, node2);
+     }
+ 
+     public void regexpFragmentCheck(RegexpNode end, String value) {
+         // 1.9 mode overrides to do extra checking...
+     }
+ 
+     protected void checkRegexpSyntax(String value, RegexpOptions options) {
+         // In JRuby this creates actual regexp to validate syntax.  We can do something else
+         // with joni directly perhaps?  Netbeans seems to do their own thing for this...not
+         // sure how others deal with regexp syntax?
+     }
+ 
+     public Node newRegexpNode(SourcePosition position, Node contents, RegexpNode end) {
+         RegexpOptions options = end.getOptions();
+         boolean is19 = !lexer.isOneEight();
+ 
+         if (contents == null) {
+             String newValue = "";
+             regexpFragmentCheck(end, newValue);
+             return new RegexpNode(position, newValue, options.withoutOnce());
+         } else if (contents instanceof StrNode) {
+             String meat = ((StrNode) contents).getValue();
+             regexpFragmentCheck(end, meat);
+             checkRegexpSyntax(meat, options.withoutOnce());
+             return new RegexpNode(contents.getPosition(), meat, options.withoutOnce());
+         } else if (contents instanceof DStrNode) {
+             DStrNode dStrNode = (DStrNode) contents;
+ 
+             for (Node fragment: dStrNode.childNodes()) {
+                 if (fragment instanceof StrNode) {
+                     regexpFragmentCheck(end, ((StrNode) fragment).getValue());
+                 }
+             }
+             
+             return new DRegexpNode(position, options, is19).addAll((DStrNode) contents);
+         }
+ 
+         // No encoding or fragment check stuff for this...but what case is this anyways?
+         return new DRegexpNode(position, options, is19).add(contents);
+     }
+     
+    /**
+     * Since we can recieve positions at times we know can be null we
+     * need an extra safety net here.
+     */
+    public SourcePosition getPosition2(ISourcePositionHolder pos) {
+        return pos == null ? lexer.getPosition(null, false) : pos.getPosition();
+    }
+
+    public SourcePosition getPosition(ISourcePositionHolder start) {
+        return getPosition(start, false);
+    }
+
+    public SourcePosition getPosition(ISourcePositionHolder start, boolean inclusive) {
+        if (start != null) {
+	    return lexer.getPosition(start.getPosition(), inclusive);
+	} 
+
+	return lexer.getPosition(null, inclusive);
+    }     
 }

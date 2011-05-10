@@ -44,6 +44,11 @@ public class RestArgNode extends ArgumentNode implements INameNode {
         this.index = index;
     }
 
+    // 1.9 only - lvar assign logic returns an Argument node
+    public RestArgNode(ArgumentNode argNode) {
+        this(argNode.getPosition(), argNode.getName(), argNode.getIndex());
+    }
+    
     @Override
     public NodeType getNodeType() {
         return NodeType.RESTARG;

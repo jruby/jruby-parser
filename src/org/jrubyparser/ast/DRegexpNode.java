@@ -29,6 +29,7 @@
 package org.jrubyparser.ast;
 
 import org.jrubyparser.NodeVisitor;
+import org.jrubyparser.RegexpOptions;
 import org.jrubyparser.SourcePosition;
 
 /**
@@ -36,23 +37,18 @@ import org.jrubyparser.SourcePosition;
  * is used for a match.
  */
 public class DRegexpNode extends ListNode implements ILiteralNode {
-    private int options;
-    private boolean once;
+    private RegexpOptions options;
+    private boolean is19;
     
-    public DRegexpNode(SourcePosition position) {
-        this(position, 0, false);
+    public DRegexpNode(SourcePosition position, RegexpOptions options) {
+        this(position, options, false);
     }
 
-    public DRegexpNode(SourcePosition position, DStrNode node, int options, boolean once) {
-        this(position, options, once);
-        addAll(node);
-    }
-
-    public DRegexpNode(SourcePosition position, int options, boolean once) {
+    public DRegexpNode(SourcePosition position, RegexpOptions options, boolean is19) {
         super(position);
 
         this.options = options;
-        this.once = once;
+        this.is19 = is19;
     }
 
     @Override
@@ -70,18 +66,9 @@ public class DRegexpNode extends ListNode implements ILiteralNode {
     }
 
     /**
-     * Gets the once.
-     * @return Returns a boolean
-     */
-    public boolean getOnce() {
-        return once;
-    }
-
-    /**
      * Gets the options.
-     * @return Returns a int
      */
-    public int getOptions() {
+    public RegexpOptions getOptions() {
         return options;
     }
 }

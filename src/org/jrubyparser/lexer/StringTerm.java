@@ -27,11 +27,11 @@
  ***** END LICENSE BLOCK *****/
 package org.jrubyparser.lexer;
 
+import org.jrubyparser.RegexpOptions;
 import org.jrubyparser.SourcePosition;
 import org.jrubyparser.ast.RegexpNode;
 import org.jrubyparser.ast.StrNode;
 import org.jrubyparser.lexer.SyntaxException.PID;
-import org.jrubyparser.parser.ReOptions;
 import org.jrubyparser.parser.Tokens;
 import org.jrubyparser.util.CStringBuilder;
 
@@ -68,9 +68,7 @@ public class StringTerm extends StrTerm {
 
         c = src.read();
         if ((flags & Lexer.STR_FUNC_QWORDS) != 0 && Character.isWhitespace(c)) {
-            do {
-                c = src.read();
-            } while (Character.isWhitespace(c));
+            do { c = src.read(); } while (Character.isWhitespace(c));
             spaceSeen = true;
         }
 
@@ -190,9 +188,8 @@ public class StringTerm extends StrTerm {
         return Tokens.tSTRING_CONTENT;
     }
 
-    private int parseRegexpFlags(final LexerSource src) throws java.io.IOException {
-        char kcode = 0;
-        int options = 0;
+    private RegexpOptions parseRegexpFlags(final LexerSource src) throws java.io.IOException {
+        RegexpOptions options = new RegexpOptions();
         int c;
         CStringBuilder unknownFlags = new CStringBuilder(10);
 
@@ -200,31 +197,22 @@ public class StringTerm extends StrTerm {
                 && Character.isLetter(c); c = src.read()) {
             switch (c) {
             case 'i':
-                options |= ReOptions.RE_OPTION_IGNORECASE;
+                options.setIgnorecase(true);
                 break;
             case 'x':
-                options |= ReOptions.RE_OPTION_EXTENDED;
+                options.setExtended(true);
                 break;
             case 'm':
-                options |= ReOptions.RE_OPTION_MULTILINE;
+                options.setMultiline(true);
                 break;
             case 'o':
-                options |= ReOptions.RE_OPTION_ONCE;
+                options.setOnce(true);
                 break;
-            case 'n':
-                kcode = 16;
-                break;
-            case 'e':
-                kcode = 32;
-                break;
-            case 's':
-                kcode = 48;
-                break;
-            case 'u':
-                kcode = 64;
+            case 'n': case 'e': case 's': case 'u':
+                options.setKCodeChar((char) c);
                 break;
             case 'j':
-                options |= 256; // Regexp engine 'java'
+                options.setJava(true);
                 break;
             default:
                 unknownFlags.append(c);
@@ -237,7 +225,7 @@ public class StringTerm extends StrTerm {
                     + (unknownFlags.length() > 1 ? "s" : "") + " - "
                     + unknownFlags.toString(), unknownFlags.toString());
         }
-        return options | kcode;
+        return options;
     }
     
     public int parseSimpleStringIntoBuffer(LexerSource src, CStringBuilder buffer) throws java.io.IOException {

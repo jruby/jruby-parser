@@ -12,8 +12,8 @@
  * implied. See the License for the specific language governing
  * rights and limitations under the License.
  *
- * Copyright (C) 2008 Thomas E Enebo <enebo@acm.org>
- *
+ * Copyright (C) 2007 Thomas E Enebo <enebo@acm.org>
+ * 
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
  * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
@@ -26,16 +26,27 @@
  * the provisions above, a recipient may use your version of this file under
  * the terms of any one of the CPL, the GPL or the LGPL.
  ***** END LICENSE BLOCK *****/
-package org.jrubyparser.parser;
+package org.jrubyparser.ast;
 
-import java.io.IOException;
-import org.jrubyparser.IRubyWarnings;
-import org.jrubyparser.lexer.LexerSource;
+import org.jrubyparser.NodeVisitor;
+import org.jrubyparser.SourcePosition;
+import org.jrubyparser.StaticScope;
 
 /**
- * Common interface specifying the contract of Ruby parsers (1.8.6 + 1.9)
+ * A pre-execution construction (BEGIN { ... }).
  */
-public interface RubyParser {
-    public ParserResult parse(ParserConfiguration configuration, LexerSource source) throws IOException;
-    public void setWarnings(IRubyWarnings warnings);
+public class PreExe19Node extends PreExeNode {
+    public PreExe19Node(SourcePosition position, StaticScope scope, Node body) {
+        super(position, scope, body);
+    }
+
+    @Override
+    public NodeType getNodeType() {
+        return NodeType.PREEXENODE;
+    }
+
+    @Override
+    public Object accept(NodeVisitor iVisitor) {
+        return iVisitor.visitPreExeNode(this);
+    }
 }

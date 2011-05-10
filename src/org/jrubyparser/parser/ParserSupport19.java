@@ -28,20 +28,13 @@
  ***** END LICENSE BLOCK *****/
 package org.jrubyparser.parser;
 
-import org.jrubyparser.ast.ArgsCatNode;
-import org.jrubyparser.ast.ArgsPushNode;
-import org.jrubyparser.ast.ArrayNode;
 import org.jrubyparser.ast.AssignableNode;
-import org.jrubyparser.ast.BlockPassNode;
 import org.jrubyparser.ast.ClassVarAsgnNode;
 import org.jrubyparser.ast.ConstDeclNode;
 import org.jrubyparser.ast.GlobalAsgnNode;
 import org.jrubyparser.ast.InstAsgnNode;
-import org.jrubyparser.ast.ListNode;
 import org.jrubyparser.ast.NilImplicitNode;
 import org.jrubyparser.ast.Node;
-import org.jrubyparser.ast.SplatNode;
-import org.jrubyparser.IRubyWarnings.ID;
 import org.jrubyparser.SourcePosition;
 import org.jrubyparser.lexer.SyntaxException;
 import org.jrubyparser.lexer.SyntaxException.PID;
@@ -91,79 +84,5 @@ public class ParserSupport19 extends ParserSupport {
     protected void getterIdentifierError(SourcePosition position, String identifier) {
         throw new SyntaxException(PID.BAD_IDENTIFIER, position, "identifier " +
                 identifier + " is not valid to get", identifier);
-    }
-
-    /**
-     * If node is a splat and it is splatting a literal array then return the literal array.
-     * Otherwise return null.  This allows grammar to not splat into a Ruby Array if splatting
-     * a literal array.
-     */
-    public Node splat_array(Node node) {
-        if (node instanceof SplatNode) node = ((SplatNode) node).getValue();
-        if (node instanceof ArrayNode) return node;
-        return null;
-    }
-
-    public Node arg_append(Node node1, Node node2) {
-        if (node1 == null) return new ArrayNode(node2.getPosition(), node2);
-        if (node1 instanceof ListNode) return ((ListNode) node1).add(node2);
-        if (node1 instanceof BlockPassNode) return arg_append(((BlockPassNode) node1).getBodyNode(), node2);
-        if (node1 instanceof ArgsPushNode) {
-            ArgsPushNode pushNode = (ArgsPushNode) node1;
-            Node body = pushNode.getSecondNode();
-
-            return new ArgsCatNode(pushNode.getPosition(), pushNode.getFirstNode(),
-                    new ArrayNode(body.getPosition(), body).add(node2));
-        }
-
-        return new ArgsPushNode(union(node1, node2), node1, node2);
-    }
-
-    // ENEBO: Totally weird naming (in MRI is not allocated and is a local var name)
-    public boolean is_local_id(Token identifier) {
-        String name = (String) identifier.getValue();
-        
-        return getCurrentScope().getLocalScope().isDefined(name) < 0;
-    }
-
-    public ListNode list_append(Node list, Node item) {
-        if (list == null) return new ArrayNode(item.getPosition(), item);
-        if (!(list instanceof ListNode)) return new ArrayNode(list.getPosition(), list).add(item);
-
-        return ((ListNode) list).add(item);
-    }
-
-    public Node new_bv(Token identifier) {
-        if (!is_local_id(identifier)) {
-            getterIdentifierError(identifier.getPosition(), (String) identifier.getValue());
-        }
-        shadowing_lvar(identifier);
-        arg_var(identifier);
-
-        return null;
-    }
-
-    public int arg_var(Token identifier) {
-        return getCurrentScope().addVariable((String) identifier.getValue());
-    }
-    
-    public void shadowing_lvar(Token identifier) {
-        String name = (String) identifier.getValue();
-
-        if (getCurrentScope().isDefined(name) > 0) {
-            if (warnings.isVerbose()) warnings.warning(ID.STATEMENT_NOT_REACHED, identifier.getPosition(), "shadowing outer local variable - " + name);
-        }
-    }
-
-    public ListNode list_concat(Node first, Node second) {
-        if (first instanceof ListNode) {
-            if (second instanceof ListNode) {
-                return ((ListNode) first).addAll((ListNode) second);
-            } else {
-                return ((ListNode) first).addAll(second);
-            }
-        }
-
-        return new ArrayNode(first.getPosition(), first).add(second);
     }
 }

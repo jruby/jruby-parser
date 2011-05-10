@@ -28,7 +28,7 @@ describe Parser do
 {one: 1, two: 2}
     EOF
 
-    hsh = ast.find_node(:hash)
+    hsh = ast.find_node(:hash19)
     hsh.should have_position(0, 0, 0, 16)
   end
 end

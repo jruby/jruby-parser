@@ -32,15 +32,16 @@ import java.util.List;
 
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
+import org.jrubyparser.RegexpOptions;
 
 /** 
  * Represents a simple regular expression literal.
  */
 public class RegexpNode extends Node implements ILiteralNode {
     private String value;
-    private int options;
+    private RegexpOptions options;
 
-    public RegexpNode(SourcePosition position, String value, int options) {
+    public RegexpNode(SourcePosition position, String value, RegexpOptions options) {
         super(position);
 
         this.value = value;
@@ -57,9 +58,8 @@ public class RegexpNode extends Node implements ILiteralNode {
 
     /**
      * Gets the options.
-     * @return Returns a int
      */
-    public int getOptions() {
+    public RegexpOptions getOptions() {
         return options;
     }
 

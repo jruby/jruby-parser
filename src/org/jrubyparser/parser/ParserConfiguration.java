@@ -59,4 +59,8 @@ public class ParserConfiguration {
     public CompatVersion getVersion() {
         return version;
     }
+    
+    public String getEncoding() {
+        return "UTF-8"; // TODO: Replace with charset from IDE?
+    }
 }

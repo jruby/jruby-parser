@@ -31,6 +31,7 @@
  ***** END LICENSE BLOCK *****/
 package org.jrubyparser;
 
+import java.io.IOException;
 import java.io.Reader;
 import org.jrubyparser.IRubyWarnings.ID;
 import org.jrubyparser.ast.Node;
@@ -76,7 +77,12 @@ public class Parser {
         
         LexerSource lexerSource = LexerSource.getSource(file, content, configuration);
 
-        Node ast = parser.parse(configuration, lexerSource).getAST();
+        Node ast = null;
+        try {
+            ast = parser.parse(configuration, lexerSource).getAST();
+        } catch(IOException e) {
+            // TODO: What should this raise something for IDEs?
+        }
         
         totalTime += System.nanoTime() - startTime;
         totalBytes += lexerSource.getOffset();

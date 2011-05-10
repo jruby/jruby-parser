@@ -39,6 +39,8 @@ import java.io.IOException;
 
 import java.math.BigInteger;
 import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.jrubyparser.ast.BackRefNode;
 import org.jrubyparser.ast.BignumNode;
@@ -174,7 +176,7 @@ public class Lexer {
         LBEGIN ("BEGIN", Tokens.klBEGIN, Tokens.klBEGIN, LexState.EXPR_END),
         WHILE ("while", Tokens.kWHILE, Tokens.kWHILE_MOD, LexState.EXPR_BEG),
         ALIAS ("alias", Tokens.kALIAS, Tokens.kALIAS, LexState.EXPR_FNAME),
-        __ENCODING__ ("__ENCODING__", Tokens.k__ENCODING__, Tokens.k__ENCODING__, LexState.EXPR_END);
+        __ENCODING__("__ENCODING__", Tokens.k__ENCODING__, Tokens.k__ENCODING__, LexState.EXPR_END);
         
         public final String name;
         public final int id0;
@@ -190,34 +192,8 @@ public class Lexer {
     }
     
     public enum LexState {
-        EXPR_BEG(0), EXPR_END(1), EXPR_ARG(2), EXPR_CMDARG(3), EXPR_ENDARG(4), EXPR_MID(5),
-        EXPR_FNAME(6), EXPR_DOT(7), EXPR_CLASS(8), EXPR_VALUE(9);
-
-        private int ordinal;
-
-        LexState(int ordinal) {
-            this.ordinal = ordinal;
-        }
-
-        public int getOrdinal() {
-            return ordinal;
-        }
-
-        public static LexState fromOrdinal(int ordinal) {
-            switch (ordinal) {
-                case 0: return EXPR_BEG;
-                case 1: return EXPR_END;
-                case 2: return EXPR_ARG;
-                case 3: return EXPR_CMDARG;
-                case 4: return EXPR_ENDARG;
-                case 5: return EXPR_MID;
-                case 6: return EXPR_FNAME;
-                case 7: return EXPR_DOT;
-                case 8: return EXPR_CLASS;
-                case 9: return EXPR_VALUE;
-            }
-            return null;
-        }
+        EXPR_BEG, EXPR_END, EXPR_ARG, EXPR_CMDARG, EXPR_ENDARG, EXPR_MID,
+        EXPR_FNAME, EXPR_DOT, EXPR_CLASS, EXPR_VALUE, EXPR_ENDFN
     }
     
     public static Keyword getKeyword(String str) {
@@ -249,6 +225,8 @@ public class Lexer {
     // whitespace or comment tokens - but an IDE trying to tokenize a chunk of source code
     // does want to identify these separately. The default, false, means the parser mode.
     private boolean preserveSpaces;
+    
+    private String encoding = null;
 
     // List of HeredocTerms to be applied when we see a new line.
     // This is done to be able to handle heredocs in input source order (instead of
@@ -486,7 +464,7 @@ public class Lexer {
     	token = 0;
     	yaccValue = null;
     	src = null;
-        lex_state = LexState.EXPR_BEG;
+        setState(null);
         resetStacks();
         lex_strterm = null;
         commandStart = true;
@@ -500,6 +478,12 @@ public class Lexer {
     public boolean advance() throws IOException {
         return (token = yylex()) != EOF;
     }
+    
+    public int nextToken() throws IOException {
+        token = yylex();
+
+        return token == EOF ? 0 : token;
+    }    
     
     /**
      * Last token read from the lexer at the end of a call to yylex()
@@ -537,6 +521,20 @@ public class Lexer {
     
     public SourcePosition getPosition() {
         return src.getPosition(null, false);
+    }
+    
+    public String getCurrentLine() {
+        return null;
+        // TODO: Add currentLine?
+//        return src.getCurrentLine();
+    }    
+    
+    public void setEncoding(String encoding) {
+        this.encoding = encoding;
+    }
+    
+    public String getEncoding() {
+        return encoding;
     }
 
     /**
@@ -579,14 +577,26 @@ public class Lexer {
     public void setWarnings(IRubyWarnings warnings) {
         this.warnings = warnings;
     }
-
+    
+    private void printState() {
+        if (lex_state == null) {
+            System.out.println("NULL");
+        } else {
+            System.out.println(lex_state);
+        }
+    }
 
     public void setState(LexState state) {
         this.lex_state = state;
+//        printState();        
     }
 
     public StackState getCmdArgumentState() {
         return cmdArgumentState;
+    }
+
+    public boolean isOneEight() {
+        return isOneEight;
     }
 
     public StackState getConditionState() {
@@ -609,6 +619,11 @@ public class Lexer {
                 lex_state == LexState.EXPR_CLASS || (!isOneEight && lex_state == LexState.EXPR_VALUE);
     }
 
+    private boolean isEND() {
+        return lex_state == LexState.EXPR_END || lex_state == LexState.EXPR_ENDARG ||
+                (!isOneEight && lex_state == LexState.EXPR_ENDFN);
+    }
+    
     private boolean isARG() {
         return lex_state == LexState.EXPR_ARG || lex_state == LexState.EXPR_CMDARG;
     }
@@ -616,10 +631,10 @@ public class Lexer {
     private void determineExpressionState() {
         switch (lex_state) {
         case EXPR_FNAME: case EXPR_DOT:
-            lex_state = LexState.EXPR_ARG;
+            setState(LexState.EXPR_ARG);
             break;
         default:
-            lex_state = LexState.EXPR_BEG;
+            setState(LexState.EXPR_BEG);
             break;
         }
     }
@@ -636,7 +651,7 @@ public class Lexer {
 	 * @param c the character to test
 	 * @return true if character is a hex value (0-9a-f)
 	 */
-    static final boolean isHexChar(int c) {
+    static boolean isHexChar(int c) {
         return Character.isDigit(c) || ('a' <= c && c <= 'f') || ('A' <= c && c <= 'F');
     }
 
@@ -644,7 +659,7 @@ public class Lexer {
 	 * @param c the character to test
      * @return true if character is an octal value (0-7)
 	 */
-    static final boolean isOctChar(int c) {
+    static boolean isOctChar(int c) {
         return '0' <= c && c <= '7';
     }
     
@@ -656,7 +671,7 @@ public class Lexer {
      *
      * mri: is_identchar
      */
-    protected boolean isIdentifierChar(int c) {
+    public boolean isIdentifierChar(int c) {
         return Character.isLetterOrDigit(c) || c == '_';
     }
     
@@ -680,11 +695,13 @@ public class Lexer {
             shortHand = false;
             begin = src.read();
             if (Character.isLetterOrDigit(begin) /* no mb || ismbchar(term)*/) {
-                throw new SyntaxException(PID.STRING_UNKNOWN_TYPE, getPosition(), "unknown type of %string");
+                throw new SyntaxException(PID.STRING_UNKNOWN_TYPE, getPosition(), 
+                        getCurrentLine(), "unknown type of %string");
             }
         }
         if (c == EOF || begin == EOF) {
-            throw new SyntaxException(PID.STRING_HITS_EOF, getPosition(), "unterminated quoted string meets end of file");
+            throw new SyntaxException(PID.STRING_HITS_EOF, getPosition(), 
+                    getCurrentLine(), "unterminated quoted string meets end of file");
         }
         
         // Figure end-char.  '\0' is special to indicate begin=end and that no nesting?
@@ -717,7 +734,7 @@ public class Lexer {
             return Tokens.tWORDS_BEG;
 
         case 'w':
-            lex_strterm = new StringTerm(str_squote | STR_FUNC_QWORDS, begin, end);
+            lex_strterm = new StringTerm(/* str_squote | */ STR_FUNC_QWORDS, begin, end);
             do {c = src.read();} while (Character.isWhitespace(c));
             src.unread(c);
             yaccValue = new Token("%"+c+begin, getPosition());
@@ -735,12 +752,12 @@ public class Lexer {
 
         case 's':
             lex_strterm = new StringTerm(str_ssym, begin, end);
-            lex_state = LexState.EXPR_FNAME;
+            setState(LexState.EXPR_FNAME);
             yaccValue = new Token("%"+c+begin, getPosition());
             return Tokens.tSYMBEG;
 
         default:
-            throw new SyntaxException(PID.STRING_UNKNOWN_TYPE, getPosition(), 
+            throw new SyntaxException(PID.STRING_UNKNOWN_TYPE, getPosition(), getCurrentLine(),
                     "Unknown type of %string. Expected 'Q', 'q', 'w', 'x', 'r' or any non letter character, but found '" + c + "'.");
         }
     }
@@ -771,7 +788,8 @@ public class Lexer {
                 markerValue.append(c);
             }
             if (c == EOF) {
-                throw new SyntaxException(PID.STRING_MARKER_MISSING, getPosition(), "unterminated here document identifier");
+                throw new SyntaxException(PID.STRING_MARKER_MISSING, getPosition(), 
+                        getCurrentLine(), "unterminated here document identifier");
             }	
         } else {
             if (!isIdentifierChar(c)) {
@@ -839,6 +857,11 @@ public class Lexer {
         if (warnings.isVerbose()) warnings.warning(ID.AMBIGUOUS_ARGUMENT, getPosition(), "Ambiguous first argument; make sure.");
     }
 
+    
+    /* MRI: magic_comment_marker */
+    /* This impl is a little sucky.  We basically double scan the same bytelist twice.  Once here
+     * and once in parseMagicComment.
+     */
     private int magicCommentMarker(String str, int begin) {
         int i = begin;
         int len = str.length();
@@ -846,11 +869,11 @@ public class Lexer {
         while (i < len) {
             switch (str.charAt(i)) {
                 case '-':
-                    if (str.charAt(i - 1) == '*' && str.charAt(i - 2) == '-') return i + 1;
+                    if (i >= 2 && str.charAt(i - 1) == '*' && str.charAt(i - 2) == '-') return i + 1;
                     i += 2;
                     break;
                 case '*':
-                    if (i + 1 >= len) return 0;
+                    if (i + 1 >= len) return -1;
 
                     if (str.charAt(i + 1) != '-') {
                         i += 4;
@@ -865,9 +888,57 @@ public class Lexer {
                     break;
             }
         }
-        return 0;
+        return -1;
+    }
+    
+    private boolean magicCommentSpecialChar(char c) {
+        switch (c) {
+            case '\'': case '"': case ':': case ';': return true;
+        }
+        return false;
+    }
+    
+    private static final String magicString = "([^\\s\'\":;]+)\\s*:\\s*(\"(?:\\\\.|[^\"])*\"|[^\"\\s;]+)[\\s;]*";
+    private static final Pattern magicRegexp = Pattern.compile(magicString);
+
+    // MRI: parser_magic_comment
+    protected boolean parseMagicComment(String magicLine) throws IOException {
+        int length = magicLine.length();
+
+        if (length <= 7) return false;
+        int beg = magicCommentMarker(magicLine, 0);
+        if (beg < 0) return false;
+        int end = magicCommentMarker(magicLine, beg);
+        if (end < 0) return false;
+
+        // We only use a regex if -*- ... -*- is found.  Not too hot a path?
+        int realSize = magicLine.length();
+        Matcher matcher = magicRegexp.matcher(magicLine);
+        boolean result = matcher.find(beg);
+
+        if (!result) return false;
+        
+        String name = matcher.group(1);
+        if (!name.equalsIgnoreCase("encoding")) return false;
+
+        setEncoding(matcher.group(2));
+
+        return true;
     }
 
+    // TODO: Make hand-rolled version of this
+    private static final String encodingString = "[cC][oO][dD][iI][nN][gG]\\s*[=:]\\s*([a-zA-Z0-9\\-_]+)";
+    private static final Pattern encodingRegexp = Pattern.compile(encodingString);
+
+    protected void handleFileEncodingComment(String encodingLine) throws IOException {
+        Matcher matcher = encodingRegexp.matcher(encodingLine);
+        boolean result = matcher.find();
+
+        if (!result) return;
+
+        setEncoding(matcher.group(1));
+    }
+    
     /**
      * Read a comment up to end of line.  When found each comment will get stored away into
      * the parser result so that any interested party can use them as they seem fit.  One idea
@@ -1043,6 +1114,8 @@ public class Lexer {
             case Tokens.tLAMBDA: System.err.print("tLAMBDA,"); break;
             case Tokens.tLAMBEG: System.err.print("tLAMBEG,"); break;
             case Tokens.tRPAREN: System.err.print("tRPAREN,"); break;
+            case Tokens.tLABEL: System.err.print("tLABEL("+
+                    ((Token) value()).getValue() +":),"); break;
             case '\n': System.err.println("NL"); break;
             case EOF: System.out.println("EOF"); break;
             default: System.err.print("'" + (char)token + "',"); break;
@@ -1051,11 +1124,11 @@ public class Lexer {
 
     // DEBUGGING HELP 
     private int yylex2() throws IOException {
-        int token = yylex2();
+        int currentToken = yylex();
         
-        printToken(token);
+        printToken(currentToken);
         
-        return token;
+        return currentToken;
     }
 
     /**
@@ -1089,7 +1162,7 @@ public class Lexer {
                 int tok = lex_strterm.parseString(this, src);
                 if (tok == Tokens.tSTRING_END || tok == Tokens.tREGEXP_END) {
                     lex_strterm = null;
-                    lex_state = LexState.EXPR_END;
+                    setState(LexState.EXPR_END);
 
                     if (heredocContext != null && heredocContext.isLookingForEnd()) {
                         heredocContext = heredocContext.pop();
@@ -1100,7 +1173,7 @@ public class Lexer {
                 // If we abort in string parsing, throw away the str term
                 // such that we don't try again on restart
                 lex_strterm = null;
-                lex_state = LexState.EXPR_END;
+                setState(LexState.EXPR_END);
                 throw se;
             }
         }
@@ -1151,7 +1224,7 @@ public class Lexer {
                             lex_state == LexState.EXPR_DOT ||
                             lex_state == LexState.EXPR_CLASS)) {
                         commandStart = true;
-                        lex_state = LexState.EXPR_BEG;
+                        setState(LexState.EXPR_BEG);
                     }
 
                     return Tokens.tCOMMENT;
@@ -1209,7 +1282,7 @@ public class Lexer {
                         lex_state == LexState.EXPR_DOT ||
                         lex_state == LexState.EXPR_CLASS)) {
                         commandStart = true;
-                        lex_state = LexState.EXPR_BEG;
+                        setState(LexState.EXPR_BEG);
                     }
                     return Tokens.tWHITESPACE;
                 }
@@ -1220,7 +1293,7 @@ public class Lexer {
                 }
 
                 commandStart = true;
-                lex_state = LexState.EXPR_BEG;
+                setState(LexState.EXPR_BEG);
                 return '\n';
             case '*':
                 return star(spaceSeen);
@@ -1252,7 +1325,8 @@ public class Lexer {
                                     if (doComments) tokenBuffer.append(c);
                                 }
                                 if (c == EOF) {
-                                    throw new SyntaxException(PID.STRING_HITS_EOF, getPosition(), "embedded document meets end of file");
+                                    throw new SyntaxException(PID.STRING_HITS_EOF, getPosition(), 
+                                            getCurrentLine(), "embedded document meets end of file");
                                 }
                                 if (c != '=') continue;
                                 if (src.wasBeginOfLine() && src.matchMarker(END_DOC_MARKER, false, false)) {
@@ -1271,7 +1345,7 @@ public class Lexer {
                             }
                             continue;
                         }
-						src.unread(c);
+                        src.unread(c);
                     }
                 }
 
@@ -1339,7 +1413,7 @@ public class Lexer {
             case ';':
                 commandStart = true;
                 if (!isOneEight) {
-                    lex_state = LexState.EXPR_BEG;
+                    setState(LexState.EXPR_BEG);
                     yaccValue = new Token(";", getPosition());
                     return ';';
                 }
@@ -1385,7 +1459,7 @@ public class Lexer {
         // FIXME: Parsersupport should always be hooked up.  No need for null check
         if (result == Tokens.tIDENTIFIER && last_state != LexState.EXPR_DOT &&
                 parserSupport != null && parserSupport.getCurrentScope().isDefined(value) >= 0) {
-            lex_state = LexState.EXPR_END;
+            setState(LexState.EXPR_END);
         }
 
         yaccValue = new Token(value, result, getPosition());
@@ -1415,10 +1489,10 @@ public class Lexer {
         
         switch (c) {
         case '&':
-            lex_state = LexState.EXPR_BEG;
+            setState(LexState.EXPR_BEG);
             if ((c = src.read()) == '=') {
                 yaccValue = new Token("&&", getPosition());
-                lex_state = LexState.EXPR_BEG;
+                setState(LexState.EXPR_BEG);
                 return Tokens.tOP_ASGN;
             }
             src.unread(c);
@@ -1426,7 +1500,7 @@ public class Lexer {
             return Tokens.tANDOP;
         case '=':
             yaccValue = new Token("&", getPosition());
-            lex_state = LexState.EXPR_BEG;
+            setState(LexState.EXPR_BEG);
             return Tokens.tOP_ASGN;
         }
         src.unread(c);
@@ -1465,9 +1539,11 @@ public class Lexer {
         
         if (Character.isDigit(c)) {
             if (tokenBuffer.length() == 1) {
-                throw new SyntaxException(PID.IVAR_BAD_NAME, getPosition(), "`@" + c + "' is not allowed as an instance variable name");
+                throw new SyntaxException(PID.IVAR_BAD_NAME, getPosition(), 
+                        getCurrentLine(), "`@" + c + "' is not allowed as an instance variable name");
             }
-            throw new SyntaxException(PID.CVAR_BAD_NAME, getPosition(), "`@@" + c + "' is not allowed as a class variable name");
+            throw new SyntaxException(PID.CVAR_BAD_NAME, getPosition(), 
+                    getCurrentLine(), "`@@" + c + "' is not allowed as a class variable name");
         }
         
         if (!isIdentifierChar(c)) {
@@ -1480,7 +1556,7 @@ public class Lexer {
         src.unread(c);
 
         LexState last_state = lex_state;
-        lex_state = LexState.EXPR_END;
+        setState(LexState.EXPR_END);
 
         return identifierToken(last_state, result, tokenBuffer.toString().intern());        
     }
@@ -1490,11 +1566,11 @@ public class Lexer {
 
         switch (lex_state) {
         case EXPR_FNAME:
-            lex_state = LexState.EXPR_END;
+            setState(isOneEight ? LexState.EXPR_END : LexState.EXPR_ENDFN);
             
             return Tokens.tBACK_REF2;
         case EXPR_DOT:
-            lex_state = commandState ? LexState.EXPR_CMDARG : LexState.EXPR_ARG;
+            setState(commandState ? LexState.EXPR_CMDARG : LexState.EXPR_ARG);
 
             return Tokens.tBACK_REF2;
         default:
@@ -1508,13 +1584,13 @@ public class Lexer {
         int c = src.read();
 
         if (!isOneEight && (lex_state == LexState.EXPR_FNAME || lex_state == LexState.EXPR_DOT)) {
-            lex_state = LexState.EXPR_ARG;
+            setState(LexState.EXPR_ARG);
             if (c == '@') {
                 yaccValue = new Token("!",getPosition());
                 return Tokens.tBANG;
             }
         } else {
-            lex_state = LexState.EXPR_BEG;
+            setState(LexState.EXPR_BEG);
         }
         
         switch (c) {
@@ -1537,7 +1613,7 @@ public class Lexer {
     private int caret() throws IOException {
         int c = src.read();
         if (c == '=') {
-            lex_state = LexState.EXPR_BEG;
+            setState(LexState.EXPR_BEG);
             yaccValue = new Token("^", getPosition());
             return Tokens.tOP_ASGN;
         }
@@ -1554,18 +1630,18 @@ public class Lexer {
         
         if (c == ':') {
             if (isBEG() || lex_state == LexState.EXPR_CLASS || (isARG() && spaceSeen)) {
-                lex_state = LexState.EXPR_BEG;
+                setState(LexState.EXPR_BEG);
                 yaccValue = new Token("::", getPosition());
                 return Tokens.tCOLON3;
             }
-            lex_state = LexState.EXPR_DOT;
+            setState(LexState.EXPR_DOT);
             yaccValue = new Token(":",getPosition());
             return Tokens.tCOLON2;
         }
 
-        if (lex_state == LexState.EXPR_END || lex_state == LexState.EXPR_ENDARG || Character.isWhitespace(c)) {
+        if (isEND() || Character.isWhitespace(c)) {
             src.unread(c);
-            lex_state = LexState.EXPR_BEG;
+            setState(LexState.EXPR_BEG);
             yaccValue = new Token(":",getPosition());
             return ':';
         }
@@ -1582,21 +1658,41 @@ public class Lexer {
             break;
         }
         
-        lex_state = LexState.EXPR_FNAME;
+        setState(LexState.EXPR_FNAME);
         yaccValue = new Token(":", getPosition());
         return Tokens.tSYMBEG;
     }
 
     private int comma(int c) throws IOException {
-        lex_state = LexState.EXPR_BEG;
+        setState(LexState.EXPR_BEG);
         yaccValue = new Token(",", getPosition());
         
         return c;
     }
     
+    private int doKeyword(LexState state) {
+        commandStart = true;
+
+        if (!isOneEight && leftParenBegin > 0 && leftParenBegin == parenNest) {
+            leftParenBegin = 0;
+            parenNest--;
+            return Tokens.kDO_LAMBDA;
+        }
+
+        if (conditionState.isInState()) return Tokens.kDO_COND;
+
+        if (state != LexState.EXPR_CMDARG && cmdArgumentState.isInState()) {
+            return Tokens.kDO_BLOCK;
+        }
+        if (state == LexState.EXPR_ENDARG || (!isOneEight && state == LexState.EXPR_BEG)) {
+            return Tokens.kDO_BLOCK;
+        }
+        return Tokens.kDO;
+    }
+    
     private int dollar() throws IOException {
         LexState last_state = lex_state;
-        lex_state = LexState.EXPR_END;
+        setState(LexState.EXPR_END);
         int c = src.read();
         
         switch (c) {
@@ -1608,7 +1704,7 @@ public class Lexer {
                 c = getIdentifier(c);
                 src.unread(c);
                 last_state = lex_state;
-                lex_state = LexState.EXPR_END;
+                setState(LexState.EXPR_END);
 
                 return identifierToken(last_state, Tokens.tGVAR, tokenBuffer.toString().intern());
             }
@@ -1679,7 +1775,7 @@ public class Lexer {
             yaccValue = new NthRefNode(getPosition(), Integer.parseInt(tokenBuffer.substring(1)));
             return Tokens.tNTH_REF;
         case '0':
-            lex_state = LexState.EXPR_END;
+            setState(LexState.EXPR_END);
 
             return identifierToken(last_state, Tokens.tGVAR, ("$" + (char) c).intern());
         default:
@@ -1695,7 +1791,7 @@ public class Lexer {
             int d = getIdentifier(c);
             src.unread(d);
             last_state = lex_state;
-            lex_state = LexState.EXPR_END;
+            setState(LexState.EXPR_END);
 
             return identifierToken(last_state, Tokens.tGVAR, tokenBuffer.toString().intern());
         }
@@ -1704,7 +1800,7 @@ public class Lexer {
     private int dot() throws IOException {
         int c;
         
-        lex_state = LexState.EXPR_BEG;
+        setState(LexState.EXPR_BEG);
         if ((c = src.read()) == '.') {
             if ((c = src.read()) == '.') {
                 yaccValue = new Token("...", getPosition());
@@ -1717,10 +1813,11 @@ public class Lexer {
         
         src.unread(c);
         if (Character.isDigit(c)) {
-            throw new SyntaxException(PID.FLOAT_MISSING_ZERO, getPosition(), "no .<digit> floating literal anymore; put 0 before dot"); 
+            throw new SyntaxException(PID.FLOAT_MISSING_ZERO, getPosition(), 
+                    getCurrentLine(), "no .<digit> floating literal anymore; put 0 before dot"); 
         }
         
-        lex_state = LexState.EXPR_DOT;
+        setState(LexState.EXPR_DOT);
         yaccValue = new Token(".", getPosition());
         return Tokens.tDOT;
     }
@@ -1744,7 +1841,7 @@ public class Lexer {
             return Tokens.tGEQ;
         case '>':
             if ((c = src.read()) == '=') {
-                lex_state = LexState.EXPR_BEG;
+                setState(LexState.EXPR_BEG);
                 yaccValue = new Token(">>", getPosition());
                 return Tokens.tOP_ASGN;
             }
@@ -1762,8 +1859,8 @@ public class Lexer {
     private int identifier(int c, boolean commandState) throws IOException {
         if (!isIdentifierChar(c)) {
             String badChar = "\\" + Integer.toOctalString(c & 0xff);
-            throw new SyntaxException(PID.CHARACTER_BAD, getPosition(), "Invalid char `" + badChar +
-                    "' ('" + (char) c + "') in expression", badChar);
+            throw new SyntaxException(PID.CHARACTER_BAD, getPosition(), getCurrentLine(),
+                    "Invalid char `" + badChar + "' ('" + (char) c + "') in expression", badChar);
         }
     
         tokenBuffer.setLength(0);
@@ -1821,12 +1918,12 @@ public class Lexer {
 
         String tempVal = tokenBuffer.toString().intern();
 
-	    if (!isOneEight && ((lex_state == LexState.EXPR_BEG && !commandState) ||
+        if (!isOneEight && ((lex_state == LexState.EXPR_BEG && !commandState) ||
                 lex_state == LexState.EXPR_ARG || lex_state == LexState.EXPR_CMDARG)) {
             int c2 = src.read();
             if (c2 == ':' && !src.peek(':')) {
                 src.unread(c2);
-                lex_state = LexState.EXPR_BEG;
+                setState(LexState.EXPR_BEG);
                 src.read();
                 yaccValue = new Token(tempVal, getPosition());
                 return Tokens.tLABEL;
@@ -1835,47 +1932,37 @@ public class Lexer {
         }
 
         if (lex_state != LexState.EXPR_DOT) {
-            /* See if it is a reserved word.  */
-            //Keyword keyword = Keyword.getKeyword(tempVal, tempVal.length());
-            Keyword keyword = getKeyword(tempVal);
+            Keyword keyword = getKeyword(tempVal); // Is it is a keyword?
+            
             if (keyword != null && (keyword != Keyword.__ENCODING__ || !isOneEight)) {
-                // enum lex_state
-                LexState state = lex_state;
+                LexState state = lex_state; // Save state at time keyword is encountered
 
-                lex_state = keyword.state;
+                if (!isOneEight && keyword == Keyword.NOT) {
+                    setState(LexState.EXPR_ARG);
+                } else {
+                    setState(keyword.state);
+                }
                 if (state == LexState.EXPR_FNAME) {
                     yaccValue = new Token(keyword.name, getPosition());
                 } else {
                     yaccValue = new Token(tempVal, getPosition());
-                    if (keyword.id0 == Tokens.kDO) {
-                        if (!isOneEight && leftParenBegin > 0 && leftParenBegin == parenNest) {
-                            leftParenBegin = 0;
-                            parenNest--;
-                            return Tokens.kDO_LAMBDA;
-                        }
-
-                        if (conditionState.isInState()) return Tokens.kDO_COND;
-
-                        if (state != LexState.EXPR_CMDARG && cmdArgumentState.isInState()) {
-                            return Tokens.kDO_BLOCK;
-                        }
-                        if (state == LexState.EXPR_ENDARG || (!isOneEight && state == LexState.EXPR_BEG)) return Tokens.kDO_BLOCK;
-                        return Tokens.kDO;
-                    }
+                    if (keyword.id0 == Tokens.kDO) return doKeyword(state);
                 }
 
                 if (state == LexState.EXPR_BEG || (!isOneEight && state == LexState.EXPR_VALUE)) return keyword.id0;
 
-                if (keyword.id0 != keyword.id1) lex_state = LexState.EXPR_BEG;
+                if (keyword.id0 != keyword.id1) setState(LexState.EXPR_BEG);
 
                 return keyword.id1;
             }
         }
 
         if (isBEG() || lex_state == LexState.EXPR_DOT || isARG()) {
-            lex_state = commandState ? LexState.EXPR_CMDARG : LexState.EXPR_ARG;
+            setState(commandState ? LexState.EXPR_CMDARG : LexState.EXPR_ARG);
+        } else if (!isOneEight && lex_state == LexState.EXPR_ENDFN) {
+            setState(LexState.EXPR_ENDFN);
         } else {
-            lex_state = LexState.EXPR_END;
+            setState(LexState.EXPR_END);
         }
         
         return identifierToken(last_state, result, tempVal);
@@ -1885,7 +1972,7 @@ public class Lexer {
         parenNest++;
         int c = '[';
         if (lex_state == LexState.EXPR_FNAME || lex_state == LexState.EXPR_DOT) {
-            lex_state = LexState.EXPR_ARG;
+            setState(LexState.EXPR_ARG);
             
             if ((c = src.read()) == ']') {
                 if (src.peek('=')) {
@@ -1903,7 +1990,7 @@ public class Lexer {
             c = Tokens.tLBRACK;
         }
 
-        lex_state = LexState.EXPR_BEG;
+        setState(LexState.EXPR_BEG);
         conditionState.stop();
         cmdArgumentState.stop();
         yaccValue = new Token("[", getPosition());
@@ -1911,16 +1998,18 @@ public class Lexer {
     }
     
     private int leftCurly() {
-        char c;
         if (!isOneEight && leftParenBegin > 0 && leftParenBegin == parenNest) {
-            lex_state = LexState.EXPR_BEG;
+            setState(LexState.EXPR_BEG);
             leftParenBegin = 0;
             parenNest--;
+            conditionState.stop();
+            cmdArgumentState.stop();
             yaccValue = new Token("{", getPosition());
             return Tokens.tLAMBEG;
         }
 
-        if (isARG() || lex_state == LexState.EXPR_END) { // block (primary)
+        char c;
+        if (isARG() || lex_state == LexState.EXPR_END || (!isOneEight && lex_state == LexState.EXPR_ENDFN)) { // block (primary)
             c = Tokens.tLCURLY;
         } else if (lex_state == LexState.EXPR_ENDARG) { // block (expr)
             c = Tokens.tLBRACE_ARG;
@@ -1930,7 +2019,7 @@ public class Lexer {
 
         conditionState.stop();
         cmdArgumentState.stop();
-        lex_state = LexState.EXPR_BEG;
+        setState(LexState.EXPR_BEG);
         
         yaccValue = new Token("{", getPosition());
         if (!isOneEight && c != Tokens.tLBRACE) commandStart = true;
@@ -1960,7 +2049,7 @@ public class Lexer {
         parenNest++;
         conditionState.stop();
         cmdArgumentState.stop();
-        lex_state = LexState.EXPR_BEG;
+        setState(LexState.EXPR_BEG);
         
         yaccValue = new Token("(", getPosition());
         return result;
@@ -1968,9 +2057,8 @@ public class Lexer {
     
     private int lessThan(boolean spaceSeen) throws IOException {
         int c = src.read();
-        if (c == '<' && lex_state != LexState.EXPR_END && lex_state != LexState.EXPR_DOT &&
-                lex_state != LexState.EXPR_ENDARG && lex_state != LexState.EXPR_CLASS &&
-                (!isARG() || spaceSeen)) {
+        if (c == '<' && lex_state != LexState.EXPR_DOT && lex_state != LexState.EXPR_CLASS &&
+                !isEND() && (!isARG() || spaceSeen)) {
             int tok = hereDocumentIdentifier();
             
             if (tok != 0) return tok;
@@ -1989,7 +2077,7 @@ public class Lexer {
             return Tokens.tLEQ;
         case '<':
             if ((c = src.read()) == '=') {
-                lex_state = LexState.EXPR_BEG;
+                setState(LexState.EXPR_BEG);
                 yaccValue = new Token("<<", getPosition());
                 return Tokens.tOP_ASGN;
             }
@@ -2007,7 +2095,7 @@ public class Lexer {
         int c = src.read();
         
         if (lex_state == LexState.EXPR_FNAME || lex_state == LexState.EXPR_DOT) {
-            lex_state = LexState.EXPR_ARG;
+            setState(LexState.EXPR_ARG);
             if (c == '@') {
                 yaccValue = new Token("-@", getPosition());
                 return Tokens.tUMINUS;
@@ -2017,18 +2105,18 @@ public class Lexer {
             return Tokens.tMINUS;
         }
         if (c == '=') {
-            lex_state = LexState.EXPR_BEG;
+            setState(LexState.EXPR_BEG);
             yaccValue = new Token("-", getPosition());
             return Tokens.tOP_ASGN;
         }
         if (!isOneEight && c == '>') {
-            lex_state = LexState.EXPR_ARG;
+            setState(LexState.EXPR_ARG);
             yaccValue = new Token("->", getPosition());
             return Tokens.tLAMBDA;
         }
         if (isBEG() || (isARG() && spaceSeen && !Character.isWhitespace(c))) {
             if (isARG()) arg_ambiguous();
-            lex_state = LexState.EXPR_BEG;
+            setState(LexState.EXPR_BEG);
             src.unread(c);
             yaccValue = new Token("-", getPosition());
             if (Character.isDigit(c)) {
@@ -2036,7 +2124,7 @@ public class Lexer {
             }
             return Tokens.tUMINUS;
         }
-        lex_state = LexState.EXPR_BEG;
+        setState(LexState.EXPR_BEG);
         src.unread(c);
         yaccValue = new Token("-", getPosition());
         return Tokens.tMINUS;
@@ -2048,7 +2136,7 @@ public class Lexer {
         int c = src.read();
 
         if (c == '=') {
-            lex_state = LexState.EXPR_BEG;
+            setState(LexState.EXPR_BEG);
             yaccValue = new Token("%", getPosition());
             return Tokens.tOP_ASGN;
         }
@@ -2067,9 +2155,9 @@ public class Lexer {
         
         switch (c) {
         case '|':
-            lex_state = LexState.EXPR_BEG;
+            setState(LexState.EXPR_BEG);
             if ((c = src.read()) == '=') {
-                lex_state = LexState.EXPR_BEG;
+                setState(LexState.EXPR_BEG);
                 yaccValue = new Token("||", getPosition());
                 return Tokens.tOP_ASGN;
             }
@@ -2077,7 +2165,7 @@ public class Lexer {
             yaccValue = new Token("||", getPosition());
             return Tokens.tOROP;
         case '=':
-            lex_state = LexState.EXPR_BEG;
+            setState(LexState.EXPR_BEG);
             yaccValue = new Token("|", getPosition());
             return Tokens.tOP_ASGN;
         default:
@@ -2092,7 +2180,7 @@ public class Lexer {
     private int plus(boolean spaceSeen) throws IOException {
         int c = src.read();
         if (lex_state == LexState.EXPR_FNAME || lex_state == LexState.EXPR_DOT) {
-            lex_state = LexState.EXPR_ARG;
+            setState(LexState.EXPR_ARG);
             if (c == '@') {
                 yaccValue = new Token("+@", getPosition());
                 return Tokens.tUPLUS;
@@ -2103,14 +2191,14 @@ public class Lexer {
         }
         
         if (c == '=') {
-            lex_state = LexState.EXPR_BEG;
+            setState(LexState.EXPR_BEG);
             yaccValue = new Token("+", getPosition());
             return Tokens.tOP_ASGN;
         }
         
         if (isBEG() || (isARG() && spaceSeen && !Character.isWhitespace(c))) {
             if (isARG()) arg_ambiguous();
-            lex_state = LexState.EXPR_BEG;
+            setState(LexState.EXPR_BEG);
             src.unread(c);
             if (Character.isDigit(c)) {
                 c = '+';
@@ -2120,7 +2208,7 @@ public class Lexer {
             return Tokens.tUPLUS;
         }
         
-        lex_state = LexState.EXPR_BEG;
+        setState(LexState.EXPR_BEG);
         src.unread(c);
         yaccValue = new Token("+", getPosition());
         return Tokens.tPLUS;
@@ -2129,14 +2217,15 @@ public class Lexer {
     private int questionMark() throws IOException {
         int c;
         
-        if (lex_state == LexState.EXPR_END || lex_state == LexState.EXPR_ENDARG) {
-            lex_state = isOneEight ? LexState.EXPR_BEG : LexState.EXPR_VALUE;
+        if (isEND()) {
+            setState(isOneEight ? LexState.EXPR_BEG : LexState.EXPR_VALUE);
             yaccValue = new Token("?",getPosition());
             return '?';
         }
         
         c = src.read();
-        if (c == EOF) throw new SyntaxException(PID.INCOMPLETE_CHAR_SYNTAX, getPosition(), "incomplete character syntax");
+        if (c == EOF) throw new SyntaxException(PID.INCOMPLETE_CHAR_SYNTAX, getPosition(), 
+                getCurrentLine(), "incomplete character syntax");
 
         if (Character.isWhitespace(c)){
             if (!isARG()) {
@@ -2168,7 +2257,7 @@ public class Lexer {
                 }
             }
             src.unread(c);
-            lex_state = isOneEight ? LexState.EXPR_BEG : LexState.EXPR_VALUE;
+            setState(isOneEight ? LexState.EXPR_BEG : LexState.EXPR_VALUE);
             yaccValue = new Token("?", getPosition());
             return '?';
             /*} else if (ismbchar(c)) { // ruby - we don't support them either?
@@ -2178,7 +2267,7 @@ public class Lexer {
                 return '?';*/
         } else if (isIdentifierChar(c) && !src.peek('\n') && isNext_identchar()) {
             src.unread(c);
-            lex_state = isOneEight ? LexState.EXPR_BEG : LexState.EXPR_VALUE;
+            setState(isOneEight ? LexState.EXPR_BEG : LexState.EXPR_VALUE);
             yaccValue = new Token("?", getPosition());
             return '?';
         } else if (c == '\\') {
@@ -2186,9 +2275,9 @@ public class Lexer {
             c = readEscape();
         }
         
-        c &= 0xff;
-        lex_state = LexState.EXPR_END;
+        setState(LexState.EXPR_END);
         if (isOneEight) {
+            c &= 0xff;
             yaccValue = new FixnumNode(getPosition(), c);
         } else {
             String oneCharBL = "" + (char) c;
@@ -2202,7 +2291,7 @@ public class Lexer {
         parenNest--;
         conditionState.restart();
         cmdArgumentState.restart();
-        lex_state = isOneEight ? LexState.EXPR_END : LexState.EXPR_ENDARG;
+        setState(isOneEight ? LexState.EXPR_END : LexState.EXPR_ENDARG);
         yaccValue = new Token(")", getPosition());
         return Tokens.tRBRACK;
     }
@@ -2210,7 +2299,7 @@ public class Lexer {
     private int rightCurly() {
         conditionState.restart();
         cmdArgumentState.restart();
-        lex_state = isOneEight ? LexState.EXPR_END : LexState.EXPR_ENDARG;
+        setState(isOneEight ? LexState.EXPR_END : LexState.EXPR_ENDARG);
         yaccValue = new Token("}",getPosition());
         return Tokens.tRCURLY;
     }
@@ -2219,7 +2308,7 @@ public class Lexer {
         parenNest--;
         conditionState.restart();
         cmdArgumentState.restart();
-        lex_state = LexState.EXPR_END;
+        setState(isOneEight ? LexState.EXPR_END : LexState.EXPR_ENDFN);
         yaccValue = new Token(")", getPosition());
         return Tokens.tRPAREN;
     }
@@ -2242,7 +2331,7 @@ public class Lexer {
         
         if (c == '=') {
             yaccValue = new Token("/", getPosition());
-            lex_state = LexState.EXPR_BEG;
+            setState(LexState.EXPR_BEG);
             return Tokens.tOP_ASGN;
         }
         src.unread(c);
@@ -2267,7 +2356,7 @@ public class Lexer {
         switch (c) {
         case '*':
             if ((c = src.read()) == '=') {
-                lex_state = LexState.EXPR_BEG;
+                setState(LexState.EXPR_BEG);
                 yaccValue = new Token("**", getPosition());
                 return Tokens.tOP_ASGN;
             }
@@ -2276,7 +2365,7 @@ public class Lexer {
             c = Tokens.tPOW;
             break;
         case '=':
-            lex_state = LexState.EXPR_BEG;
+            setState(LexState.EXPR_BEG);
             yaccValue = new Token("*", getPosition());
             return Tokens.tOP_ASGN;
         default:
@@ -2301,9 +2390,9 @@ public class Lexer {
         
         if (lex_state == LexState.EXPR_FNAME || lex_state == LexState.EXPR_DOT) {
             if ((c = src.read()) != '@') src.unread(c);
-            lex_state = LexState.EXPR_ARG;
+            setState(LexState.EXPR_ARG);
         } else {
-            lex_state = LexState.EXPR_BEG;
+            setState(LexState.EXPR_BEG);
         }
         
         yaccValue = new Token("~", getPosition());
@@ -2317,7 +2406,7 @@ public class Lexer {
      *@return A int constant wich represents a token.
      */
     private int parseNumber(int c) throws IOException {
-        lex_state = LexState.EXPR_END;
+        setState(LexState.EXPR_END);
 
         tokenBuffer.setLength(0);
 
@@ -2354,9 +2443,11 @@ public class Lexer {
                     src.unread(c);
 
                     if (tokenBuffer.length() == startLen) {
-                        throw new SyntaxException(PID.BAD_HEX_NUMBER, getPosition(), "Hexadecimal number without hex-digits.");
+                        throw new SyntaxException(PID.BAD_HEX_NUMBER, getPosition(), 
+                                getCurrentLine(), "Hexadecimal number without hex-digits.");
                     } else if (nondigit != '\0') {
-                        throw new SyntaxException(PID.TRAILING_UNDERSCORE_IN_NUMBER, getPosition(), "Trailing '_' in number.");
+                        throw new SyntaxException(PID.TRAILING_UNDERSCORE_IN_NUMBER, getPosition(),
+                                getCurrentLine(), "Trailing '_' in number.");
                     }
                     yaccValue = getInteger(tokenBuffer.toString(), 16);
                     return Tokens.tINTEGER;
@@ -2379,9 +2470,11 @@ public class Lexer {
                     src.unread(c);
 
                     if (tokenBuffer.length() == startLen) {
-                        throw new SyntaxException(PID.EMPTY_BINARY_NUMBER, getPosition(), "Binary number without digits.");
+                        throw new SyntaxException(PID.EMPTY_BINARY_NUMBER, getPosition(), 
+                                getCurrentLine(), "Binary number without digits.");
                     } else if (nondigit != '\0') {
-                        throw new SyntaxException(PID.TRAILING_UNDERSCORE_IN_NUMBER, getPosition(), "Trailing '_' in number.");
+                        throw new SyntaxException(PID.TRAILING_UNDERSCORE_IN_NUMBER,
+                                getPosition(), getCurrentLine(), "Trailing '_' in number.");
                     }
                     yaccValue = getInteger(tokenBuffer.toString(), 2);
                     return Tokens.tINTEGER;
@@ -2404,13 +2497,16 @@ public class Lexer {
                     src.unread(c);
 
                     if (tokenBuffer.length() == startLen) {
-                        throw new SyntaxException(PID.EMPTY_BINARY_NUMBER, getPosition(), "Binary number without digits.");
+                        throw new SyntaxException(PID.EMPTY_BINARY_NUMBER, getPosition(),
+                                getCurrentLine(), "Binary number without digits.");
                     } else if (nondigit != '\0') {
-                        throw new SyntaxException(PID.TRAILING_UNDERSCORE_IN_NUMBER, getPosition(), "Trailing '_' in number.");
+                        throw new SyntaxException(PID.TRAILING_UNDERSCORE_IN_NUMBER,
+                                getPosition(), getCurrentLine(), "Trailing '_' in number.");
                     }
                     yaccValue = getInteger(tokenBuffer.toString(), 10);
                     return Tokens.tINTEGER;
                 case 'o':
+                case 'O':                    
                     c = src.read();
                 case '0': case '1': case '2': case '3': case '4': //Octal
                 case '5': case '6': case '7': case '_': 
@@ -2430,7 +2526,8 @@ public class Lexer {
                         src.unread(c);
 
                         if (nondigit != '\0') {
-                            throw new SyntaxException(PID.TRAILING_UNDERSCORE_IN_NUMBER, getPosition(), "Trailing '_' in number.");
+                            throw new SyntaxException(PID.TRAILING_UNDERSCORE_IN_NUMBER, getPosition(), 
+                                    getCurrentLine(), "Trailing '_' in number.");
                         }
 
                         yaccValue = getInteger(tokenBuffer.toString(), 8);
@@ -2438,7 +2535,8 @@ public class Lexer {
                     }
                 case '8' :
                 case '9' :
-                    throw new SyntaxException(PID.BAD_OCTAL_DIGIT, getPosition(), "Illegal octal digit.");
+                    throw new SyntaxException(PID.BAD_OCTAL_DIGIT, getPosition(),
+                            getCurrentLine(), "Illegal octal digit.");
                 case '.' :
                 case 'e' :
                 case 'E' :
@@ -2472,7 +2570,8 @@ public class Lexer {
                 case '.' :
                     if (nondigit != '\0') {
                         src.unread(c);
-                        throw new SyntaxException(PID.TRAILING_UNDERSCORE_IN_NUMBER, getPosition(), "Trailing '_' in number.");
+                        throw new SyntaxException(PID.TRAILING_UNDERSCORE_IN_NUMBER, getPosition(),
+                                getCurrentLine(), "Trailing '_' in number.");
                     } else if (seen_point || seen_e) {
                         src.unread(c);
                         return getNumberToken(tokenBuffer.toString(), true, nondigit);
@@ -2499,7 +2598,8 @@ public class Lexer {
                 case 'e' :
                 case 'E' :
                     if (nondigit != '\0') {
-                        throw new SyntaxException(PID.TRAILING_UNDERSCORE_IN_NUMBER, getPosition(), "Trailing '_' in number.");
+                        throw new SyntaxException(PID.TRAILING_UNDERSCORE_IN_NUMBER,
+                                getPosition(), getCurrentLine(), "Trailing '_' in number.");
                     } else if (seen_e) {
                         src.unread(c);
                         return getNumberToken(tokenBuffer.toString(), true, nondigit);
@@ -2518,7 +2618,8 @@ public class Lexer {
                     break;
                 case '_' : //  '_' in number just ignored
                     if (nondigit != '\0') {
-                        throw new SyntaxException(PID.TRAILING_UNDERSCORE_IN_NUMBER, getPosition(), "Trailing '_' in number.");
+                        throw new SyntaxException(PID.TRAILING_UNDERSCORE_IN_NUMBER,
+                                getPosition(), getCurrentLine(), "Trailing '_' in number.");
                     }
                     nondigit = c;
                     break;
@@ -2531,12 +2632,118 @@ public class Lexer {
 
     private int getNumberToken(String number, boolean isFloat, int nondigit) {
         if (nondigit != '\0') {
-            throw new SyntaxException(PID.TRAILING_UNDERSCORE_IN_NUMBER, getPosition(), "Trailing '_' in number.");
+            throw new SyntaxException(PID.TRAILING_UNDERSCORE_IN_NUMBER,
+                    getPosition(), getCurrentLine(), "Trailing '_' in number.");
         } else if (isFloat) {
             return getFloatToken(number);
         }
         yaccValue = getInteger(number, 10);
         return Tokens.tINTEGER;
+    }
+    
+    // Note: parser_tokadd_utf8 variant just for regexp literal parsing.  This variant is to be
+    // called when string_literal and regexp_literal.
+    public void readUTFEscapeRegexpLiteral(CStringBuilder buffer) throws IOException {
+        buffer.append('\\');
+        buffer.append('u');
+
+        if (src.peek('{')) { // handle \\u{...}
+            do {
+                buffer.append(src.read());
+                if (scanHexLiteral(buffer, 6, false, "invalid Unicode escape") > 0x10ffff) {
+                    throw new SyntaxException(PID.INVALID_ESCAPE_SYNTAX, getPosition(),
+                            getCurrentLine(), "invalid Unicode codepoint (too large)");
+                }
+            } while (src.peek(' ') || src.peek('\t'));
+
+            int c = src.read();
+            if (c != '}') {
+                throw new SyntaxException(PID.INVALID_ESCAPE_SYNTAX, getPosition(),
+                        getCurrentLine(), "unterminated Unicode escape");
+            }
+            buffer.append((char) c);
+        } else { // handle \\uxxxx
+            scanHexLiteral(buffer, 4, true, "Invalid Unicode escape");
+        }
+    }
+
+    private byte[] mbcBuf = new byte[6];
+
+    //FIXME: This seems like it could be more efficient to ensure size in bytelist and then pass
+    // in bytelists byte backing store.  This method would look ugly since realSize would need
+    // to be tweaked and I don't know how many bytes this codepoint has up front so I would need
+    // to grow by 6 (which may be wasteful).  Another idea is to make Encoding accept an interface
+    // for populating bytes and then make ByteList implement that interface.  I like this last idea
+    // since it would not leak bytelist impl details all over the place.
+    public int tokenAddMBC(int codepoint, CStringBuilder buffer) {
+//        int length = buffer.getEncoding().codeToMbc(codepoint, mbcBuf, 0);
+
+  //      if (length <= 0) return EOF;
+
+//        buffer.append(mbcBuf, 0, length);
+        buffer.append(codepoint);
+
+//        return length;
+        return 1;
+    }
+
+    public void tokenAddMBCFromSrc(int c, CStringBuilder buffer) throws IOException {
+        // read bytes for length of character
+        int length = 1; //buffer.getEncoding().length((byte)c);
+        buffer.append((char)c);
+//        for (int off = 0; off < length - 1; off++) {
+//            buffer.append((byte)src.read());
+//        }
+    }
+
+    // MRI: parser_tokadd_utf8 sans regexp literal parsing
+    public int readUTFEscape(CStringBuilder buffer, boolean stringLiteral, boolean symbolLiteral) throws IOException {
+        int codepoint;
+        int c;
+
+        if (src.peek('{')) { // handle \\u{...}
+            do {
+                src.read(); // Eat curly or whitespace
+                codepoint = scanHex(6, false, "invalid Unicode escape");
+                if (codepoint > 0x10ffff) {
+                    throw new SyntaxException(PID.INVALID_ESCAPE_SYNTAX, getPosition(),
+                            getCurrentLine(), "invalid Unicode codepoint (too large)");
+                }
+
+                if (codepoint >= 0x80) {
+//                    buffer.setEncoding("UTF-8");
+                    if (stringLiteral) tokenAddMBC(codepoint, buffer);
+                } else if (stringLiteral) {
+                    if (codepoint == 0 && symbolLiteral) {
+                        throw new SyntaxException(PID.INVALID_ESCAPE_SYNTAX, getPosition(),
+                            getCurrentLine(), "symbol cannot contain '\\u0000'");
+                    }
+
+                    buffer.append((char) codepoint);
+                }
+            } while (src.peek(' ') || src.peek('\t'));
+
+            c = src.read();
+            if (c != '}') {
+                throw new SyntaxException(PID.INVALID_ESCAPE_SYNTAX, getPosition(),
+                        getCurrentLine(), "unterminated Unicode escape");
+            }
+        } else { // handle \\uxxxx
+            codepoint = scanHex(4, true, "Invalid Unicode escape");
+            if (codepoint >= 0x80) {
+//                buffer.setEncoding("UTF-8");
+                if (stringLiteral) tokenAddMBC(codepoint, buffer);
+            } else if (stringLiteral) {
+                if (codepoint == 0 && symbolLiteral) {
+                    throw new SyntaxException(PID.INVALID_ESCAPE_SYNTAX, getPosition(),
+                        getCurrentLine(), "symbol cannot contain '\\u0000'");
+                }
+
+                buffer.append((char) codepoint);
+            }
+        }
+
+        return codepoint;
     }
     
     public int readEscape() throws IOException {
@@ -2583,7 +2790,8 @@ public class Lexer {
                 
                 // No hex value after the 'x'.
                 if (i == 0) {
-                    throw new SyntaxException(PID.INVALID_ESCAPE_SYNTAX, getPosition(), "Invalid escape character syntax");
+                    throw new SyntaxException(PID.INVALID_ESCAPE_SYNTAX, getPosition(), 
+                            getCurrentLine(), "Invalid escape character syntax");
                 }
                 return hexValue;
             case 'b' : // backspace
@@ -2592,16 +2800,19 @@ public class Lexer {
                 return ' ';
             case 'M' :
                 if ((c = src.read()) != '-') {
-                    throw new SyntaxException(PID.INVALID_ESCAPE_SYNTAX, getPosition(), "Invalid escape character syntax");
+                    throw new SyntaxException(PID.INVALID_ESCAPE_SYNTAX, getPosition(),
+                            getCurrentLine(), "Invalid escape character syntax");
                 } else if ((c = src.read()) == '\\') {
                     return (char) (readEscape() | 0x80);
                 } else if (c == EOF) {
-                    throw new SyntaxException(PID.INVALID_ESCAPE_SYNTAX, getPosition(), "Invalid escape character syntax");
+                    throw new SyntaxException(PID.INVALID_ESCAPE_SYNTAX, getPosition(),
+                            getCurrentLine(), "Invalid escape character syntax");
                 } 
                 return (char) ((c & 0xff) | 0x80);
             case 'C' :
                 if ((c = src.read()) != '-') {
-                    throw new SyntaxException(PID.INVALID_ESCAPE_SYNTAX, getPosition(), "Invalid escape character syntax");
+                    throw new SyntaxException(PID.INVALID_ESCAPE_SYNTAX, getPosition(),
+                            getCurrentLine(), "Invalid escape character syntax");
                 }
             case 'c' :
                 if ((c = src.read()) == '\\') {
@@ -2609,16 +2820,81 @@ public class Lexer {
                 } else if (c == '?') {
                     return '\u0177';
                 } else if (c == EOF) {
-                    throw new SyntaxException(PID.INVALID_ESCAPE_SYNTAX, getPosition(), "Invalid escape character syntax");
+                    throw new SyntaxException(PID.INVALID_ESCAPE_SYNTAX, getPosition(),
+                            getCurrentLine(), "Invalid escape character syntax");
                 }
                 return (char) (c & 0x9f);
             case EOF :
-                throw new SyntaxException(PID.INVALID_ESCAPE_SYNTAX, getPosition(), "Invalid escape character syntax");
+                throw new SyntaxException(PID.INVALID_ESCAPE_SYNTAX, getPosition(),
+                        getCurrentLine(), "Invalid escape character syntax");
             default :
                 return c;
         }
     }
 
+    /**
+     * Read up to count hexadecimal digits and store those digits in a token buffer.  If strict is
+     * provided then count number of hex digits must be present. If no digits can be read a syntax
+     * exception will be thrown.  This will also return the codepoint as a value so codepoint
+     * ranges can be checked.
+     */
+    private char scanHexLiteral(CStringBuilder buffer, int count, boolean strict, String errorMessage)
+            throws IOException {
+        int i = 0;
+        char hexValue = '\0';
+
+        for (; i < count; i++) {
+            int h1 = src.read();
+
+            if (!isHexChar(h1)) {
+                src.unread(h1);
+                break;
+            }
+
+            buffer.append(h1);
+
+            hexValue <<= 4;
+            hexValue |= Integer.parseInt("" + (char) h1, 16) & 15;
+        }
+
+        // No hex value after the 'x'.
+        if (i == 0 || strict && count != i) {
+            throw new SyntaxException(PID.INVALID_ESCAPE_SYNTAX, getPosition(),
+                    getCurrentLine(), errorMessage);
+        }
+
+        return hexValue;
+    }
+
+    /**
+     * Read up to count hexadecimal digits.  If strict is provided then count number of hex
+     * digits must be present. If no digits can be read a syntax exception will be thrown.
+     */
+    private int scanHex(int count, boolean strict, String errorMessage) throws IOException {
+        int i = 0;
+        int hexValue = '\0';
+
+        for (; i < count; i++) {
+            int h1 = src.read();
+
+            if (!isHexChar(h1)) {
+                src.unread(h1);
+                break;
+            }
+
+            hexValue <<= 4;
+            hexValue |= Integer.parseInt("" + (char) h1, 16) & 15;
+        }
+
+        // No hex value after the 'x'.
+        if (i == 0 || (strict && count != i)) {
+            throw new SyntaxException(PID.INVALID_ESCAPE_SYNTAX, getPosition(),
+                    getCurrentLine(), errorMessage);
+        }
+
+        return hexValue;
+    }
+    
     private char scanOct(int count) throws IOException {
         char value = '\0';
 
