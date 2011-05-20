@@ -109,7 +109,7 @@ describe Parser do
       end
     end
 
-    it "parses an empty method with a block({}) [#{v}]" do
+    it "parses an empty method with a block({}) +1 arg [#{v}]" do
       parse("foo() { |a| }", v).find(:fcall).tap do |call|
         call.should have_name_and_position("foo", 0, 0, 0, 13)
         call.iter_node.should have_position(0, 0, 6, 13)
