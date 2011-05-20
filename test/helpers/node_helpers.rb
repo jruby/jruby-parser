@@ -21,6 +21,8 @@ class Node
     nil
   end
 
+  alias :find :find_node
+
   def [](value)
     child_nodes[value]
   end

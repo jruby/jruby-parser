@@ -5,9 +5,9 @@ import org.jrubyparser.Parser
 import org.jrubyparser.parser.ParserConfiguration
 import org.jrubyparser.CompatVersion
 
-$parser = Parser.new
-$config = ParserConfiguration.new
-$config_1_9 = ParserConfiguration.new(0, CompatVersion::RUBY1_9)
+PARSER = Parser.new
+CONFIG_18 = ParserConfiguration.new
+CONFIG_19 = ParserConfiguration.new(0, CompatVersion::RUBY1_9)
 
 class Object
   # Wrap the code in what the JRubyParser expects
@@ -16,9 +16,8 @@ class Object
   end
 
   # Parse the provided code into an AST
-  #
-  # Add optional versioning flag for 1.9 tests
-  def parse(code, parser_config=$config)
-    $parser.parse("<code>", source(code), parser_config)
+  def parse(code, version=1.8)
+    config = version == 1.8  ? CONFIG_18 : CONFIG_19
+    PARSER.parse "<code>", source(code), config
   end
 end

@@ -5,12 +5,9 @@ require 'parser_helpers'
 require 'node_helpers'
 
 describe Parser do
-  it "should parse a string value" do
-    ast = parse(<<-EOF)
-str = "my str"
-    EOF
-
-    str = ast.find_node(:str)
-    str.value.should == "my str"
+  [1.8, 1.9].each do |v|
+    it "should parse a string value [#{v}]" do
+      parse('str = "my str"', v).find(:str).value.should == "my str"
+    end
   end
 end

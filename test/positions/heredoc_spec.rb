@@ -9,110 +9,101 @@ require 'node_helpers'
 #    the markers definition.
 
 describe Parser do
-  it "should parse a heredoc with marker at beginning of line" do
-    ast = parse(<<-EOF)
+  [1.8, 1.9].each do |v|
+    it "parses a heredoc with marker at beginning of line[#{v}]" do
+    ast = parse(<<-EOF, v)
 <<END
 hello
 END
     EOF
 
-    str = ast.find_node(:str)
-    str.should have_position(0, 2, 0, 15)
+    ast.find_node(:str).should have_position(0, 2, 0, 15)
   end
 
-  it "should parse an empty heredoc with marker at beginning of line" do
-    ast = parse(<<-EOF)
+  it "parses an empty heredoc with marker at beginning of line[#{v}]" do
+    ast = parse(<<-EOF, v)
 <<END
 END
     EOF
 
-    str = ast.find_node(:str)
-    str.should have_position(0, 1, 0, 9)
+    ast.find_node(:str).should have_position(0, 1, 0, 9)
   end
 
-  it "should parse a heredoc with minus(-) and marker not at beginning of line" do
-    ast = parse(<<-EOF)
+  it "parses a heredoc with minus(-) and marker not at beginning of line[#{v}]" do
+    ast = parse(<<-EOF, v)
 <<-END
 hello
  END
     EOF
 
-    str = ast.find_node(:str)
-    str.should have_position(0, 2, 0, 17)
+    ast.find_node(:str).should have_position(0, 2, 0, 17)
   end
 
-  it "should parse an empty heredoc with minus(-) and marker not at beginning of line" do
-    ast = parse(<<-EOF)
+  it "parses an empty heredoc with minus(-) and marker not at beginning of line[#{v}]" do
+    ast = parse(<<-EOF, v)
 <<-END
  END
     EOF
 
-    str = ast.find_node(:str)
-    str.should have_position(0, 1, 0, 11)
+    ast.find_node(:str).should have_position(0, 1, 0, 11)
   end
 
-  it "should parse a heredoc in quotes with marker at beginning of line" do
-    ast = parse(<<-EOF)
+  it "parses a heredoc in quotes with marker at beginning of line[#{v}]" do
+    ast = parse(<<-EOF, v)
 <<'END'
 hello
 END
     EOF
 
-    str = ast.find_node(:str)
-    str.should have_position(0, 2, 0, 17)
+    ast.find_node(:str).should have_position(0, 2, 0, 17)
   end
 
-  it "should parse a heredoc in quotes with minus(-) and marker not at beginning of line" do
-    ast = parse(<<-EOF)
+  it "parses a heredoc in quotes with minus(-) and marker not at beginning of line[#{v}]" do
+    ast = parse(<<-EOF, v)
 <<-'END'
 hello
  END
     EOF
 
-    str = ast.find_node(:str)
-    str.should have_position(0, 2, 0, 19)
+    ast.find_node(:str).should have_position(0, 2, 0, 19)
   end
 
-  it "should parse a heredoc in double quotes with minus(-) and marker not at beginning of line" do
-    ast = parse(<<-EOF)
+  it "parses a heredoc in double quotes with minus(-) and marker not at beginning of line[#{v}]" do
+    ast = parse(<<-EOF, v)
 <<-"end;"
 hello
  end;
     EOF
 
-    str = ast.find_node(:str)
-    str.should have_position(0, 2, 0, 21)
+    ast.find_node(:str).should have_position(0, 2, 0, 21)
   end
 
-  it "should parse an empty heredoc in double quotes with minus(-) and marker not at beginning of line" do
-    ast = parse(<<-EOF)
+  it "parses an empty heredoc in double quotes with minus(-) and marker not at beginning of line[#{v}]" do
+    ast = parse(<<-EOF, v)
 <<-"end;"
  end;
     EOF
 
-    str = ast.find_node(:str)
-    str.should have_position(0, 1, 0, 15)
+    ast.find_node(:str).should have_position(0, 1, 0, 15)
   end
 
-  it "should parse a heredoc in method call with other arguments" do
-    ast = parse(<<-EOF)
+  it "parses a heredoc in method call with other arguments[#{v}]" do
+    ast = parse(<<-EOF, v)
 module_eval <<-"end;", "file", 123
   hello world
  end;
     EOF
 
-    str = ast.find_node(:str)
-    str.should have_position(0, 2, 12, 41)
+    ast.find_node(:str).should have_position(0, 2, 12, 41)
   end
 
-  it "should parse an empty heredoc in method call with other arguments" do
-    ast = parse(<<-EOF)
+  it "parses an empty heredoc in method call with other arguments[#{v}]" do
+    ast = parse(<<-EOF, v)
 module_eval <<-"end;", "file", 123
  end;
     EOF
 
-    str = ast.find_node(:str)
-    str.should have_position(0, 1, 12, 27)
+    ast.find_node(:str).should have_position(0, 1, 12, 27)
   end
-
+end
 end

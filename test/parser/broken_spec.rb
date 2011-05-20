@@ -9,21 +9,17 @@ import org.jrubyparser.lexer.SyntaxException
 
 # tests for broken files
 describe Parser do
-  it "should raise an unterminated string exception" do
-    lambda {parse(<<-EOF)
-str = "
-    EOF
-    }.should raise_error StringTerm::UnterminatedStringException
+  [1.8, 1.9].each do |v|
+    it "should raise an unterminated string exception" do
+      lambda {
+        parse('str = "', v)
+      }.should raise_error StringTerm::UnterminatedStringException
+    end
+
+    it "should raise a syntax exception" do
+      lambda {
+        parse("class Foo\n   def\nend\n", v)
+      }.should raise_error SyntaxException
+    end
   end
-
-  it "should raise a syntax exception" do
-    lambda {parse(<<-EOF)
-class Foo
-   def
-end
-    EOF
-    }.should raise_error SyntaxException
-  end
-
-
 end
