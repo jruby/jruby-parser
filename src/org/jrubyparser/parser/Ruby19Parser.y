@@ -58,7 +58,7 @@ import org.jrubyparser.ast.FixnumNode;
 import org.jrubyparser.ast.FloatNode;
 import org.jrubyparser.ast.ForNode;
 import org.jrubyparser.ast.GlobalVarNode;
-import org.jrubyparser.ast.Hash19Node;
+import org.jrubyparser.ast.HashNode;
 import org.jrubyparser.ast.IfNode;
 import org.jrubyparser.ast.InstVarNode;
 import org.jrubyparser.ast.IterNode;
@@ -909,10 +909,10 @@ aref_args       : none
                     $$ = $1;
                 }
                 | args ',' assocs trailer {
-                    $$ = support.arg_append($1, new Hash19Node(support.getPosition(null), $3));
+                    $$ = support.arg_append($1, new HashNode(support.getPosition(null), $3));
                 }
                 | assocs trailer {
-                    $$ = support.newArrayNode(support.getPosition($1), new Hash19Node(support.getPosition(null), $1));
+                    $$ = support.newArrayNode(support.getPosition($1), new HashNode(support.getPosition(null), $1));
                 }
 
 paren_args      : tLPAREN2 opt_call_args rparen {
@@ -931,11 +931,11 @@ call_args       : command {
                     $$ = support.arg_blk_pass($1, $2);
                 }
                 | assocs opt_block_arg {
-                    $$ = support.newArrayNode(support.getPosition($1), new Hash19Node(support.getPosition(null), $1));
+                    $$ = support.newArrayNode(support.getPosition($1), new HashNode(support.getPosition(null), $1));
                     $$ = support.arg_blk_pass((Node)$$, $2);
                 }
                 | args ',' assocs opt_block_arg {
-                    $$ = support.arg_append($1, new Hash19Node(support.getPosition(null), $3));
+                    $$ = support.arg_append($1, new HashNode(support.getPosition(null), $3));
                     $$ = support.arg_blk_pass((Node)$$, $4);
                 }
                 | block_arg {
@@ -1053,7 +1053,7 @@ primary         : literal
                     }
                 }
                 | tLBRACE assoc_list tRCURLY {
-                    $$ = new Hash19Node(support.union($1, $3), $2);
+                    $$ = new HashNode(support.union($1, $3), $2);
                 }
                 | kRETURN {
                     $$ = new ReturnNode($1.getPosition(), NilImplicitNode.NIL);

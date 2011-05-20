@@ -61,7 +61,7 @@ import org.jrubyparser.ast.FixnumNode;
 import org.jrubyparser.ast.FloatNode;
 import org.jrubyparser.ast.ForNode;
 import org.jrubyparser.ast.GlobalVarNode;
-import org.jrubyparser.ast.Hash19Node;
+import org.jrubyparser.ast.HashNode;
 import org.jrubyparser.ast.IfNode;
 import org.jrubyparser.ast.InstVarNode;
 import org.jrubyparser.ast.IterNode;
@@ -2032,7 +2032,7 @@ states[72] = new ParserState() {
 };
 states[273] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
-                    yyVal = new Hash19Node(support.union(((Token)yyVals[-2+yyTop]), ((Token)yyVals[0+yyTop])), ((ListNode)yyVals[-1+yyTop]));
+                    yyVal = new HashNode(support.union(((Token)yyVals[-2+yyTop]), ((Token)yyVals[0+yyTop])), ((ListNode)yyVals[-1+yyTop]));
     return yyVal;
   }
 };
@@ -2179,7 +2179,7 @@ states[308] = new ParserState() {
 };
 states[241] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
-                    yyVal = support.newArrayNode(support.getPosition(((ListNode)yyVals[-1+yyTop])), new Hash19Node(support.getPosition(null), ((ListNode)yyVals[-1+yyTop])));
+                    yyVal = support.newArrayNode(support.getPosition(((ListNode)yyVals[-1+yyTop])), new HashNode(support.getPosition(null), ((ListNode)yyVals[-1+yyTop])));
                     yyVal = support.arg_blk_pass((Node)yyVal, ((BlockPassNode)yyVals[0+yyTop]));
     return yyVal;
   }
@@ -2275,7 +2275,7 @@ states[41] = new ParserState() {
 };
 states[242] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
-                    yyVal = support.arg_append(((Node)yyVals[-3+yyTop]), new Hash19Node(support.getPosition(null), ((ListNode)yyVals[-1+yyTop])));
+                    yyVal = support.arg_append(((Node)yyVals[-3+yyTop]), new HashNode(support.getPosition(null), ((ListNode)yyVals[-1+yyTop])));
                     yyVal = support.arg_blk_pass((Node)yyVal, ((BlockPassNode)yyVals[0+yyTop]));
     return yyVal;
   }
@@ -4089,7 +4089,7 @@ states[31] = new ParserState() {
 };
 states[232] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
-                    yyVal = support.arg_append(((Node)yyVals[-3+yyTop]), new Hash19Node(support.getPosition(null), ((ListNode)yyVals[-1+yyTop])));
+                    yyVal = support.arg_append(((Node)yyVals[-3+yyTop]), new HashNode(support.getPosition(null), ((ListNode)yyVals[-1+yyTop])));
     return yyVal;
   }
 };
@@ -4162,7 +4162,7 @@ states[32] = new ParserState() {
 };
 states[233] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
-                    yyVal = support.newArrayNode(support.getPosition(((ListNode)yyVals[-1+yyTop])), new Hash19Node(support.getPosition(null), ((ListNode)yyVals[-1+yyTop])));
+                    yyVal = support.newArrayNode(support.getPosition(((ListNode)yyVals[-1+yyTop])), new HashNode(support.getPosition(null), ((ListNode)yyVals[-1+yyTop])));
     return yyVal;
   }
 };
