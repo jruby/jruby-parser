@@ -179,6 +179,7 @@ public class ParserSupport {
     public Node arg_blk_pass(Node firstNode, BlockPassNode secondNode) {
         if (secondNode != null) {
             secondNode.setArgsNode(firstNode);
+            secondNode.setPosition(union(firstNode, secondNode));
             return secondNode;
         }
         return firstNode;

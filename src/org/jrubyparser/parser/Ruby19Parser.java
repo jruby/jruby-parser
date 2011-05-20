@@ -1526,8 +1526,14 @@ states[33] = new ParserState() {
 };
 states[234] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
-                    yyVal = ((Node)yyVals[-1+yyTop]);
-                    if (yyVal != null) ((Node)yyVal).setPosition(support.union(((Token)yyVals[-2+yyTop]), ((Token)yyVals[0+yyTop])));
+                    SourcePosition pos = support.union(((Token)yyVals[-2+yyTop]), ((Token)yyVals[0+yyTop]));
+
+                    if (((Node)yyVals[-1+yyTop]) == null) {
+                        yyVal = new ArrayNode(pos);
+                    } else {
+                        yyVal = ((Node)yyVals[-1+yyTop]);
+                        ((Node)yyVal).setPosition(pos);
+                    }
     return yyVal;
   }
 };
@@ -2051,6 +2057,7 @@ states[508] = new ParserState() {
                     }
                     support.checkExpression(((Node)yyVals[-1+yyTop]));
                     yyVal = ((Node)yyVals[-1+yyTop]);
+                    ((Node)yyVal).setPosition(support.union(((Token)yyVals[-3+yyTop]), ((Node)yyVals[-1+yyTop])));
     return yyVal;
   }
 };
@@ -2319,6 +2326,7 @@ states[209] = new ParserState() {
 states[75] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
                     yyVal = ((Node)yyVals[-1+yyTop]);
+                    ((Node)yyVal).setPosition(support.union(((Token)yyVals[-2+yyTop]), ((Token)yyVals[0+yyTop])));
     return yyVal;
   }
 };
@@ -2456,7 +2464,7 @@ states[77] = new ParserState() {
 };
 states[278] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
-                    yyVal = new DefinedNode(support.getPosition(((Token)yyVals[-4+yyTop])), ((Node)yyVals[-1+yyTop]));
+                    yyVal = new DefinedNode(support.union(((Token)yyVals[-4+yyTop]), ((Token)yyVals[0+yyTop])), ((Node)yyVals[-1+yyTop]));
     return yyVal;
   }
 };
@@ -3104,6 +3112,7 @@ states[186] = new ParserState() {
 states[488] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
                     yyVal = ((Node)yyVals[-1+yyTop]);
+                    ((Node)yyVal).setPosition(support.union(((Token)yyVals[-2+yyTop]), ((Token)yyVals[0+yyTop])));
                     /*		    {
 			ID tid = internal_id();
 			arg_var(tid);
@@ -3226,7 +3235,7 @@ states[187] = new ParserState() {
 };
 states[489] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
-                    yyVal = new ArrayNode(support.getPosition(null), ((Node)yyVals[0+yyTop]));
+                    yyVal = new ListNode(((ISourcePositionHolder)yyVals[0+yyTop]).getPosition()).add(((Node)yyVals[0+yyTop]));
     return yyVal;
   }
 };
@@ -3674,6 +3683,7 @@ states[394] = new ParserState() {
 states[327] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
                     yyVal = ((Node)yyVals[-1+yyTop]);
+                    ((Node)yyVal).setPosition(support.union(((Token)yyVals[-2+yyTop]), ((Token)yyVals[0+yyTop])));
     return yyVal;
   }
 };
@@ -3842,6 +3852,7 @@ states[195] = new ParserState() {
 states[61] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
                     yyVal = ((Node)yyVals[-1+yyTop]);
+                    ((Node)yyVal).setPosition(support.union(((Token)yyVals[-2+yyTop]), ((Token)yyVals[0+yyTop])));
     return yyVal;
   }
 };
@@ -3981,7 +3992,8 @@ states[197] = new ParserState() {
 };
 states[63] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
-                    yyVal = new MultipleAsgn19Node(support.getPosition(((Token)yyVals[-2+yyTop])), support.newArrayNode(support.getPosition(((Token)yyVals[-2+yyTop])), ((Node)yyVals[-1+yyTop])), null, null);
+                    SourcePosition pos = support.union(((Token)yyVals[-2+yyTop]), ((Token)yyVals[0+yyTop]));
+                    yyVal = new MultipleAsgn19Node(pos, support.newArrayNode(pos, ((Node)yyVals[-1+yyTop])), null, null);
     return yyVal;
   }
 };
@@ -4209,7 +4221,7 @@ states[267] = new ParserState() {
   }
 };
 }
-					// line 1984 "Ruby19parser.y"
+					// line 1996 "Ruby19parser.y"
 
     /** The parse method use an lexer stream and parse it to an AST node 
      * structure
@@ -4244,4 +4256,4 @@ states[267] = new ParserState() {
     // +++
     // Helper Methods
 }
-					// line 8033 "-"
+					// line 8045 "-"

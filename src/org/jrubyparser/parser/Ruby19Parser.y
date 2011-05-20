@@ -508,6 +508,7 @@ command        : operation command_args %prec tLOWEST {
 mlhs            : mlhs_basic
                 | tLPAREN mlhs_inner rparen {
                     $$ = $2;
+                    $<Node>$.setPosition(support.union($1, $3));
                 }
 
 // MultipleAssign19Node:mlhs_entry - mlhs w or w/o parens [!null]
@@ -515,7 +516,8 @@ mlhs_inner      : mlhs_basic {
                     $$ = $1;
                 }
                 | tLPAREN mlhs_inner rparen {
-                    $$ = new MultipleAsgn19Node(support.getPosition($1), support.newArrayNode(support.getPosition($1), $2), null, null);
+                    SourcePosition pos = support.union($1, $3);
+                    $$ = new MultipleAsgn19Node(pos, support.newArrayNode(pos, $2), null, null);
                 }
 
 // MultipleAssign19Node:mlhs_basic - multiple left hand side (basic because used in multiple context) [!null]
@@ -553,6 +555,7 @@ mlhs_basic      : mlhs_head {
 mlhs_item       : mlhs_node
                 | tLPAREN mlhs_inner rparen {
                     $$ = $2;
+                    $<Node>$.setPosition(support.union($1, $3));
                 }
 
 // Set of mlhs terms at front of mlhs (a, *b, d, e = arr  # a is head)
@@ -916,8 +919,14 @@ aref_args       : none
                 }
 
 paren_args      : tLPAREN2 opt_call_args rparen {
-                    $$ = $2;
-                    if ($$ != null) $<Node>$.setPosition(support.union($1, $3));
+                    SourcePosition pos = support.union($1, $3);
+
+                    if ($2 == null) {
+                        $$ = new ArrayNode(pos);
+                    } else {
+                        $$ = $2;
+                        $<Node>$.setPosition(pos);
+                    }
                 }
 
 opt_paren_args  : none | paren_args
@@ -1068,7 +1077,7 @@ primary         : literal
                     $$ = new ZYieldNode($1.getPosition());
                 }
                 | kDEFINED opt_nl tLPAREN2 expr rparen {
-                    $$ = new DefinedNode(support.getPosition($1), $4);
+                    $$ = new DefinedNode(support.union($1, $5), $4);
                 }
                 | kNOT tLPAREN2 expr rparen {
                     $$ = support.getOperatorCallNode(support.getConditionNode($3), "!");
@@ -1232,6 +1241,7 @@ f_marg          : f_norm_arg {
                 }
                 | tLPAREN f_margs rparen {
                     $$ = $2;
+                    $<Node>$.setPosition(support.union($1, $3));
                 }
 
 f_marg_list     : f_marg {
@@ -1827,6 +1837,7 @@ f_arg_item      : f_norm_arg {
                 }
                 | tLPAREN f_margs rparen {
                     $$ = $2;
+                    $<Node>$.setPosition(support.union($1, $3));
                     /*		    {
 			ID tid = internal_id();
 			arg_var(tid);
@@ -1841,7 +1852,7 @@ f_arg_item      : f_norm_arg {
                 }
 
 f_arg           : f_arg_item {
-                    $$ = new ArrayNode(support.getPosition(null), $1);
+                    $$ = new ListNode($<ISourcePositionHolder>1.getPosition()).add($1);
                 }
                 | f_arg ',' f_arg_item {
                     $1.add($3);
@@ -1919,6 +1930,7 @@ singleton       : var_ref {
                     }
                     support.checkExpression($3);
                     $$ = $3;
+                    $<Node>$.setPosition(support.union($1, $3));
                 }
 
 assoc_list      : none {
