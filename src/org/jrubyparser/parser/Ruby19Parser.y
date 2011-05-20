@@ -1442,7 +1442,7 @@ method_call     : operation paren_args {
 brace_block     : tLCURLY {
                     support.pushBlockScope();
                 } opt_block_param compstmt tRCURLY {
-                    $$ = new IterNode(support.getPosition($1), $3, $4, support.getCurrentScope());
+                    $$ = new IterNode(support.union($1, $5), $3, $4, support.getCurrentScope());
                     support.popCurrentScope();
                 }
                 | kDO {
