@@ -1241,6 +1241,7 @@ public class Lexer {
                     switch (lex_state) {
                     case EXPR_BEG: case EXPR_FNAME: case EXPR_DOT:
                     case EXPR_CLASS: case EXPR_VALUE:
+                        getPosition();
                         continue loop;
                     }
 
