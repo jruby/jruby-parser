@@ -1816,12 +1816,11 @@ f_bad_arg       : tCONSTANT {
 // Token:f_norm_arg
 f_norm_arg      : f_bad_arg
                 | tIDENTIFIER {
-                    $$ = support.arg_var($1);
+                    $$ = support.formal_argument($1);
                 }
 
 f_arg_item      : f_norm_arg {
-                    support.arg_var($1);
-                    $$ = new ArgumentNode($<ISourcePositionHolder>1.getPosition(), (String) $1.getValue());
+                    $$ = support.arg_var($1);
   /*
                     $$ = new ArgAuxiliaryNode($1.getPosition(), (String) $1.getValue(), 1);
   */

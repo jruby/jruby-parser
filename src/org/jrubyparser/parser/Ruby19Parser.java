@@ -1,7 +1,7 @@
 // created by jay 1.0.2 (c) 2002-2004 ats@cs.rit.edu
 // skeleton Java 1.0 (c) 2002 ats@cs.rit.edu
 
-					// line 2 "Ruby19Parser.y"
+					// line 2 "Ruby19parser.y"
 /***** BEGIN LICENSE BLOCK *****
  * Version: CPL 1.0/GPL 2.0/LGPL 2.1
  *
@@ -2905,7 +2905,7 @@ states[251] = new ParserState() {
 };
 states[486] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
-                    yyVal = support.arg_var(((Token)yyVals[0+yyTop]));
+                    yyVal = support.formal_argument(((Token)yyVals[0+yyTop]));
     return yyVal;
   }
 };
@@ -2997,8 +2997,7 @@ states[185] = new ParserState() {
 };
 states[487] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
-                    support.arg_var(((Token)yyVals[0+yyTop]));
-                    yyVal = new ArgumentNode(((ISourcePositionHolder)yyVals[0+yyTop]).getPosition(), (String) ((Token)yyVals[0+yyTop]).getValue());
+                    yyVal = support.arg_var(((Token)yyVals[0+yyTop]));
   /*
                     $$ = new ArgAuxiliaryNode($1.getPosition(), (String) $1.getValue(), 1);
   */
@@ -4210,7 +4209,7 @@ states[267] = new ParserState() {
   }
 };
 }
-					// line 1985 "Ruby19Parser.y"
+					// line 1984 "Ruby19parser.y"
 
     /** The parse method use an lexer stream and parse it to an AST node 
      * structure
@@ -4245,4 +4244,4 @@ states[267] = new ParserState() {
     // +++
     // Helper Methods
 }
-					// line 8034 "-"
+					// line 8033 "-"
