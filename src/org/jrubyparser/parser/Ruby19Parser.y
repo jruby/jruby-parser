@@ -1666,7 +1666,7 @@ dsym            : tSYMBEG xstring_contents tSTRING_END {
                      } else if ($2 instanceof DStrNode) {
                          $$ = new DSymbolNode(support.union($1, $3), $<DStrNode>2);
                      } else if ($2 instanceof StrNode) {
-                         $$ = new SymbolNode($1.getPosition(), $<StrNode>2.getValue().toString().intern());
+                         $$ = new SymbolNode(support.union($1, $3), $<StrNode>2.getValue().toString().intern());
                      } else {
                        SourcePosition position = support.union($2, $3);
 
