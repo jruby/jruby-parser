@@ -8,7 +8,7 @@ package org.jrubyparser;
  *
  * @author enebo
  */
-public class RegexpOptions {
+public class RegexpOptions implements Cloneable {
     public static final RegexpOptions NULL_OPTIONS = new RegexpOptions(true);
     
     public RegexpOptions() {
