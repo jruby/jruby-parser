@@ -51,10 +51,9 @@ public class CallNode extends Node implements INameNode, IArgumentNode, BlockAcc
         super(position);
         
         assert receiverNode != null : "receiverNode is not null";
-        assert argsNode != null : "argsNode is not null";
         
         this.receiverNode = receiverNode;
-        this.argsNode = argsNode;
+	setArgsNode(argsNode);
         this.iterNode = iterNode;
         this.name = name;
     }
@@ -96,6 +95,9 @@ public class CallNode extends Node implements INameNode, IArgumentNode, BlockAcc
      * @param argsNode set the arguments for this node.
      */
     public Node setArgsNode(Node argsNode) {
+	if (argsNode == null) {
+	    argsNode = new ListNode(getReceiverNode().getPosition());
+	}
         this.argsNode = argsNode;
         
         return argsNode;
