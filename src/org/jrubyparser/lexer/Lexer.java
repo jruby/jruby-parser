@@ -1303,11 +1303,12 @@ public class Lexer {
             case '=':
                 // documentation nodes
                 if (src.wasBeginOfLine()) {
-                    boolean doComments = preserveSpaces;
                     
                     if (src.matchMarker(BEGIN_DOC_MARKER, false, false)) {
+                	SourcePosition startPosition = src.getPosition();
                         if (doComments) {
                             tokenBuffer.setLength(0);
+                            tokenBuffer.append('=');
                             tokenBuffer.append(BEGIN_DOC_MARKER);
                         }
                         c = src.read();
@@ -1340,9 +1341,13 @@ public class Lexer {
                             }
 
                             if (doComments) {
-                                yaccValue = new Token("here-doc", getPosition());
+                        	// Store away each comment to parser result so IDEs can do whatever they want with them.
+                        	SourcePosition position = startPosition.union(getPosition());
+                                parserSupport.getResult().addComment(new CommentNode(position, tokenBuffer.toString()));
+                            }
+                            if (preserveSpaces) {
+                        	yaccValue = new Token("here-doc", getPosition());
                                 return Tokens.tDOCUMENTATION;
-//                                parserSupport.getResult().addComment(new CommentNode(getPosition(), tokenBuffer.toString()));
                             }
                             continue;
                         }
