@@ -1,0 +1,139 @@
+<?xml version="1.0" ?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.jruby</groupId>
+  <artifactId>jrubyparser</artifactId>
+  <packaging>jar</packaging>
+  <version>0.2</version>
+  <name>JRuby Parser</name>
+  <description>
+    A library to expose exact char-for-char position information of Ruby syntax.
+  </description>
+
+  <issueManagement>
+    <system>JIRA</system>
+    <url>https://github.com/jruby/jruby-parser/issues</url>
+  </issueManagement>
+
+  <scm>
+    <connection>scm:git:git@github.com:jruby/jruby-parser.git</connection>
+    <developerConnection>scm:git@github.com:jruby/jruby-parser.git</developerConnection>
+    <url>https://github.com/jruby/jruby-parser</url>
+  </scm>
+
+  <licenses>
+    <license>
+      <name>Common Public License - v 1.0</name>
+      <url>http://www-128.ibm.com/developerworks/library/os-cpl.html</url>
+      <distribution>repo</distribution>
+    </license>
+    <license>
+      <name>GNU General Public License Version 2</name>
+      <url>http://www.gnu.org/copyleft/gpl.html</url>
+      <distribution>repo</distribution>
+    </license>
+    <license>
+      <name>GNU Lesser General Public License Version 2.1</name>
+      <url>http://www.gnu.org/licenses/lgpl.html</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <distributionManagement>
+    <repository>
+      <id>codehaus-jruby-repository</id>
+      <name>JRuby Central Repository</name>
+      <url>dav:https://dav.codehaus.org/repository/jruby</url>
+    </repository>
+    <snapshotRepository>
+      <id>codehaus-jruby-snapshot-repository</id>
+      <name>JRuby Central Development Repository</name>
+      <url>dav:https://dav.codehaus.org/snapshots.repository/jruby</url>
+    </snapshotRepository>
+    <site>
+      <id>codehaus-jruby-site</id>
+      <name>JRuby Maven site</name>
+      <url>dav:https://dav.codehaus.org/jruby/info</url>
+    </site>
+  </distributionManagement>
+
+  <repositories>
+    <repository>
+      <id>codehaus</id>
+      <name>Codehaus Repository</name>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <url>http://repository.codehaus.org</url>
+    </repository>
+  </repositories>
+
+  <developers>
+  </developers>
+
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <sourceDirectory>src</sourceDirectory>
+    <testSourceDirectory>test</testSourceDirectory>
+    <extensions>
+      <extension>
+        <groupId>org.apache.maven.wagon</groupId> 
+        <artifactId>wagon-webdav-jackrabbit</artifactId> 
+        <version>2.1</version> 
+      </extension> 
+    </extensions>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-javadocs</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.5</source>
+          <target>1.5</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifestFile>MANIFEST.MF</manifestFile>
+          </archive>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
