@@ -82,6 +82,13 @@
       <version>3.8.1</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>jay</groupId>
+      <artifactId>yydebug</artifactId>
+      <version>0.1</version>
+      <scope>system</scope>
+      <systemPath>${basedir}/lib/yydebug.jar</systemPath>
+    </dependency>
   </dependencies>
 
   <build>
