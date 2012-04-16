@@ -75,6 +75,10 @@ public class AttrAssignNode extends Node implements INameNode, IArgumentNode {
     public String getName() {
         return name;
     }
+    
+    public void setName(String name) {
+        this.name = name;
+    }
 
     /**
      * Gets the receiverNode.

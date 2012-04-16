@@ -60,6 +60,10 @@ public class SelfNode extends Node implements INameNode {
         return "self";
     }
     
+    public void setName(String name) {
+        // FIXME: error or noop?
+    }
+    
     public List<Node> childNodes() {
         return EMPTY_LIST;
     }

@@ -60,6 +60,10 @@ public class SymbolNode extends Node implements ILiteralNode, INameNode {
         return name;
     }
     
+    public void setName(String name) {
+        this.name = name;
+    }
+    
     public List<Node> childNodes() {
         return EMPTY_LIST;
     }

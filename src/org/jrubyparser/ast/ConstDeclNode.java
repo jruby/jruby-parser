@@ -71,6 +71,10 @@ public class ConstDeclNode extends AssignableNode implements INameNode {
     	return (name == null ? constNode.getName() : name);
     }
     
+    public void setName(String name) {
+        this.name = name;
+    }
+    
     /**
      * Get the path the name is associated with or null (in Foo::BAR it is Foo).
      * @return pathNode

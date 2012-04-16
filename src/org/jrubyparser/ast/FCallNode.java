@@ -106,6 +106,10 @@ public class FCallNode extends Node implements INameNode, IArgumentNode, BlockAc
         return name;
     }
     
+    public void setName(String name) {
+        this.name = name;
+    }
+    
     public List<Node> childNodes() {
         return createList(argsNode, iterNode);
     }

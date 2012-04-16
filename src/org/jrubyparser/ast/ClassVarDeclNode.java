@@ -65,6 +65,10 @@ public class ClassVarDeclNode extends AssignableNode implements INameNode {
         return name;
     }
     
+    public void setName(String name) {
+        this.name = name;
+    }
+    
     public List<Node> childNodes() {
         return createList(getValueNode());
     }

@@ -63,6 +63,10 @@ public class GlobalVarNode extends Node implements INameNode {
     public String getName() {
         return name;
     }
+    
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public List<Node> childNodes() {
         return EMPTY_LIST;

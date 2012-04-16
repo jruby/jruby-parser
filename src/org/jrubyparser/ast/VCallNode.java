@@ -65,6 +65,10 @@ public class VCallNode extends Node implements INameNode {
         return name;
     }
     
+    public void setName(String name) {
+        this.name = name;
+    }
+    
     public List<Node> childNodes() {
         return EMPTY_LIST;
     }

@@ -60,6 +60,10 @@ public class NilNode extends Node implements INameNode {
         return "nil";
     }
     
+    public void setName(String name) {
+        // FIXME: error or noop?
+    }
+    
     public List<Node> childNodes() {
         return EMPTY_LIST;
     }

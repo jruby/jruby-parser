@@ -59,6 +59,10 @@ public class DefnNode extends MethodDefNode implements INameNode {
         return nameNode.getName();
     }
     
+    public void setName(String name) {
+        nameNode.setName(name);
+    }
+    
     public List<Node> childNodes() {
         return Node.createList(nameNode, argsNode, bodyNode);
     }

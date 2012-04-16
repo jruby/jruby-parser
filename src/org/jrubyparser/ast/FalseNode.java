@@ -60,6 +60,10 @@ public class FalseNode extends Node implements INameNode {
         return "false";
     }
     
+    public void setName(String newName) {
+        // FIXME: Error or no-op?
+    }
+    
     public List<Node> childNodes() {
         return EMPTY_LIST;
     }

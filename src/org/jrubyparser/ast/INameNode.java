@@ -29,4 +29,5 @@ package org.jrubyparser.ast;
 
 public interface INameNode {
     public String getName();
+    public void setName(String newName);
 }

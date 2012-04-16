@@ -112,6 +112,9 @@ public class CallNode extends Node implements INameNode, IArgumentNode, BlockAcc
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
     /**
      * Gets the receiverNode.
 	 * receiverNode is the object on which the method is being called

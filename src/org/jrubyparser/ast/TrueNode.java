@@ -60,6 +60,10 @@ public class TrueNode extends Node implements INameNode {
         return "true";
     }
     
+    public void setName(String name) {
+        // FIXME: error or noop?
+    }
+    
     public List<Node> childNodes() {
         return EMPTY_LIST;
     }
