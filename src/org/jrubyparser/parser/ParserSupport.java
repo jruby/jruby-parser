@@ -461,7 +461,9 @@ public class ParserSupport {
         } else if (lhs instanceof IArgumentNode) {
             IArgumentNode invokableNode = (IArgumentNode) lhs;
             
-            return invokableNode.setArgsNode(arg_add(lhs.getPosition(), invokableNode.getArgsNode(), rhs));
+            Node args = arg_add(lhs.getPosition(), invokableNode.getArgs(), rhs);
+            invokableNode.setArgs(args);
+            return args;
         }
         
         return newNode;

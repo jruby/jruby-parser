@@ -69,7 +69,12 @@ public class FCallNode extends Node implements INameNode, IArgumentNode, BlockAc
     /**
      * Get the node that represents a block or a block variable.
      */
+    @Deprecated
     public Node getIterNode() {
+        return getIter();
+    }
+    
+    public Node getIter() {
         return iterNode;
     }
     
@@ -83,7 +88,12 @@ public class FCallNode extends Node implements INameNode, IArgumentNode, BlockAc
      * Gets the argsNode.
      * @return Returns a Node
      */
+    @Deprecated
     public Node getArgsNode() {
+        return getArgs();
+    }
+    
+    public Node getArgs() {
         return argsNode;
     }
     
@@ -92,12 +102,17 @@ public class FCallNode extends Node implements INameNode, IArgumentNode, BlockAc
      * 
      * @param argsNode set the arguments for this node.
      */
+    @Deprecated
     public Node setArgsNode(Node argsNode) {
-        this.argsNode = argsNode;
+        setArgs(argsNode);
         
         return argsNode;
     }
-
+    
+    public void setArgs(Node argsNode) {
+        this.argsNode = argsNode;
+    }
+    
     /**
      * Gets the name.
      * @return Returns a String

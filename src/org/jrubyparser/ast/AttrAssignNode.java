@@ -85,7 +85,12 @@ public class AttrAssignNode extends Node implements INameNode, IArgumentNode {
      * receiverNode is the object on which the method is being called
      * @return receiverNode
      */
+    @Deprecated
     public Node getReceiverNode() {
+        return getReceiver();
+    }
+    
+    public Node getReceiver() {
         return receiver;
     }
     
@@ -94,7 +99,12 @@ public class AttrAssignNode extends Node implements INameNode, IArgumentNode {
      * argsNode representing the method's arguments' value for this call.
      * @return argsNode
      */
+    @Deprecated
     public Node getArgsNode() {
+        return getArgs();
+    }
+    
+    public Node getArgs() {
         return arg;
     }
     
@@ -104,10 +114,15 @@ public class AttrAssignNode extends Node implements INameNode, IArgumentNode {
      * 
      * @param argsNode set the arguments for this node.
      */
+    @Deprecated
     public Node setArgsNode(Node argsNode) {
-        this.arg = argsNode;
+        setArgs(argsNode);
         
         return this;
+    }
+    
+    public void setArgs(Node argsNode) {
+        this.arg = argsNode;
     }
 
 

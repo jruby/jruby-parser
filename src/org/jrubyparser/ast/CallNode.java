@@ -53,7 +53,7 @@ public class CallNode extends Node implements INameNode, IArgumentNode, BlockAcc
         assert receiverNode != null : "receiverNode is not null";
         
         this.receiverNode = receiverNode;
-	setArgsNode(argsNode);
+	setArgs(argsNode);
         this.iterNode = iterNode;
         this.name = name;
     }
@@ -85,7 +85,12 @@ public class CallNode extends Node implements INameNode, IArgumentNode, BlockAcc
      * Gets the argsNode representing the method's arguments' value for this call.
      * @return argsNode
      */
+    @Deprecated
     public Node getArgsNode() {
+        return getArgs();
+    }
+    
+    public Node getArgs() {
         return argsNode;
     }
     
@@ -94,13 +99,18 @@ public class CallNode extends Node implements INameNode, IArgumentNode, BlockAcc
      * 
      * @param argsNode set the arguments for this node.
      */
+    @Deprecated
     public Node setArgsNode(Node argsNode) {
+        setArgs(argsNode);
+        
+        return getArgs();
+    }
+    
+    public void setArgs(Node argsNode) {
 	if (argsNode == null) {
 	    argsNode = new ListNode(getReceiverNode().getPosition());
 	}
-        this.argsNode = argsNode;
-        
-        return argsNode;
+        this.argsNode = argsNode;        
     }
 
     /**
