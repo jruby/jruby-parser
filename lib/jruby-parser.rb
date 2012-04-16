@@ -1,0 +1,26 @@
+require 'java'
+require 'jruby-parser.jar'
+require 'jruby-parser/core_ext/fixnum'
+require 'jruby-parser/core_ext/node'
+
+module JRubyParser
+  Compat = org.jrubyparser.CompatVersion
+
+  ##
+  # Parse source string and return a Abstract Syntax Tree (AST) of the source.
+  # You may also pass in additional options to affect the reported filename
+  # and which version of Ruby you want to use:
+  # 
+  # === Parameters
+  # * _source_string_ source you want to parse
+  # * _opts_ customize how your source is parsed (:filename, and :version [defaults to 1.9])
+  # === Example
+  # JRubyParser.parse(%q{puts "hello world"}, :version => JRubyParser::Compat::RUBY1_8)
+  # 
+  def parse(source_string, opts={:filename => '(string)', :version => Compat::RUBY1_9})
+    config = org.jrubyparser.parser.ParserConfiguration.new(0, opts[:version])
+    reader = java.io.StringReader.new(source_string)
+    org.jrubyparser.Parser.new.parse(opts[:filename], reader, config)
+  end
+  module_function :parse
+end
