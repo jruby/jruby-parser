@@ -76,10 +76,19 @@ public class OpElementAsgnNode extends Node {
      * Gets the argsNode.
      * @return Returns a Node
      */
+    @Deprecated
     public Node getArgsNode() {
-        return argsNode;
+        return getArgs();
     }
 
+    public Node getArgs() {
+        return argsNode;
+    }
+    
+    public void setArgs(Node args) {
+        this.argsNode = args;
+    }
+    
     /**
      * Gets the operatorName.
      * @return Returns a String
@@ -87,21 +96,43 @@ public class OpElementAsgnNode extends Node {
     public String getOperatorName() {
         return name;
     }
+    
+    public void setOperatorName(String name) {
+        this.name = name;
+    }
 
     /**
      * Gets the receiverNode.
      * @return Returns a Node
      */
+    @Deprecated
     public Node getReceiverNode() {
+        return getReceiver();
+    }
+    
+    public Node getReceiver() {
         return receiverNode;
+    }
+    
+    public void setReceiver(Node receiver) {
+        this.receiverNode = receiver;
     }
 
     /**
      * Gets the valueNode.
      * @return Returns a Node
      */
+    @Deprecated
     public Node getValueNode() {
         return valueNode;
+    }
+    
+    public Node getValue() {
+        return valueNode;
+    }
+    
+    public void setValue(Node value) {
+        this.valueNode = value;
     }
 
     public List<Node> childNodes() {
