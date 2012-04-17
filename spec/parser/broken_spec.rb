@@ -1,6 +1,6 @@
 $LOAD_PATH.unshift File.dirname(__FILE__) + "/../helpers"
-require 'java'
-require File.dirname(__FILE__) + "/../../dist/JRubyParser.jar"
+$LOAD_PATH.unshift File.dirname(__FILE__) + "/../../lib"
+require 'jruby-parser'
 require 'parser_helpers'
 require 'node_helpers'
 

@@ -3,31 +3,6 @@ require 'java'
 import org.jrubyparser.SourcePosition
 import org.jrubyparser.ast.Node
 
-class Node
-  def short_name
-    java_class.name.gsub(/(^.*\.|Node$)/, '').downcase
-  end
-
-  # Find first node by name (which is short_name)
-  def find_node(name)
-    name = name.to_s
-    return self if name == short_name
-
-    child_nodes.each do |child|
-      value = child.find_node(name)
-
-      return value if value
-    end
-    nil
-  end
-
-  alias :find :find_node
-
-  def [](value)
-    child_nodes[value]
-  end
-end
-
 class SourcePosition
   def to_a
     [start_line, end_line, start_offset, end_offset]
