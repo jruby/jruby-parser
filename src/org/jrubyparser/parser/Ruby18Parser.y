@@ -1116,10 +1116,11 @@ primary       : literal
               | method_call
               | method_call brace_block {
 	          if ($1 != null && 
-                      $<BlockAcceptingNode>1.getIterNode() instanceof BlockPassNode) {
+                      $<BlockAcceptingNode>1.getIter() instanceof BlockPassNode) {
                       throw new SyntaxException(PID.BLOCK_ARG_AND_BLOCK_GIVEN, support.getPosition($1), "Both block arg and actual block given.");
 		  }
-		  $$ = $<BlockAcceptingNode>1.setIterNode($2);
+		  $<BlockAcceptingNode>1.setIter($2);
+                  $$ = $1;
 		  $<Node>$.setPosition(support.union($1, $2));
               }
               | kIF expr_value then compstmt if_tail kEND {
@@ -1351,10 +1352,11 @@ block_call    : command do_block {
                   if ($1 instanceof YieldNode) {
                       throw new SyntaxException(PID.BLOCK_GIVEN_TO_YIELD, support.getPosition($1), "block given to yield");
                   }
-	          if ($<BlockAcceptingNode>1.getIterNode() instanceof BlockPassNode) {
+	          if ($<BlockAcceptingNode>1.getIter() instanceof BlockPassNode) {
                       throw new SyntaxException(PID.BLOCK_ARG_AND_BLOCK_GIVEN, support.getPosition($1), "Both block arg and actual block given.");
                   }
-		  $$ = $<BlockAcceptingNode>1.setIterNode($2);
+		  $<BlockAcceptingNode>1.setIter($2);
+                  $$ = $1;
 		  $<Node>$.setPosition(support.union($1, $2));
               }
               | block_call tDOT operation2 opt_paren_args {

@@ -92,6 +92,10 @@ public class FCallNode extends Node implements INameNode, IArgumentNode, BlockAc
         
         return this;
     }
+    
+    public void setIter(Node iter) {
+        this.iterNode = iter;
+    }
 
     /**
      * Gets the argsNode.

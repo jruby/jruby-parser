@@ -221,7 +221,7 @@ public class ReWriteVisitor implements NodeVisitor {
     }
 
     private static boolean isReceiverACallNode(CallNode n) {
-        return (n.getReceiverNode() instanceof CallNode || n.getReceiverNode() instanceof FCallNode);
+        return n.getReceiver() instanceof CallNode || n.getReceiver() instanceof FCallNode;
     }
 
     private void printCommentsBefore(Node iVisited) {
@@ -331,7 +331,7 @@ public class ReWriteVisitor implements NodeVisitor {
             if (argsNode != null) print(config.getFormatHelper().getListSeparator());
 
             print('&');
-            visitNode(((BlockPassNode) iterNode).getBodyNode());
+            visitNode(((BlockPassNode) iterNode).getBody());
         }
 
         if (paranthesesPrinted) {
@@ -467,7 +467,7 @@ public class ReWriteVisitor implements NodeVisitor {
 
     public Object visitBeginNode(BeginNode iVisited) {
         print("begin");
-        visitNodeInIndentation(iVisited.getBodyNode());
+        visitNodeInIndentation(iVisited.getBody());
         printNewlineAndIndentation();
         print("end");
         return null;
@@ -500,7 +500,7 @@ public class ReWriteVisitor implements NodeVisitor {
     }
 
     public Object visitBlockPassNode(BlockPassNode iVisited) {
-        visitNode(iVisited.getBodyNode());
+        visitNode(iVisited.getBody());
         return null;
     }
 
@@ -563,7 +563,7 @@ public class ReWriteVisitor implements NodeVisitor {
 
     private Object printIndexAccess(CallNode visited) {
         enterCall();
-        visitNode(visited.getReceiverNode());
+        visitNode(visited.getReceiver());
         leaveCall();
         print('[');
         if (visited.getArgs() != null) {
@@ -575,26 +575,26 @@ public class ReWriteVisitor implements NodeVisitor {
 
     private Object printNegativNumericNode(CallNode visited) {
         print('-');
-        visitNode(visited.getReceiverNode());
+        visitNode(visited.getReceiver());
         return null;
     }
 
     private boolean isNegativeNumericNode(CallNode visited) {
-        return isNumericNode(visited.getReceiverNode()) && visited.getName().equals("-@");
+        return isNumericNode(visited.getReceiver()) && visited.getName().equals("-@");
     }
 
     private void printCallReceiverNode(CallNode iVisited) {
-        if (iVisited.getReceiverNode() instanceof HashNode) print('(');
+        if (iVisited.getReceiver() instanceof HashNode) print('(');
 
         if (isReceiverACallNode(iVisited) && !printSpaceInsteadOfDot(iVisited)) {
             enterCall();
-            visitNewlineInParentheses(iVisited.getReceiverNode());
+            visitNewlineInParentheses(iVisited.getReceiver());
             leaveCall();
         } else {
-            visitNewlineInParentheses(iVisited.getReceiverNode());
+            visitNewlineInParentheses(iVisited.getReceiver());
         }
 
-        if (iVisited.getReceiverNode() instanceof HashNode) print(')');
+        if (iVisited.getReceiver() instanceof HashNode) print(')');
     }
 
     protected boolean inMultipleAssignment() {

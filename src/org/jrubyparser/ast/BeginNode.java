@@ -63,8 +63,17 @@ public class BeginNode extends Node {
      * Gets the bodyNode.
      * @return Returns a INode
      */
+    @Deprecated
     public Node getBodyNode() {
+        return getBody();
+    }
+    
+    public Node getBody() {
         return bodyNode;
+    }
+    
+    public void setBody(Node body) {
+        this.bodyNode = body;
     }
     
     public List<Node> childNodes() {

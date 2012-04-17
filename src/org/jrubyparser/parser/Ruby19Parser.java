@@ -1969,10 +1969,11 @@ states[373] = new ParserState() {
                     if (((Node)yyVals[-1+yyTop]) instanceof YieldNode) {
                         throw new SyntaxException(PID.BLOCK_GIVEN_TO_YIELD, support.getPosition(((Node)yyVals[-1+yyTop])), "block given to yield");
                     }
-                    if (((BlockAcceptingNode)yyVals[-1+yyTop]).getIterNode() instanceof BlockPassNode) {
+                    if (((BlockAcceptingNode)yyVals[-1+yyTop]).getIter() instanceof BlockPassNode) {
                         throw new SyntaxException(PID.BLOCK_ARG_AND_BLOCK_GIVEN, support.getPosition(((Node)yyVals[-1+yyTop])), "Both block arg and actual block given.");
                     }
-                    yyVal = ((BlockAcceptingNode)yyVals[-1+yyTop]).setIterNode(((IterNode)yyVals[0+yyTop]));
+                    ((BlockAcceptingNode)yyVals[-1+yyTop]).setIter(((IterNode)yyVals[0+yyTop]));
+                    yyVal = ((Node)yyVals[-1+yyTop]);
                     ((Node)yyVal).setPosition(support.union(((Node)yyVals[-1+yyTop]), ((IterNode)yyVals[0+yyTop])));
     return yyVal;
   }
@@ -2818,10 +2819,11 @@ states[82] = new ParserState() {
 states[283] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
                     if (((Node)yyVals[-1+yyTop]) != null && 
-                          ((BlockAcceptingNode)yyVals[-1+yyTop]).getIterNode() instanceof BlockPassNode) {
+                          ((BlockAcceptingNode)yyVals[-1+yyTop]).getIter() instanceof BlockPassNode) {
                         throw new SyntaxException(PID.BLOCK_ARG_AND_BLOCK_GIVEN, support.getPosition(((Node)yyVals[-1+yyTop])), "Both block arg and actual block given.");
                     }
-                    yyVal = ((BlockAcceptingNode)yyVals[-1+yyTop]).setIterNode(((IterNode)yyVals[0+yyTop]));
+                    ((BlockAcceptingNode)yyVals[-1+yyTop]).setIter(((IterNode)yyVals[0+yyTop]));
+                    yyVal = ((Node)yyVals[-1+yyTop]);
                     ((Node)yyVal).setPosition(support.union(((Node)yyVals[-1+yyTop]), ((IterNode)yyVals[0+yyTop])));
     return yyVal;
   }
@@ -4233,7 +4235,7 @@ states[267] = new ParserState() {
   }
 };
 }
-					// line 2008 "Ruby19Parser.y"
+					// line 2010 "Ruby19Parser.y"
 
     /** The parse method use an lexer stream and parse it to an AST node 
      * structure
@@ -4268,4 +4270,4 @@ states[267] = new ParserState() {
     // +++
     // Helper Methods
 }
-					// line 8057 "-"
+					// line 8059 "-"

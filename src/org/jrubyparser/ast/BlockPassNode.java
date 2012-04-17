@@ -66,7 +66,12 @@ public class BlockPassNode extends Node {
      * Gets the bodyNode.
      * @return Returns a Node
      */
+    @Deprecated
     public Node getBodyNode() {
+        return getBody();
+    }
+    
+    public Node getBody() {
         return bodyNode;
     }
 
@@ -74,7 +79,12 @@ public class BlockPassNode extends Node {
      * Gets the argsNode.
      * @return Returns a IListNode
      */
+    @Deprecated
     public Node getArgsNode() {
+        return getArgs();
+    }
+    
+    public Node getArgs() {
         return argsNode;
     }
 
@@ -82,7 +92,12 @@ public class BlockPassNode extends Node {
      * Sets the argsNode.
      * @param argsNode The argsNode to set
      */
+    @Deprecated
     public void setArgsNode(Node argsNode) {
+        setArgs(argsNode);
+    }
+    
+    public void setArgs(Node argsNode) {
         this.argsNode = argsNode;
     }
     

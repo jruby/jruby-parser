@@ -3228,10 +3228,11 @@ states[357] = new ParserState() {
                   if (((Node)yyVals[-1+yyTop]) instanceof YieldNode) {
                       throw new SyntaxException(PID.BLOCK_GIVEN_TO_YIELD, support.getPosition(((Node)yyVals[-1+yyTop])), "block given to yield");
                   }
-	          if (((BlockAcceptingNode)yyVals[-1+yyTop]).getIterNode() instanceof BlockPassNode) {
+	          if (((BlockAcceptingNode)yyVals[-1+yyTop]).getIter() instanceof BlockPassNode) {
                       throw new SyntaxException(PID.BLOCK_ARG_AND_BLOCK_GIVEN, support.getPosition(((Node)yyVals[-1+yyTop])), "Both block arg and actual block given.");
                   }
-		  yyVal = ((BlockAcceptingNode)yyVals[-1+yyTop]).setIterNode(((IterNode)yyVals[0+yyTop]));
+		  ((BlockAcceptingNode)yyVals[-1+yyTop]).setIter(((IterNode)yyVals[0+yyTop]));
+                  yyVal = ((Node)yyVals[-1+yyTop]);
 		  ((Node)yyVal).setPosition(support.union(((Node)yyVals[-1+yyTop]), ((IterNode)yyVals[0+yyTop])));
     return yyVal;
   }
@@ -3395,10 +3396,11 @@ states[359] = new ParserState() {
 states[292] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
 	          if (((Node)yyVals[-1+yyTop]) != null && 
-                      ((BlockAcceptingNode)yyVals[-1+yyTop]).getIterNode() instanceof BlockPassNode) {
+                      ((BlockAcceptingNode)yyVals[-1+yyTop]).getIter() instanceof BlockPassNode) {
                       throw new SyntaxException(PID.BLOCK_ARG_AND_BLOCK_GIVEN, support.getPosition(((Node)yyVals[-1+yyTop])), "Both block arg and actual block given.");
 		  }
-		  yyVal = ((BlockAcceptingNode)yyVals[-1+yyTop]).setIterNode(((IterNode)yyVals[0+yyTop]));
+		  ((BlockAcceptingNode)yyVals[-1+yyTop]).setIter(((IterNode)yyVals[0+yyTop]));
+                  yyVal = ((Node)yyVals[-1+yyTop]);
 		  ((Node)yyVal).setPosition(support.union(((Node)yyVals[-1+yyTop]), ((IterNode)yyVals[0+yyTop])));
     return yyVal;
   }
@@ -3952,7 +3954,7 @@ states[66] = new ParserState() {
   }
 };
 }
-					// line 1904 "Ruby18Parser.y"
+					// line 1906 "Ruby18Parser.y"
 
     /** The parse method use an lexer stream and parse it to an AST node 
      * structure
@@ -3988,4 +3990,4 @@ states[66] = new ParserState() {
     // +++
     // Helper Methods
 }
-					// line 7835 "-"
+					// line 7837 "-"

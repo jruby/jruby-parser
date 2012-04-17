@@ -71,15 +71,23 @@ public class CallNode extends Node implements INameNode, IArgumentNode, BlockAcc
         return iVisitor.visitCallNode(this);
     }
     
+    @Deprecated
     public Node getIterNode() {
+        return getIter();
+    }
+    
+    public Node getIter() {
         return iterNode;
     }
     
     public Node setIterNode(Node iterNode) {
-        this.iterNode = iterNode;
-        // refresh call adapter, since it matters if this is iter-based or not
+        setIter(iterNode);
         
         return this;
+    }
+    
+    public void setIter(Node iter) {
+        this.iterNode = iter;
     }
 
     /**
@@ -109,7 +117,7 @@ public class CallNode extends Node implements INameNode, IArgumentNode, BlockAcc
     
     public void setArgs(Node argsNode) {
 	if (argsNode == null) {
-	    argsNode = new ListNode(getReceiverNode().getPosition());
+	    argsNode = new ListNode(getReceiver().getPosition());
 	}
         this.argsNode = argsNode;        
     }

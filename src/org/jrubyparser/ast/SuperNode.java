@@ -76,16 +76,26 @@ public class SuperNode extends Node implements BlockAcceptingNode, IArgumentNode
         return iterNode != null ? createList(argsNode, iterNode) : createList(argsNode); 
     }
 
+    @Deprecated
     public Node getIterNode() {
+        return getIter();
+    }
+    
+    public Node getIter() {
         return iterNode;
     }
 
+    @Deprecated
     public Node setIterNode(Node iterNode) {
-        this.iterNode = iterNode;
+        setIter(iterNode);
         
         return this;
     }
 
+    public void setIter(Node iter) {
+        this.iterNode = iter;
+    }
+    
     public Node getArgs() {
         return argsNode;
     }

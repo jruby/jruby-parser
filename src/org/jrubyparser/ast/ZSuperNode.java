@@ -59,14 +59,24 @@ public class ZSuperNode extends Node implements BlockAcceptingNode {
         return iterNode != null ? createList(iterNode) : EMPTY_LIST;
     }
 
+    @Deprecated
     public Node getIterNode() {
-        return iterNode;
+        return getIter();
     }
 
+    public Node getIter() {
+        return iterNode;
+    }
+    
+    @Deprecated
     public Node setIterNode(Node iterNode) {
-        this.iterNode = iterNode;
+        setIter(iterNode);
         
         return this;
+    }
+    
+    public void setIter(Node iter) {
+        this.iterNode = iter;
     }
     
 }

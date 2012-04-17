@@ -38,7 +38,6 @@ package org.jrubyparser.ast;
  *  the callable node during construction.
  */
 public interface BlockAcceptingNode {
-    public Node getIterNode();
-    
-    public Node setIterNode(Node iterNode);
+    public Node getIter();
+    public void setIter(Node iterNode);
 }
