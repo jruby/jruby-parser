@@ -1,8 +1,10 @@
 require 'java'
 require 'jruby-parser.jar'
+require 'jruby-parser/core_ext/array'
 require 'jruby-parser/core_ext/boolean'
 require 'jruby-parser/core_ext/nil'
 require 'jruby-parser/core_ext/call_node'
+require 'jruby-parser/core_ext/fcall_node'
 require 'jruby-parser/core_ext/list_node'
 require 'jruby-parser/core_ext/node'
 require 'jruby-parser/core_ext/numeric' # float,fixnum
