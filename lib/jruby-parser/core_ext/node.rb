@@ -46,7 +46,7 @@ class org::jrubyparser::ast::Node
   # Convert this node back to human-readable source code.
   #
   def to_source(opts = {})
-    filename = opts[:filename] ? '(string)' : opts[:filename]
+    filename = opts[:filename] ? opts[:filename] : '(string)'
     java.io.StringWriter.new.tap do |writer|
       accept org.jrubyparser.rewriter.ReWriteVisitor.new(writer, filename)
     end.to_s

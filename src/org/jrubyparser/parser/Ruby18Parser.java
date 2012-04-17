@@ -72,6 +72,7 @@ import org.jrubyparser.ast.ForNode;
 import org.jrubyparser.ast.GlobalVarNode;
 import org.jrubyparser.ast.HashNode;
 import org.jrubyparser.ast.IfNode;
+import org.jrubyparser.ast.IArgumentNode;
 import org.jrubyparser.ast.InstVarNode;
 import org.jrubyparser.ast.IterNode;
 import org.jrubyparser.ast.ListNode;
@@ -145,7 +146,7 @@ public class Ruby18Parser implements RubyParser {
         support.setWarnings(warnings);
         lexer.setWarnings(warnings);
     }
-					// line 149 "-"
+					// line 150 "-"
   // %token constants
   public static final int kCLASS = 257;
   public static final int kMODULE = 258;
@@ -3313,6 +3314,7 @@ states[425] = new ParserState() {
 states[358] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
                   yyVal = support.new_call(((Node)yyVals[-3+yyTop]), ((Token)yyVals[-1+yyTop]), ((Node)yyVals[0+yyTop]), null);
+                  ((IArgumentNode)yyVal).setHasParens(true);
     return yyVal;
   }
 };
@@ -3386,6 +3388,7 @@ states[426] = new ParserState() {
 states[359] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
                   yyVal = support.new_call(((Node)yyVals[-3+yyTop]), ((Token)yyVals[-1+yyTop]), ((Node)yyVals[0+yyTop]), null);
+                  ((IArgumentNode)yyVal).setHasParens(true);
     return yyVal;
   }
 };
@@ -3452,6 +3455,7 @@ states[259] = new ParserState() {
 states[360] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
                   yyVal = support.new_fcall(((Token)yyVals[-1+yyTop]), ((Node)yyVals[0+yyTop]), null);
+                  ((IArgumentNode)yyVal).setHasParens(true);
     return yyVal;
   }
 };
@@ -3532,6 +3536,7 @@ states[260] = new ParserState() {
 states[361] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
                   yyVal = support.new_call(((Node)yyVals[-3+yyTop]), ((Token)yyVals[-1+yyTop]), ((Node)yyVals[0+yyTop]), null);
+                  ((IArgumentNode)yyVal).setHasParens(true);
     return yyVal;
   }
 };
@@ -3588,6 +3593,7 @@ states[194] = new ParserState() {
 states[362] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
                   yyVal = support.new_call(((Node)yyVals[-3+yyTop]), ((Token)yyVals[-1+yyTop]), ((Node)yyVals[0+yyTop]), null);
+                  ((IArgumentNode)yyVal).setHasParens(true);
     return yyVal;
   }
 };
@@ -3702,6 +3708,7 @@ states[263] = new ParserState() {
 states[364] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
                   yyVal = support.new_super(((Node)yyVals[0+yyTop]), ((Token)yyVals[-1+yyTop]));
+                  ((IArgumentNode)yyVal).setHasParens(true);
     return yyVal;
   }
 };
@@ -3945,7 +3952,7 @@ states[66] = new ParserState() {
   }
 };
 }
-					// line 1897 "Ruby18Parser.y"
+					// line 1904 "Ruby18Parser.y"
 
     /** The parse method use an lexer stream and parse it to an AST node 
      * structure
@@ -3981,4 +3988,4 @@ states[66] = new ParserState() {
     // +++
     // Helper Methods
 }
-					// line 7828 "-"
+					// line 7835 "-"

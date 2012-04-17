@@ -5,6 +5,8 @@ end
 
 require 'rspec/core/rake_task'
 require 'ant'
+require 'bundler'
+Bundler::GemHelper.install_tasks
 
 task :default => [:jar, :spec]
 

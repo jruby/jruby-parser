@@ -1,7 +1,7 @@
 // created by jay 1.0.2 (c) 2002-2004 ats@cs.rit.edu
 // skeleton Java 1.0 (c) 2002 ats@cs.rit.edu
 
-					// line 2 "Ruby19parser.y"
+					// line 2 "Ruby19Parser.y"
 /***** BEGIN LICENSE BLOCK *****
  * Version: CPL 1.0/GPL 2.0/LGPL 2.1
  *
@@ -62,6 +62,7 @@ import org.jrubyparser.ast.FloatNode;
 import org.jrubyparser.ast.ForNode;
 import org.jrubyparser.ast.GlobalVarNode;
 import org.jrubyparser.ast.HashNode;
+import org.jrubyparser.ast.IArgumentNode;
 import org.jrubyparser.ast.IfNode;
 import org.jrubyparser.ast.InstVarNode;
 import org.jrubyparser.ast.IterNode;
@@ -134,7 +135,7 @@ public class Ruby19Parser implements RubyParser {
         support.setWarnings(warnings);
         lexer.setWarnings(warnings);
     }
-					// line 138 "-"
+					// line 139 "-"
   // %token constants
   public static final int kCLASS = 257;
   public static final int kMODULE = 258;
@@ -2070,6 +2071,8 @@ states[441] = new ParserState() {
 states[374] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
                     yyVal = support.new_call(((Node)yyVals[-3+yyTop]), ((Token)yyVals[-1+yyTop]), ((Node)yyVals[0+yyTop]), null);
+                    ((IArgumentNode)yyVal).setHasParens(true);
+
     return yyVal;
   }
 };
@@ -2167,6 +2170,7 @@ states[442] = new ParserState() {
 states[375] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
                     yyVal = support.new_call(((Node)yyVals[-3+yyTop]), ((Token)yyVals[-1+yyTop]), ((Node)yyVals[0+yyTop]), null);
+                    ((IArgumentNode)yyVal).setHasParens(true);
     return yyVal;
   }
 };
@@ -2254,6 +2258,7 @@ states[443] = new ParserState() {
 states[376] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
                     yyVal = support.new_fcall(((Token)yyVals[-1+yyTop]), ((Node)yyVals[0+yyTop]), null);
+                    ((IArgumentNode)yyVal).setHasParens(true);
     return yyVal;
   }
 };
@@ -2333,6 +2338,7 @@ states[75] = new ParserState() {
 states[377] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
                     yyVal = support.new_call(((Node)yyVals[-3+yyTop]), ((Token)yyVals[-1+yyTop]), ((Node)yyVals[0+yyTop]), null);
+                    ((IArgumentNode)yyVal).setHasParens(true);
     return yyVal;
   }
 };
@@ -2405,6 +2411,7 @@ states[512] = new ParserState() {
 states[378] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
                     yyVal = support.new_call(((Node)yyVals[-3+yyTop]), ((Token)yyVals[-1+yyTop]), ((Node)yyVals[0+yyTop]), null);
+                    ((IArgumentNode)yyVal).setHasParens(true);
     return yyVal;
   }
 };
@@ -2564,6 +2571,7 @@ states[514] = new ParserState() {
 states[380] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
                     yyVal = support.new_call(((Node)yyVals[-2+yyTop]), new Token("call", ((Node)yyVals[-2+yyTop]).getPosition()), ((Node)yyVals[0+yyTop]), null);
+                    ((IArgumentNode)yyVal).setHasParens(true);
     return yyVal;
   }
 };
@@ -2636,6 +2644,8 @@ states[280] = new ParserState() {
 states[381] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
                     yyVal = support.new_call(((Node)yyVals[-2+yyTop]), new Token("call", ((Node)yyVals[-2+yyTop]).getPosition()), ((Node)yyVals[0+yyTop]), null);
+                    ((IArgumentNode)yyVal).setHasParens(true);
+
     return yyVal;
   }
 };
@@ -2704,6 +2714,8 @@ states[449] = new ParserState() {
 states[382] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
                     yyVal = support.new_super(((Node)yyVals[0+yyTop]), ((Token)yyVals[-1+yyTop]));
+                    ((IArgumentNode)yyVal).setHasParens(true);
+
     return yyVal;
   }
 };
@@ -4221,7 +4233,7 @@ states[267] = new ParserState() {
   }
 };
 }
-					// line 1996 "Ruby19parser.y"
+					// line 2008 "Ruby19Parser.y"
 
     /** The parse method use an lexer stream and parse it to an AST node 
      * structure
@@ -4256,4 +4268,4 @@ states[267] = new ParserState() {
     // +++
     // Helper Methods
 }
-					// line 8045 "-"
+					// line 8057 "-"

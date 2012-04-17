@@ -59,6 +59,7 @@ import org.jrubyparser.ast.FloatNode;
 import org.jrubyparser.ast.ForNode;
 import org.jrubyparser.ast.GlobalVarNode;
 import org.jrubyparser.ast.HashNode;
+import org.jrubyparser.ast.IArgumentNode;
 import org.jrubyparser.ast.IfNode;
 import org.jrubyparser.ast.InstVarNode;
 import org.jrubyparser.ast.IterNode;
@@ -1412,31 +1413,42 @@ block_call      : command do_block {
                 }
                 | block_call tDOT operation2 opt_paren_args {
                     $$ = support.new_call($1, $3, $4, null);
+                    $<IArgumentNode>$.setHasParens(true);
+
                 }
                 | block_call tCOLON2 operation2 opt_paren_args {
                     $$ = support.new_call($1, $3, $4, null);
+                    $<IArgumentNode>$.setHasParens(true);
                 }
 
 method_call     : operation paren_args {
                     $$ = support.new_fcall($1, $2, null);
+                    $<IArgumentNode>$.setHasParens(true);
                 }
                 | primary_value tDOT operation2 opt_paren_args {
                     $$ = support.new_call($1, $3, $4, null);
+                    $<IArgumentNode>$.setHasParens(true);
                 }
                 | primary_value tCOLON2 operation2 paren_args {
                     $$ = support.new_call($1, $3, $4, null);
+                    $<IArgumentNode>$.setHasParens(true);
                 }
                 | primary_value tCOLON2 operation3 {
                     $$ = support.new_call($1, $3, null, null);
                 }
                 | primary_value tDOT paren_args {
                     $$ = support.new_call($1, new Token("call", $1.getPosition()), $3, null);
+                    $<IArgumentNode>$.setHasParens(true);
                 }
                 | primary_value tCOLON2 paren_args {
                     $$ = support.new_call($1, new Token("call", $1.getPosition()), $3, null);
+                    $<IArgumentNode>$.setHasParens(true);
+
                 }
                 | kSUPER paren_args {
                     $$ = support.new_super($2, $1);
+                    $<IArgumentNode>$.setHasParens(true);
+
                 }
                 | kSUPER {
                     $$ = new ZSuperNode($1.getPosition());

@@ -36,9 +36,10 @@ import org.jrubyparser.SourcePosition;
 /**
  * A call to super(...) with arguments to a method.
  */
-public class SuperNode extends Node implements BlockAcceptingNode {
+public class SuperNode extends Node implements BlockAcceptingNode, IArgumentNode {
     private Node argsNode;
     private Node iterNode;
+    private boolean hasParens = false;
 
     public SuperNode(SourcePosition position, Node argsNode) {
         this(position, argsNode, null);
@@ -66,6 +67,7 @@ public class SuperNode extends Node implements BlockAcceptingNode {
      * Gets the argsNode.
      * @return Returns a Node
      */
+    @Deprecated
     public Node getArgsNode() {
         return argsNode;
     }
@@ -84,4 +86,19 @@ public class SuperNode extends Node implements BlockAcceptingNode {
         return this;
     }
 
+    public Node getArgs() {
+        return argsNode;
+    }
+
+    public boolean hasParens() {
+        return hasParens;
+    }
+
+    public void setArgs(Node argsNode) {
+        this.argsNode = argsNode;
+    }
+
+    public void setHasParens(boolean hasParens) {
+        this.hasParens = hasParens;
+    }
 }

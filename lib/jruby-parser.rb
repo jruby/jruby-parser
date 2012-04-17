@@ -1,6 +1,7 @@
 require 'java'
 require 'jruby-parser.jar'
 require 'jruby-parser/core_ext/boolean'
+require 'jruby-parser/core_ext/nil'
 require 'jruby-parser/core_ext/node'
 require 'jruby-parser/core_ext/numeric' # float,fixnum
 require 'jruby-parser/core_ext/string'
@@ -19,10 +20,12 @@ module JRubyParser
   # === Example
   # JRubyParser.parse(%q{puts "hello world"}, :version => JRubyParser::Compat::RUBY1_8)
   # 
-  def parse(source_string, opts={:filename => '(string)', :version => Compat::RUBY1_9})
-    config = org.jrubyparser.parser.ParserConfiguration.new(0, opts[:version])
+  def parse(source_string, opts={})
+    filename = opts[:filename] ?  opts[:filename] : '(string)'
+    version = opts[:version] ?  opts[:version] : Compat::RUBY1_9
+    config = org.jrubyparser.parser.ParserConfiguration.new(0, version)
     reader = java.io.StringReader.new(source_string)
-    org.jrubyparser.Parser.new.parse(opts[:filename], reader, config)
+    org.jrubyparser.Parser.new.parse(filename, reader, config)
   end
   module_function :parse
 end
