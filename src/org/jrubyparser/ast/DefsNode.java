@@ -65,8 +65,13 @@ public class DefsNode extends MethodDefNode implements INameNode {
      * Gets the receiverNode.
      * @return Returns a Node
      */
-    public Node getReceiverNode() {
+    public Node getReceiver() {
         return receiverNode;
+    }
+    
+    @Deprecated
+    public Node getReceiverNode() {
+        return getReceiver();
     }
 
     /**

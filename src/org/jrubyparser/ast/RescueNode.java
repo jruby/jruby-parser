@@ -64,24 +64,51 @@ public class RescueNode extends Node {
      * Gets the bodyNode.
      * @return Returns a Node
      */
-    public Node getBodyNode() {
+    public Node getBody() {
         return bodyNode;
+    }
+    
+    @Deprecated
+    public Node getBodyException() {
+        return getBody();
+    }
+    
+    public void setBody(Node body) {
+        this.bodyNode = body;
     }
 
     /**
      * Gets the elseNode.
      * @return Returns a Node
      */
-    public Node getElseNode() {
+    public Node getElse() {
         return elseNode;
+    }
+    
+    @Deprecated
+    public Node getElseNode() {
+        return getElse();
+    }
+    
+    public void setElse(Node elseNode) {
+        this.elseNode = elseNode;
     }
 
     /**
      * Gets the first rescueNode.
      * @return Returns a Node
      */
-    public RescueBodyNode getRescueNode() {
+    public RescueBodyNode getRescue() {
         return rescueNode;
+    }
+    
+    @Deprecated
+    public RescueBodyNode getRescueNode() {
+        return getRescue();
+    }
+    
+    public void setRescue(RescueBodyNode rescue) {
+        this.rescueNode = rescue;
     }
     
     public List<Node> childNodes() {

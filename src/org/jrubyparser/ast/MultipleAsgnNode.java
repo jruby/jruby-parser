@@ -59,20 +59,30 @@ public class MultipleAsgnNode extends AssignableNode {
      * Gets the argsNode.
      * @return Returns a INode
      */
-    public Node getArgsNode() {
+    public Node getArgs() {
         return argsNode;
+    }
+    
+    @Deprecated
+    public Node getArgsNode() {
+        return getArgs();
     }
     
     /**
      * Gets the headNode.
      * @return Returns a ListNode
      */
-    public ListNode getHeadNode() {
+    public ListNode getHead() {
         return headNode;
     }
     
+    @Deprecated
+    public ListNode getHeadNode() {
+        return getHead();
+    }
+    
     public List<Node> childNodes() {
-        return Node.createList(headNode, argsNode, getValueNode());
+        return Node.createList(headNode, argsNode, getValue());
     }
     
 }

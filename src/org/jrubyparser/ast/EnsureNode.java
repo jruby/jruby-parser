@@ -65,16 +65,26 @@ public class EnsureNode extends Node {
      * Gets the bodyNode.
      * @return Returns a Node
      */
-    public Node getBodyNode() {
+    public Node getBody() {
         return bodyNode;
+    }
+    
+    @Deprecated
+    public Node getBodyNode() {
+        return getBody();
     }
 
     /**
      * Gets the ensureNode.
      * @return Returns a Node
      */
-    public Node getEnsureNode() {
+    public Node getEnsure() {
         return ensureNode;
+    }
+    
+    @Deprecated
+    public Node getEnsureNode() {
+        return getEnsure();
     }
     
     public List<Node> childNodes() {

@@ -79,16 +79,26 @@ public class IterNode extends Node {
      * Gets the bodyNode.
      * @return Returns a Node
      */
-    public Node getBodyNode() {
+    public Node getBody() {
         return bodyNode;
+    }
+    
+    @Deprecated
+    public Node getBodyNode() {
+        return getBody();
     }
 
     /**
      * Gets the varNode.
      * @return Returns a Node
      */
-    public Node getVarNode() {
+    public Node getVar() {
         return varNode;
+    }
+    
+    @Deprecated
+    public Node getVarNode() {
+        return getVar();
     }
     
     public List<Node> childNodes() {

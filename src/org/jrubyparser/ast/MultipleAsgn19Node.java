@@ -76,7 +76,7 @@ public class MultipleAsgn19Node extends AssignableNode {
     }
 
     public List<Node> childNodes() {
-        return Node.createList(pre, rest, getValueNode());
+        return Node.createList(pre, rest, getValue());
     }
 
 }

@@ -73,8 +73,13 @@ public class FlipNode extends Node {
 	 * beginNode will set the FlipFlop the first time it is true
      * @return Returns a Node
      */
-    public Node getBeginNode() {
+    public Node getBegin() {
         return beginNode;
+    }
+    
+    @Deprecated
+    public Node getBeginNode() {
+        return getBegin();
     }
 
     /**
@@ -82,8 +87,13 @@ public class FlipNode extends Node {
 	 * endNode will reset the FlipFlop when it is true while the FlipFlop is set.
      * @return Returns a Node
      */
-    public Node getEndNode() {
+    public Node getEnd() {
         return endNode;
+    }
+    
+    @Deprecated
+    public Node getEndNode() {
+        return getEnd();
     }
 
     /**

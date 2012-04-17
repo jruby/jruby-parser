@@ -1519,7 +1519,7 @@ states[368] = new ParserState() {
 };
 states[33] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
-                    ((AssignableNode)yyVals[-2+yyTop]).setValueNode(((Node)yyVals[0+yyTop]));
+                    ((AssignableNode)yyVals[-2+yyTop]).setValue(((Node)yyVals[0+yyTop]));
                     yyVal = ((MultipleAsgn19Node)yyVals[-2+yyTop]);
                     ((MultipleAsgn19Node)yyVals[-2+yyTop]).setPosition(support.union(((MultipleAsgn19Node)yyVals[-2+yyTop]), ((Node)yyVals[0+yyTop])));
     return yyVal;
@@ -3110,13 +3110,13 @@ states[186] = new ParserState() {
 
                     String asgnOp = (String) ((Token)yyVals[-1+yyTop]).getValue();
                     if (asgnOp.equals("||")) {
-                        ((AssignableNode)yyVals[-2+yyTop]).setValueNode(((Node)yyVals[0+yyTop]));
+                        ((AssignableNode)yyVals[-2+yyTop]).setValue(((Node)yyVals[0+yyTop]));
                         yyVal = new OpAsgnOrNode(support.union(((AssignableNode)yyVals[-2+yyTop]), ((Node)yyVals[0+yyTop])), support.gettable2(((AssignableNode)yyVals[-2+yyTop])), ((AssignableNode)yyVals[-2+yyTop]));
                     } else if (asgnOp.equals("&&")) {
-                        ((AssignableNode)yyVals[-2+yyTop]).setValueNode(((Node)yyVals[0+yyTop]));
+                        ((AssignableNode)yyVals[-2+yyTop]).setValue(((Node)yyVals[0+yyTop]));
                         yyVal = new OpAsgnAndNode(support.union(((AssignableNode)yyVals[-2+yyTop]), ((Node)yyVals[0+yyTop])), support.gettable2(((AssignableNode)yyVals[-2+yyTop])), ((AssignableNode)yyVals[-2+yyTop]));
                     } else {
-                        ((AssignableNode)yyVals[-2+yyTop]).setValueNode(support.getOperatorCallNode(support.gettable2(((AssignableNode)yyVals[-2+yyTop])), asgnOp, ((Node)yyVals[0+yyTop])));
+                        ((AssignableNode)yyVals[-2+yyTop]).setValue(support.getOperatorCallNode(support.gettable2(((AssignableNode)yyVals[-2+yyTop])), asgnOp, ((Node)yyVals[0+yyTop])));
                         ((AssignableNode)yyVals[-2+yyTop]).setPosition(support.union(((AssignableNode)yyVals[-2+yyTop]), ((Node)yyVals[0+yyTop])));
                         yyVal = ((AssignableNode)yyVals[-2+yyTop]);
                     }
@@ -3232,13 +3232,13 @@ states[187] = new ParserState() {
 
                     String asgnOp = (String) ((Token)yyVals[-3+yyTop]).getValue();
                     if (asgnOp.equals("||")) {
-                        ((AssignableNode)yyVals[-4+yyTop]).setValueNode(((Node)yyVals[-2+yyTop]));
+                        ((AssignableNode)yyVals[-4+yyTop]).setValue(((Node)yyVals[-2+yyTop]));
                         rest = new OpAsgnOrNode(support.union(((AssignableNode)yyVals[-4+yyTop]), ((Node)yyVals[-2+yyTop])), support.gettable2(((AssignableNode)yyVals[-4+yyTop])), ((AssignableNode)yyVals[-4+yyTop]));
                     } else if (asgnOp.equals("&&")) {
-                        ((AssignableNode)yyVals[-4+yyTop]).setValueNode(((Node)yyVals[-2+yyTop]));
+                        ((AssignableNode)yyVals[-4+yyTop]).setValue(((Node)yyVals[-2+yyTop]));
                         rest = new OpAsgnAndNode(support.union(((AssignableNode)yyVals[-4+yyTop]), ((Node)yyVals[-2+yyTop])), support.gettable2(((AssignableNode)yyVals[-4+yyTop])), ((AssignableNode)yyVals[-4+yyTop]));
                     } else {
-                        ((AssignableNode)yyVals[-4+yyTop]).setValueNode(support.getOperatorCallNode(support.gettable2(((AssignableNode)yyVals[-4+yyTop])), asgnOp, ((Node)yyVals[-2+yyTop])));
+                        ((AssignableNode)yyVals[-4+yyTop]).setValue(support.getOperatorCallNode(support.gettable2(((AssignableNode)yyVals[-4+yyTop])), asgnOp, ((Node)yyVals[-2+yyTop])));
                         ((AssignableNode)yyVals[-4+yyTop]).setPosition(support.union(((AssignableNode)yyVals[-4+yyTop]), ((Node)yyVals[-2+yyTop])));
                         rest = ((AssignableNode)yyVals[-4+yyTop]);
                     }
@@ -3584,7 +3584,7 @@ states[292] = new ParserState() {
 states[24] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
                     support.checkExpression(((Node)yyVals[0+yyTop]));
-                    ((MultipleAsgn19Node)yyVals[-2+yyTop]).setValueNode(((Node)yyVals[0+yyTop]));
+                    ((MultipleAsgn19Node)yyVals[-2+yyTop]).setValue(((Node)yyVals[0+yyTop]));
                     yyVal = ((MultipleAsgn19Node)yyVals[-2+yyTop]);
     return yyVal;
   }
@@ -3656,13 +3656,13 @@ states[25] = new ParserState() {
 
                     String asgnOp = (String) ((Token)yyVals[-1+yyTop]).getValue();
                     if (asgnOp.equals("||")) {
-                        ((AssignableNode)yyVals[-2+yyTop]).setValueNode(((Node)yyVals[0+yyTop]));
+                        ((AssignableNode)yyVals[-2+yyTop]).setValue(((Node)yyVals[0+yyTop]));
                         yyVal = new OpAsgnOrNode(support.union(((AssignableNode)yyVals[-2+yyTop]), ((Node)yyVals[0+yyTop])), support.gettable2(((AssignableNode)yyVals[-2+yyTop])), ((AssignableNode)yyVals[-2+yyTop]));
                     } else if (asgnOp.equals("&&")) {
-                        ((AssignableNode)yyVals[-2+yyTop]).setValueNode(((Node)yyVals[0+yyTop]));
+                        ((AssignableNode)yyVals[-2+yyTop]).setValue(((Node)yyVals[0+yyTop]));
                         yyVal = new OpAsgnAndNode(support.union(((AssignableNode)yyVals[-2+yyTop]), ((Node)yyVals[0+yyTop])), support.gettable2(((AssignableNode)yyVals[-2+yyTop])), ((AssignableNode)yyVals[-2+yyTop]));
                     } else {
-                        ((AssignableNode)yyVals[-2+yyTop]).setValueNode(support.getOperatorCallNode(support.gettable2(((AssignableNode)yyVals[-2+yyTop])), asgnOp, ((Node)yyVals[0+yyTop])));
+                        ((AssignableNode)yyVals[-2+yyTop]).setValue(support.getOperatorCallNode(support.gettable2(((AssignableNode)yyVals[-2+yyTop])), asgnOp, ((Node)yyVals[0+yyTop])));
                         ((AssignableNode)yyVals[-2+yyTop]).setPosition(support.union(((AssignableNode)yyVals[-2+yyTop]), ((Node)yyVals[0+yyTop])));
                         yyVal = ((AssignableNode)yyVals[-2+yyTop]);
                     }
@@ -4180,7 +4180,7 @@ states[367] = new ParserState() {
 };
 states[32] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
-                    ((MultipleAsgn19Node)yyVals[-2+yyTop]).setValueNode(((Node)yyVals[0+yyTop]));
+                    ((MultipleAsgn19Node)yyVals[-2+yyTop]).setValue(((Node)yyVals[0+yyTop]));
                     yyVal = ((MultipleAsgn19Node)yyVals[-2+yyTop]);
     return yyVal;
   }

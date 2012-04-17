@@ -36,11 +36,11 @@ public interface BinaryOperatorNode {
 	 * Gets the firstNode.
 	 * @return Returns a Node
 	 */
-	public abstract Node getFirstNode();
+	public abstract Node getFirst();
 
 	/**
 	 * Gets the secondNode.
 	 * @return Returns a Node
 	 */
-	public abstract Node getSecondNode();
+	public abstract Node getSecond();
 }

@@ -63,8 +63,13 @@ public class DefinedNode extends Node {
      * Gets the expressionNode.
      * @return Returns a Node
      */
-    public Node getExpressionNode() {
+    public Node getExpression() {
         return expressionNode;
+    }
+    
+    @Deprecated
+    public Node getExpressionNode() {
+        return getExpression();
     }
     
     public List<Node> childNodes() {

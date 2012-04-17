@@ -46,11 +46,11 @@ public class LambdaNode extends IterNode {
     }
 
     public ArgsNode getArgs() {
-        return (ArgsNode)getVarNode();
+        return (ArgsNode)getVar();
     }
 
     public Node getBody() {
-        return getBodyNode();
+        return super.getBody();
     }
 
     @Override

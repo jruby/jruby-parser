@@ -52,16 +52,26 @@ public abstract class AssignableNode extends Node {
      * Gets the valueNode.
      * @return Returns a Node
      */
-    public Node getValueNode() {
+    public Node getValue() {
         return valueNode;
+    }
+    
+    @Deprecated
+    public Node getValueNode() {
+        return getValue();
     }
     
     /**
      * Sets the valueNode.
      * @param valueNode The valueNode to set
      */
-    public void setValueNode(Node valueNode) {
+    public void setValue(Node valueNode) {
         this.valueNode = valueNode == null ? NilImplicitNode.NIL : valueNode;
+    }
+    
+    @Deprecated
+    public void setValueNode(Node valueNode) {
+        setValue(valueNode);
     }
     
 }

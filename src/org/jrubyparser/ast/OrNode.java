@@ -66,7 +66,7 @@ public class OrNode extends Node implements BinaryOperatorNode {
      * Gets the firstNode.
      * @return Returns a Node
      */
-    public Node getFirstNode() {
+    public Node getFirst() {
         return firstNode;
     }
 
@@ -74,7 +74,7 @@ public class OrNode extends Node implements BinaryOperatorNode {
      * Gets the secondNode.
      * @return Returns a Node
      */
-    public Node getSecondNode() {
+    public Node getSecond() {
         return secondNode;
     }
 

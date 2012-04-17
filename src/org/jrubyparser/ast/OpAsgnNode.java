@@ -86,16 +86,34 @@ public class OpAsgnNode extends Node {
      * Gets the receiverNode.
      * @return Returns a Node
      */
-    public Node getReceiverNode() {
+    public Node getReceiver() {
         return receiverNode;
+    }
+    
+    @Deprecated
+    public Node getReceiverNode() {
+        return getReceiver();
+    }
+    
+    public void setReceiver(Node receiver) {
+        this.receiverNode = receiver;
     }
 
     /**
      * Gets the valueNode.
      * @return Returns a Node
      */
-    public Node getValueNode() {
+    public Node getValue() {
         return valueNode;
+    }
+    
+    @Deprecated
+    public Node getValueNode() {
+        return getValue();
+    }
+    
+    public void setValue(Node value) {
+        this.valueNode = value;
     }
 
     public List<Node> childNodes() {

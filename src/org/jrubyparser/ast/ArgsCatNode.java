@@ -33,8 +33,8 @@ import java.util.List;
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 
-public class ArgsCatNode extends Node {
-	private Node firstNode;
+public class ArgsCatNode extends Node implements BinaryOperatorNode {
+    private Node firstNode;
     private Node secondNode;
 
     public ArgsCatNode(SourcePosition position, Node firstNode, Node secondNode) {
@@ -55,12 +55,22 @@ public class ArgsCatNode extends Node {
         return visitor.visitArgsCatNode(this);
     }
     
-    public Node getFirstNode() {
+    public Node getFirst() {
         return firstNode;
     }
     
-    public Node getSecondNode() {
+    @Deprecated
+    public Node getFirstNode() {
+        return getFirst();
+    }
+    
+    public Node getSecond() {
         return secondNode;
+    }
+    
+    @Deprecated
+    public Node getSecondNode() {
+        return getSecond();
     }
     
     public List<Node> childNodes() {

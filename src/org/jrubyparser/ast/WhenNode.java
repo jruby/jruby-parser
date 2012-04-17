@@ -67,8 +67,17 @@ public class WhenNode extends Node {
      * Gets the bodyNode.
      * @return Returns a INode
      */
-    public Node getBodyNode() {
+    public Node getBody() {
         return bodyNode;
+    }
+    
+    @Deprecated
+    public Node getBodyNode() {
+        return getBody();
+    }
+    
+    public void setBody(Node body) {
+        this.bodyNode = body;
     }
     
     /**
@@ -81,8 +90,17 @@ public class WhenNode extends Node {
     /**
      * Get the expressionNode(s).
      */
-    public Node getExpressionNodes() {
+    public Node getExpression() {
         return expressionNodes;
+    }
+    
+    @Deprecated
+    public Node getExpressionNode() {
+        return getExpression();
+    }
+    
+    public void setExpression(Node expression) {
+        this. expressionNodes = expression;
     }
 
     public List<Node> childNodes() {

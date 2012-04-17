@@ -81,16 +81,26 @@ public class CaseNode extends Node {
 	 * caseNode is the case expression 
      * @return caseNode
      */
-    public Node getCaseNode() {
+    public Node getCase() {
         return caseNode;
+    }
+    
+    @Deprecated
+    public Node getCaseNode() {
+        return getCase();
     }
     
     public ListNode getCases() {
         return cases;
     }
 
-    public Node getElseNode() {
+    public Node getElse() {
         return elseNode;
+    }
+    
+    @Deprecated
+    public Node getElseNode() {
+        return getElse();
     }
 
     /**
@@ -98,8 +108,13 @@ public class CaseNode extends Node {
 	 * the body of the case statement, the first of a list of WhenNodes
      * @return whenNode
      */
-    public Node getFirstWhenNode() {
+    public Node getFirstWhen() {
         return cases;
+    }
+    
+    @Deprecated
+    public Node getFirstWhenNode() {
+        return getFirstWhen();
     }
     
     public List<Node> childNodes() {

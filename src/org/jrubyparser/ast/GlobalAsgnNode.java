@@ -70,7 +70,7 @@ public class GlobalAsgnNode extends AssignableNode implements INameNode {
     }
     
     public List<Node> childNodes() {
-        return createList(getValueNode());
+        return createList(getValue());
     }
     
 }

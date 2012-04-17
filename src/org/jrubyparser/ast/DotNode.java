@@ -71,16 +71,26 @@ public class DotNode extends Node {
      * Gets the beginNode.
      * @return Returns a Node
      */
-    public Node getBeginNode() {
+    public Node getBegin() {
         return beginNode;
     }
 
+    @Deprecated
+    public Node getBeginNode() {
+        return getBegin();
+    }
+    
     /**
      * Gets the endNode.
      * @return Returns a Node
      */
-    public Node getEndNode() {
+    public Node getEnd() {
         return endNode;
+    }
+    
+    @Deprecated
+    public Node getEndNode() {
+        return getEnd();
     }
 
     /**

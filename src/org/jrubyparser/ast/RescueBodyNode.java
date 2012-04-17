@@ -67,23 +67,50 @@ public class RescueBodyNode extends Node {
      * Gets the bodyNode.
      * @return Returns a Node
      */
-    public Node getBodyNode() {
+    public Node getBody() {
         return bodyNode;
+    }
+    
+    @Deprecated
+    public Node getBodyNode() {
+        return getBody();
+    }
+    
+    public void setBody(Node body) {
+        this.bodyNode = body;
     }
 
     /**
      * Get the next rescue node (if any).
      */
-    public RescueBodyNode getOptRescueNode() {
+    public RescueBodyNode getOptRescue() {
         return optRescueNode;
     }
 
+    @Deprecated
+    public RescueBodyNode getOptRescueNode() {
+        return getOptRescue();
+    }
+    
+    public void setOptRescue(RescueBodyNode optRescue) {
+        this.optRescueNode = optRescue;
+    }
+    
     /**
      * Gets the exceptionNodes.
      * @return Returns a Node
      */
-    public Node getExceptionNodes() {
+    public Node getExceptions() {
         return exceptionNodes;
+    }
+    
+    @Deprecated
+    public Node getExceptionNodes() {
+        return getExceptions();
+    }
+    
+    public void setExceptions(Node exceptions) {
+        this.exceptionNodes = exceptions;
     }
     
     public List<Node> childNodes() {

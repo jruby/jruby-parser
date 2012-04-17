@@ -63,8 +63,13 @@ public class NotNode extends Node {
      * Gets the conditionNode.
      * @return Returns a Node
      */
-    public Node getConditionNode() {
+    public Node getCondition() {
         return conditionNode;
+    }
+    
+    @Deprecated
+    public Node getConditionNode() {
+        return getCondition();
     }
     
     public List<Node> childNodes() {

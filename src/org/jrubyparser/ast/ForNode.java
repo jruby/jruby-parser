@@ -61,8 +61,13 @@ public class ForNode extends IterNode {
         return NodeType.FORNODE;
     }
     
-    public Node getIterNode() {
+    public Node getIter() {
         return iterNode;
+    }
+    
+    @Deprecated
+    public Node getIterNode() {
+        return getIter();
     }
 
     /**
@@ -76,7 +81,7 @@ public class ForNode extends IterNode {
     
     @Override
     public List<Node> childNodes() {
-        return Node.createList(getVarNode(), getBodyNode(), iterNode);
+        return Node.createList(getVar(), getBody(), iterNode);
     }
     
 }

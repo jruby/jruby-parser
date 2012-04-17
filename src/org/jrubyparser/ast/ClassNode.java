@@ -73,8 +73,13 @@ public class ClassNode extends Node implements IScopingNode {
      * 
      * @return the contents
      */
-    public Node getBodyNode() {
+    public Node getBody() {
         return bodyNode;
+    }
+    
+    @Deprecated
+    public Node getBodyNode() {
+        return getBody();
     }
     
     /**
@@ -98,8 +103,13 @@ public class ClassNode extends Node implements IScopingNode {
      * Gets the superNode.
      * @return Returns a Node
      */
-    public Node getSuperNode() {
+    public Node getSuper() {
         return superNode;
+    }
+    
+    @Deprecated
+    public Node getSuperNode() {
+        return getSuper();
     }
 
     public List<Node> childNodes() {

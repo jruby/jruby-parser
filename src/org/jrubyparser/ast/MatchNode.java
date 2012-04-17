@@ -60,8 +60,13 @@ public class MatchNode extends Node {
      * Gets the regexpNode.
      * @return Returns a Node
      */
-    public Node getRegexpNode() {
+    public Node getRegexp() {
         return regexpNode;
+    }
+    
+    @Deprecated
+    public Node getRegexpNode() {
+        return getRegexp();
     }
 
     public List<Node> childNodes() {

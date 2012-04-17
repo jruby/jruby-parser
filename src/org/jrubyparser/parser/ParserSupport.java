@@ -456,7 +456,7 @@ public class ParserSupport {
 
         checkExpression(rhs);
         if (lhs instanceof AssignableNode) {
-    	    ((AssignableNode) lhs).setValueNode(rhs);
+    	    ((AssignableNode) lhs).setValue(rhs);
     	    lhs.setPosition(union(lhs, rhs));
         } else if (lhs instanceof IArgumentNode) {
             IArgumentNode invokableNode = (IArgumentNode) lhs;
@@ -548,7 +548,7 @@ public class ParserSupport {
                 break;
             case ANDNODE: case ORNODE:
                 conditional = true;
-                node = ((BinaryOperatorNode) node).getSecondNode();
+                node = ((BinaryOperatorNode) node).getSecond();
                 break;
             case NEWLINENODE:
                 node = ((NewlineNode) node).getNextNode();
@@ -663,7 +663,7 @@ public class ParserSupport {
         if (node instanceof MultipleAsgnNode) {
             throw new SyntaxException(PID.MULTIPLE_ASSIGNMENT_IN_CONDITIONAL, node.getPosition(), "Multiple assignment in conditional.");
         } else if (node instanceof LocalAsgnNode || node instanceof DAsgnNode || node instanceof GlobalAsgnNode || node instanceof InstAsgnNode) {
-            Node valueNode = ((AssignableNode) node).getValueNode();
+            Node valueNode = ((AssignableNode) node).getValue();
             if (valueNode instanceof ILiteralNode || valueNode instanceof NilNode || valueNode instanceof TrueNode || valueNode instanceof FalseNode) {
                 warnings.warn(ID.ASSIGNMENT_IN_CONDITIONAL, node.getPosition(), "Found '=' in conditional, should be '=='.");
             }
@@ -691,13 +691,13 @@ public class ParserSupport {
             return new Match2Node(position, node, new GlobalVarNode(position, "$_"));
         }
         case ANDNODE:
-            leftNode = cond0(((AndNode) node).getFirstNode());
-            rightNode = cond0(((AndNode) node).getSecondNode());
+            leftNode = cond0(((AndNode) node).getFirst());
+            rightNode = cond0(((AndNode) node).getSecond());
             
             return new AndNode(node.getPosition(), makeNullNil(leftNode), makeNullNil(rightNode));
         case ORNODE:
-            leftNode = cond0(((OrNode) node).getFirstNode());
-            rightNode = cond0(((OrNode) node).getSecondNode());
+            leftNode = cond0(((OrNode) node).getFirst());
+            rightNode = cond0(((OrNode) node).getSecond());
             
             return new OrNode(node.getPosition(), makeNullNil(leftNode), makeNullNil(rightNode));
         case DOTNODE: {
@@ -709,8 +709,8 @@ public class ParserSupport {
             int slot = currentScope.isDefined(label);
             
             return new FlipNode(node.getPosition(),
-                    getFlipConditionNode(((DotNode) node).getBeginNode()),
-                    getFlipConditionNode(((DotNode) node).getEndNode()),
+                    getFlipConditionNode(((DotNode) node).getBegin()),
+                    getFlipConditionNode(((DotNode) node).getEnd()),
                     dotNode.isExclusive(), slot);
         }
         case REGEXPNODE:

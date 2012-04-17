@@ -59,8 +59,17 @@ public class ReturnNode extends Node {
         return iVisitor.visitReturnNode(this);
     }
 
-    public Node getValueNode() {
+    public Node getValue() {
         return valueNode;
+    }
+    
+    @Deprecated
+    public Node getValueNode() {
+        return getValue();
+    }
+    
+    public void setValue(Node value) {
+        this.valueNode = value;
     }
     
     public List<Node> childNodes() {

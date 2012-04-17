@@ -55,8 +55,13 @@ public class Match2Node extends Node {
      * Gets the receiverNode.
      * @return Returns a Node
      */
-    public Node getReceiverNode() {
+    public Node getReceiver() {
         return receiverNode;
+    }
+    
+    @Deprecated
+    public Node getReceiverNode() {
+        return getReceiver();
     }
 
 
@@ -64,8 +69,13 @@ public class Match2Node extends Node {
      * Gets the valueNode.
      * @return Returns a Node
      */
-    public Node getValueNode() {
+    public Node getValue() {
         return valueNode;
+    }
+    
+    @Deprecated
+    public Node getValueNode() {
+        return getValue();
     }
 
     public List<Node> childNodes() {

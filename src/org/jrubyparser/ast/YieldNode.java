@@ -33,12 +33,14 @@ import java.util.List;
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 
+// FIXME: Make into same ListNode<arg1, ..., argn> format as calls
 /** 
  * Represents a yield statement.
  */
-public class YieldNode extends Node {
+public class YieldNode extends Node implements IArgumentNode {
     private Node argsNode;
     private boolean expandedArguments;
+    private boolean hasParens = false;
 
     /**
      * Construct a new YieldNode.
@@ -75,8 +77,17 @@ public class YieldNode extends Node {
      * Gets the argsNode.
      * @return Returns a Node
      */
+    @Deprecated
     public Node getArgsNode() {
+        return getArgs();
+    }
+    
+    public Node getArgs() {
         return argsNode;
+    }
+    
+    public void setArgs(Node args) {
+        this.argsNode = args;
     }
 
     public boolean getExpandArguments() {
@@ -85,5 +96,13 @@ public class YieldNode extends Node {
 
     public List<Node> childNodes() {
         return createList(argsNode);
+    }
+
+    public boolean hasParens() {
+        return hasParens;
+    }
+
+    public void setHasParens(boolean hasParens) {
+        this.hasParens = hasParens;
     }
 }

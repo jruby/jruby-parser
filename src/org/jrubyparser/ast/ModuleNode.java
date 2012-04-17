@@ -71,8 +71,13 @@ public class ModuleNode extends Node implements IScopingNode {
      * 
      * @return the contents
      */
-    public Node getBodyNode() {
+    public Node getBody() {
         return bodyNode;
+    }
+    
+    @Deprecated
+    public Node getBodyNode() {
+        return getBody();
     }
     
     /**

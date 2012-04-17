@@ -76,10 +76,18 @@ public class SClassNode extends Node {
      * 
      * @return the contents
      */
-    public Node getBodyNode() {
+    public Node getBody() {
         return bodyNode;
     }
     
+    @Deprecated
+    public Node getBodyNode() {
+        return getBody();
+    }
+    
+    public void setBody(Node body) {
+        this.bodyNode = body;
+    }
     /**
      * Gets the scope of this class
      * 
@@ -93,8 +101,17 @@ public class SClassNode extends Node {
      * Gets the receiverNode.
      * @return Returns a Node
      */
-    public Node getReceiverNode() {
+    public Node getReceiver() {
         return receiverNode;
+    }
+    
+    @Deprecated
+    public Node getReceiverNode() {
+        return getReceiver();
+    }
+    
+    public void setReceiver(Node receiver) {
+        this.receiverNode = receiver;
     }
     
     public List<Node> childNodes() {

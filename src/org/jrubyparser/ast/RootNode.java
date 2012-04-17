@@ -76,8 +76,17 @@ public class RootNode extends Node {
      * 
      * @return real top AST node
      */
-    public Node getBodyNode() {
+    public Node getBody() {
         return bodyNode;
+    }
+    
+    @Deprecated
+    public Node getBodyNode() {
+        return getBody();
+    }
+    
+    public void setBody(Node body) {
+        this.bodyNode = body;
     }
 
     public Object accept(NodeVisitor iVisitor) {

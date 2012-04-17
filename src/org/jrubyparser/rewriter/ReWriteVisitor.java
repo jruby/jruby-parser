@@ -327,7 +327,7 @@ public class ReWriteVisitor implements NodeVisitor {
             visitAndPrintWithSeparator(argsNode.childNodes().iterator());
         }
 
-        if (iterNode instanceof BlockPassNode) {
+        if (iterNode != null && iterNode instanceof BlockPassNode) {
             if (argsNode != null) print(config.getFormatHelper().getListSeparator());
 
             print('&');
@@ -377,14 +377,14 @@ public class ReWriteVisitor implements NodeVisitor {
 
     public Object visitAndNode(AndNode iVisited) {
         enterCall();
-        visitNode(iVisited.getFirstNode());
+        visitNode(iVisited.getFirst());
 
         if (sourceRangeContains(iVisited.getPosition(), "&&")) {
             print(" && ");
         } else {
             print(" and ");
         }
-        visitNode(iVisited.getSecondNode());
+        visitNode(iVisited.getSecond());
         leaveCall();
         return null;
     }
@@ -442,10 +442,10 @@ public class ReWriteVisitor implements NodeVisitor {
 
     public Object visitArgsCatNode(ArgsCatNode iVisited) {
         print("[");
-        visitAndPrintWithSeparator(iVisited.getFirstNode().childNodes().iterator());
+        visitAndPrintWithSeparator(iVisited.getFirst().childNodes().iterator());
         print(config.getFormatHelper().getListSeparator());
         print("*");
-        visitNode(iVisited.getSecondNode());
+        visitNode(iVisited.getSecond());
         print("]");
         return null;
     }
@@ -631,8 +631,8 @@ public class ReWriteVisitor implements NodeVisitor {
 
     public Object visitCaseNode(CaseNode iVisited) {
         print("case ");
-        visitNode(iVisited.getCaseNode());
-        visitNode(iVisited.getFirstWhenNode());
+        visitNode(iVisited.getCase());
+        visitNode(iVisited.getFirstWhen());
         printNewlineAndIndentation();
         print("end");
         return null;
@@ -656,12 +656,12 @@ public class ReWriteVisitor implements NodeVisitor {
 
         print("class ");
         visitNode(iVisited.getCPath());
-        if (iVisited.getSuperNode() != null) {
+        if (iVisited.getSuper() != null) {
             print(" < ");
-            visitNode(iVisited.getSuperNode());
+            visitNode(iVisited.getSuper());
         }
 
-        new ClassBodyWriter(this, iVisited.getBodyNode()).write();
+        new ClassBodyWriter(this, iVisited.getBody()).write();
 
         printNewlineAndIndentation();
         printCommentsIn(iVisited);
@@ -780,7 +780,7 @@ public class ReWriteVisitor implements NodeVisitor {
     public Object visitDefinedNode(DefinedNode iVisited) {
         print("defined? ");
         enterCall();
-        visitNode(iVisited.getExpressionNode());
+        visitNode(iVisited.getExpression());
         leaveCall();
         return null;
     }
@@ -826,35 +826,35 @@ public class ReWriteVisitor implements NodeVisitor {
     public Object visitDefnNode(DefnNode iVisited) {
         config.getIndentor().indent();
         print("def ");
-        printDefNode(iVisited, iVisited.getName(), iVisited.getArgsNode(), iVisited.getScope(), iVisited.getBodyNode());
+        printDefNode(iVisited, iVisited.getName(), iVisited.getArgs(), iVisited.getScope(), iVisited.getBody());
         return null;
     }
 
     public Object visitDefsNode(DefsNode iVisited) {
         config.getIndentor().indent();
         print("def ");
-        visitNode(iVisited.getReceiverNode());
+        visitNode(iVisited.getReceiver());
         print('.');
-        printDefNode(iVisited, iVisited.getName(), iVisited.getArgsNode(), iVisited.getScope(), iVisited.getBodyNode());
+        printDefNode(iVisited, iVisited.getName(), iVisited.getArgs(), iVisited.getScope(), iVisited.getBody());
         return null;
     }
 
     public Object visitDotNode(DotNode iVisited) {
         enterCall();
-        visitNode(iVisited.getBeginNode());
+        visitNode(iVisited.getBegin());
         print("..");
         if (iVisited.isExclusive()) print('.');
-        visitNode(iVisited.getEndNode());
+        visitNode(iVisited.getEnd());
         leaveCall();
         return null;
     }
 
     public Object visitEnsureNode(EnsureNode iVisited) {
-        visitNode(iVisited.getBodyNode());
+        visitNode(iVisited.getBody());
         config.getIndentor().outdent();
         printNewlineAndIndentation();
         print("ensure");
-        visitNodeInIndentation(iVisited.getEnsureNode());
+        visitNodeInIndentation(iVisited.getEnsure());
         config.getIndentor().indent();
         return null;
     }
@@ -899,11 +899,11 @@ public class ReWriteVisitor implements NodeVisitor {
 
     public Object visitFlipNode(FlipNode iVisited) {
         enterCall();
-        visitNode(iVisited.getBeginNode());
+        visitNode(iVisited.getBegin());
         print(" ..");
         if (iVisited.isExclusive()) print('.');
         print(' ');
-        visitNode(iVisited.getEndNode());
+        visitNode(iVisited.getEnd());
         leaveCall();
         return null;
     }
@@ -915,10 +915,10 @@ public class ReWriteVisitor implements NodeVisitor {
 
     public Object visitForNode(ForNode iVisited) {
         print("for ");
-        visitNode(iVisited.getVarNode());
+        visitNode(iVisited.getVar());
         print(" in ");
-        visitNode(iVisited.getIterNode());
-        visitNodeInIndentation(iVisited.getBodyNode());
+        visitNode(iVisited.getIter());
+        visitNodeInIndentation(iVisited.getBody());
         printNewlineAndIndentation();
         print("end");
         return null;
@@ -957,9 +957,9 @@ public class ReWriteVisitor implements NodeVisitor {
 
     private void printAsgnNode(AssignableNode n) {
         print(((INameNode) n).getName());
-        if (n.getValueNode() == null || n.getValueNode().isInvisible()) return;
+        if (n.getValue() == null || n.getValue().isInvisible()) return;
         printAssignmentOperator();
-        visitNewlineInParentheses(n.getValueNode());
+        visitNewlineInParentheses(n.getValue());
     }
 
     public Object visitInstAsgnNode(InstAsgnNode iVisited) {
@@ -1072,10 +1072,10 @@ public class ReWriteVisitor implements NodeVisitor {
     }
 
     private boolean printIterVarNode(IterNode n) {
-        if (n.getVarNode() == null) return false;
+        if (n.getVar() == null) return false;
 
         print('|');
-        visitNode(n.getVarNode());
+        visitNode(n.getVar());
         print('|');
 
         return true;
@@ -1088,13 +1088,13 @@ public class ReWriteVisitor implements NodeVisitor {
             print(config.getFormatHelper().beforeIterVars());
             if (printIterVarNode(iVisited)) print(config.getFormatHelper().afterIterVars());
             config.setSkipNextNewline(true);
-            visitNode(iVisited.getBodyNode());
+            visitNode(iVisited.getBody());
             print(config.getFormatHelper().beforeClosingIterBrackets());
             print('}');
         } else {
             print(" do ");
             printIterVarNode(iVisited);
-            visitNodeInIndentation(iVisited.getBodyNode());
+            visitNodeInIndentation(iVisited.getBody());
             printNewlineAndIndentation();
             print("end");
         }
@@ -1113,21 +1113,21 @@ public class ReWriteVisitor implements NodeVisitor {
     }
 
     public Object visitMultipleAsgnNode(MultipleAsgnNode iVisited) {
-        if (iVisited.getHeadNode() != null) {
-            factory.createMultipleAssignmentReWriteVisitor().visitAndPrintWithSeparator(iVisited.getHeadNode().childNodes().iterator());
+        if (iVisited.getHead() != null) {
+            factory.createMultipleAssignmentReWriteVisitor().visitAndPrintWithSeparator(iVisited.getHead().childNodes().iterator());
         }
-        if (iVisited.getValueNode() == null || iVisited.getValueNode().isInvisible()) {
-            visitNode(iVisited.getArgsNode());
+        if (iVisited.getValue() == null || iVisited.getValue().isInvisible()) {
+            visitNode(iVisited.getArgs());
             return null;
         }
         print(config.getFormatHelper().beforeAssignment());
         print("=");
         print(config.getFormatHelper().afterAssignment());
         enterCall();
-        if (iVisited.getValueNode() instanceof ArrayNode) {
-            visitAndPrintWithSeparator(iVisited.getValueNode().childNodes().iterator());
+        if (iVisited.getValue() instanceof ArrayNode) {
+            visitAndPrintWithSeparator(iVisited.getValue().childNodes().iterator());
         } else {
-            visitNode(iVisited.getValueNode());
+            visitNode(iVisited.getValue());
         }
         leaveCall();
         return null;
@@ -1137,7 +1137,7 @@ public class ReWriteVisitor implements NodeVisitor {
         if (iVisited.getPre() != null) {
             factory.createMultipleAssignmentReWriteVisitor().visitAndPrintWithSeparator(iVisited.getPre().childNodes().iterator());
         }
-        if (iVisited.getValueNode() == null || iVisited.getValueNode().isInvisible()) {
+        if (iVisited.getValue() == null || iVisited.getValue().isInvisible()) {
             visitNode(iVisited.getRest());
             return null;
         }
@@ -1145,33 +1145,33 @@ public class ReWriteVisitor implements NodeVisitor {
         print("=");
         print(config.getFormatHelper().afterAssignment());
         enterCall();
-        if (iVisited.getValueNode() instanceof ArrayNode) {
-            visitAndPrintWithSeparator(iVisited.getValueNode().childNodes().iterator());
+        if (iVisited.getValue() instanceof ArrayNode) {
+            visitAndPrintWithSeparator(iVisited.getValue().childNodes().iterator());
         } else {
-            visitNode(iVisited.getValueNode());
+            visitNode(iVisited.getValue());
         }
         leaveCall();
         return null;
     }
 
     public Object visitMatch2Node(Match2Node iVisited) {
-        visitNode(iVisited.getReceiverNode());
+        visitNode(iVisited.getReceiver());
         print(config.getFormatHelper().matchOperator());
         enterCall();
-        visitNode(iVisited.getValueNode());
+        visitNode(iVisited.getValue());
         leaveCall();
         return null;
     }
 
     public Object visitMatch3Node(Match3Node iVisited) {
-        visitNode(iVisited.getValueNode());
+        visitNode(iVisited.getValue());
         print(config.getFormatHelper().matchOperator());
-        visitNode(iVisited.getReceiverNode());
+        visitNode(iVisited.getReceiver());
         return null;
     }
 
     public Object visitMatchNode(MatchNode iVisited) {
-        visitNode(iVisited.getRegexpNode());
+        visitNode(iVisited.getRegexp());
         return null;
     }
 
@@ -1179,7 +1179,7 @@ public class ReWriteVisitor implements NodeVisitor {
         print("module ");
         config.getIndentor().indent();
         visitNode(iVisited.getCPath());
-        visitNode(iVisited.getBodyNode());
+        visitNode(iVisited.getBody());
         config.getIndentor().outdent();
         printNewlineAndIndentation();
         print("end");
@@ -1207,12 +1207,12 @@ public class ReWriteVisitor implements NodeVisitor {
     }
 
     public Object visitNotNode(NotNode iVisited) {
-        if (iVisited.getConditionNode() instanceof CallNode) enterCall();
+        if (iVisited.getCondition() instanceof CallNode) enterCall();
 
         print(sourceRangeContains(iVisited.getPosition(), "not") ? "not " : "!");
-        visitNewlineInParentheses(iVisited.getConditionNode());
+        visitNewlineInParentheses(iVisited.getCondition());
 
-        if (iVisited.getConditionNode() instanceof CallNode) leaveCall();
+        if (iVisited.getCondition() instanceof CallNode) leaveCall();
 
         return null;
     }
@@ -1248,14 +1248,14 @@ public class ReWriteVisitor implements NodeVisitor {
     }
 
     public Object visitOpAsgnNode(OpAsgnNode iVisited) {
-        visitNode(iVisited.getReceiverNode());
+        visitNode(iVisited.getReceiver());
         print('.');
         print(iVisited.getVariableName());
         print(' ');
         print(iVisited.getOperatorName());
         print("=");
         print(config.getFormatHelper().afterAssignment());
-        visitNode(iVisited.getValueNode());
+        visitNode(iVisited.getValue());
         return null;
     }
 
@@ -1266,30 +1266,30 @@ public class ReWriteVisitor implements NodeVisitor {
         print(config.getFormatHelper().beforeAssignment());
         print(operator);
         print(config.getFormatHelper().afterAssignment());
-        visitNode(((AssignableNode) n).getValueNode());
+        visitNode(((AssignableNode) n).getValue());
 
         leaveCall();
     }
 
     public Object visitOpAsgnAndNode(OpAsgnAndNode iVisited) {
-        printOpAsgnNode(iVisited.getSecondNode(), "&&=");
+        printOpAsgnNode(iVisited.getSecond(), "&&=");
         return null;
     }
 
     public Object visitOpAsgnOrNode(OpAsgnOrNode iVisited) {
-        printOpAsgnNode(iVisited.getSecondNode(), "||=");
+        printOpAsgnNode(iVisited.getSecond(), "||=");
         return null;
     }
 
     public Object visitOrNode(OrNode iVisited) {
         enterCall();
-        visitNode(iVisited.getFirstNode());
+        visitNode(iVisited.getFirst());
         leaveCall();
 
         print(sourceRangeContains(iVisited.getPosition(), "||") ? " || " : " or ");
 
         enterCall();
-        visitNewlineInParentheses(iVisited.getSecondNode());
+        visitNewlineInParentheses(iVisited.getSecond());
         leaveCall();
 
         return null;
@@ -1347,32 +1347,32 @@ public class ReWriteVisitor implements NodeVisitor {
     }
 
     public Object visitRescueBodyNode(RescueBodyNode iVisited) {
-        if (!iVisited.getBodyNode().isInvisible() && config.getLastPosition().getStartLine() == getEndLine(iVisited.getBodyNode())) {
+        if (!iVisited.getBody().isInvisible() && config.getLastPosition().getStartLine() == getEndLine(iVisited.getBody())) {
             print(" rescue ");
         } else {
             print("rescue");
         }
 
-        if (iVisited.getExceptionNodes() != null) {
+        if (iVisited.getExceptions() != null) {
             printExceptionNode(iVisited);
         } else {
-            visitNodeInIndentation(iVisited.getBodyNode());
+            visitNodeInIndentation(iVisited.getBody());
         }
 
-        if (iVisited.getOptRescueNode() != null) printNewlineAndIndentation();
+        if (iVisited.getOptRescue() != null) printNewlineAndIndentation();
 
-        visitNode(iVisited.getOptRescueNode());
+        visitNode(iVisited.getOptRescue());
         return null;
     }
 
     private void printExceptionNode(RescueBodyNode n) {
-        if (n.getExceptionNodes() == null) return;
+        if (n.getExceptions() == null) return;
 
         print(' ');
-        visitNode(firstChild(n.getExceptionNodes()));
+        visitNode(firstChild(n.getExceptions()));
 
-        Node firstBodyNode = n.getBodyNode();
-        if (n.getBodyNode() instanceof BlockNode) firstBodyNode = firstChild(n.getBodyNode());
+        Node firstBodyNode = n.getBody();
+        if (n.getBody() instanceof BlockNode) firstBodyNode = firstChild(n.getBody());
 
         // if the exception is assigned to a variable, we have to skip the first
         // node in the body
@@ -1387,34 +1387,34 @@ public class ReWriteVisitor implements NodeVisitor {
             }
 
             config.getIndentor().indent();
-            visitIterAndSkipFirst(n.getBodyNode().childNodes().iterator());
+            visitIterAndSkipFirst(n.getBody().childNodes().iterator());
             config.getIndentor().outdent();
         } else {
-            visitNodeInIndentation(n.getBodyNode());
+            visitNodeInIndentation(n.getBody());
         }
     }
 
     public Object visitRescueNode(RescueNode iVisited) {
-        visitNode(iVisited.getBodyNode());
+        visitNode(iVisited.getBody());
         config.getIndentor().outdent();
 
-        if (!iVisited.getRescueNode().getBodyNode().isInvisible()
-                && getStartLine(iVisited) != getEndLine(iVisited.getRescueNode().getBodyNode())) {
+        if (!iVisited.getRescue().getBody().isInvisible()
+                && getStartLine(iVisited) != getEndLine(iVisited.getRescue().getBody())) {
             printNewlineAndIndentation();
         }
 
-        if (iVisited.getRescueNode().getBodyNode().isInvisible()) {
+        if (iVisited.getRescue().getBody().isInvisible()) {
             printNewlineAndIndentation();
             print("rescue");
-            printExceptionNode(iVisited.getRescueNode());
+            printExceptionNode(iVisited.getRescue());
         } else {
-            visitNode(iVisited.getRescueNode());
+            visitNode(iVisited.getRescue());
         }
 
-        if (iVisited.getElseNode() != null) {
+        if (iVisited.getElse() != null) {
             printNewlineAndIndentation();
             print("else");
-            visitNodeInIndentation(iVisited.getElseNode());
+            visitNodeInIndentation(iVisited.getElse());
         }
 
         config.getIndentor().indent();
@@ -1436,9 +1436,9 @@ public class ReWriteVisitor implements NodeVisitor {
     public Object visitReturnNode(ReturnNode iVisited) {
         print("return");
         enterCall();
-        if (!iVisited.getValueNode().isInvisible()) {
+        if (!iVisited.getValue().isInvisible()) {
             print(' ');
-            visitNode(unwrapSingleArrayNode(iVisited.getValueNode()));
+            visitNode(unwrapSingleArrayNode(iVisited.getValue()));
         }
         leaveCall();
         return null;
@@ -1447,8 +1447,8 @@ public class ReWriteVisitor implements NodeVisitor {
     public Object visitSClassNode(SClassNode iVisited) {
         print("class << ");
         config.getIndentor().indent();
-        visitNode(iVisited.getReceiverNode());
-        visitNode(iVisited.getBodyNode());
+        visitNode(iVisited.getReceiver());
+        visitNode(iVisited.getBody());
         config.getIndentor().outdent();
         printNewlineAndIndentation();
         print("end");
@@ -1548,13 +1548,13 @@ public class ReWriteVisitor implements NodeVisitor {
     }
 
     private boolean needsSuperNodeParentheses(SuperNode n) {
-        return n.getArgsNode().childNodes().isEmpty() && 
+        return n.getArgs().childNodes().isEmpty() && 
                 config.getSource().charAt(getEndOffset(n)) == '(';
     }
 
     public Object visitSuperNode(SuperNode iVisited) {
         print("super");
-        printCallArguments(iVisited.getArgsNode(), iVisited.getIterNode(), iVisited.hasParens());
+        printCallArguments(iVisited.getArgs(), iVisited.getIter(), iVisited.hasParens());
 
         return null;
     }
@@ -1588,8 +1588,8 @@ public class ReWriteVisitor implements NodeVisitor {
 
     public Object visitUntilNode(UntilNode iVisited) {
         print("until ");
-        visitNode(iVisited.getConditionNode());
-        visitNodeInIndentation(iVisited.getBodyNode());
+        visitNode(iVisited.getCondition());
+        visitNodeInIndentation(iVisited.getBody());
         printNewlineAndIndentation();
         print("end");
         return null;
@@ -1618,9 +1618,9 @@ public class ReWriteVisitor implements NodeVisitor {
         printNewlineAndIndentation();
         print("when ");
         enterCall();
-        visitAndPrintWithSeparator(iVisited.getExpressionNodes().childNodes().iterator());
+        visitAndPrintWithSeparator(iVisited.getExpression().childNodes().iterator());
         leaveCall();
-        visitNodeInIndentation(iVisited.getBodyNode());
+        visitNodeInIndentation(iVisited.getBody());
         if ((iVisited.getNextCase() instanceof WhenNode || iVisited.getNextCase() == null)) {
             visitNode(iVisited.getNextCase());
         } else {
@@ -1650,13 +1650,13 @@ public class ReWriteVisitor implements NodeVisitor {
     private void printWhileStatement(WhileNode iVisited) {
         print("while ");
 
-        if (isAssignment(iVisited.getConditionNode())) enterCall();
+        if (isAssignment(iVisited.getCondition())) enterCall();
 
-        visitNewlineInParentheses(iVisited.getConditionNode());
+        visitNewlineInParentheses(iVisited.getCondition());
 
-        if (isAssignment(iVisited.getConditionNode())) leaveCall();
+        if (isAssignment(iVisited.getCondition())) leaveCall();
 
-        visitNodeInIndentation(iVisited.getBodyNode());
+        visitNodeInIndentation(iVisited.getBody());
 
         printNewlineAndIndentation();
         print("end");
@@ -1664,10 +1664,10 @@ public class ReWriteVisitor implements NodeVisitor {
 
     private void printDoWhileStatement(WhileNode iVisited) {
         print("begin");
-        visitNodeInIndentation(iVisited.getBodyNode());
+        visitNodeInIndentation(iVisited.getBody());
         printNewlineAndIndentation();
         print("end while ");
-        visitNode(iVisited.getConditionNode());
+        visitNode(iVisited.getCondition());
     }
 
     public Object visitWhileNode(WhileNode iVisited) {
@@ -1688,22 +1688,8 @@ public class ReWriteVisitor implements NodeVisitor {
 
     public Object visitYieldNode(YieldNode iVisited) {
         print("yield");
+        printCallArguments(iVisited.getArgs(), null, iVisited.hasParens());
 
-        if (iVisited.getArgsNode() != null) {
-            print(needsParentheses(iVisited.getArgsNode()) ? '(' : ' ');
-
-            enterCall();
-
-            if (iVisited.getArgsNode() instanceof ArrayNode) {
-                visitAndPrintWithSeparator(iVisited.getArgsNode().childNodes().iterator());
-            } else {
-                visitNode(iVisited.getArgsNode());
-            }
-
-            leaveCall();
-
-            if (needsParentheses(iVisited.getArgsNode())) print(')');
-        }
         return null;
     }
 
@@ -1758,13 +1744,13 @@ public class ReWriteVisitor implements NodeVisitor {
         if (iVisited.getName().equals("[]=")) return printIndexAssignment(iVisited);
 
         if (iVisited.getName().endsWith("=")) {
-            visitNode(iVisited.getReceiverNode());
+            visitNode(iVisited.getReceiver());
             print('.');
 
             printNameWithoutEqualSign(iVisited);
             printAssignmentOperator();
-            if (iVisited.getArgsNode() != null) {
-                visitAndPrintWithSeparator(iVisited.getArgsNode().childNodes().iterator());
+            if (iVisited.getArgs() != null) {
+                visitAndPrintWithSeparator(iVisited.getArgs().childNodes().iterator());
             }
         } else {
             assert false : "Unhandled AttrAssignNode";
@@ -1779,7 +1765,7 @@ public class ReWriteVisitor implements NodeVisitor {
 
     public Object visitRootNode(RootNode iVisited) {
         config.getLocalVariables().addLocalVariable(iVisited.getStaticScope());
-        visitNode(iVisited.getBodyNode());
+        visitNode(iVisited.getBody());
         if (config.hasHereDocument()) config.fetchHereDocument().print();
 
         return null;

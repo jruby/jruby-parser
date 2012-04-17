@@ -57,9 +57,14 @@ public abstract class MethodDefNode extends Node implements INameNode {
 	 * Gets the argsNode.
 	 * @return Returns a Node
 	 */
-	public ArgsNode getArgsNode() {
+	public ArgsNode getArgs() {
 	    return argsNode;
 	}
+        
+        @Deprecated
+        public ArgsNode getArgsNode() {
+            return getArgs();
+        }
 
 	/**
 	 * Get the static scoping information.
@@ -75,9 +80,14 @@ public abstract class MethodDefNode extends Node implements INameNode {
 	 * 
 	 * @return the contents
 	 */
-	public Node getBodyNode() {
+	public Node getBody() {
 	    return bodyNode;
 	}
+        
+        @Deprecated
+        public Node getBodyNode() {
+            return getBody();
+        }
 
 	/**
 	 * Gets the name's node.
