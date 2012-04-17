@@ -139,8 +139,17 @@ public class CallNode extends Node implements INameNode, IArgumentNode, BlockAcc
 	 * receiverNode is the object on which the method is being called
      * @return receiverNode
      */
+    @Deprecated
     public Node getReceiverNode() {
+        return getReceiver();
+    }
+    
+    public Node getReceiver() {
         return receiverNode;
+    }
+    
+    public void setReceiver(Node receiver) {
+        this.receiverNode = receiver;
     }
 
     public List<Node> childNodes() {

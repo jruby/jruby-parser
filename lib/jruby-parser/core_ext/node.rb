@@ -41,7 +41,7 @@ class org::jrubyparser::ast::Node
     end
     nil
   end
-
+  
   ##
   # Convert this node back to human-readable source code.
   #
