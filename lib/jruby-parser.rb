@@ -1,7 +1,9 @@
 require 'java'
 require 'jruby-parser.jar'
-require 'jruby-parser/core_ext/fixnum'
+require 'jruby-parser/core_ext/boolean'
 require 'jruby-parser/core_ext/node'
+require 'jruby-parser/core_ext/numeric' # float,fixnum
+require 'jruby-parser/core_ext/string'
 
 module JRubyParser
   Compat = org.jrubyparser.CompatVersion

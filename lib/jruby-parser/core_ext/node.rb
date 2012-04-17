@@ -18,7 +18,7 @@ class org::jrubyparser::ast::Node
     value = value.to_ast_node if value.respond_to? :to_ast_node
 
     old_value = child_nodes[index]
-    value.setPosition old_value.position unless value.position
+    value.position = old_value.position unless value.position
     child_nodes[index] = value
   end
 
