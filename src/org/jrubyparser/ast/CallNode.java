@@ -41,6 +41,7 @@ public class CallNode extends Node implements INameNode, IArgumentNode, BlockAcc
     private Node argsNode;
     protected Node iterNode;
     protected String name;
+    private boolean hasParens = false;
 
     public CallNode(SourcePosition position, Node receiverNode, String name, Node argsNode) {
         this(position, receiverNode, name, argsNode, null);
@@ -111,6 +112,14 @@ public class CallNode extends Node implements INameNode, IArgumentNode, BlockAcc
 	    argsNode = new ListNode(getReceiverNode().getPosition());
 	}
         this.argsNode = argsNode;        
+    }
+
+    public boolean hasParens() {
+        return hasParens;
+    }
+
+    public void setHasParens(boolean hasParens) {
+        this.hasParens = hasParens;
     }
 
     /**

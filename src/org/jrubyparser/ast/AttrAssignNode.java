@@ -40,6 +40,7 @@ public class AttrAssignNode extends Node implements INameNode, IArgumentNode {
     protected Node receiver;
     private String name;
     private Node arg;
+    private boolean hasParens;
 
     public AttrAssignNode(SourcePosition position, Node receiver, String name, Node arg) {
         super(position);
@@ -123,6 +124,14 @@ public class AttrAssignNode extends Node implements INameNode, IArgumentNode {
     
     public void setArgs(Node argsNode) {
         this.arg = argsNode;
+    }
+
+    public boolean hasParens() {
+        return hasParens;
+    }
+
+    public void setHasParens(boolean hasParens) {
+        this.hasParens = hasParens;
     }
 
 

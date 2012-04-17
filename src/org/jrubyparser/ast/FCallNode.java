@@ -39,6 +39,7 @@ public class FCallNode extends Node implements INameNode, IArgumentNode, BlockAc
     private Node argsNode;
     protected Node iterNode;
     protected String name;
+    private boolean hasParens = false;
 
     public FCallNode(SourcePosition position, String name, Node argsNode) {
         this(position, name, argsNode, null);
@@ -53,7 +54,7 @@ public class FCallNode extends Node implements INameNode, IArgumentNode, BlockAc
         this.iterNode = iterNode;
         this.name = name;
     }
-
+    
     public NodeType getNodeType() {
         return NodeType.FCALLNODE;
     }
@@ -64,6 +65,14 @@ public class FCallNode extends Node implements INameNode, IArgumentNode, BlockAc
      **/
     public Object accept(NodeVisitor iVisitor) {
         return iVisitor.visitFCallNode(this);
+    }
+
+    public boolean hasParens() {
+        return hasParens;
+    }
+    
+    public void setHasParens(boolean hasParens) {
+        this.hasParens = hasParens;
     }
     
     /**

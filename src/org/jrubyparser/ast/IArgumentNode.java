@@ -34,4 +34,6 @@ package org.jrubyparser.ast;
 public interface IArgumentNode {
     public Node getArgs();
     public void setArgs(Node argsNode);
+    public boolean hasParens();
+    public void setHasParens(boolean hasParens);
 }
