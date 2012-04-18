@@ -1,17 +1,20 @@
-require 'java'
+require 'jruby-parser'
 
-$LOAD_PATH.unshift File.dirname(__FILE__) + "/../dist"
+# Extra options hash can be passed in to override parser configuration
+# opts = {:version => JRubyParser::Compat::RUBY1_8, :filename => 'name.rb'}
+# root = JRubyParser.parse("b = foo(1)", opts)
+root = JRubyParser.parse("b = foo(1)")
 
-require 'JRubyParser.jar'
+# Enumerable is mixed into AST tree
+# fcall = foot.find { |e| e.short_name == "fcall" }
+# ...but find_node is pretty common for spec writing:
+fcall = root.find_node(:fcall)
 
-import org.jrubyparser.Parser
-import org.jrubyparser.parser.ParserConfiguration
-JFile = java.io.File
-import java.io.FileReader
+# Change the AST.
+fcall.name = 'bar'
 
-config = ParserConfiguration.new
-parser = Parser.new
+# Notice this should be a TrueNode, but true knows to coerce into TrueNode
+fcall.args[0] = true
 
-while (filename = ARGV.shift)
-  p parser.parse(filename, FileReader.new(JFile.new(filename)), config).toString
-end
+# Write out the new source "b = bar(1)"
+p root.to_source
