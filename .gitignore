@@ -6,3 +6,5 @@ dist
 *.rej
 *~
 nbproject/private
+lib/jruby-parser.jar
+pkg

@@ -8,7 +8,12 @@ require 'ant'
 require 'bundler'
 Bundler::GemHelper.install_tasks
 
-task :default => [:jar, :spec]
+task :default => [:jar, :frobnicate, :spec]
+
+task :frobnicate do
+  root = File.dirname(__FILE__)
+  cp File.join(root, 'dist', 'JRubyParser.jar'), File.join(root, 'lib', 'jruby-parser.jar')
+end
 
 ant_import # load all ant targets as rake tasks
 
