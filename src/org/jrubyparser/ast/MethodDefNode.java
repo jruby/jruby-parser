@@ -31,6 +31,7 @@ package org.jrubyparser.ast;
 /**
  * Base class for DefnNode and DefsNode 
  */
+import java.util.List;
 import org.jrubyparser.SourcePosition;
 import org.jrubyparser.StaticScope;
 
@@ -104,4 +105,30 @@ public abstract class MethodDefNode extends Node implements INameNode {
 	public String getName() {
 	    return nameNode.getName();
 	}
+        
+        /**
+         * Note: This will give a string a representation which will always be consistent whether
+         * you specify a method definition using parens or not.  It is meant for use of IDES for
+         * indexing of hinting on completion.
+         */
+        public String getNormativeSignature() {
+            StringBuilder signature = new StringBuilder();
+            
+            signature.append(getName());
+
+            List<String> args = getArgs().getNormativeParameterNameList(false);
+            int length = args.size();
+        
+            if (length > 0) {
+                signature.append('(').append(args.get(0));
+
+                for (int i = 1; i < length; i++) {
+                    signature.append(',').append(args.get(i));
+                }
+            
+                signature.append(')');
+            }
+
+            return signature.toString();       
+        }
 }

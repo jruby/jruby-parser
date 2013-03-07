@@ -187,6 +187,15 @@ public class SourcePosition implements Serializable {
     public Collection<CommentNode> getComments() {
         return comments;
     }
+    
+    /**
+     * Make a new SourcePosition instance which will be the index starting at the end of this one of
+     * 0 length.  This is so that empty arg lists know where to start when you use the rewriter
+     * to add arguments to an empty arg list.
+     */
+    public SourcePosition makeEmptyPositionAfterThis() {
+        return new SourcePosition(file, startLine, endLine, endOffset, endOffset);
+    }
 
     public void setComments(Collection<CommentNode> comments) {
         this.comments = comments;

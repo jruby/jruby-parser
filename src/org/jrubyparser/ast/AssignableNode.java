@@ -74,4 +74,13 @@ public abstract class AssignableNode extends Node {
         setValue(valueNode);
     }
     
+    public SourcePosition getLeftHandSidePosition() {
+        if (!(this instanceof INameNode)) throw new UnsupportedOperationException("getLeftHandSidePosition() needs impl");
+
+        SourcePosition position = getPosition();
+
+        return new SourcePosition(position.getFile(), position.getStartLine(), position.getEndLine(),
+                position.getStartOffset(), position.getStartOffset() + ((INameNode) this).getName().length());
+        
+    }
 }

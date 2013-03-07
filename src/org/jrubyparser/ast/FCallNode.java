@@ -48,7 +48,7 @@ public class FCallNode extends Node implements INameNode, IArgumentNode, BlockAc
     public FCallNode(SourcePosition position, String name, Node argsNode, Node iterNode) {
         super(position);
 
-        assert argsNode != null : "argsNode is not null";
+        //        if (argsNode == null) argsNode = new ListNode(position);
         
         this.argsNode = argsNode;
         this.iterNode = iterNode;

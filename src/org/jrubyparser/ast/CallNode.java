@@ -116,9 +116,9 @@ public class CallNode extends Node implements INameNode, IArgumentNode, BlockAcc
     }
     
     public void setArgs(Node argsNode) {
-	if (argsNode == null) {
+        if (argsNode == null) {
 	    argsNode = new ListNode(getReceiver().getPosition());
-	}
+        }
         this.argsNode = argsNode;        
     }
 

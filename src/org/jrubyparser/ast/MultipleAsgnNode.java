@@ -35,12 +35,14 @@ import org.jrubyparser.SourcePosition;
 
 public class MultipleAsgnNode extends AssignableNode {
     private ListNode headNode;
-    private Node argsNode;
+    private Node restNode;
     
-    public MultipleAsgnNode(SourcePosition position, ListNode headNode, Node argsNode) {
+    public MultipleAsgnNode(SourcePosition position, ListNode headNode, Node restNode) {
         super(position);
         this.headNode = headNode;
-        this.argsNode = argsNode;
+        this.restNode = restNode;
+        
+        assert headNode != null || restNode != null : "MultipleAsgnNode with neither vars nor splat";
     }
 
     public NodeType getNodeType() {
@@ -56,16 +58,16 @@ public class MultipleAsgnNode extends AssignableNode {
     }
     
     /**
-     * Gets the argsNode.
+     * Gets the splat/rest node.
      * @return Returns a INode
      */
-    public Node getArgs() {
-        return argsNode;
+    public Node getRest() {
+        return restNode;
     }
     
     @Deprecated
     public Node getArgsNode() {
-        return getArgs();
+        return getRest();
     }
     
     /**
@@ -82,7 +84,17 @@ public class MultipleAsgnNode extends AssignableNode {
     }
     
     public List<Node> childNodes() {
-        return Node.createList(headNode, argsNode, getValue());
+        return Node.createList(headNode, restNode, getValue());
     }
-    
+
+    @Override
+    public SourcePosition getLeftHandSidePosition() {
+        if (getHead() != null) {
+            if (getRest() != null) return getHead().getPosition().union(getRest().getPosition());
+
+            return getHead().getPosition();
+        } 
+
+        return getRest().getPosition();
+    }    
 }

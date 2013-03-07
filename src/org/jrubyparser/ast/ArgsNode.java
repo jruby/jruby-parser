@@ -28,6 +28,7 @@
  ***** END LICENSE BLOCK *****/
 package org.jrubyparser.ast;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.jrubyparser.NodeVisitor;
@@ -143,4 +144,39 @@ public class ArgsNode extends Node {
 
         return Node.createList(pre, optional, rest, block);
     }
+    
+ 
+    /**
+     * Return a list of all possible parameter names.  IDE's can use this to generate
+     * indexes or use it for parameter hinting.
+     * 
+     * @param namesOnly do not prepend '*', '**', or '&' onto front of special parameters
+     */
+    public List<String> getNormativeParameterNameList(boolean namesOnly) {
+        List<String> parameters = new ArrayList<String>();
+        
+        if (getPreCount() > 0) {
+            for (Node preArg: getPre().childNodes()) {
+                if (preArg instanceof INameNode) parameters.add(((INameNode) preArg).getName());
+            }
+        }
+        
+        if (getOptionalCount() > 0) {
+            for (Node optArg: getOptional().childNodes()) {
+                if (optArg instanceof INameNode) parameters.add(((INameNode) optArg).getName());
+            }
+        }
+        
+        if (getPostCount() > 0) {
+            for (Node postArg: getPost().childNodes()) {
+                if (postArg instanceof INameNode) parameters.add(((INameNode) postArg).getName());
+            }
+        }
+        
+        if (getRest() != null) parameters.add(namesOnly ? getRest().getName() : "*" + getRest().getName());
+        if (getBlock() != null) parameters.add(namesOnly ? getBlock().getName() : "&" + getBlock().getName());
+        
+        return parameters;
+    }
+    
 }

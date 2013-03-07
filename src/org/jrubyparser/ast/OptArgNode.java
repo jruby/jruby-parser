@@ -35,7 +35,7 @@ import org.jrubyparser.SourcePosition;
  *
  * @author enebo
  */
-public class OptArgNode extends Node {
+public class OptArgNode extends Node implements INameNode {
     private Node value;
 
     public OptArgNode(SourcePosition position, Node value) {
@@ -50,7 +50,7 @@ public class OptArgNode extends Node {
     public Node getValue() {
         return value;
     }
-
+    
     @Override
     public Object accept(NodeVisitor visitor) {
         throw new UnsupportedOperationException("Not supported yet.");
@@ -59,6 +59,16 @@ public class OptArgNode extends Node {
     @Override
     public List<Node> childNodes() {
         return Node.createList(value);
+    }
+
+    public String getName() {
+        if (value instanceof INameNode) return ((INameNode) value).getName();
+        
+        return null;
+    }
+
+    public void setName(String newName) {
+        if (value instanceof INameNode) ((INameNode) value).setName(newName);
     }
 
 }

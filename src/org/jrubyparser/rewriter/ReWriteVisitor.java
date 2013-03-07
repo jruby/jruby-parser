@@ -1117,7 +1117,7 @@ public class ReWriteVisitor implements NodeVisitor {
             factory.createMultipleAssignmentReWriteVisitor().visitAndPrintWithSeparator(iVisited.getHead().childNodes().iterator());
         }
         if (iVisited.getValue() == null || iVisited.getValue().isInvisible()) {
-            visitNode(iVisited.getArgs());
+            visitNode(iVisited.getRest());
             return null;
         }
         print(config.getFormatHelper().beforeAssignment());

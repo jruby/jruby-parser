@@ -848,10 +848,8 @@ public class ParserSupport {
             position = union(receiver, holder);
         }
 
-        // If we have no arguments we will construct an empty list to avoid null checking.
-        // Notes: 1) We cannot share empty lists because of rewriting 2) Position of an empty
-        // list is undefined so we use any position just to satisfy node requirements.
-        if (args == null) args = new ListNode(name.getPosition());
+        // Make sure we always have args for rewriting potential
+        if (args == null) args = new ListNode(name.getPosition().makeEmptyPositionAfterThis());
 
         return new CallNode(position, receiver,(String) name.getValue(), args, (IterNode) iter);
     }

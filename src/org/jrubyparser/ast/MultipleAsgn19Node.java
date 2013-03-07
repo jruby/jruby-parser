@@ -45,6 +45,8 @@ public class MultipleAsgn19Node extends AssignableNode {
         this.pre = pre;
         this.rest = rest;
         this.post = post;
+        
+        assert pre != null || rest != null : "pre or rest must exist in a multipleasgn19node";
     }
 
     public NodeType getNodeType() {
@@ -78,5 +80,17 @@ public class MultipleAsgn19Node extends AssignableNode {
     public List<Node> childNodes() {
         return Node.createList(pre, rest, getValue());
     }
+    
+    @Override
+    public SourcePosition getLeftHandSidePosition() {
+        SourcePosition leftPosition = null;
+        
+        if (getPreCount() > 0) leftPosition = getPre().getPosition();
+        if (leftPosition == null && getRest() != null) leftPosition = getRest().getPosition();
+        // left position guaranteed non-nill based on constructor contract.
+        if (getPostCount() > 0) return leftPosition.union(getPost().getPosition());
+        if (getRest() != null && leftPosition != getRest().getPosition()) return leftPosition.union(getRest().getPosition());
 
+        return leftPosition;
+    } 
 }
