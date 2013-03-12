@@ -152,6 +152,15 @@ public class SourcePosition implements Serializable {
     	return endOffset;
     }
     
+    /**
+     * Is this a place-holder element for things like a zero-arg listnode?  These elements get
+     * added to the AST for that jruby-parser's rewriting can add arguments after the tree
+     * is constructed.
+     */
+    public boolean isEmpty() {
+        return startOffset == endOffset;
+    }
+    
     public SourcePosition union(SourcePosition other) {
         return new SourcePosition(file, startLine, other.getEndLine(), startOffset, other.getEndOffset());
     }
