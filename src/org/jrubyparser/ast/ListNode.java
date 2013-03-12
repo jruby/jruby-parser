@@ -138,7 +138,7 @@ public class ListNode extends Node {
     }
     
     public Node getLast() {
-    	return list.size() == 0 ? null : list.get(list.size() - 1);
+    	return list.isEmpty() ? null : list.get(list.size() - 1);
     }
     
     public List<Node> childNodes() {
