@@ -64,7 +64,7 @@ public class ArgsPushNode extends Node {
     }
 
     public List<Node> childNodes() {
-        return EMPTY_LIST;
+        return createList(firstNode, secondNode);
     }
     
 }
