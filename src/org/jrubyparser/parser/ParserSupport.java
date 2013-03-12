@@ -178,7 +178,7 @@ public class ParserSupport {
 
     public Node arg_blk_pass(Node firstNode, BlockPassNode secondNode) {
         if (secondNode != null) {
-            secondNode.setArgsNode(firstNode);
+            secondNode.setArgs(firstNode);
             secondNode.setPosition(union(firstNode, secondNode));
             return secondNode;
         }
@@ -1255,7 +1255,7 @@ public class ParserSupport {
      public Node arg_append(Node node1, Node node2) {
          if (node1 == null) return new ArrayNode(node2.getPosition(), node2);
          if (node1 instanceof ListNode) return ((ListNode) node1).add(node2);
-         if (node1 instanceof BlockPassNode) return arg_append(((BlockPassNode) node1).getBodyNode(), node2);
+         if (node1 instanceof BlockPassNode) return arg_append(((BlockPassNode) node1).getBody(), node2);
          if (node1 instanceof ArgsPushNode) {
              ArgsPushNode pushNode = (ArgsPushNode) node1;
              Node body = pushNode.getSecondNode();
