@@ -1904,7 +1904,7 @@ f_rest_arg      : restarg_mark tIDENTIFIER {
                         support.yyerror("duplicate rest argument name");
                     }
 
-                    $$ = new RestArgNode(support.arg_var(support.shadowing_lvar($2)));
+                    $$ = new RestArgNode($1.getPosition().union($2.getPosition()), support.arg_var(support.shadowing_lvar($2)));
                 }
                 | restarg_mark {
                     $$ = new UnnamedRestArgNode($1.getPosition(), support.getCurrentScope().getLocalScope().addVariable("*"));
@@ -1918,7 +1918,7 @@ f_block_arg     : blkarg_mark tIDENTIFIER {
                         support.yyerror("block argument must be local variable");
                     }
 
-                    $$ = new BlockArgNode(support.arg_var(support.shadowing_lvar($2)));
+                    $$ = new BlockArgNode($1.getPosition().union($2.getPosition()), support.arg_var(support.shadowing_lvar($2)));
                 }
 
 opt_f_block_arg : ',' f_block_arg {
