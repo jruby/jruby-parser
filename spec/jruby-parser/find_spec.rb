@@ -1,6 +1,7 @@
 $LOAD_PATH.unshift File.dirname(__FILE__) + "/../../lib"
 require 'java'
 require 'jruby-parser'
+require 'parser_helpers'
 
 describe JRubyParser do
   [JRubyParser::Compat::RUBY1_8, JRubyParser::Compat::RUBY1_9].each do |v|

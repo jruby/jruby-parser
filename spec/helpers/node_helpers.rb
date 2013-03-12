@@ -110,11 +110,123 @@ module HaveArgCounts
     ArgCountsMatcher.new(*args)
   end
 end
- 
+
+class HaveParametersMatcher
+  def initialize(*list)
+    @with_decorations = []
+    @without_decorations = []
+    list.each do |e1, e2|
+      @without_decorations << e1
+      @with_decorations << (e2 || e1)
+    end
+  end
+
+  def matches?(args)
+    @actual_with = args.get_normative_parameter_name_list(false).to_a
+    @actual_without = args.get_normative_parameter_name_list(true).to_a
+    @with_decorations == @actual_with && @without_decorations == @actual_without
+  end
+
+  def failure_message
+    error = ""
+    if @with_decorations != @actual_with
+      error << %[expected #{@actual_with.inspect} to have #{@with_decorations.inspect}.]
+    end
+
+    if @without_decorations != @actual_without
+      error << %[ expected #{@actual_without.inspect} to have #{@without_decorations.inspect}.]
+    end
+    error
+  end
+
+  def negative_failure_message
+    error = ""
+    if @with_decorations != @actual_with
+      error << %[expected #{@actual_with.inspect} to not have #{@with_decorations.inspect}.]
+    end
+
+    if @without_decorations != @actual_without
+      error << %[ expected #{@actual_without.inspect} to not have #{@without_decorations.inspect}.]
+    end
+    error
+  end
+end
+
+module HaveParameters
+  def have_parameters(*args)
+    HaveParametersMatcher.new(*args)
+  end
+end
+
+class HaveStaticAssignmentsMatcher
+  java_import org.jrubyparser.ast.FixnumNode
+  java_import org.jrubyparser.ast.ListNode
+
+  def initialize(list)
+    @list = list
+  end
+
+  def matches?(args)
+    @actual_list = args.calculateStaticAssignments.to_a
+    @failures_var_names = []
+    @failures_var_values = []
+    
+    @list.each_with_index do |arr, i|
+      node_pair = @actual_list[i]
+      expected_var, expected_value = arr[0].to_s, arr[1]
+      actual_var, actual_value = node_pair.first.name, value_for(node_pair.second)
+      
+      @failures_var_names << [expected_var, actual_var] if expected_var != actual_var
+      @failures_var_values << [expected_value, actual_value] if expected_value != actual_value
+      
+    end
+    
+    @failures_var_names.size == 0 && @failures_var_values.size == 0
+  end
+
+   def value_for(node)
+    if node.kind_of? FixnumNode
+      node.value
+    elsif node.kind_of? ListNode
+      node.child_nodes.map {|e| value_for(e)}
+    else
+      node
+    end
+  end
+
+  def failure_message
+    names = @failures_var_names.inject("names: ") do |s, e|
+      s << "#{e[0]} != #{e[1]} "
+    end
+
+    @failures_var_values.inject(names + "\nvalues: ") do |s, e|
+      s << "#{e[0]} != #{e[1]} "
+    end
+  end
+
+  def negative_failure_message
+    names = @failures_var_names.inject("names: ") do |s, e|
+      s << "#{e[0]} !!= #{e[1]}"
+    end
+
+    @failures_var_values.inject(names + "\nvalues: ") do |s, e|
+      s << "#{e[0]} !!= #{e[1]} "
+    end
+  end
+end
+
+module HaveStaticAssignments
+  def have_static_assignments(*args)
+    HaveStaticAssignmentsMatcher.new(*args)
+  end
+end
+
 #module Spec::Example::ExampleMethods
 class Object
   include HavePosition
   include HaveName
   include HaveNameAndPosition
   include HaveArgCounts
+  include HaveParameters
+  include HaveStaticAssignments
 end

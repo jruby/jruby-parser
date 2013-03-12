@@ -7,6 +7,12 @@ require 'node_helpers'
 describe Parser do
   [1.8, 1.9].each do |v|
     it "parses a 0-arg method call sans parens +extra line [#{v}]" do
+      parse("\nblock_given?\n", v).find_node(:fcall).tap do |call|
+        call.should have_name_and_position("block_given?", 1, 1, 1, 13)
+      end
+    end
+
+    it "parses a 0-arg method call sans parens +extra line [#{v}]" do
       parse("\nputs\n", v).find_node(:vcall).tap do |call|
         call.should have_name_and_position("puts", 1, 1, 1, 5)
       end
