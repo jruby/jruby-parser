@@ -629,6 +629,14 @@ public class Lexer {
     }
 
     private void determineExpressionState() {
+        // Some way netbeans is using the lexer ends up causing a scenario where lex_state is
+        // not properly initialized.  EXPR_BEG is the logical starting point so I will just
+        // set it if null;
+        if (lex_state == null) {
+            setState(LexState.EXPR_BEG);
+            return;
+        }
+        
         switch (lex_state) {
         case EXPR_FNAME: case EXPR_DOT:
             setState(LexState.EXPR_ARG);
