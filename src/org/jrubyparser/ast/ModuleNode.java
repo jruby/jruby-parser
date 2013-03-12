@@ -37,7 +37,7 @@ import org.jrubyparser.StaticScope;
 /** 
  * Represents a module definition.
  */
-public class ModuleNode extends Node implements IScopingNode {
+public class ModuleNode extends Node implements IScopingNode, ILocalScope {
     private Colon3Node cpath;
     private StaticScope scope;
     private Node bodyNode;

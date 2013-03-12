@@ -35,7 +35,7 @@ import java.util.List;
 import org.jrubyparser.SourcePosition;
 import org.jrubyparser.StaticScope;
 
-public abstract class MethodDefNode extends Node implements INameNode {
+public abstract class MethodDefNode extends Node implements INameNode, ILocalScope {
 	protected ArgumentNode nameNode;
 	protected ArgsNode argsNode;
 	protected StaticScope scope;
