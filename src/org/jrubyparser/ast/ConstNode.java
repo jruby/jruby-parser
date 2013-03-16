@@ -32,6 +32,7 @@ import java.util.List;
 
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
+import static org.jrubyparser.ast.Node.EMPTY_LIST;
 
 /**
  * The access to a Constant.
@@ -64,12 +65,17 @@ public class ConstNode extends Node implements INameNode {
         return name;
     }
     
-    public List<Node> childNodes() {
-        return EMPTY_LIST;
-    }
-    
     public void setName(String name) {
         this.name = name;
     }
+    
+    public boolean isNameMatch(String name) {
+        String thisName = getName();
+        
+        return thisName != null && thisName.equals(name);
+    }
 
+    public List<Node> childNodes() {
+        return EMPTY_LIST;
+    }    
 }

@@ -37,7 +37,7 @@ import org.jrubyparser.StaticScope;
 /** 
  * Represents a singleton method definition.
  */
-public class DefsNode extends MethodDefNode implements INameNode {
+public class DefsNode extends MethodDefNode {
     private Node receiverNode;
     
     public DefsNode(SourcePosition position, Node receiverNode, ArgumentNode nameNode, ArgsNode argsNode, 
@@ -73,19 +73,7 @@ public class DefsNode extends MethodDefNode implements INameNode {
     public Node getReceiverNode() {
         return getReceiver();
     }
-
-    /**
-     * Gets the name of this method
-     */
-    @Override
-    public String getName() {
-        return nameNode.getName();
-    }
     
-    public void setName(String name) {
-        nameNode.setName(name);
-    }
-
     public List<Node> childNodes() {
         return Node.createList(receiverNode, nameNode, argsNode, bodyNode);
     }

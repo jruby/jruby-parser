@@ -71,4 +71,9 @@ public class OptArgNode extends Node implements INameNode {
         if (value instanceof INameNode) ((INameNode) value).setName(newName);
     }
 
+    public boolean isNameMatch(String name) {
+        String thisName = getName();
+        
+        return thisName != null && thisName.equals(name);
+    }
 }

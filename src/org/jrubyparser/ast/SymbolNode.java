@@ -36,12 +36,9 @@ import org.jrubyparser.SourcePosition;
 /** 
  * Represents a symbol (:symbol_name).
  */
-public class SymbolNode extends Node implements ILiteralNode, INameNode {
-    private String name;
-
+public class SymbolNode extends NamedNode implements ILiteralNode, INameNode {
     public SymbolNode(SourcePosition position, String name) {
-	    super(position);
-	    this.name = name;
+	    super(position, name);
     }
 
     public NodeType getNodeType() {
@@ -50,18 +47,6 @@ public class SymbolNode extends Node implements ILiteralNode, INameNode {
 
     public Object accept(NodeVisitor iVisitor) {
         return iVisitor.visitSymbolNode(this);
-    }
-
-    /**
-     * Gets the name.
-     * @return Returns a String
-     */
-    public String getName() {
-        return name;
-    }
-    
-    public void setName(String name) {
-        this.name = name;
     }
     
     public List<Node> childNodes() {

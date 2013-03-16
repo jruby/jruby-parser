@@ -9,10 +9,8 @@ import java.util.List;
 import org.jrubyparser.SourcePosition;
 import org.jrubyparser.ast.ArgsCatNode;
 import org.jrubyparser.ast.ArgsPushNode;
-import org.jrubyparser.ast.FixnumNode;
 import org.jrubyparser.ast.ListNode;
 import org.jrubyparser.ast.MultipleAsgn19Node;
-import org.jrubyparser.ast.NilImplicitNode;
 import org.jrubyparser.ast.Node;
 
 /**
@@ -25,9 +23,9 @@ public class StaticAnalyzerHelper {
     private static short POST = 2;
 
     // FIXME: This feels really icky..
-    public static List<NodePair> calculateStaticAssignments(MultipleAsgn19Node masgn) {
+    public static List<NodePair> calculateStaticAssignments(MultipleAsgn19Node masgn, Node values) {
         List<NodePair> assignments = new ArrayList<NodePair>();
-        Node[] rhs = flattenRHSValues(masgn.getValue());
+        Node[] rhs = flattenRHSValues(values);
         ListNode rhsPre = (ListNode) rhs[PRE];
         int rhsPreSize = rhsPre.size();
         int handled = 0;
@@ -87,7 +85,7 @@ public class StaticAnalyzerHelper {
                             assignments.add(new NodePair(masgn.getPost().get(i), rhsPre.get(handled + i)));
                         }
                     } else if (leftOver == postSize) {
-                        assignments.add(new NodePair(masgn.getRest(), new ListNode(rhsPre.get(handled).getPosition())));
+                        assignments.add(new NodePair(masgn.getRest(), new ListNode(rhsPre.get(handled-1).getPosition())));
                         for (int i = 0; i < postSize; i++) {
                             assignments.add(new NodePair(masgn.getPost().get(i), rhsPre.get(handled + i)));
                         }
@@ -103,7 +101,7 @@ public class StaticAnalyzerHelper {
             }
         }
         
-        return assignments;    
+        return assignments;
     }
 
     /**
@@ -142,7 +140,6 @@ public class StaticAnalyzerHelper {
             values[0] = asList(cat.getFirst());
             values[1] = cat.getSecond();
         } else { // LISTNODE
-            
             values[0] = asList(rhs);
         }
         
@@ -153,6 +150,8 @@ public class StaticAnalyzerHelper {
     }
         
     private static ListNode asList(Node node) {
+        if (node == null) return new ListNode(SourcePosition.INVALID_POSITION);
+        
         return !(node instanceof ListNode) ? new ListNode(node.getPosition(), node) : (ListNode) node;
         
     }

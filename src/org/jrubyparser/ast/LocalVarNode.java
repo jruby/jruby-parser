@@ -36,18 +36,15 @@ import org.jrubyparser.SourcePosition;
 /**
  * Access a local variable 
  */
-public class LocalVarNode extends Node implements INameNode {
-    // The name of the variable
-    private String name;
-    
+public class LocalVarNode extends NamedNode implements ILocalVariable {
     // A scoped location of this variable (high 16 bits is how many scopes down and low 16 bits
     // is what index in the right scope to set the value.
     private int location;
 
     public LocalVarNode(SourcePosition position, int location, String name) {
-        super(position);
+        super(position, name);
+        
         this.location = location;
-        this.name = name;
     }
 
     public NodeType getNodeType() {
@@ -80,26 +77,8 @@ public class LocalVarNode extends Node implements INameNode {
     public int getIndex() {
         return location & 0xffff;
     }
-
-    /**
-     * What is the name of this variable
-     * 
-     * @return the name of the variable
-     */
-    public String getName() {
-        return name;
-    }
-    
-    /**
-     * Set the name of this variable (for refactoring support)
-     * @param name the new name
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
     
     public List<Node> childNodes() {
         return EMPTY_LIST;
     }
-
 }

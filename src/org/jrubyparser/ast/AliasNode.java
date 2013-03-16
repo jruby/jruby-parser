@@ -76,5 +76,13 @@ public class AliasNode extends Node {
     public List<Node> childNodes() {
         return Node.createList(newName, oldName);
     }
+
+    public boolean oldNameMatches(String name) {        
+        if (oldName instanceof INameNode) return ((INameNode) oldName).isNameMatch(name);
+        if (oldName instanceof StrNode) return ((StrNode) oldName).getValue().equals(name);
+        if (oldName instanceof LiteralNode) return ((LiteralNode) oldName).getName().equals(name);
+
+        return false;
+    }
     
 }

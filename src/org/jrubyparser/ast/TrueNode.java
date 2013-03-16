@@ -28,17 +28,15 @@
  ***** END LICENSE BLOCK *****/
 package org.jrubyparser.ast;
 
-import java.util.List;
-
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 
 /**
  * Represents 'true'.
  */
-public class TrueNode extends Node implements INameNode {
+public class TrueNode extends BareKeywordNode {
     public TrueNode(SourcePosition position) {
-        super(position);
+        super(position, "true");
     }
 
     public NodeType getNodeType() {
@@ -51,20 +49,5 @@ public class TrueNode extends Node implements INameNode {
      **/
     public Object accept(NodeVisitor iVisitor) {
         return iVisitor.visitTrueNode(this);
-    }
-    
-    /**
-     * Name of the true node.
-     */
-    public String getName() {
-        return "true";
-    }
-    
-    public void setName(String name) {
-        // FIXME: error or noop?
-    }
-    
-    public List<Node> childNodes() {
-        return EMPTY_LIST;
     }
 }

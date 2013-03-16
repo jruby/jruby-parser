@@ -37,7 +37,7 @@ import org.jrubyparser.SourcePosition;
  * Simple Node that allows editor projects to keep position info in AST
  * (evaluation does not need this).
  */
-public class ArgumentNode extends Node implements INameNode {
+public class ArgumentNode extends Node implements INameNode, ILocalVariable {
     private String identifier;
     private int location;
 
@@ -91,5 +91,12 @@ public class ArgumentNode extends Node implements INameNode {
 
     public List<Node> childNodes() {
         return EMPTY_LIST;
+    }
+
+    // Fixme: Can we assert name in constructor and remove null check?
+    public boolean isNameMatch(String name) {
+        String thisName = getName();
+        
+        return thisName != null && thisName.equals(name);
     }
 }

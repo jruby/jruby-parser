@@ -34,15 +34,10 @@ import org.jrubyparser.SourcePosition;
 
 /**
  * RubyMethod call without any arguments
- *
  */
-public class VCallNode extends Node implements INameNode {
-    protected String name;
-
+public class VCallNode extends NamedNode implements INameNode {
     public VCallNode(SourcePosition position, String name) {
-        super(position);
-
-        this.name = name;
+        super(position, name);
     }
 
     public NodeType getNodeType() {
@@ -56,21 +51,8 @@ public class VCallNode extends Node implements INameNode {
     public Object accept(NodeVisitor iVisitor) {
         return iVisitor.visitVCallNode(this);
     }
-
-    /**
-     * Gets the methodName.
-     * @return Returns a String
-     */
-    public String getName() {
-        return name;
-    }
-    
-    public void setName(String name) {
-        this.name = name;
-    }
     
     public List<Node> childNodes() {
         return EMPTY_LIST;
     }
-
 }

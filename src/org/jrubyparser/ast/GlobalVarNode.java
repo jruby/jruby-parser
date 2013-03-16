@@ -67,7 +67,13 @@ public class GlobalVarNode extends Node implements INameNode {
     public void setName(String name) {
         this.name = name;
     }
-
+    
+    public boolean isNameMatch(String name) {
+        String thisName = getName();
+        
+        return thisName != null && thisName.equals(name);
+    }
+    
     public List<Node> childNodes() {
         return EMPTY_LIST;
     }

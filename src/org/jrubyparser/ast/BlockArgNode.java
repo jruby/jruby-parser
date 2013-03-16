@@ -36,14 +36,12 @@ import org.jrubyparser.SourcePosition;
 /**
  *	An explicit block argument (&amp;my_block).
  */
-public class BlockArgNode extends Node implements INameNode {
+public class BlockArgNode extends NamedNode {
     private int count;
-    private String name;
 
     public BlockArgNode(SourcePosition position, int count, String name) {
-        super(position);
+        super(position, name);
         this.count = count;
-        this.name = name;
     }
 
     public BlockArgNode(SourcePosition position, ArgumentNode argNode) {
@@ -68,19 +66,6 @@ public class BlockArgNode extends Node implements INameNode {
      */
     public int getCount() {
         return count;
-    }
-
-    /**
-     * Get the name of this block argument
-     * 
-     * @return it's name
-     */
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 	
     public List<Node> childNodes() {

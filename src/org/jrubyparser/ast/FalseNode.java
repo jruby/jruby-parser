@@ -28,17 +28,15 @@
  ***** END LICENSE BLOCK *****/
 package org.jrubyparser.ast;
 
-import java.util.List;
-
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 
 /** 
  * Represents a false literal.
  */
-public class FalseNode extends Node implements INameNode {
+public class FalseNode extends BareKeywordNode {
     public FalseNode(SourcePosition position) {
-        super(position);
+        super(position, "false");
     }
 
     public NodeType getNodeType() {
@@ -51,20 +49,5 @@ public class FalseNode extends Node implements INameNode {
      **/
     public Object accept(NodeVisitor iVisitor) {
         return iVisitor.visitFalseNode(this);
-    }
-    
-    /**
-     * Name of false node.
-     */
-    public String getName() {
-        return "false";
-    }
-    
-    public void setName(String newName) {
-        // FIXME: Error or no-op?
-    }
-    
-    public List<Node> childNodes() {
-        return EMPTY_LIST;
     }
 }

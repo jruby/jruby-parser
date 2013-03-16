@@ -142,6 +142,13 @@ public class CallNode extends Node implements INameNode, IArgumentNode, BlockAcc
     public void setName(String name) {
         this.name = name;
     }
+
+    public boolean isNameMatch(String name) {
+        String thisName = getName();
+        
+        return thisName != null && thisName.equals(name);
+    }
+    
     /**
      * Gets the receiverNode.
 	 * receiverNode is the object on which the method is being called

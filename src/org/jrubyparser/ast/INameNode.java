@@ -27,7 +27,7 @@
  ***** END LICENSE BLOCK *****/
 package org.jrubyparser.ast;
 
-public interface INameNode {
+public interface INameNode extends INameMatchable {
     public String getName();
     public void setName(String newName);
 }

@@ -72,4 +72,10 @@ public class Colon3Node extends Node implements INameNode {
     public void setName(String name) {
         this.name = name;
     }
+
+    public boolean isNameMatch(String name) {
+        String thisName = getName();
+        
+        return thisName != null && thisName.equals(name);
+    }
 }

@@ -32,6 +32,7 @@ import java.util.List;
 
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
+import static org.jrubyparser.ast.Node.EMPTY_LIST;
 
 /** 
  * Represents an instance variable accessor.
@@ -63,12 +64,18 @@ public class InstVarNode extends Node implements INameNode {
     public String getName() {
         return name;
     }
-
-    public List<Node> childNodes() {
-        return EMPTY_LIST;
-    }
     
     public void setName(String name){
         this.name = name;
+    }
+
+    public boolean isNameMatch(String name) {
+        String thisName = getName();
+        
+        return thisName != null && thisName.equals(name);
+    }    
+    
+    public List<Node> childNodes() {
+        return EMPTY_LIST;
     }
 }

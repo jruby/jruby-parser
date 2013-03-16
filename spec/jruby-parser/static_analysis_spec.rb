@@ -63,5 +63,47 @@ describe Parser do
         masgn.should have_static_assignments([[:a, splatted_foo], [:b, 1]])
       end
     end
+
+    it "Can detect simple parameter is used" do
+      parse("def foo(a); a; end").find_node(:defn) do |defn|
+        defn.args.get_normative_parameter_name_list(true).each do |parameter|
+          defn.is_parameter_used(parameter).should == true
+        end
+      end
+
+      parse("def foo(a,b); a; b; end").find_node(:defn) do |defn|
+        defn.args.get_normative_parameter_name_list(true).each do |parameter|
+          defn.is_parameter_used(parameter).should == true
+        end
+      end
+    end
+
+    it "Can detect some simple parameters are used" do
+      parse("def foo(a,b); b; end").find_node(:defn) do |defn|
+        defn.is_parameter_used("a").should == false
+        defn.is_parameter_used("b").should == true
+      end
+
+      parse("def foo(a,b); b if true; end").find_node(:defn) do |defn|
+        defn.is_parameter_used("a").should == false
+        defn.is_parameter_used("b").should == true
+      end
+
+      parse("def foo(a,b); proc { b if true }; end").find_node(:defn) do |defn|
+        defn.is_parameter_used("a").should == false
+        defn.is_parameter_used("b").should == true
+      end
+
+      parse("def foo a, b, c\nputs a, b, c\nend").find_node(:defn) do |defn|
+        defn.is_parameter_used("a").should == true
+        defn.is_parameter_used("b").should == true
+        defn.is_parameter_used("c").should == true
+      end
+
+      parse("def foo(a, b); b.each_answer {|n| data if n == a }; end") do |defn|
+        defn.is_parameter_used("a").should == true
+        defn.is_parameter_used("b").should == true
+      end
+    end
   end
 end

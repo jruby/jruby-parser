@@ -44,7 +44,7 @@ public class AttrAssignNode extends Node implements INameNode, IArgumentNode {
 
     public AttrAssignNode(SourcePosition position, Node receiver, String name, Node arg) {
         super(position);
-        
+
         assert receiver != null : "receiverNode is not null";
         // TODO: At least ParserSupport.attrset passes argsNode as null.  ImplicitNil is wrong magic for 
         // setupArgs since it will IRubyObject[] { nil }.  So we need to figure out a nice fast
@@ -81,6 +81,12 @@ public class AttrAssignNode extends Node implements INameNode, IArgumentNode {
         this.name = name;
     }
 
+    public boolean isNameMatch(String name) {
+        String thisName = getName();
+        
+        return thisName != null && thisName.equals(name);
+    }
+    
     /**
      * Gets the receiverNode.
      * receiverNode is the object on which the method is being called

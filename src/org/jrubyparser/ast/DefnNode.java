@@ -37,7 +37,7 @@ import org.jrubyparser.StaticScope;
 /**
  * method definition node.
  */
-public class DefnNode extends MethodDefNode implements INameNode {
+public class DefnNode extends MethodDefNode {
     public DefnNode(SourcePosition position, ArgumentNode nameNode, ArgsNode argsNode, 
             StaticScope scope, Node bodyNode) {
         super(position, nameNode, argsNode, scope, bodyNode);
@@ -51,20 +51,8 @@ public class DefnNode extends MethodDefNode implements INameNode {
         return iVisitor.visitDefnNode(this);
     }
     
-    /**
-     * Get the name of this method
-     */
-    @Override
-    public String getName() {
-        return nameNode.getName();
-    }
-    
-    public void setName(String name) {
-        nameNode.setName(name);
-    }
-    
     public List<Node> childNodes() {
         return Node.createList(nameNode, argsNode, bodyNode);
     }
-    
+   
 }

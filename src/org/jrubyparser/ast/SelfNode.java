@@ -28,17 +28,15 @@
  ***** END LICENSE BLOCK *****/
 package org.jrubyparser.ast;
 
-import java.util.List;
-
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 
 /**
  * Represents 'self' keyword
  */
-public class SelfNode extends Node implements INameNode {
+public class SelfNode extends BareKeywordNode {
     public SelfNode(SourcePosition position) {
-        super(position);
+        super(position, "self");
     }
 
     public NodeType getNodeType() {
@@ -52,20 +50,4 @@ public class SelfNode extends Node implements INameNode {
     public Object accept(NodeVisitor iVisitor) {
         return iVisitor.visitSelfNode(this);
     }
-    
-    /**
-     * Get name of self node.
-     */
-    public String getName() {
-        return "self";
-    }
-    
-    public void setName(String name) {
-        // FIXME: error or noop?
-    }
-    
-    public List<Node> childNodes() {
-        return EMPTY_LIST;
-    }
-    
 }

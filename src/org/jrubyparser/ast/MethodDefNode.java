@@ -105,6 +105,59 @@ public abstract class MethodDefNode extends Node implements INameNode, ILocalSco
 	public String getName() {
 	    return nameNode.getName();
 	}
+
+        public void setName(String name) {
+            nameNode.setName(name);
+        }
+
+        public boolean isNameMatch(String name) {
+            String thisName = getName();
+        
+            return thisName != null && thisName.equals(name);
+        }
+        
+        /**
+         * Given a name (presumably retrieve via getNormativeSignature()) is this parmeter used
+         * in this method definition?
+         * 
+         * @param name
+         * @return if used or not.
+         */
+        public boolean isParameterUsed(String name) {
+            // FIXME: Do I need to worry about used vars in parameter initialization?
+            return isParameterUsedInner(getBody(), name);
+        }
+        
+        private boolean isParameterUsedInner(Node node, String name) {
+            for (Node child: node.childNodes()) {
+                if (child instanceof INameMatchable && child instanceof ILocalVariable && 
+                        ((INameMatchable) child).isNameMatch(name)) {
+                    return true;
+                }
+                
+                if (child instanceof AliasNode) {
+                    boolean match = ((AliasNode) child).oldNameMatches(name);
+                    if (match) return match;
+
+                    // alias :new_thing :"old#{my_parameter}"
+                    if (((AliasNode) child).getOldName() instanceof DSymbolNode &&
+                            isParameterUsedInner(((AliasNode) child).getOldName(), name)) {
+                        return true;
+                    }
+                    
+                    // alias :"new#{my_parameter}" :thing
+                    if (((AliasNode) child).getNewName() instanceof DSymbolNode && 
+                            isParameterUsedInner(((AliasNode) child).getNewName(), name)) {
+                        return true;
+                    }
+                }
+
+                // For all non-special nodes recurse and look to see if subtree contains the name
+                if (isParameterUsedInner(child, name)) return true;
+            }
+            
+            return false;
+        }
         
         /**
          * Note: This will give a string a representation which will always be consistent whether

@@ -28,17 +28,15 @@
  ***** END LICENSE BLOCK *****/
 package org.jrubyparser.ast;
 
-import java.util.List;
-
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 
 /**
  * represents 'nil'
  */
-public class NilNode extends Node implements INameNode {
+public class NilNode extends BareKeywordNode {
     public NilNode(SourcePosition position) {
-        super(position);
+        super(position, "nil");
     }
 
     public NodeType getNodeType() {
@@ -52,20 +50,4 @@ public class NilNode extends Node implements INameNode {
     public Object accept(NodeVisitor iVisitor) {
         return iVisitor.visitNilNode(this);
     }
-    
-    /**
-     * Name of nil node.
-     **/
-    public String getName() {
-        return "nil";
-    }
-    
-    public void setName(String name) {
-        // FIXME: error or noop?
-    }
-    
-    public List<Node> childNodes() {
-        return EMPTY_LIST;
-    }
-
 }

@@ -436,12 +436,12 @@ public class ParserSupport {
     public Node arg_add(SourcePosition position, Node node1, Node node2) {
         if (node1 == null) {
             if (node2 == null) {
-                return new ArrayNode(position, NilImplicitNode.NIL);
+                return new ListNode(position, NilImplicitNode.NIL);
             } else {
-                return new ArrayNode(node2.getPosition(), node2);
+                return new ListNode(node2.getPosition(), node2);
             }
         }
-        if (node1 instanceof ArrayNode) return ((ArrayNode) node1).add(node2);
+        if (node1 instanceof ListNode) return ((ListNode) node1).add(node2);
         
         return new ArgsPushNode(position, node1, node2);
     }
@@ -452,8 +452,6 @@ public class ParserSupport {
     public Node node_assign(Node lhs, Node rhs) {
         if (lhs == null) return null;
 
-        Node newNode = lhs;
-
         checkExpression(rhs);
         if (lhs instanceof AssignableNode) {
     	    ((AssignableNode) lhs).setValue(rhs);
@@ -461,12 +459,10 @@ public class ParserSupport {
         } else if (lhs instanceof IArgumentNode) {
             IArgumentNode invokableNode = (IArgumentNode) lhs;
             
-            Node args = arg_add(lhs.getPosition(), invokableNode.getArgs(), rhs);
-            invokableNode.setArgs(args);
-            return args;
+            invokableNode.setArgs(arg_add(lhs.getPosition(), invokableNode.getArgs(), rhs));
         }
         
-        return newNode;
+        return lhs;
     }
     
     public Node ret_args(Node node, SourcePosition position) {
@@ -540,7 +536,7 @@ public class ParserSupport {
                 node = ((BlockNode) node).getLast();
                 break;
             case BEGINNODE:
-                node = ((BeginNode) node).getBodyNode();
+                node = ((BeginNode) node).getBody();
                 break;
             case IFNODE:
                 if (!checkExpression(((IfNode) node).getThenBody())) return false;
@@ -680,8 +676,8 @@ public class ParserSupport {
     private Node cond0(Node node) {
         checkAssignmentInCondition(node);
         
-        Node leftNode = null;
-        Node rightNode = null;
+        Node leftNode;
+        Node rightNode;
 
         // FIXME: DSTR,EVSTR,STR: warning "string literal in condition"
         switch(node.getNodeType()) {

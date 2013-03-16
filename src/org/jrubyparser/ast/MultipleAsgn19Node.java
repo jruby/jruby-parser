@@ -27,7 +27,6 @@
  ***** END LICENSE BLOCK *****/
 package org.jrubyparser.ast;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.jrubyparser.NodeVisitor;
@@ -126,7 +125,7 @@ public class MultipleAsgn19Node extends AssignableNode {
      * @return a list of nodepairs for known bindings and null for values not bound.
      */
     public List<NodePair> calculateStaticAssignments() {
-        return StaticAnalyzerHelper.calculateStaticAssignments(this);
+        return StaticAnalyzerHelper.calculateStaticAssignments(this, getValue());
     }
     
     @Override

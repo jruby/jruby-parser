@@ -32,6 +32,7 @@ import java.util.List;
 
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
+import static org.jrubyparser.ast.Node.createList;
 
 /** 
  * Represents an instance variable assignment.
@@ -68,13 +69,18 @@ public class InstAsgnNode extends AssignableNode implements INameNode {
     public String getName() {
         return name;
     }
-    
-    public List<Node> childNodes() {
-        return createList(getValue());
-    }
 
     public void setName(String name) {
         this.name = name;
     }
     
+    public boolean isNameMatch(String name) {
+        String thisName = getName();
+        
+        return thisName != null && thisName.equals(name);
+    }
+        
+    public List<Node> childNodes() {
+        return createList(getValue());
+    }
 }
