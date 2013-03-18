@@ -39,8 +39,8 @@ public class MultipleAsgnNode extends AssignableNode {
     
     public MultipleAsgnNode(SourcePosition position, ListNode headNode, Node restNode) {
         super(position);
-        this.headNode = headNode;
-        this.restNode = restNode;
+        this.headNode = (ListNode) adopt(headNode);
+        this.restNode = adopt(restNode);
         
         assert headNode != null || restNode != null : "MultipleAsgnNode with neither vars nor splat";
     }

@@ -46,9 +46,9 @@ public class WhenNode extends Node {
 
         assert bodyNode != null : "bodyNode is not null";
 
-        this.expressionNodes = expressionNodes;
-        this.bodyNode = bodyNode;
-        this.nextCase = nextCase;
+        this.expressionNodes = adopt(expressionNodes);
+        this.bodyNode = adopt(bodyNode);
+        this.nextCase = adopt(nextCase);
     }
 
     public NodeType getNodeType() {
@@ -77,7 +77,7 @@ public class WhenNode extends Node {
     }
     
     public void setBody(Node body) {
-        this.bodyNode = body;
+        this.bodyNode = adopt(body);
     }
     
     /**
@@ -100,7 +100,7 @@ public class WhenNode extends Node {
     }
     
     public void setExpression(Node expression) {
-        this. expressionNodes = expression;
+        this. expressionNodes = adopt(expression);
     }
 
     public List<Node> childNodes() {

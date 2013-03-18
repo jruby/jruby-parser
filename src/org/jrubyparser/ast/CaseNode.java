@@ -56,8 +56,8 @@ public class CaseNode extends Node {
         // a when.
 //        assert caseNode != null : "caseNode is not null";
         
-        this.caseNode = caseNode;
-        this.cases = cases;
+        this.caseNode = adopt(caseNode);
+        this.cases = (ListNode) adopt(cases);
     }
 
     public void setElseNode(Node elseNode) {

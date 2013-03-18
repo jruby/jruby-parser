@@ -48,8 +48,8 @@ public class OpAsgnNode extends Node {
         assert receiverNode != null : "receiverNode is not null";
         assert valueNode != null : "valueNode is not null";
         
-        this.receiverNode = receiverNode;
-        this.valueNode = valueNode;
+        this.receiverNode = adopt(receiverNode);
+        this.valueNode = adopt(valueNode);
         this.operatorName = operatorName;
         this.variableName = variableName;
     }
@@ -96,7 +96,7 @@ public class OpAsgnNode extends Node {
     }
     
     public void setReceiver(Node receiver) {
-        this.receiverNode = receiver;
+        this.receiverNode = adopt(receiver);
     }
 
     /**
@@ -113,7 +113,7 @@ public class OpAsgnNode extends Node {
     }
     
     public void setValue(Node value) {
-        this.valueNode = value;
+        this.valueNode = adopt(value);
     }
 
     public List<Node> childNodes() {

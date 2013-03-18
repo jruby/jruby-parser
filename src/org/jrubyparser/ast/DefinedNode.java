@@ -44,7 +44,7 @@ public class DefinedNode extends Node {
         
         assert expressionNode != null : "expressionNode is not null";
         
-        this.expressionNode = expressionNode;
+        this.expressionNode = adopt(expressionNode);
     }
 
     public NodeType getNodeType() {

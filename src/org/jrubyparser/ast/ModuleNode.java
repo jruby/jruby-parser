@@ -49,9 +49,9 @@ public class ModuleNode extends Node implements IScopingNode, ILocalScope {
         assert scope != null : "scope is not null";
         assert bodyNode != null : "bodyNode is not null";
 
-        this.cpath = cpath;
+        this.cpath = (Colon3Node) adopt(cpath);
         this.scope = scope;
-        this.bodyNode = bodyNode;
+        this.bodyNode = adopt(bodyNode);
     }
 
     public NodeType getNodeType() {

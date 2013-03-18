@@ -41,7 +41,7 @@ public class MatchNode extends Node {
         
         assert regexpNode != null : "regexpNode is not null";
         
-        this.regexpNode = regexpNode;
+        this.regexpNode = adopt(regexpNode);
     }
 
     public NodeType getNodeType() {

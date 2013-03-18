@@ -41,7 +41,7 @@ public class UndefNode extends Node {
 
     public UndefNode(SourcePosition position, Node name) {
         super(position);
-        this.name = name;
+        this.name = adopt(name);
     }
 
     public NodeType getNodeType() {

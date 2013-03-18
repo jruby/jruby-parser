@@ -44,7 +44,7 @@ public class BreakNode extends Node {
         
         assert valueNode != null : "valueNode is not null";
         
-        this.valueNode = valueNode;
+        this.valueNode = adopt(valueNode);
     }
 
     public NodeType getNodeType() {

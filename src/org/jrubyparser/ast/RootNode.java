@@ -52,7 +52,7 @@ public class RootNode extends Node {
         assert bodyNode != null : "bodyNode is not null";
         
         this.staticScope = scope;
-        this.bodyNode = bodyNode;
+        this.bodyNode = adopt(bodyNode);
     }
 
     public NodeType getNodeType() {
@@ -86,7 +86,7 @@ public class RootNode extends Node {
     }
     
     public void setBody(Node body) {
-        this.bodyNode = body;
+        this.bodyNode = adopt(body);
     }
 
     public Object accept(NodeVisitor iVisitor) {

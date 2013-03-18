@@ -46,8 +46,8 @@ public class AndNode extends Node implements BinaryOperatorNode {
         assert firstNode != null : "AndNode.first == null";
         assert secondNode != null : "AndNode.second == null";
         
-        this.firstNode = firstNode;
-        this.secondNode = secondNode;
+        this.firstNode = adopt(firstNode);
+        this.secondNode = adopt(secondNode);
     }
 
     public NodeType getNodeType() {

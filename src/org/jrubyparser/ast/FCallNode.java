@@ -50,8 +50,8 @@ public class FCallNode extends Node implements INameNode, IArgumentNode, BlockAc
 
         //        if (argsNode == null) argsNode = new ListNode(position);
         
-        this.argsNode = argsNode;
-        this.iterNode = iterNode;
+        this.argsNode = adopt(argsNode);
+        this.iterNode = adopt(iterNode);
         this.name = name;
     }
     
@@ -88,13 +88,13 @@ public class FCallNode extends Node implements INameNode, IArgumentNode, BlockAc
     }
     
     public Node setIterNode(Node iterNode) {
-        this.iterNode = iterNode;
+        this.iterNode = adopt(iterNode);
         
         return this;
     }
     
     public void setIter(Node iter) {
-        this.iterNode = iter;
+        this.iterNode = adopt(iter);
     }
 
     /**
@@ -123,7 +123,7 @@ public class FCallNode extends Node implements INameNode, IArgumentNode, BlockAc
     }
     
     public void setArgs(Node argsNode) {
-        this.argsNode = argsNode;
+        this.argsNode = adopt(argsNode);
     }
     
     /**

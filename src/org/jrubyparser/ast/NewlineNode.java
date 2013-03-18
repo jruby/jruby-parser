@@ -51,7 +51,7 @@ public class NewlineNode extends Node {
 
         assert nextNode != null : "nextNode is not null";
         
-        this.nextNode = nextNode;
+        this.nextNode = adopt(nextNode);
     }
 
     public NodeType getNodeType() {

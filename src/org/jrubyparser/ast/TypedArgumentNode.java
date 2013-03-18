@@ -18,7 +18,7 @@ public class TypedArgumentNode extends ArgumentNode {
     public TypedArgumentNode(SourcePosition position, String identifier, Node typeNode) {
         super(position, identifier);
         
-        this.typeNode = typeNode;
+        this.typeNode = adopt(typeNode);
     }
     
     public Node getTypeNode() {

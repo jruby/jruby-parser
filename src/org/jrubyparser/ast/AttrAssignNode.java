@@ -51,9 +51,9 @@ public class AttrAssignNode extends Node implements INameNode, IArgumentNode {
         // null pattern for setupArgs.
         // assert argsNode != null : "receiverNode is not null";
         
-        this.receiver = receiver;
+        this.receiver = adopt(receiver);
         this.name = name;
-        this.arg = arg;
+        this.arg = adopt(arg);
     }
 
     public NodeType getNodeType() {
@@ -129,7 +129,7 @@ public class AttrAssignNode extends Node implements INameNode, IArgumentNode {
     }
     
     public void setArgs(Node argsNode) {
-        this.arg = argsNode;
+        this.arg = adopt(argsNode);
     }
 
     public boolean hasParens() {

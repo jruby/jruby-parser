@@ -47,8 +47,8 @@ public class SuperNode extends Node implements BlockAcceptingNode, IArgumentNode
     
     public SuperNode(SourcePosition position, Node argsNode, Node iterNode) {
         super(position);
-        this.argsNode = argsNode;
-        this.iterNode = iterNode;
+        this.argsNode = adopt(argsNode);
+        this.iterNode = adopt(iterNode);
     }
 
     public NodeType getNodeType() {
@@ -93,7 +93,7 @@ public class SuperNode extends Node implements BlockAcceptingNode, IArgumentNode
     }
 
     public void setIter(Node iter) {
-        this.iterNode = iter;
+        this.iterNode = adopt(iter);
     }
     
     public Node getArgs() {
@@ -105,7 +105,7 @@ public class SuperNode extends Node implements BlockAcceptingNode, IArgumentNode
     }
 
     public void setArgs(Node argsNode) {
-        this.argsNode = argsNode;
+        this.argsNode = adopt(argsNode);
     }
 
     public void setHasParens(boolean hasParens) {

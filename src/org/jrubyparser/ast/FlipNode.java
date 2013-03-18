@@ -50,8 +50,8 @@ public class FlipNode extends Node {
         assert beginNode != null : "beginNode is not null";
         assert endNode != null : "endNode is not null";
         
-        this.beginNode = beginNode;
-        this.endNode = endNode;
+        this.beginNode = adopt(beginNode);
+        this.endNode = adopt(endNode);
         this.exclusive = exclusive;
         this.location = location;
     }

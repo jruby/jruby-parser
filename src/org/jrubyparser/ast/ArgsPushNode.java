@@ -43,8 +43,8 @@ public class ArgsPushNode extends Node {
         assert firstNode != null : "ArgsPushNode.first == null";
         assert secondNode != null : "ArgsPushNode.second == null";
         
-        this.firstNode = firstNode;
-        this.secondNode = secondNode;
+        this.firstNode = adopt(firstNode);
+        this.secondNode = adopt(secondNode);
     }
 
     public NodeType getNodeType() {

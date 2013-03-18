@@ -52,7 +52,7 @@ public class ListNode extends Node {
         this(position);
         
         list = new ArrayList<Node>(4);
-        list.add(firstNode);
+        list.add(adopt(firstNode));
     }
     
     public ListNode(SourcePosition position) {
@@ -73,7 +73,7 @@ public class ListNode extends Node {
             return this;
         }
 
-        list.add(node);
+        list.add(adopt(node));
 
         if (getPosition() == null) {
             setPosition(node.getPosition());
@@ -88,7 +88,7 @@ public class ListNode extends Node {
         // Ruby Grammar productions return plenty of nulls.
         if (node == null) return this;
         
-        list.add(0, node);
+        list.add(0, adopt(node));
         
         setPosition(getPosition().union(node.getPosition()));
         return this;
@@ -106,6 +106,9 @@ public class ListNode extends Node {
      */
     public ListNode addAll(ListNode other) {
         if (other != null && other.size() > 0) {
+            for (Node e: other.list) {
+                adopt(e);
+            }
             list.addAll(other.list);
             setPosition(getPosition().union(getLastNodePosition()));
         }

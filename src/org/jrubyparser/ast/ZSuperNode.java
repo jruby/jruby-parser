@@ -76,7 +76,7 @@ public class ZSuperNode extends Node implements BlockAcceptingNode {
     }
     
     public void setIter(Node iter) {
-        this.iterNode = iter;
+        this.iterNode = adopt(iter);
     }
     
 }

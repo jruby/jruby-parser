@@ -23,8 +23,8 @@ public class BlockArg18Node extends Node {
 
         assert blockArgAssignee != null : "Must be a value to assign too";
 
-        this.blockArgAssignee = blockArgAssignee;
-        this.normalBlockArgs = normalBlockArgs;
+        this.blockArgAssignee = adopt(blockArgAssignee);
+        this.normalBlockArgs = adopt(normalBlockArgs);
     }
 
     public Node getArgs() {

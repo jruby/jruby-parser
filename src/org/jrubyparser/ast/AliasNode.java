@@ -41,8 +41,8 @@ public class AliasNode extends Node {
 
     public AliasNode(SourcePosition position, Node newName, Node oldName) {
         super(position);
-        this.oldName = oldName;
-        this.newName = newName;
+        this.oldName = adopt(oldName);
+        this.newName = adopt(newName);
     }
 
     public NodeType getNodeType() {

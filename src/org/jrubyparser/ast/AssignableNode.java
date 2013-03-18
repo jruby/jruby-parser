@@ -45,7 +45,7 @@ public abstract class AssignableNode extends Node {
         
         assert valueNode != null : "valueNode is not null";
         
-        this.valueNode = valueNode;
+        this.valueNode = adopt(valueNode);
     }
     
     /**
@@ -66,7 +66,7 @@ public abstract class AssignableNode extends Node {
      * @param valueNode The valueNode to set
      */
     public void setValue(Node valueNode) {
-        this.valueNode = valueNode == null ? NilImplicitNode.NIL : valueNode;
+        this.valueNode = adopt(valueNode == null ? NilImplicitNode.NIL : valueNode);
     }
     
     @Deprecated

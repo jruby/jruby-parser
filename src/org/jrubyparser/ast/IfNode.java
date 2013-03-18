@@ -48,9 +48,9 @@ public class IfNode extends Node {
 //        assert thenBody != null : "thenBody is not null";
 //        assert elseBody != null : "elseBody is not null";
         
-        this.condition = condition;
-        this.thenBody = thenBody;
-        this.elseBody = elseBody;
+        this.condition = adopt(condition);
+        this.thenBody = adopt(thenBody);
+        this.elseBody = adopt(elseBody);
     }
 
     public NodeType getNodeType() {

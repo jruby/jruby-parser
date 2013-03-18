@@ -53,7 +53,7 @@ public class ForNode extends IterNode {
         
         assert iterNode != null : "iterNode is not null";
         
-        this.iterNode = iterNode;
+        this.iterNode = adopt(iterNode);
     }
 
     @Override

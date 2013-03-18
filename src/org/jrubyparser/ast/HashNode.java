@@ -42,7 +42,7 @@ public class HashNode extends Node {
     
     public HashNode(SourcePosition position, ListNode listNode) {
         super(position);
-        this.listNode = listNode;
+        this.listNode = (ListNode) adopt(listNode);
     }
 
     public NodeType getNodeType() {

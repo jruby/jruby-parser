@@ -54,9 +54,9 @@ public class OpElementAsgnNode extends Node {
         assert receiverNode != null : "receiverNode is not null";
         assert valueNode != null : "valueNode is not null";
         
-        this.receiverNode = receiverNode;
-        this.argsNode = argsNode;
-        this.valueNode = valueNode;
+        this.receiverNode = adopt(receiverNode);
+        this.argsNode = adopt(argsNode);
+        this.valueNode = adopt(valueNode);
         this.name = operatorName;
     }
 
@@ -86,7 +86,7 @@ public class OpElementAsgnNode extends Node {
     }
     
     public void setArgs(Node args) {
-        this.argsNode = args;
+        this.argsNode = adopt(args);
     }
     
     /**
@@ -115,7 +115,7 @@ public class OpElementAsgnNode extends Node {
     }
     
     public void setReceiver(Node receiver) {
-        this.receiverNode = receiver;
+        this.receiverNode = adopt(receiver);
     }
 
     /**
@@ -132,7 +132,7 @@ public class OpElementAsgnNode extends Node {
     }
     
     public void setValue(Node value) {
-        this.valueNode = value;
+        this.valueNode = adopt(value);
     }
 
     public List<Node> childNodes() {

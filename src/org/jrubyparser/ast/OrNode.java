@@ -46,8 +46,8 @@ public class OrNode extends Node implements BinaryOperatorNode {
         assert firstNode != null : "firstNode is not null";
         assert secondNode != null : "secondNode is not null";
         
-        this.firstNode = firstNode;
-        this.secondNode = secondNode;
+        this.firstNode = adopt(firstNode);
+        this.secondNode = adopt(secondNode);
     }
 
     public NodeType getNodeType() {

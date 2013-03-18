@@ -45,8 +45,8 @@ public class EnsureNode extends Node {
         
         assert bodyNode != null : "bodyNode is not null";
         
-        this.bodyNode = bodyNode;
-        this.ensureNode = ensureNode;
+        this.bodyNode = adopt(bodyNode);
+        this.ensureNode = adopt(ensureNode);
     }
 
     public NodeType getNodeType() {

@@ -40,7 +40,7 @@ public class OptArgNode extends Node implements INameNode {
 
     public OptArgNode(SourcePosition position, Node value) {
         super(position);
-        this.value = value;
+        this.value = adopt(value);
     }
 
     public NodeType getNodeType() {

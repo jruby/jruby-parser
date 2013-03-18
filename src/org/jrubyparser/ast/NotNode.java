@@ -44,7 +44,7 @@ public class NotNode extends Node {
         
         assert conditionNode != null : "conditionNode is not null";
         
-        this.conditionNode = conditionNode;
+        this.conditionNode = adopt(conditionNode);
     }
 
     public NodeType getNodeType() {

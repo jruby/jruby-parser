@@ -47,7 +47,7 @@ public class ConstDeclNode extends AssignableNode implements INameNode {
         super(position, valueNode);
         
         this.name = name;        
-        this.constNode = constNode;
+        this.constNode = (INameNode) adopt((Node) constNode);
     }
 
     public NodeType getNodeType() {

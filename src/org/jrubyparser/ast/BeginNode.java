@@ -44,7 +44,7 @@ public class BeginNode extends Node {
         
         assert bodyNode != null : "bodyNode is not null";
         
-        this.bodyNode = bodyNode;
+        this.bodyNode = adopt(bodyNode);
     }
 
     public NodeType getNodeType() {
@@ -73,7 +73,7 @@ public class BeginNode extends Node {
     }
     
     public void setBody(Node body) {
-        this.bodyNode = body;
+        this.bodyNode = adopt(body);
     }
     
     public List<Node> childNodes() {

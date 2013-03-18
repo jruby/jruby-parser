@@ -46,7 +46,7 @@ public class DefsNode extends MethodDefNode {
         
         assert receiverNode != null : "receiverNode is not null";
         
-        this.receiverNode = receiverNode;
+        this.receiverNode = adopt(receiverNode);
     }
 
     public NodeType getNodeType() {

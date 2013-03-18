@@ -53,9 +53,9 @@ public class CallNode extends Node implements INameNode, IArgumentNode, BlockAcc
         
         assert receiverNode != null : "receiverNode is not null";
         
-        this.receiverNode = receiverNode;
+        this.receiverNode = adopt(receiverNode);
 	setArgs(argsNode);
-        this.iterNode = iterNode;
+        this.iterNode = adopt(iterNode);
         this.name = name;
     }
 
@@ -87,7 +87,7 @@ public class CallNode extends Node implements INameNode, IArgumentNode, BlockAcc
     }
     
     public void setIter(Node iter) {
-        this.iterNode = iter;
+        this.iterNode = adopt(iter);
     }
 
     /**
@@ -119,7 +119,7 @@ public class CallNode extends Node implements INameNode, IArgumentNode, BlockAcc
         if (argsNode == null) {
 	    argsNode = new ListNode(getReceiver().getPosition());
         }
-        this.argsNode = argsNode;        
+        this.argsNode = adopt(argsNode);
     }
 
     public boolean hasParens() {
@@ -164,7 +164,7 @@ public class CallNode extends Node implements INameNode, IArgumentNode, BlockAcc
     }
     
     public void setReceiver(Node receiver) {
-        this.receiverNode = receiver;
+        this.receiverNode = adopt(receiver);
     }
 
     public List<Node> childNodes() {

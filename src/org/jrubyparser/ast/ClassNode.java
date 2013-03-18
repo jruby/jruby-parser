@@ -50,10 +50,10 @@ public class ClassNode extends Node implements IScopingNode, ILocalScope {
         assert scope != null : "scope is not null";
         assert bodyNode != null : "bodyNode is not null";
         
-        this.cpath = cpath;
+        this.cpath = (Colon3Node) adopt(cpath);
         this.scope = scope;
-        this.bodyNode = bodyNode;
-        this.superNode = superNode;
+        this.bodyNode = adopt(bodyNode);
+        this.superNode = adopt(superNode);
     }
 
     public NodeType getNodeType() {

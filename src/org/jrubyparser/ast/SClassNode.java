@@ -54,9 +54,9 @@ public class SClassNode extends Node implements ILocalScope {
         assert scope != null : "scope is not null";
         assert recvNode != null : "receiverNode is not null";
         
-        this.receiverNode = recvNode;
+        this.receiverNode = adopt(recvNode);
         this.scope = scope;
-        this.bodyNode = bodyNode;
+        this.bodyNode = adopt(bodyNode);
     }
 
     public NodeType getNodeType() {
@@ -86,7 +86,7 @@ public class SClassNode extends Node implements ILocalScope {
     }
     
     public void setBody(Node body) {
-        this.bodyNode = body;
+        this.bodyNode = adopt(body);
     }
     /**
      * Gets the scope of this class
@@ -111,7 +111,7 @@ public class SClassNode extends Node implements ILocalScope {
     }
     
     public void setReceiver(Node receiver) {
-        this.receiverNode = receiver;
+        this.receiverNode = adopt(receiver);
     }
     
     public List<Node> childNodes() {

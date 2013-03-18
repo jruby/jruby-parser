@@ -44,7 +44,7 @@ public class EvStrNode extends Node {
 
     public EvStrNode(SourcePosition position, Node body) {
         super(position);
-        this.body = body;
+        this.body = adopt(body);
     }
 
     public NodeType getNodeType() {

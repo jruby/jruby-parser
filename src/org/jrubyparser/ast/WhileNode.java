@@ -62,8 +62,8 @@ public class WhileNode extends Node {
         assert conditionNode != null : "conditionNode is not null";
         assert bodyNode != null : "bodyNode is not null";
         
-        this.conditionNode = conditionNode;
-        this.bodyNode = bodyNode;
+        this.conditionNode = adopt(conditionNode);
+        this.bodyNode = adopt(bodyNode);
         this.evaluateAtStart = evalAtStart;
     }
 
@@ -93,7 +93,7 @@ public class WhileNode extends Node {
     }
     
     public void setBody(Node body) {
-        this.bodyNode = body;
+        this.bodyNode = adopt(body);
     }
 
     /**
@@ -110,7 +110,7 @@ public class WhileNode extends Node {
     }
     
     public void setCondition(Node condition) {
-        this.conditionNode = condition;
+        this.conditionNode = adopt(condition);
     }
     
     /**

@@ -43,9 +43,9 @@ public class RescueNode extends Node {
     
     public RescueNode(SourcePosition position, Node bodyNode, RescueBodyNode rescueNode, Node elseNode) {
         super(position);
-        this.bodyNode = bodyNode;
-        this.rescueNode = rescueNode;
-        this.elseNode = elseNode;
+        this.bodyNode = adopt(bodyNode);
+        this.rescueNode = (RescueBodyNode) adopt(rescueNode);
+        this.elseNode = adopt(elseNode);
     }
 
     public NodeType getNodeType() {
@@ -74,7 +74,7 @@ public class RescueNode extends Node {
     }
     
     public void setBody(Node body) {
-        this.bodyNode = body;
+        this.bodyNode = adopt(body);
     }
 
     /**
@@ -91,7 +91,7 @@ public class RescueNode extends Node {
     }
     
     public void setElse(Node elseNode) {
-        this.elseNode = elseNode;
+        this.elseNode = adopt(elseNode);
     }
 
     /**
@@ -108,7 +108,7 @@ public class RescueNode extends Node {
     }
     
     public void setRescue(RescueBodyNode rescue) {
-        this.rescueNode = rescue;
+        this.rescueNode = (RescueBodyNode) adopt(rescue);
     }
     
     public List<Node> childNodes() {

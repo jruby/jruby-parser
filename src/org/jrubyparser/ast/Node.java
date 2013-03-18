@@ -44,6 +44,8 @@ public abstract class Node implements ISourcePositionHolder {
     static final List<Node> EMPTY_LIST = new ArrayList<Node>();
     public static final List<CommentNode> EMPTY_COMMENT_LIST = new ArrayList<CommentNode>();
     
+    private Node parent = null;
+    
     private SourcePosition position;
 
     public Node(SourcePosition position) {
@@ -56,6 +58,19 @@ public abstract class Node implements ISourcePositionHolder {
      */
     public SourcePosition getPosition() {
         return position;
+    }
+    
+    public Node adopt(Node child) {
+        if (child != null) child.setParent(this);
+        return child;
+    }
+    
+    public Node getParent() {
+        return parent;
+    }
+    
+    public void setParent(Node parent) {
+        this.parent = parent;
     }
 
     public void setPosition(SourcePosition position) {
@@ -161,4 +176,40 @@ public abstract class Node implements ISourcePositionHolder {
      * @return the nodeId
      */
     public abstract NodeType getNodeType();
+    
+
+    /**
+     * Which method is this node contained in?
+     * @return the method or null if one cannot be found
+     */
+    public MethodDefNode getMethodFor() {
+        if (isInvisible()) return null; // FIXME: Invisible nodes do not have reasonable parentage
+        
+        for (Node p = this; p != null; p = p.getParent()) {
+            if (p instanceof MethodDefNode) return (MethodDefNode) p;
+        }
+        
+        return null;
+    }
+    
+    public IterNode getInnermostIter() {
+        if (isInvisible()) return null; // FIXME: Invisible nodes do not have reasonable parentage
+        
+        for (Node p = this; p != null; p = p.getParent()) {
+            if (p instanceof IterNode) return (IterNode) p;
+        }
+        
+        return null;
+    }
+
+    public IterNode getOutermostIter() {
+        IterNode nextIter = getInnermostIter();
+        
+        for (IterNode iter = nextIter; iter != null && iter.getParent() != null; iter = nextIter) {
+            nextIter = iter.getParent().getInnermostIter();
+            if (nextIter == null) return iter;
+        }
+        
+        return null;
+    }
 }

@@ -41,7 +41,7 @@ public class SplatNode extends Node {
         
         assert node != null : "node is not null";
         
-        this.node = node;
+        this.node = adopt(node);
     }
 
     public NodeType getNodeType() {

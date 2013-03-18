@@ -44,7 +44,7 @@ public class ReturnNode extends Node {
         
         assert valueNode != null : "valueNode is not null";
         
-        this.valueNode = valueNode;
+        this.valueNode = adopt(valueNode);
     }
 
     public NodeType getNodeType() {
@@ -69,7 +69,7 @@ public class ReturnNode extends Node {
     }
     
     public void setValue(Node value) {
-        this.valueNode = value;
+        this.valueNode = adopt(value);
     }
     
     public List<Node> childNodes() {

@@ -47,16 +47,16 @@ public class IterNode extends Node {
     
     public IterNode(SourcePosition position, Node varNode, StaticScope scope, Node bodyNode) {
         super(position);
-        this.varNode = varNode;
+        this.varNode = adopt(varNode);
         this.scope = scope;
-        this.bodyNode = bodyNode;
+        this.bodyNode = adopt(bodyNode);
     }
 
     public IterNode(SourcePosition position, ArgsNode args, Node body, StaticScope scope) {
         super(position);
 
-        this.varNode = args;
-        this.bodyNode = body;
+        this.varNode = adopt(args);
+        this.bodyNode = adopt(body);
         this.scope = scope;
     }
 

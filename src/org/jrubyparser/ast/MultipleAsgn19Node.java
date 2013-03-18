@@ -44,9 +44,9 @@ public class MultipleAsgn19Node extends AssignableNode {
 
     public MultipleAsgn19Node(SourcePosition position, ListNode pre, Node rest, ListNode post) {
         super(position);
-        this.pre = pre;
-        this.rest = rest;
-        this.post = post;
+        this.pre = (ListNode) adopt(pre);
+        this.rest = adopt(rest);
+        this.post = (ListNode) adopt(post);
         
         assert pre != null || rest != null : "pre or rest must exist in a multipleasgn19node";
     }

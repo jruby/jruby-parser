@@ -57,7 +57,7 @@ public class YieldNode extends Node implements IArgumentNode {
         // block.yield depends on null to represent empty and nil to represent nil - [nil] vs []
         //assert argsNode != null : "argsNode is not null";
         
-        this.argsNode = argsNode;
+        this.argsNode = adopt(argsNode);
         this.expandedArguments = expandedArguments;
     }
 
@@ -87,7 +87,7 @@ public class YieldNode extends Node implements IArgumentNode {
     }
     
     public void setArgs(Node args) {
-        this.argsNode = args;
+        this.argsNode = adopt(args);
     }
 
     public boolean getExpandArguments() {

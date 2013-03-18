@@ -43,8 +43,8 @@ public class ArgsCatNode extends Node implements BinaryOperatorNode {
         assert firstNode != null : "ArgsCatNode.first == null";
         assert secondNode != null : "ArgsCatNode.second == null";
 
-        this.firstNode = firstNode;
-        this.secondNode = secondNode;
+        this.firstNode = adopt(firstNode);
+        this.secondNode = adopt(secondNode);
     }
 
     public NodeType getNodeType() {

@@ -57,8 +57,8 @@ public class UntilNode extends Node {
         assert conditionNode != null : "conditionNode is not null";
         assert bodyNode != null : "bodyNode is not null";
         
-        this.conditionNode = conditionNode;
-        this.bodyNode = bodyNode;
+        this.conditionNode = adopt(conditionNode);
+        this.bodyNode = adopt(bodyNode);
         this.evaluateAtStart = evaluateAtStart;
     }
 
@@ -84,7 +84,7 @@ public class UntilNode extends Node {
     }
     
     public void setBody(Node body) {
-        this.bodyNode = body;
+        this.bodyNode = adopt(body);
     }
 
     /**
@@ -101,7 +101,7 @@ public class UntilNode extends Node {
     }
     
     public void setConditionNode(Node condition) {
-        this.conditionNode = condition;
+        this.conditionNode = adopt(condition);
     }
 
     public List<Node> childNodes() {

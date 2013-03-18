@@ -43,8 +43,8 @@ public class Match2Node extends Node {
         assert receiverNode != null : "receiverNode is not null";
         assert valueNode != null : "valueNode is not null";
 
-        this.receiverNode = receiverNode;
-        this.valueNode = valueNode;
+        this.receiverNode = adopt(receiverNode);
+        this.valueNode = adopt(valueNode);
     }
 
     public NodeType getNodeType() {

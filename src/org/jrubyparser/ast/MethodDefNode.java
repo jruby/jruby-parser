@@ -49,10 +49,10 @@ public abstract class MethodDefNode extends Node implements INameNode, ILocalSco
             // TODO: Adding implicit nils caused multiple problems in compiler -- revist after landing
             //assert bodyNode != null : "bodyNode is not null";
             
-            this.nameNode = nameNode;
-            this.argsNode = argsNode;
+            this.nameNode = (ArgumentNode) adopt(nameNode);
+            this.argsNode = (ArgsNode) adopt(argsNode);
             this.scope = scope;
-            this.bodyNode = bodyNode;
+            this.bodyNode = adopt(bodyNode);
 	}
 
 	/**

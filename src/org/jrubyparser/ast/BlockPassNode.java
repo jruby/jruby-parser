@@ -47,7 +47,7 @@ public class BlockPassNode extends Node {
 
     public BlockPassNode(SourcePosition position, Node bodyNode) {
         super(position);
-        this.bodyNode = bodyNode;
+        this.bodyNode = adopt(bodyNode);
     }
 
     public NodeType getNodeType() {
@@ -98,7 +98,7 @@ public class BlockPassNode extends Node {
     }
     
     public void setArgs(Node argsNode) {
-        this.argsNode = argsNode;
+        this.argsNode = adopt(argsNode);
     }
     
     public List<Node> childNodes() {

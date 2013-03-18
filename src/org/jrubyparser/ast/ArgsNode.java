@@ -62,11 +62,11 @@ public class ArgsNode extends Node {
             ListNode post, BlockArgNode block) {
         super(position);
 
-        this.pre = pre;
-        this.optional = optional;
-        this.post = post;
-        this.rest = rest;
-        this.block = block;
+        this.pre = (ListNode) adopt(pre);
+        this.optional = (ListNode) adopt(optional);
+        this.post = (ListNode) adopt(post);
+        this.rest = (ArgumentNode) adopt(rest);
+        this.block = (BlockArgNode) adopt(block);
     }
 
     public NodeType getNodeType() {

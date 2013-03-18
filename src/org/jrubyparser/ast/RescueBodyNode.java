@@ -46,9 +46,9 @@ public class RescueBodyNode extends Node {
         
        assert bodyNode != null : "bodyNode is not null";
         
-        this.exceptionNodes = exceptionNodes;
-        this.bodyNode = bodyNode;
-        this.optRescueNode = optRescueNode;
+        this.exceptionNodes = adopt(exceptionNodes);
+        this.bodyNode = adopt(bodyNode);
+        this.optRescueNode = (RescueBodyNode) adopt(optRescueNode);
     }
 
     public NodeType getNodeType() {
@@ -77,7 +77,7 @@ public class RescueBodyNode extends Node {
     }
     
     public void setBody(Node body) {
-        this.bodyNode = body;
+        this.bodyNode = adopt(body);
     }
 
     /**
@@ -93,7 +93,7 @@ public class RescueBodyNode extends Node {
     }
     
     public void setOptRescue(RescueBodyNode optRescue) {
-        this.optRescueNode = optRescue;
+        this.optRescueNode = (RescueBodyNode) adopt(optRescue);
     }
     
     /**
@@ -110,7 +110,7 @@ public class RescueBodyNode extends Node {
     }
     
     public void setExceptions(Node exceptions) {
-        this.exceptionNodes = exceptions;
+        this.exceptionNodes = adopt(exceptions);
     }
     
     public List<Node> childNodes() {

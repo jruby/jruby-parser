@@ -43,8 +43,8 @@ public class OpAsgnAndNode extends Node implements BinaryOperatorNode {
         assert headNode != null : "headNode is not null";
         assert valueNode != null : "valueNode is not null";
         
-        firstNode = headNode;
-        secondNode = valueNode;
+        firstNode = adopt(headNode);
+        secondNode = adopt(valueNode);
     }
 
     public NodeType getNodeType() {
