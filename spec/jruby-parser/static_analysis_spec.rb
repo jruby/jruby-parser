@@ -64,7 +64,7 @@ describe Parser do
       end
     end
 
-    it "Can detect simple parameter is used" do
+    it "method: Can detect simple parameter is used" do
       parse("def foo(a); a; end").find_node(:defn) do |defn|
         defn.args.get_normative_parameter_name_list(true).each do |parameter|
           defn.is_parameter_used(parameter).should == true
@@ -78,7 +78,7 @@ describe Parser do
       end
     end
 
-    it "Can detect some simple parameters are used" do
+    it "method: Can detect some simple parameters are used" do
       parse("def foo(a,b); b; end").find_node(:defn) do |defn|
         defn.is_parameter_used("a").should == false
         defn.is_parameter_used("b").should == true
@@ -105,5 +105,55 @@ describe Parser do
         defn.is_parameter_used("b").should == true
       end
     end
+
+    it "method: Can detect some simple optarg params are used" do
+      parse("def foo(a,b = {}); b; end").find_node(:defn) do |defn|
+        defn.is_parameter_used("a").should == false
+        defn.is_parameter_used("b").should == true
+      end
+    end
+
+    it "method: Can detect zsuper usage" do
+      parse("def foo(a,b = {}); super; end").find_node(:defn) do |defn|
+        defn.is_parameter_used("a").should == true
+        defn.is_parameter_used("b").should == true
+      end
+    end
+
+    it "block/iter: Can detect simple parameter is used" do
+      parse("proc { |a, b| a; b }").find_node(:iter) do |iter|
+        iter.is_parameter_used("a").should == true
+        iter.is_parameter_used("b").should == true
+      end
+    end
+
+    it "block/iter: Can detect some simple parameters are used" do
+      parse("proc {|a,b| b }").find_node(:iter) do |iter|
+        iter.is_parameter_used("a").should == false
+        iter.is_parameter_used("b").should == true
+      end
+
+      parse("proc {|a,b| b if true }").find_node(:iter) do |iter|
+        iter.is_parameter_used("a").should == false
+        iter.is_parameter_used("b").should == true
+      end
+
+      parse("proc {|a,b| proc { b if true } }").find_node(:iter) do |iter|
+        iter.is_parameter_used("a").should == false
+        iter.is_parameter_used("b").should == true
+      end
+
+      parse("proc {|a, b, c| puts a, b, c }").find_node(:iter) do |iter|
+        iter.is_parameter_used("a").should == true
+        iter.is_parameter_used("b").should == true
+        iter.is_parameter_used("c").should == true
+      end
+
+      parse("proc {|a, b| b.each_answer {|n| data if n == a } }") do |iter|
+        iter.is_parameter_used("a").should == true
+        iter.is_parameter_used("b").should == true
+      end
+    end
+
   end
 end

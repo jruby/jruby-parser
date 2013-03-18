@@ -33,6 +33,7 @@ import java.util.List;
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 import org.jrubyparser.StaticScope;
+import org.jrubyparser.util.VariableHelper;
 
 /**
  * Represents a block.  
@@ -104,4 +105,16 @@ public class IterNode extends Node {
     public List<Node> childNodes() {
         return Node.createList(varNode, bodyNode);
     }
+    
+    /**
+     * Given a name (presumably retrieve via getNormativeSignatureNameList()) is this parmeter used
+     * in this method definition?
+     * 
+     * @param name
+     * @return if used or not.
+     */
+    public boolean isParameterUsed(String name) {
+        // FIXME: Do I need to worry about used vars in parameter initialization?
+        return VariableHelper.isParameterUsed(getBody(), name, false);
+    }    
 }

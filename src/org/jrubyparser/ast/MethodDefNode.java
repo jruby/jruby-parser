@@ -34,6 +34,7 @@ package org.jrubyparser.ast;
 import java.util.List;
 import org.jrubyparser.SourcePosition;
 import org.jrubyparser.StaticScope;
+import org.jrubyparser.util.VariableHelper;
 
 public abstract class MethodDefNode extends Node implements INameNode, ILocalScope {
 	protected ArgumentNode nameNode;
@@ -117,7 +118,7 @@ public abstract class MethodDefNode extends Node implements INameNode, ILocalSco
         }
         
         /**
-         * Given a name (presumably retrieve via getNormativeSignature()) is this parmeter used
+         * Given a name (presumably retrieve via getNormativeSignatureNameList()) is this parmeter used
          * in this method definition?
          * 
          * @param name
@@ -125,38 +126,7 @@ public abstract class MethodDefNode extends Node implements INameNode, ILocalSco
          */
         public boolean isParameterUsed(String name) {
             // FIXME: Do I need to worry about used vars in parameter initialization?
-            return isParameterUsedInner(getBody(), name);
-        }
-        
-        private boolean isParameterUsedInner(Node node, String name) {
-            for (Node child: node.childNodes()) {
-                if (child instanceof INameMatchable && child instanceof ILocalVariable && 
-                        ((INameMatchable) child).isNameMatch(name)) {
-                    return true;
-                }
-                
-                if (child instanceof AliasNode) {
-                    boolean match = ((AliasNode) child).oldNameMatches(name);
-                    if (match) return match;
-
-                    // alias :new_thing :"old#{my_parameter}"
-                    if (((AliasNode) child).getOldName() instanceof DSymbolNode &&
-                            isParameterUsedInner(((AliasNode) child).getOldName(), name)) {
-                        return true;
-                    }
-                    
-                    // alias :"new#{my_parameter}" :thing
-                    if (((AliasNode) child).getNewName() instanceof DSymbolNode && 
-                            isParameterUsedInner(((AliasNode) child).getNewName(), name)) {
-                        return true;
-                    }
-                }
-
-                // For all non-special nodes recurse and look to see if subtree contains the name
-                if (isParameterUsedInner(child, name)) return true;
-            }
-            
-            return false;
+            return VariableHelper.isParameterUsed(getBody(), name, true);
         }
         
         /**
