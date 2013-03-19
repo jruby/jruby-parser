@@ -102,4 +102,12 @@ public class DAsgnNode extends AssignableNode implements INameNode {
     public List<Node> childNodes() {
         return createList(getValue());
     }
+    
+    // all 1.8 block parameters and any more complicated 1.9 parameters which involve Masgn19.
+    @Override
+    public boolean isBlockParameter() {
+        IterNode iter = getInnermostIter();
+        
+        return iter != null && isDescendentOf(iter.getVar());
+    }
 }

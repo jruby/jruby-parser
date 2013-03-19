@@ -59,7 +59,16 @@ public class RestArgNode extends ArgumentNode implements INameNode {
         return iVisitor.visitRestArgNode(this);
     }
 
+    @Override
     public int getIndex() {
         return index;
+    }
+    
+    // 1.9 block parameters are: iter.args.list.restarg
+    @Override
+    public boolean isBlockParameter() {
+        IterNode iter = getInnermostIter();
+        
+        return iter != null && isDescendentOf(iter.getVar());
     }
 }

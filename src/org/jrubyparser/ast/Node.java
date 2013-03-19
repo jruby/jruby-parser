@@ -60,6 +60,8 @@ public abstract class Node implements ISourcePositionHolder {
         return position;
     }
     
+    // Parentage methods
+    
     public Node adopt(Node child) {
         if (child != null) child.setParent(this);
         return child;
@@ -69,8 +71,24 @@ public abstract class Node implements ISourcePositionHolder {
         return parent;
     }
     
+    public Node getGrandParent() {
+        Node p = getParent();
+        return p != null ? p.getParent() : null;
+    }
+    
     public void setParent(Node parent) {
         this.parent = parent;
+    }
+    
+    /**
+     * Is this node the same or a descendent of the supplied testParent node?
+     */
+    public boolean isDescendentOf(Node testParent) {
+        for (Node current = this; current != null; current = current.getParent()) {
+            if (current == testParent) return true;
+        }
+        
+        return false;
     }
 
     public void setPosition(SourcePosition position) {
@@ -229,5 +247,14 @@ public abstract class Node implements ISourcePositionHolder {
         }
         
         return null;
+    }
+    
+    // Common predicates...The default on node will typically be false with specialized nodes conditionally being true
+    
+    /**
+     * Is this node specifying a parameter in a block statement?
+     */
+    public boolean isBlockParameter() {
+        return false;
     }
 }
