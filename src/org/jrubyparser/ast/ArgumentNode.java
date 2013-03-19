@@ -99,11 +99,4 @@ public class ArgumentNode extends Node implements INameNode, ILocalVariable {
         
         return thisName != null && thisName.equals(name);
     }
-    
-    // 1.9 block parameters are: iter.args.list.{argument1, argument2...}
-    @Override
-    public boolean isBlockParameter() {
-        Node args = getGrandParent();
-        return args instanceof ArgsNode && args.getParent() instanceof IterNode;
-    }
 }

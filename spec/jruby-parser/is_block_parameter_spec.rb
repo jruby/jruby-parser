@@ -6,7 +6,7 @@ require 'parser_helpers'
 
 describe JRubyParser do
   [1.8, 1.9].each do |v|
-    it "finds block parameter via get_block_parameter [#{v}]" do
+    it "finds parameter via is_block_parameter [#{v}]" do
       caret_parse("proc { |^a| }", v).tap do |root, caret_node|
         caret_node.block_parameter?.should == true
       end

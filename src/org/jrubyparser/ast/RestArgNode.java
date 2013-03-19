@@ -34,7 +34,7 @@ import org.jrubyparser.SourcePosition;
 /*
  * The rest argument for a method (def foo(a, *b, c)).
  */
-public class RestArgNode extends ArgumentNode implements INameNode {
+public class RestArgNode extends ArgumentNode implements INameNode, ILocalVariable {
     // index of variable for this arg
     protected int index;
 
@@ -62,13 +62,5 @@ public class RestArgNode extends ArgumentNode implements INameNode {
     @Override
     public int getIndex() {
         return index;
-    }
-    
-    // 1.9+
-    @Override
-    public boolean isBlockParameter() {
-        IterNode iter = getInnermostIter();
-        
-        return iter != null && isDescendentOf(iter.getVar());
     }
 }

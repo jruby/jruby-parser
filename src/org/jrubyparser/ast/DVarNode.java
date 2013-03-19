@@ -81,4 +81,9 @@ public class DVarNode extends NamedNode implements ILocalVariable {
     public List<Node> childNodes() {
         return EMPTY_LIST;
     }    
+    
+    @Override
+    public boolean isBlockParameter() {
+        return false;
+    }
 }

@@ -36,7 +36,7 @@ import org.jrubyparser.SourcePosition;
 /**
  *	An explicit block argument (&amp;my_block).
  */
-public class BlockArgNode extends NamedNode {
+public class BlockArgNode extends NamedNode implements ILocalVariable {
     private int count;
 
     public BlockArgNode(SourcePosition position, int count, String name) {

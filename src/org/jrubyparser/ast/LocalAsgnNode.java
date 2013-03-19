@@ -36,7 +36,7 @@ import org.jrubyparser.SourcePosition;
 /**
  * An assignment to a local variable.
  */
-public class LocalAsgnNode extends AssignableNode implements INameNode {
+public class LocalAsgnNode extends AssignableNode implements INameNode, ILocalVariable {
     // The name of the variable
     private String name;
     

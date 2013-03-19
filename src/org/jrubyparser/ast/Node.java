@@ -255,6 +255,17 @@ public abstract class Node implements ISourcePositionHolder {
      * Is this node specifying a parameter in a block statement?
      */
     public boolean isBlockParameter() {
-        return false;
+        IterNode iter = getInnermostIter();
+        
+        return iter != null && this instanceof ILocalVariable && isDescendentOf(iter.getVar());
+    }
+
+    /**
+     * Is this node specifying a parameter in a method definition?
+     */    
+    public boolean isMethodParameter() {
+        MethodDefNode def = getMethodFor();
+        
+        return def != null && this instanceof ILocalVariable && isDescendentOf(def.getArgs());
     }
 }
