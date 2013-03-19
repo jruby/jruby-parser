@@ -71,4 +71,12 @@ public class BlockArgNode extends NamedNode {
     public List<Node> childNodes() {
         return EMPTY_LIST;
     }
+    
+    // 1.9+
+    @Override
+    public boolean isBlockParameter() {
+        IterNode iter = getInnermostIter();
+        
+        return iter != null && isDescendentOf(iter.getVar());
+    }    
 }

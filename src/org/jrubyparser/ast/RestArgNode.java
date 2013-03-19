@@ -64,7 +64,7 @@ public class RestArgNode extends ArgumentNode implements INameNode {
         return index;
     }
     
-    // 1.9 block parameters are: iter.args.list.restarg
+    // 1.9+
     @Override
     public boolean isBlockParameter() {
         IterNode iter = getInnermostIter();

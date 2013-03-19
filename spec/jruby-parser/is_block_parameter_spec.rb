@@ -19,6 +19,9 @@ describe JRubyParser do
       caret_parse("proc { |a, (b, ^c)| }", v).tap do |root, caret_node|
         caret_node.block_parameter?.should == true
       end
+      caret_parse("proc { |&^a| }", v).tap do |root, caret_node|
+        caret_node.block_parameter?.should == true
+      end
 
       if v == 1.9
         caret_parse("proc { |a, ^b=1| }", v).tap do |root, caret_node|
