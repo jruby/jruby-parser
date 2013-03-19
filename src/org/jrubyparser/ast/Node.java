@@ -31,6 +31,8 @@ package org.jrubyparser.ast;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.ISourcePositionHolder;
@@ -177,6 +179,22 @@ public abstract class Node implements ISourcePositionHolder {
      */
     public abstract NodeType getNodeType();
     
+    /**
+     * Find the leaf node (which is not invisible) at the specified offset).
+     * @param offset in characters into the source unit
+     */
+    public Node getNodeAt(int offset) {
+        if (isInvisible()) return null;
+        
+        for (Node child : childNodes()) {  // Check children for more specific results
+            if (child.isInvisible()) continue;
+
+            Node found = child.getNodeAt(offset);
+            if (found != null && !found.getPosition().isEmpty()) return found; // refactoring includes place-holders (empty)...ignore them
+        }
+
+        return getPosition().isWithin(offset) ? this : null;
+    }
 
     /**
      * Which method is this node contained in?

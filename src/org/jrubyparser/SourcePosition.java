@@ -152,6 +152,10 @@ public class SourcePosition implements Serializable {
     	return endOffset;
     }
     
+    public boolean isWithin(int offset) {
+        return offset >= startOffset && offset <= endOffset;
+    }
+    
     /**
      * Is this a place-holder element for things like a zero-arg listnode?  These elements get
      * added to the AST for that jruby-parser's rewriting can add arguments after the tree
