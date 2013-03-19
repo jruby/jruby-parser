@@ -31,8 +31,6 @@ package org.jrubyparser.ast;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.ISourcePositionHolder;
@@ -184,7 +182,8 @@ public abstract class Node implements ISourcePositionHolder {
      * @param offset in characters into the source unit
      */
     public Node getNodeAt(int offset) {
-        if (isInvisible()) return null;
+        // offset < 0 is for method chaining of methods which will return -1 if an index or node is not found (baby optimization)
+        if (isInvisible() || offset < 0) return null;
         
         for (Node child : childNodes()) {  // Check children for more specific results
             if (child.isInvisible()) continue;
@@ -214,6 +213,7 @@ public abstract class Node implements ISourcePositionHolder {
         if (isInvisible()) return null; // FIXME: Invisible nodes do not have reasonable parentage
         
         for (Node p = this; p != null; p = p.getParent()) {
+            if (p instanceof ILocalScope) return null; // foo { def bar; im_here; end }
             if (p instanceof IterNode) return (IterNode) p;
         }
         
