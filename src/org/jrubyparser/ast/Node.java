@@ -227,6 +227,10 @@ public abstract class Node implements ISourcePositionHolder {
         return null;
     }
     
+    /**
+     * Return closest iter node unless this is contained within a non-block scope and then return
+     * null instead.
+     */
     public IterNode getInnermostIter() {
         if (isInvisible()) return null; // FIXME: Invisible nodes do not have reasonable parentage
         

@@ -36,7 +36,7 @@ import org.jrubyparser.SourcePosition;
 import org.jrubyparser.StaticScope;
 import org.jrubyparser.util.VariableHelper;
 
-public abstract class MethodDefNode extends Node implements INameNode, ILocalScope {
+public abstract class MethodDefNode extends Node implements INameNode, ILocalScope, IParameterScope {
 	protected ArgumentNode nameNode;
 	protected ArgsNode argsNode;
 	protected StaticScope scope;
@@ -127,6 +127,10 @@ public abstract class MethodDefNode extends Node implements INameNode, ILocalSco
         public boolean isParameterUsed(String name) {
             // FIXME: Do I need to worry about used vars in parameter initialization?
             return VariableHelper.isParameterUsed(getBody(), name, true);
+        }
+        
+        public Node getParameterNamed(String name) {
+            return VariableHelper.getParameterName(getArgs(), name);
         }
         
         /**

@@ -179,4 +179,34 @@ public class ArgsNode extends Node {
         return parameters;
     }
     
+    /**
+     * @return list of all parameters within this args node
+     */
+    public List<Node> getNormativeParameterList() {
+        List<Node> parameters = new ArrayList<Node>();
+        
+        if (getPreCount() > 0) {
+            for (Node preArg: getPre().childNodes()) {
+                if (preArg instanceof INameNode) parameters.add(preArg);
+            }
+        }
+        
+        if (getOptionalCount() > 0) {
+            for (Node optArg: getOptional().childNodes()) {
+                if (optArg instanceof INameNode) parameters.add(optArg);
+            }
+        }
+        
+        if (getPostCount() > 0) {
+            for (Node postArg: getPost().childNodes()) {
+                if (postArg instanceof INameNode) parameters.add(postArg);
+            }
+        }
+        
+        if (getRest() != null) parameters.add(getRest());
+        if (getBlock() != null) parameters.add(getBlock());
+        
+        return parameters;
+    }
+    
 }

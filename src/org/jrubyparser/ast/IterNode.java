@@ -38,7 +38,7 @@ import org.jrubyparser.util.VariableHelper;
 /**
  * Represents a block.  
  */
-public class IterNode extends Node {
+public class IterNode extends Node implements IParameterScope {
     private Node varNode;
     private Node bodyNode;
     
@@ -116,5 +116,9 @@ public class IterNode extends Node {
     public boolean isParameterUsed(String name) {
         // FIXME: Do I need to worry about used vars in parameter initialization?
         return VariableHelper.isParameterUsed(getBody(), name, false);
-    }    
+    }
+
+    public Node getParameterNamed(String name) {
+        return VariableHelper.getParameterName(getVar(), name);
+    }
 }

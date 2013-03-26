@@ -34,7 +34,7 @@ import org.jrubyparser.SourcePosition;
 /*
  * The rest argument for a method (def foo(a, *b, c)).
  */
-public class RestArgNode extends ArgumentNode implements INameNode, ILocalVariable {
+public class RestArgNode extends ArgumentNode implements ILocalVariable {
     // index of variable for this arg
     protected int index;
 

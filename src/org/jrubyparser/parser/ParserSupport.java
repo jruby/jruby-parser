@@ -320,10 +320,12 @@ public class ParserSupport {
     }
     
     public SourcePosition union(SourcePosition first, SourcePosition second) {
-		if (first.getStartOffset() < second.getStartOffset()) return first.union(second); 
+        if (first == SourcePosition.INVALID_POSITION) return second;
+        if (second == SourcePosition.INVALID_POSITION) return first;
+        if (first.getStartOffset() < second.getStartOffset()) return first.union(second); 
 
-		return second.union(first);
-	}
+        return second.union(first);
+    }
     
     public Node addRootNode(Node topOfAST, SourcePosition position) {
         position = topOfAST != null ? topOfAST.getPosition() : position;
@@ -362,6 +364,14 @@ public class ParserSupport {
         ((ListNode) head).addAll(tail);
         head.setPosition(union(head, tail));
         return head;
+    }
+    
+    // unary operators
+    public Node getOperatorCallNode(Token operator, Node receiver) {
+        String name = (String) operator.getValue();
+        
+        return new CallNode(union(operator.getPosition(), receiver.getPosition()), receiver, name,
+                new ArrayNode(createEmptyArgsNodePosition(receiver.getPosition())));
     }
 
     public Node getOperatorCallNode(Node firstNode, String operator) {
@@ -891,7 +901,7 @@ public class ParserSupport {
         // If we have no arguments we will construct an empty list to avoid null checking.
         // Notes: 1) We cannot share empty lists because of rewriting 2) Position of an empty
         // list is undefined so we use any position just to satisfy node requirements.
-        if (args == null) args = new ListNode(operation.getPosition());
+        if (args == null) args = new ListNode(operation.getPosition().makeEmptyPositionAfterThis());
         
         return new FCallNode(position, (String) operation.getValue(), args, (IterNode) iter);
     }

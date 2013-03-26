@@ -438,10 +438,10 @@ expr            : command_call
                     $$ = support.newOrNode(support.getPosition($2), $1, $3);
                 }
                 | kNOT opt_nl expr {
-                    $$ = support.getOperatorCallNode(support.getConditionNode($3), "!");
+                    $$ = support.getOperatorCallNode($1, support.getConditionNode($3));
                 }
                 | tBANG command_call {
-                    $$ = support.getOperatorCallNode(support.getConditionNode($2), "!");
+                    $$ = support.getOperatorCallNode($1, support.getConditionNode($2));
                 }
                 | arg
 
@@ -818,16 +818,16 @@ arg             : lhs '=' arg {
                     $$ = support.getOperatorCallNode($1, "**", $3, support.getPosition(null));
                 }
                 | tUMINUS_NUM tINTEGER tPOW arg {
-                    $$ = support.getOperatorCallNode(support.getOperatorCallNode($2, "**", $4, support.getPosition(null)), "-@");
+                    $$ = support.getOperatorCallNode($1, support.getOperatorCallNode($2, "**", $4, support.getPosition(null)));
                 }
                 | tUMINUS_NUM tFLOAT tPOW arg {
-                    $$ = support.getOperatorCallNode(support.getOperatorCallNode($2, "**", $4, support.getPosition(null)), "-@");
+                    $$ = support.getOperatorCallNode($1, support.getOperatorCallNode($2, "**", $4, support.getPosition(null)));
                 }
                 | tUPLUS arg {
-                    $$ = support.getOperatorCallNode($2, "+@");
+                    $$ = support.getOperatorCallNode($1, $2);
                 }
                 | tUMINUS arg {
-                    $$ = support.getOperatorCallNode($2, "-@");
+                    $$ = support.getOperatorCallNode($1, $2);
                 }
                 | arg tPIPE arg {
                     $$ = support.getOperatorCallNode($1, "|", $3, support.getPosition(null));
@@ -875,10 +875,10 @@ arg             : lhs '=' arg {
                     $$ = new NotNode(support.union($1, $3), support.getMatchNode($1, $3));
                 }
                 | tBANG arg {
-                     $$ = support.getOperatorCallNode(support.getConditionNode($2), "!");
+                    $$ = support.getOperatorCallNode($1, support.getConditionNode($2));
                 }
                 | tTILDE arg {
-                    $$ = support.getOperatorCallNode($2, "~");
+                    $$ = support.getOperatorCallNode($1, $2);
                 }
                 | arg tLSHFT arg {
                     $$ = support.getOperatorCallNode($1, "<<", $3, support.getPosition(null));
@@ -1081,10 +1081,10 @@ primary         : literal
                     $$ = new DefinedNode(support.union($1, $5), $4);
                 }
                 | kNOT tLPAREN2 expr rparen {
-                    $$ = support.getOperatorCallNode(support.getConditionNode($3), "!");
+                    $$ = support.getOperatorCallNode($1, support.getConditionNode($3));
                 }
                 | kNOT tLPAREN2 rparen {
-                    $$ = support.getOperatorCallNode(NilImplicitNode.NIL, "!");
+                    $$ = support.getOperatorCallNode($1, NilImplicitNode.NIL);
                 }
                 | operation brace_block {
                     $$ = support.new_fcall($1, null, $2);
@@ -1397,7 +1397,7 @@ lambda_body     : tLAMBEG compstmt tRCURLY {
 do_block        : kDO_BLOCK {
                     support.pushBlockScope();
                 } opt_block_param compstmt kEND {
-                    $$ = new IterNode(support.getPosition($1), $3, $4, support.getCurrentScope());
+                    $$ = new IterNode(support.union($1, $5), $3, $4, support.getCurrentScope());
                     support.popCurrentScope();
                 }
 
@@ -1473,7 +1473,6 @@ brace_block     : tLCURLY {
                     support.pushBlockScope();
                 } opt_block_param compstmt kEND {
                     $$ = new IterNode(support.union($1, $5), $3, $4, support.getCurrentScope());
-                    $<ISourcePositionHolder>0.setPosition(support.union($<ISourcePositionHolder>0, $<ISourcePositionHolder>$));
                     support.popCurrentScope();
                 }
 

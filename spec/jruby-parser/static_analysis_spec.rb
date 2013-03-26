@@ -76,6 +76,11 @@ describe Parser do
           defn.is_parameter_used(parameter).should == true
         end
       end
+
+      parse("def foo(a,b); a=1; b; end").find_node(:defn) do |defn|
+        defn.is_parameter_used("a").should == false
+        defn.is_parameter_used("b").should == true
+      end
     end
 
     it "method: Can detect some simple parameters are used" do
@@ -123,6 +128,13 @@ describe Parser do
     it "block/iter: Can detect simple parameter is used" do
       parse("proc { |a, b| a; b }").find_node(:iter) do |iter|
         iter.is_parameter_used("a").should == true
+        iter.is_parameter_used("b").should == true
+      end
+    end
+
+    it "block/iter: Can detect simple parameter is used" do
+      parse("proc { |a, b| a=1; b }").find_node(:iter) do |iter|
+        iter.is_parameter_used("a").should == false
         iter.is_parameter_used("b").should == true
       end
     end

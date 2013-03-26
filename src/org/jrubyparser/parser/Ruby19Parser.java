@@ -1738,7 +1738,7 @@ states[2] = new ParserState() {
 };
 states[203] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
-                    yyVal = support.getOperatorCallNode(support.getOperatorCallNode(((Node)yyVals[-2+yyTop]), "**", ((Node)yyVals[0+yyTop]), support.getPosition(null)), "-@");
+                    yyVal = support.getOperatorCallNode(((Token)yyVals[-3+yyTop]), support.getOperatorCallNode(((Node)yyVals[-2+yyTop]), "**", ((Node)yyVals[0+yyTop]), support.getPosition(null)));
     return yyVal;
   }
 };
@@ -1825,7 +1825,7 @@ states[3] = new ParserState() {
 };
 states[204] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
-                    yyVal = support.getOperatorCallNode(support.getOperatorCallNode(((FloatNode)yyVals[-2+yyTop]), "**", ((Node)yyVals[0+yyTop]), support.getPosition(null)), "-@");
+                    yyVal = support.getOperatorCallNode(((Token)yyVals[-3+yyTop]), support.getOperatorCallNode(((FloatNode)yyVals[-2+yyTop]), "**", ((Node)yyVals[0+yyTop]), support.getPosition(null)));
     return yyVal;
   }
 };
@@ -1869,7 +1869,7 @@ states[439] = new ParserState() {
 };
 states[372] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
-                    yyVal = new IterNode(support.getPosition(((Token)yyVals[-4+yyTop])), ((ArgsNode)yyVals[-2+yyTop]), ((Node)yyVals[-1+yyTop]), support.getCurrentScope());
+                    yyVal = new IterNode(support.union(((Token)yyVals[-4+yyTop]), ((Token)yyVals[0+yyTop])), ((ArgsNode)yyVals[-2+yyTop]), ((Node)yyVals[-1+yyTop]), support.getCurrentScope());
                     support.popCurrentScope();
     return yyVal;
   }
@@ -1947,7 +1947,7 @@ states[4] = new ParserState() {
 };
 states[205] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
-                    yyVal = support.getOperatorCallNode(((Node)yyVals[0+yyTop]), "+@");
+                    yyVal = support.getOperatorCallNode(((Token)yyVals[-1+yyTop]), ((Node)yyVals[0+yyTop]));
     return yyVal;
   }
 };
@@ -2004,7 +2004,7 @@ states[306] = new ParserState() {
 };
 states[38] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
-                    yyVal = support.getOperatorCallNode(support.getConditionNode(((Node)yyVals[0+yyTop])), "!");
+                    yyVal = support.getOperatorCallNode(((Token)yyVals[-2+yyTop]), support.getConditionNode(((Node)yyVals[0+yyTop])));
     return yyVal;
   }
 };
@@ -2046,7 +2046,7 @@ states[273] = new ParserState() {
 };
 states[206] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
-                    yyVal = support.getOperatorCallNode(((Node)yyVals[0+yyTop]), "-@");
+                    yyVal = support.getOperatorCallNode(((Token)yyVals[-1+yyTop]), ((Node)yyVals[0+yyTop]));
     return yyVal;
   }
 };
@@ -2091,7 +2091,7 @@ states[307] = new ParserState() {
 };
 states[39] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
-                    yyVal = support.getOperatorCallNode(support.getConditionNode(((Node)yyVals[0+yyTop])), "!");
+                    yyVal = support.getOperatorCallNode(((Token)yyVals[-1+yyTop]), support.getConditionNode(((Node)yyVals[0+yyTop])));
     return yyVal;
   }
 };
@@ -2558,7 +2558,7 @@ states[78] = new ParserState() {
 };
 states[279] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
-                    yyVal = support.getOperatorCallNode(support.getConditionNode(((Node)yyVals[-1+yyTop])), "!");
+                    yyVal = support.getOperatorCallNode(((Token)yyVals[-3+yyTop]), support.getConditionNode(((Node)yyVals[-1+yyTop])));
     return yyVal;
   }
 };
@@ -2638,7 +2638,7 @@ states[79] = new ParserState() {
 };
 states[280] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
-                    yyVal = support.getOperatorCallNode(NilImplicitNode.NIL, "!");
+                    yyVal = support.getOperatorCallNode(((Token)yyVals[-2+yyTop]), NilImplicitNode.NIL);
     return yyVal;
   }
 };
@@ -3156,7 +3156,7 @@ states[354] = new ParserState() {
 };
 states[220] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
-                     yyVal = support.getOperatorCallNode(support.getConditionNode(((Node)yyVals[0+yyTop])), "!");
+                    yyVal = support.getOperatorCallNode(((Token)yyVals[-1+yyTop]), support.getConditionNode(((Node)yyVals[0+yyTop])));
     return yyVal;
   }
 };
@@ -3194,7 +3194,6 @@ states[455] = new ParserState() {
 states[388] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
                     yyVal = new IterNode(support.union(((Token)yyVals[-4+yyTop]), ((Token)yyVals[0+yyTop])), ((ArgsNode)yyVals[-2+yyTop]), ((Node)yyVals[-1+yyTop]), support.getCurrentScope());
-                    ((ISourcePositionHolder)yyVals[-5+yyTop]).setPosition(support.union(((ISourcePositionHolder)yyVals[-5+yyTop]), ((ISourcePositionHolder)yyVal)));
                     support.popCurrentScope();
     return yyVal;
   }
@@ -3268,7 +3267,7 @@ states[355] = new ParserState() {
 };
 states[221] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
-                    yyVal = support.getOperatorCallNode(((Node)yyVals[0+yyTop]), "~");
+                    yyVal = support.getOperatorCallNode(((Token)yyVals[-1+yyTop]), ((Node)yyVals[0+yyTop]));
     return yyVal;
   }
 };
@@ -4235,7 +4234,7 @@ states[267] = new ParserState() {
   }
 };
 }
-					// line 2010 "Ruby19Parser.y"
+					// line 2009 "Ruby19Parser.y"
 
     /** The parse method use an lexer stream and parse it to an AST node 
      * structure
@@ -4270,4 +4269,4 @@ states[267] = new ParserState() {
     // +++
     // Helper Methods
 }
-					// line 8059 "-"
+					// line 8058 "-"

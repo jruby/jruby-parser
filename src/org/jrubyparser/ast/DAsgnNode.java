@@ -36,7 +36,7 @@ import org.jrubyparser.SourcePosition;
 /**
  * An assignment to a dynamic variable (e.g. block scope local variable).
  */
-public class DAsgnNode extends AssignableNode implements INameNode, ILocalVariable {
+public class DAsgnNode extends AssignableNode implements ILocalVariable {
     // The name of the variable
     private String name;
     
