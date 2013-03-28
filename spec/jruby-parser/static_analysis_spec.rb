@@ -64,6 +64,14 @@ describe Parser do
       end
     end
 
+    it "method: can parse an empty body method with unused param [#{v}]" do
+      parse("def foo(a)\nend").find_node(:defn) do |defn|
+        defn.args.get_normative_parameter_name_list(true).each do |parameter|
+          defn.is_parameter_used(parameter).should == false
+        end
+      end
+    end
+
     it "method: Can detect simple parameter is used" do
       parse("def foo(a); a; end").find_node(:defn) do |defn|
         defn.args.get_normative_parameter_name_list(true).each do |parameter|
@@ -125,6 +133,12 @@ describe Parser do
       end
     end
 
+    it "block/iter: can parse an empty proc body with unused param [#{v}]" do
+      parse("proc do |a|\nend").find_node(:iter) do |iter|
+        iter.is_parameter_used("a").should == false
+      end
+    end
+
     it "block/iter: Can detect simple parameter is used" do
       parse("proc { |a, b| a; b }").find_node(:iter) do |iter|
         iter.is_parameter_used("a").should == true
@@ -166,6 +180,5 @@ describe Parser do
         iter.is_parameter_used("b").should == true
       end
     end
-
   end
 end

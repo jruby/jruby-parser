@@ -20,6 +20,8 @@ import org.jrubyparser.ast.ZSuperNode;
  */
 public class VariableHelper {
     public static boolean isParameterUsed(Node node, String name, boolean isMethod) {
+        if (node == null) return false; // Empty methods have null bodies (other nodes may also pass in null)
+        
         for (Node child: node.childNodes()) {
             if (child instanceof INameMatchable && child instanceof ILocalVariable && 
                     ((INameMatchable) child).isNameMatch(name)) {
