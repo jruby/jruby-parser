@@ -85,7 +85,13 @@ public class StaticAnalyzerHelper {
                             assignments.add(new NodePair(masgn.getPost().get(i), rhsPre.get(handled + i)));
                         }
                     } else if (leftOver == postSize) {
-                        assignments.add(new NodePair(masgn.getRest(), new ListNode(rhsPre.get(handled-1).getPosition())));
+                        // I cannot find case where handled is zero but I have seen it occur in netbeans so I am doing what seems appropriate for that case
+                        SourcePosition pos = handled == 0 ? 
+                                (postSize == 0 ? masgn.getPosition().makeEmptyPositionAfterThis() :
+                                    rhsPre.get(0).getPosition().makeEmptyPositionBeforeThis()) : 
+                                rhsPre.get(handled-1).getPosition();
+                                
+                        assignments.add(new NodePair(masgn.getRest(), new ListNode(pos)));
                         for (int i = 0; i < postSize; i++) {
                             assignments.add(new NodePair(masgn.getPost().get(i), rhsPre.get(handled + i)));
                         }
