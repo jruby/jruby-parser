@@ -209,6 +209,10 @@ public class SourcePosition implements Serializable {
     public SourcePosition makeEmptyPositionAfterThis() {
         return new SourcePosition(file, startLine, endLine, endOffset, endOffset);
     }
+    
+    public SourcePosition makeEmptyPositionBeforeThis() {
+        return new SourcePosition(file, startLine, endLine, startOffset, startOffset);        
+    }
 
     public void setComments(Collection<CommentNode> comments) {
         this.comments = comments;
