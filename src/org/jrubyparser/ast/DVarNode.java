@@ -86,4 +86,14 @@ public class DVarNode extends NamedNode implements ILocalVariable {
     public boolean isBlockParameter() {
         return false;
     }
+
+    public Node getDefinedScope() {
+        Node scope = this;
+        
+        for (int i = 0; i <= getDepth(); i++) {
+            scope = scope.getClosestIScope();
+        }        
+        
+        return scope;
+    }
 }

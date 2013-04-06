@@ -38,7 +38,7 @@ import org.jrubyparser.util.VariableHelper;
 /**
  * Represents a block.  
  */
-public class IterNode extends Node implements IParameterScope {
+public class IterNode extends Node implements IBlockScope {
     private Node varNode;
     private Node bodyNode;
     

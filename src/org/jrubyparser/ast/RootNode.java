@@ -42,7 +42,7 @@ import org.jrubyparser.StaticScope;
  *
  */
 // TODO: Store BEGIN and END information into this node
-public class RootNode extends Node {
+public class RootNode extends Node implements ILocalScope {
     private StaticScope staticScope;
     private Node bodyNode;
 

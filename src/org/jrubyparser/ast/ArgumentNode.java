@@ -99,4 +99,8 @@ public class ArgumentNode extends Node implements ILocalVariable {
         
         return thisName != null && thisName.equals(name);
     }
+
+    public Node getDefinedScope() {
+        return getClosestIScope(); // argument list elements always belong to closest scope
+    }
 }

@@ -5,7 +5,7 @@
 package org.jrubyparser.ast;
 
 /**
- * Marker Interface to identify local variable scope versus block local variable scopes.
+ * A Scope which is a variable scope for a block.
  */
-public interface ILocalScope extends IScope {
+public interface IBlockScope extends IScope, IParameterScope {
 }

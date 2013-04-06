@@ -102,4 +102,14 @@ public class DAsgnNode extends AssignableNode implements ILocalVariable {
     public List<Node> childNodes() {
         return createList(getValue());
     }
+
+    public Node getDefinedScope() {
+        Node scope = this;
+        
+        for (int i = 0; i <= getDepth(); i++) {
+            scope = scope.getClosestIScope();
+        }        
+
+        return scope;
+    }
 }

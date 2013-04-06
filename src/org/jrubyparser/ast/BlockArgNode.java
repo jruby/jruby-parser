@@ -79,4 +79,8 @@ public class BlockArgNode extends NamedNode implements ILocalVariable {
         
         return iter != null && isDescendentOf(iter.getVar());
     }    
+
+    public Node getDefinedScope() {
+        return getClosestIScope(); // argument list elements always belong to closest scope
+    }
 }
