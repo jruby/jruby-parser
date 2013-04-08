@@ -33,6 +33,7 @@ import java.util.List;
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 import org.jrubyparser.StaticScope;
+import org.jrubyparser.util.ILocalVariableVisitor;
 
 /** 
  * Singleton class definition.
@@ -118,4 +119,7 @@ public class SClassNode extends Node implements ILocalScope {
         return Node.createList(receiverNode, bodyNode);
     }
     
+    public List<ILocalVariable> getVariableReferencesNamed(String name) {
+        return ILocalVariableVisitor.findOccurrencesIn(this, name);
+    }    
 }

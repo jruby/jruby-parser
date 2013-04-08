@@ -33,6 +33,7 @@ import java.util.List;
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 import org.jrubyparser.StaticScope;
+import org.jrubyparser.util.ILocalVariableVisitor;
 
 /** 
  * Represents a module definition.
@@ -100,5 +101,8 @@ public class ModuleNode extends Node implements IScopingNode, ILocalScope {
     public List<Node> childNodes() {
         return Node.createList(cpath, bodyNode);
     }
-    
+
+    public List<ILocalVariable> getVariableReferencesNamed(String name) {
+        return ILocalVariableVisitor.findOccurrencesIn(this, name);
+    }
 }

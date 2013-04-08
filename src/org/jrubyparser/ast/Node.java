@@ -257,11 +257,11 @@ public abstract class Node implements ISourcePositionHolder {
      * Get the most immediate ParameterScope.
      * @return 
      */
-    public Node getClosestIScope() {
+    public IScope getClosestIScope() {
         if (isInvisible()) return null; // FIXME: Invisible nodes do not have reasonable parentage
         
         for (Node current = this.getParent(); current != null; current = current.getParent()) {
-            if (current instanceof IScope) return current;
+            if (current instanceof IScope) return (IScope) current;
         }
 
         return null; // Should never happen since Root is a ILocalScope        

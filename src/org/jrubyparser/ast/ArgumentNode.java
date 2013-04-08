@@ -59,7 +59,7 @@ public class ArgumentNode extends Node implements ILocalVariable {
     }
     
     public Object accept(NodeVisitor visitor) {
-        throw new RuntimeException("ArgumentNode should never be evaluated");
+        return visitor.visitArgumentNode(this);
     }
 
     /**
@@ -100,7 +100,11 @@ public class ArgumentNode extends Node implements ILocalVariable {
         return thisName != null && thisName.equals(name);
     }
 
-    public Node getDefinedScope() {
+    public IScope getDefinedScope() {
         return getClosestIScope(); // argument list elements always belong to closest scope
+    }
+
+    public List<ILocalVariable> getOccurences() {
+        return getDefinedScope().getVariableReferencesNamed(getName());
     }
 }

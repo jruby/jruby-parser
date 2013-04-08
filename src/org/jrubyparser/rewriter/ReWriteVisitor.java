@@ -97,6 +97,7 @@ import org.jrubyparser.ast.IfNode;
 import org.jrubyparser.ast.InstAsgnNode;
 import org.jrubyparser.ast.InstVarNode;
 import org.jrubyparser.ast.IterNode;
+import org.jrubyparser.ast.ListNode;
 import org.jrubyparser.ast.LiteralNode;
 import org.jrubyparser.ast.LocalAsgnNode;
 import org.jrubyparser.ast.LocalVarNode;
@@ -116,6 +117,7 @@ import org.jrubyparser.ast.OpAsgnAndNode;
 import org.jrubyparser.ast.OpAsgnNode;
 import org.jrubyparser.ast.OpAsgnOrNode;
 import org.jrubyparser.ast.OpElementAsgnNode;
+import org.jrubyparser.ast.OptArgNode;
 import org.jrubyparser.ast.OrNode;
 import org.jrubyparser.ast.PostExeNode;
 import org.jrubyparser.ast.PreExeNode;
@@ -177,28 +179,34 @@ public class ReWriteVisitor implements NodeVisitor {
         config.getOutput().flush();
     }
 
-    protected void print(String s) {
+    protected ReWriteVisitor print(String s) {
         config.getOutput().print(s);
+        return this;
     }
 
-    protected void print(char c) {
+    protected ReWriteVisitor print(char c) {
         config.getOutput().print(c);
+        return this;
     }
 
-    protected void print(BigInteger i) {
+    protected ReWriteVisitor print(BigInteger i) {
         config.getOutput().print(i);
+        return this;
     }
 
-    protected void print(int i) {
+    protected ReWriteVisitor print(int i) {
         config.getOutput().print(i);
+        return this;
     }
 
-    protected void print(long l) {
+    protected ReWriteVisitor print(long l) {
         config.getOutput().print(l);
+        return this;
     }
 
-    protected void print(double d) {
+    protected ReWriteVisitor print(double d) {
         config.getOutput().print(d);
+        return this;
     }
 
     private void enterCall() {
@@ -449,6 +457,10 @@ public class ReWriteVisitor implements NodeVisitor {
         print("]");
         return null;
     }
+    
+    public Object visitArgumentNode(ArgumentNode iVisited) {
+        return null;
+    }
 
     public Object visitArrayNode(ArrayNode iVisited) {
         print('[');
@@ -542,9 +554,7 @@ public class ReWriteVisitor implements NodeVisitor {
     }
 
     protected void printAssignmentOperator() {
-        print(config.getFormatHelper().beforeAssignment());
-        print("=");
-        print(config.getFormatHelper().afterAssignment());
+        print(config.getFormatHelper().beforeAssignment()).print("=").print(config.getFormatHelper().afterAssignment());
     }
 
     private Object printIndexAssignment(AttrAssignNode iVisited) {
@@ -1100,6 +1110,10 @@ public class ReWriteVisitor implements NodeVisitor {
         }
         return null;
     }
+    
+    public Object visitListNode(ListNode iVisited) {
+        return null;
+    }
 
     public Object visitLocalAsgnNode(LocalAsgnNode iVisited) {
         config.getLocalVariables().addLocalVariable(iVisited.getIndex(), iVisited.getName());
@@ -1239,33 +1253,22 @@ public class ReWriteVisitor implements NodeVisitor {
         }
 
         visitNode(iVisited.getArgs());
-        print(' ');
-        print(iVisited.getOperatorName());
-        print("=");
-        print(config.getFormatHelper().afterAssignment());
+        print(' ').print(iVisited.getOperatorName()).print("=").print(config.getFormatHelper().afterAssignment());
         visitNode(iVisited.getValue());
         return null;
     }
 
-    public Object visitOpAsgnNode(OpAsgnNode iVisited) {
-        visitNode(iVisited.getReceiver());
-        print('.');
-        print(iVisited.getVariableName());
-        print(' ');
-        print(iVisited.getOperatorName());
-        print("=");
-        print(config.getFormatHelper().afterAssignment());
-        visitNode(iVisited.getValue());
+    public Object visitOpAsgnNode(OpAsgnNode op) {
+        visitNode(op.getReceiver());
+        print('.').print(op.getVariableName()).print(' ').print(op.getOperatorName()).print("=").print(config.getFormatHelper().afterAssignment());
+        visitNode(op.getValue());
         return null;
     }
 
     private void printOpAsgnNode(Node n, String operator) {
         enterCall();
 
-        print(((INameNode) n).getName());
-        print(config.getFormatHelper().beforeAssignment());
-        print(operator);
-        print(config.getFormatHelper().afterAssignment());
+        print(((INameNode) n).getName()).print(config.getFormatHelper().beforeAssignment()).print(operator).print(config.getFormatHelper().afterAssignment());
         visitNode(((AssignableNode) n).getValue());
 
         leaveCall();
@@ -1280,6 +1283,10 @@ public class ReWriteVisitor implements NodeVisitor {
         printOpAsgnNode(iVisited.getSecond(), "||=");
         return null;
     }
+    
+    public Object visitOptArgNode(OptArgNode iVisited) {
+        return null;
+    }    
 
     public Object visitOrNode(OrNode iVisited) {
         enterCall();
@@ -1332,11 +1339,9 @@ public class ReWriteVisitor implements NodeVisitor {
         if (option.isMultiline()) print('m');
     }
 
-    public Object visitRegexpNode(RegexpNode iVisited) {
-        print(getFirstRegexpEnclosure(iVisited));
-        print(iVisited.getValue().toString());
-        print(getSecondRegexpEnclosure(iVisited));
-        printRegexpOptions(iVisited.getOptions());
+    public Object visitRegexpNode(RegexpNode re) {
+        print(getFirstRegexpEnclosure(re)).print(re.getValue().toString()).print(getSecondRegexpEnclosure(re));
+        printRegexpOptions(re.getOptions());
         return null;
     }
 
@@ -1564,9 +1569,8 @@ public class ReWriteVisitor implements NodeVisitor {
         return null;
     }
 
-    public Object visitSymbolNode(SymbolNode iVisited) {
-        print(':');
-        print(iVisited.getName());
+    public Object visitSymbolNode(SymbolNode symbol) {
+        print(':').print(symbol.getName());
         return null;
     }
 
@@ -1596,10 +1600,7 @@ public class ReWriteVisitor implements NodeVisitor {
     }
 
     public Object visitVAliasNode(VAliasNode iVisited) {
-        print("alias ");
-        print(iVisited.getNewName());
-        print(' ');
-        print(iVisited.getOldName());
+        print("alias ").print(iVisited.getNewName()).print(' ').print(iVisited.getOldName());
         return null;
     }
 

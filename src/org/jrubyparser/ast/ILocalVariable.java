@@ -4,6 +4,8 @@
  */
 package org.jrubyparser.ast;
 
+import java.util.List;
+
 /**
  * Simple marker interface to indicate this node type is a type of local variable (block or local).
  */
@@ -12,5 +14,10 @@ public interface ILocalVariable extends INameNode {
      * Which Variable Scope does this variable belong to?  Note that RootNode is a special ILocalScope
      * for the implicit scope created at top-level.
      */
-    public Node getDefinedScope();
+    public IScope getDefinedScope();
+    
+    /**
+     * Find all occurences of this variable including itself.
+     */
+    public List<ILocalVariable> getOccurences();
 }

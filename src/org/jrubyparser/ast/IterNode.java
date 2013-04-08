@@ -33,6 +33,7 @@ import java.util.List;
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 import org.jrubyparser.StaticScope;
+import org.jrubyparser.util.ILocalVariableVisitor;
 import org.jrubyparser.util.VariableHelper;
 
 /**
@@ -121,4 +122,8 @@ public class IterNode extends Node implements IBlockScope {
     public Node getParameterNamed(String name) {
         return VariableHelper.getParameterName(getVar(), name);
     }
+    
+    public List<ILocalVariable> getVariableReferencesNamed(String name) {
+        return ILocalVariableVisitor.findOccurrencesIn(this, name);
+    }    
 }

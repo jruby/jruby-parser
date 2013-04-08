@@ -82,13 +82,17 @@ public class LocalVarNode extends NamedNode implements ILocalVariable {
         return EMPTY_LIST;
     }
     
-    public Node getDefinedScope() {
-        Node scope = this;
-
-        for (int i = 0; i <= getDepth(); i++) {
-            scope = scope.getClosestIScope();
-        }
+    public IScope getDefinedScope() {
+        IScope scope = getClosestIScope();
         
+        for (int i = 0; i < getDepth(); i++) {
+            scope = ((Node) scope).getClosestIScope();
+        }        
+
         return scope;
-    }    
+    }
+    
+    public List<ILocalVariable> getOccurences() {
+        return getDefinedScope().getVariableReferencesNamed(getName());
+    } 
 }

@@ -33,6 +33,7 @@ import java.util.List;
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 import org.jrubyparser.StaticScope;
+import org.jrubyparser.util.ILocalVariableVisitor;
 
 /**
  * Represents the top of the AST.  This is a node not present in MRI.  It was created to
@@ -97,4 +98,7 @@ public class RootNode extends Node implements ILocalScope {
         return createList(bodyNode);
     }
     
+    public List<ILocalVariable> getVariableReferencesNamed(String name) {
+        return ILocalVariableVisitor.findOccurrencesIn(this, name);
+    }    
 }

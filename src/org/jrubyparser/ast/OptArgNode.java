@@ -53,7 +53,7 @@ public class OptArgNode extends Node implements INameNode {
     
     @Override
     public Object accept(NodeVisitor visitor) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return visitor.visitOptArgNode(this);
     }
 
     @Override

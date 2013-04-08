@@ -33,6 +33,7 @@ import java.util.List;
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 import org.jrubyparser.StaticScope;
+import org.jrubyparser.util.ILocalVariableVisitor;
 
 /** 
  * Represents a singleton method definition.
@@ -76,5 +77,9 @@ public class DefsNode extends MethodDefNode {
     
     public List<Node> childNodes() {
         return Node.createList(receiverNode, nameNode, argsNode, bodyNode);
+    }
+
+    public List<ILocalVariable> getVariableReferencesNamed(String name) {
+        return ILocalVariableVisitor.findOccurrencesIn(this, name);
     }
 }

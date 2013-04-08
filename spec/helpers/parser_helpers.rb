@@ -33,4 +33,27 @@ class Object
     root = parse(code.sub(caret, ''), version)
     [root, root.node_at(caret_index)]
   end
+
+  ##
+  # parse code but record all '^' found in source and return a list of all
+  # nodes found at those carets.
+  def carets_parse(code, version=1.8, caret='^')
+    deloused_code, caret_indices = remove_carets(code, caret)
+    root = parse(deloused_code, version)
+    [root, caret_indices.map { |e| root.node_at(e)}]
+  end
+
+  # Pretty naive impl :)
+  def remove_carets(code, caret)
+    indices = []
+    index = code.index(caret)
+
+    while index
+      indices << index
+      code.sub!(caret, '')
+      index = code.index(caret)
+    end
+
+    [code, indices]
+  end
 end

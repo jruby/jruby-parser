@@ -33,6 +33,7 @@ import java.util.List;
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 import org.jrubyparser.StaticScope;
+import org.jrubyparser.util.ILocalVariableVisitor;
 
 /**
  * method definition node.
@@ -54,5 +55,8 @@ public class DefnNode extends MethodDefNode {
     public List<Node> childNodes() {
         return Node.createList(nameNode, argsNode, bodyNode);
     }
-   
+    
+    public List<ILocalVariable> getVariableReferencesNamed(String name) {
+        return ILocalVariableVisitor.findOccurrencesIn(this, name);
+    }
 }
