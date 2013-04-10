@@ -95,4 +95,22 @@ public class LocalVarNode extends NamedNode implements ILocalVariable {
     public List<ILocalVariable> getOccurences() {
         return getDefinedScope().getVariableReferencesNamed(getName());
     } 
+
+    /**
+     * Declaration is the first parameter value (ArgumentNode) or the first LocalAsgnNode.
+     * The first LocalAsgnNode is somewhat arbtrarily defined as decl since there could be
+     * multiple LocalAsgnNode and one may seem more like the decl than another.  With
+     * static analysis we cannot know which one is really first so we choose the one
+     * closest to beginning of scope.
+     */
+    public ILocalVariable getDeclaration() {
+        for (ILocalVariable variable: getOccurences()) {
+            if (variable instanceof IParameter) return variable;
+            if (variable instanceof LocalAsgnNode) return variable;
+        }
+        
+        assert false: "Never found declaration for LocalVarNode";
+        
+        return this; // Should never happen
+    }
 }

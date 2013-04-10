@@ -23,7 +23,7 @@ describe JRubyParser do
         caret_node.block_parameter?.should == true
       end
 
-      if v == 1.9
+      if v != 1.8
         caret_parse("proc { |a, ^b=1| }", v).tap do |root, caret_node|
           caret_node.block_parameter?.should == true
         end

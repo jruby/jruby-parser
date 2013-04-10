@@ -119,7 +119,7 @@ public class IterNode extends Node implements IBlockScope {
         return VariableHelper.isParameterUsed(getBody(), name, false);
     }
 
-    public Node getParameterNamed(String name) {
+    public ILocalVariable getParameterNamed(String name) {
         return VariableHelper.getParameterName(getVar(), name);
     }
     

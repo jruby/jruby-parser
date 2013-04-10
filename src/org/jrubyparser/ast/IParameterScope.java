@@ -9,5 +9,5 @@ package org.jrubyparser.ast;
  */
 public interface IParameterScope {
     public boolean isParameterUsed(String name);
-    public Node getParameterNamed(String name);
+    public ILocalVariable getParameterNamed(String name);
 }

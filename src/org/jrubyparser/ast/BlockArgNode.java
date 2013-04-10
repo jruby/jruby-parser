@@ -34,9 +34,9 @@ import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 
 /**
- *	An explicit block argument (&amp;my_block).
+ *	An explicit block argument (&amp;my_block) in a declaration (at call sites see BlockPassNode).
  */
-public class BlockArgNode extends NamedNode implements ILocalVariable {
+public class BlockArgNode extends NamedNode implements IParameter {
     private int count;
 
     public BlockArgNode(SourcePosition position, int count, String name) {
@@ -87,4 +87,8 @@ public class BlockArgNode extends NamedNode implements ILocalVariable {
     public List<ILocalVariable> getOccurences() {
         return getDefinedScope().getVariableReferencesNamed(getName());
     }    
+
+    public ILocalVariable getDeclaration() {
+        return this;
+    }
 }

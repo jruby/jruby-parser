@@ -119,4 +119,26 @@ public class LocalAsgnNode extends AssignableNode implements ILocalVariable {
     public List<ILocalVariable> getOccurences() {
         return getDefinedScope().getVariableReferencesNamed(getName());
     }
+
+    /**
+     * Return parameter if this local assignment is referring to a parameter since that clearly
+     * is the declaration.
+     * 
+     * In the case that it is not a parameter then we pick itself since current assignment
+     * is what most programmers will expect to be a declaration.  Note: This is largely an
+     * arbitrary choice.  In LocalVar node we always pick the closest LocalAsgn to the beginning
+     * of the scope whereas here we pick itself.  Asking programmers what they thought was the 
+     * declaration is why this choice was made.  Also NetBeans also came to the same decision.
+     */
+    public ILocalVariable getDeclaration() {
+        List<ILocalVariable> list = getOccurences();
+        if (list.size() > 0) {
+            ILocalVariable variable = list.get(0);
+            
+            if (variable instanceof IParameter) return variable;
+            if (variable instanceof LocalAsgnNode) return variable; // optarg (e.g. a=1) in 1.8
+        }
+        
+        return this;
+    }
 }

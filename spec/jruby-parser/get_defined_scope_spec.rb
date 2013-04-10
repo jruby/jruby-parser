@@ -53,7 +53,7 @@ describe JRubyParser do
       caret_parse("proc { |&^a| }", v).tap do |root, caret_node|
         caret_node.defined_scope.should == root.find_node(:iter)
       end
-      if v == 1.9
+      if v != 1.8
         caret_parse("proc { |^a=1| }", v).tap do |root, caret_node|
           caret_node.defined_scope.should == root.find_node(:iter)
         end

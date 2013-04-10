@@ -17,6 +17,12 @@ public interface ILocalVariable extends INameNode {
     public IScope getDefinedScope();
     
     /**
+     * Retrieve the node which is responsible for declaring this one.  This can be a variable
+     * or a parameter.
+     */
+    public ILocalVariable getDeclaration();
+    
+    /**
      * Find all occurences of this variable including itself.
      */
     public List<ILocalVariable> getOccurences();

@@ -31,7 +31,6 @@ package org.jrubyparser.ast;
 /**
  * Base class for DefnNode and DefsNode 
  */
-import java.util.ArrayList;
 import java.util.List;
 import org.jrubyparser.SourcePosition;
 import org.jrubyparser.StaticScope;
@@ -130,7 +129,7 @@ public abstract class MethodDefNode extends Node implements INameNode, ILocalSco
             return VariableHelper.isParameterUsed(getBody(), name, true);
         }
         
-        public Node getParameterNamed(String name) {
+        public ILocalVariable getParameterNamed(String name) {
             return VariableHelper.getParameterName(getArgs(), name);
         }
         
@@ -158,11 +157,5 @@ public abstract class MethodDefNode extends Node implements INameNode, ILocalSco
             }
 
             return signature.toString();       
-        }
-        
-        public List<ILocalVariable> getVariableNamed(String name) {
-            List<ILocalVariable> list = new ArrayList<ILocalVariable>();
-            
-            return list;
         }
 }

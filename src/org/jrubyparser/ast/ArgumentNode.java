@@ -37,7 +37,7 @@ import org.jrubyparser.SourcePosition;
  * Simple Node that allows editor projects to keep position info in AST
  * (evaluation does not need this).
  */
-public class ArgumentNode extends Node implements ILocalVariable {
+public class ArgumentNode extends Node implements IParameter {
     private String identifier;
     private int location;
 
@@ -106,5 +106,9 @@ public class ArgumentNode extends Node implements ILocalVariable {
 
     public List<ILocalVariable> getOccurences() {
         return getDefinedScope().getVariableReferencesNamed(getName());
+    }
+
+    public ILocalVariable getDeclaration() {
+        return this;
     }
 }

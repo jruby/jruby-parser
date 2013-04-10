@@ -22,7 +22,7 @@ describe JRubyParser do
       caret_parse("def foo(a, ^b=1); end", v).tap do |root, caret_node|
         caret_node.method_parameter?.should == true
       end
-      if v == 1.9
+      if v != 1.8
         caret_parse("def foo(a, (b, ^c)); end", v).tap do |root, caret_node|
           caret_node.method_parameter?.should == true
         end

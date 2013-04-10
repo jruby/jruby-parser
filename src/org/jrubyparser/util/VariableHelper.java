@@ -10,6 +10,7 @@ import org.jrubyparser.ast.DSymbolNode;
 import org.jrubyparser.ast.ILocalScope;
 import org.jrubyparser.ast.ILocalVariable;
 import org.jrubyparser.ast.INameMatchable;
+import org.jrubyparser.ast.IScope;
 import org.jrubyparser.ast.LocalAsgnNode;
 import org.jrubyparser.ast.Node;
 import org.jrubyparser.ast.ZSuperNode;
@@ -56,16 +57,16 @@ public class VariableHelper {
     /**
      * Can we find a parameter named by name in the arguments node (presumably from an iter or methoddef)?
      */
-    public static Node getParameterName(Node argsNode, String name) {
+    public static ILocalVariable getParameterName(Node argsNode, String name) {
         return getParameterNameInner(argsNode, name);
     }
 
-    private static Node getParameterNameInner(Node node, String name) {
+    private static ILocalVariable getParameterNameInner(Node node, String name) {
         for (Node child: node.childNodes()) {
             if (child instanceof ILocalScope) return null; // Any nested scope in an ARGS context will stop the search
-            if (child instanceof ILocalVariable && ((INameMatchable) child).isNameMatch(name)) return child;
+            if (child instanceof ILocalVariable && ((INameMatchable) child).isNameMatch(name)) return (ILocalVariable) child;
 
-            Node result = getParameterName(child, name);
+            ILocalVariable result = getParameterName(child, name);
             if (result != null) return result;
         }
             

@@ -7,6 +7,7 @@ package org.jrubyparser.util;
 import java.util.ArrayList;
 import java.util.List;
 import org.jrubyparser.ast.ArgumentNode;
+import org.jrubyparser.ast.BlockArgNode;
 import org.jrubyparser.ast.ClassNode;
 import org.jrubyparser.ast.DAsgnNode;
 import org.jrubyparser.ast.DVarNode;
@@ -18,6 +19,7 @@ import org.jrubyparser.ast.LocalAsgnNode;
 import org.jrubyparser.ast.LocalVarNode;
 import org.jrubyparser.ast.ModuleNode;
 import org.jrubyparser.ast.Node;
+import org.jrubyparser.ast.RestArgNode;
 import org.jrubyparser.ast.RootNode;
 import org.jrubyparser.ast.SClassNode;
 
@@ -70,6 +72,12 @@ public class ILocalVariableVisitor extends NoopVisitor {
         addVariableIfInScopeAndRightName(iVisited);
         return null;
     }
+    
+    @Override
+    public Object visitBlockArgNode(BlockArgNode iVisited) {
+        addVariableIfInScopeAndRightName(iVisited);
+        return null;
+    }
 
     @Override
     public Object visitClassNode(ClassNode iVisited) {
@@ -112,6 +120,12 @@ public class ILocalVariableVisitor extends NoopVisitor {
 
     @Override
     public Object visitModuleNode(ModuleNode iVisited) {
+        return null;
+    }
+    
+    @Override
+    public Object visitRestArgNode(RestArgNode iVisited) {
+        addVariableIfInScopeAndRightName(iVisited);
         return null;
     }
 

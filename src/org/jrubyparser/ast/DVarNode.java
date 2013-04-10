@@ -100,4 +100,15 @@ public class DVarNode extends NamedNode implements ILocalVariable {
     public List<ILocalVariable> getOccurences() {
         return getDefinedScope().getVariableReferencesNamed(getName());
     }
+    
+    public ILocalVariable getDeclaration() {
+        for (ILocalVariable variable: getOccurences()) {
+            if (variable instanceof IParameter) return variable;
+            if (variable instanceof DAsgnNode) return variable;
+        }
+        
+        assert false: "Never found declaration for DVarNode";
+        
+        return null; // Should not reach here
+    }    
 }
