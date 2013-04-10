@@ -16,6 +16,10 @@ public abstract class NamedNode extends Node implements INameNode {
         this.name = name;
     }
     
+    public String getDecoratedName() {
+        return getName();
+    }
+    
     /**
      * Gets the name.
      * @return Returns a String
@@ -38,5 +42,9 @@ public abstract class NamedNode extends Node implements INameNode {
      */
     public boolean isNameMatch(String testName) {
         return name.equals(testName);
+    }
+    
+    public SourcePosition getNamePosition() {
+        return getPosition();
     }    
 }

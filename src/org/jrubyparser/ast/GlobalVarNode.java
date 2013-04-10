@@ -41,6 +41,9 @@ public class GlobalVarNode extends Node implements INameNode {
 
     public GlobalVarNode(SourcePosition position, String name) {
         super(position);
+        
+        if (name.startsWith("$")) name = name.substring(1);
+        
         this.name = name;
     }
 
@@ -54,6 +57,10 @@ public class GlobalVarNode extends Node implements INameNode {
      **/
     public Object accept(NodeVisitor iVisitor) {
         return iVisitor.visitGlobalVarNode(this);
+    }
+    
+    public String getDecoratedName() {
+        return "$" + getName();
     }
 
     /**
@@ -78,4 +85,7 @@ public class GlobalVarNode extends Node implements INameNode {
         return EMPTY_LIST;
     }
     
+    public SourcePosition getNamePosition() {
+        return getPosition().fromEnd(getName().length());
+    }    
 }

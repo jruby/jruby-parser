@@ -20,6 +20,10 @@ public abstract class BareKeywordNode extends Node implements INameNode {
         return EMPTY_LIST;
     }
     
+    public String getDecoratedName() {
+        return getName();
+    }
+    
     /**
      * Get name of self node.
      */
@@ -33,5 +37,9 @@ public abstract class BareKeywordNode extends Node implements INameNode {
     
     public boolean isNameMatch(String testName) {
         return name.equals(testName);
+    }
+    
+    public SourcePosition getNamePosition() {
+        return getPosition();
     }
 }

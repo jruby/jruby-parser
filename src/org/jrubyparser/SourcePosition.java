@@ -169,6 +169,14 @@ public class SourcePosition implements Serializable {
         return new SourcePosition(file, startLine, other.getEndLine(), startOffset, other.getEndOffset());
     }
     
+    public SourcePosition fromEnd(int length) {
+        return new SourcePosition(file, startLine, endLine, endOffset - length, endOffset);
+    }
+    
+    public SourcePosition fromBeginning(int length) {
+        return new SourcePosition(file, startLine, endLine, startOffset, startOffset + length);        
+    }
+    
     /**
      * Not used in interpreter 
      * Creates a new position the encloses both parameter positions.

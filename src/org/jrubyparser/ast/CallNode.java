@@ -129,6 +129,10 @@ public class CallNode extends Node implements INameNode, IArgumentNode, BlockAcc
     public void setHasParens(boolean hasParens) {
         this.hasParens = hasParens;
     }
+    
+    public String getDecoratedName() {
+        return getName();
+    }
 
     /**
      * Gets the name.
@@ -169,5 +173,12 @@ public class CallNode extends Node implements INameNode, IArgumentNode, BlockAcc
 
     public List<Node> childNodes() {
         return Node.createList(receiverNode, argsNode, iterNode);
+    }
+
+    public SourcePosition getNamePosition() {
+        SourcePosition pos = receiverNode.getPosition();
+        
+        return new SourcePosition(pos.getFile(), pos.getStartLine(), pos.getEndLine(),
+                pos.getEndOffset(), pos.getEndOffset() + getName().length());
     }
 }

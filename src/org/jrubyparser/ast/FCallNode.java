@@ -126,6 +126,10 @@ public class FCallNode extends Node implements INameNode, IArgumentNode, BlockAc
         this.argsNode = adopt(argsNode);
     }
     
+    public String getDecoratedName() {
+        return getName();
+    }
+    
     /**
      * Gets the name.
      * @return Returns a String
@@ -146,5 +150,9 @@ public class FCallNode extends Node implements INameNode, IArgumentNode, BlockAc
     
     public List<Node> childNodes() {
         return createList(argsNode, iterNode);
+    }
+
+    public SourcePosition getNamePosition() {
+        return getPosition().fromBeginning(getName().length());
     }
 }

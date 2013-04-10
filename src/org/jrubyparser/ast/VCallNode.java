@@ -54,5 +54,5 @@ public class VCallNode extends NamedNode implements INameNode {
     
     public List<Node> childNodes() {
         return EMPTY_LIST;
-    }
+    }   
 }

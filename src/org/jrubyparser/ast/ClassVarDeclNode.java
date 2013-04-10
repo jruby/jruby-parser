@@ -42,6 +42,8 @@ public class ClassVarDeclNode extends AssignableNode implements INameNode {
     public ClassVarDeclNode(SourcePosition position, String name, Node valueNode) {
         super(position, valueNode);
 
+        if (name.startsWith("@@")) name = name.substring(2);
+        
         this.name = name;
     }
 
@@ -55,6 +57,10 @@ public class ClassVarDeclNode extends AssignableNode implements INameNode {
      **/
     public Object accept(NodeVisitor iVisitor) {
         return iVisitor.visitClassVarDeclNode(this);
+    }
+    
+    public String getDecoratedName() {
+        return "@@" + getName();
     }
 
     /**
@@ -78,5 +84,10 @@ public class ClassVarDeclNode extends AssignableNode implements INameNode {
     public List<Node> childNodes() {
         return createList(getValue());
     }
-
+    
+    public SourcePosition getNamePosition() {
+        int length = getName().length();
+        
+        return getPosition().fromBeginning(length + 2).fromEnd(length);
+    }
 }

@@ -62,6 +62,10 @@ public class LocalAsgnNode extends AssignableNode implements ILocalVariable {
         return iVisitor.visitLocalAsgnNode(this);
     }
     
+    public String getDecoratedName() {
+        return getName();
+    }
+    
     /**
      * Name of the local assignment.
      **/
@@ -116,7 +120,7 @@ public class LocalAsgnNode extends AssignableNode implements ILocalVariable {
         return scope;
     }
     
-    public List<ILocalVariable> getOccurences() {
+    public List<ILocalVariable> getOccurrences() {
         return getDefinedScope().getVariableReferencesNamed(getName());
     }
 
@@ -131,7 +135,7 @@ public class LocalAsgnNode extends AssignableNode implements ILocalVariable {
      * declaration is why this choice was made.  Also NetBeans also came to the same decision.
      */
     public ILocalVariable getDeclaration() {
-        List<ILocalVariable> list = getOccurences();
+        List<ILocalVariable> list = getOccurrences();
         if (list.size() > 0) {
             ILocalVariable variable = list.get(0);
             
@@ -140,5 +144,9 @@ public class LocalAsgnNode extends AssignableNode implements ILocalVariable {
         }
         
         return this;
+    }
+    
+    public SourcePosition getNamePosition() {
+        return getPosition().fromBeginning(getName().length());
     }
 }

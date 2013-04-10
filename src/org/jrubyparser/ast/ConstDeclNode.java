@@ -61,6 +61,10 @@ public class ConstDeclNode extends AssignableNode implements INameNode {
     public Object accept(NodeVisitor iVisitor) {
         return iVisitor.visitConstDeclNode(this);
     }
+    
+    public String getDecoratedName() {
+        return getName();
+    }
 
     /**
      * Gets the name (this is the rightmost element of lhs (in Foo::BAR it is BAR).
@@ -92,5 +96,8 @@ public class ConstDeclNode extends AssignableNode implements INameNode {
     public List<Node> childNodes() {
         return createList(getValue());
     }
-    
+
+    public SourcePosition getNamePosition() {
+        return getPosition().fromBeginning(getName().length());
+    }
 }

@@ -57,6 +57,10 @@ public class Colon3Node extends Node implements INameNode {
         return iVisitor.visitColon3Node(this);
     }
 
+    public String getDecoratedName() {
+        return getName();
+    }
+    
     /**
      * Gets the name.
      * @return Returns a String
@@ -77,5 +81,11 @@ public class Colon3Node extends Node implements INameNode {
         String thisName = getName();
         
         return thisName != null && thisName.equals(name);
+    }
+
+    // FIXME: All colon nodes inherit from this and it is unclear to me what should be returned for
+    // the various cases.
+    public SourcePosition getNamePosition() {
+        return getPosition().fromEnd(getName().length());
     }
 }

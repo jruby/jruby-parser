@@ -41,6 +41,9 @@ public class ClassVarNode extends Node implements INameNode {
 
     public ClassVarNode(SourcePosition position, String name) {
         super(position);
+        
+        if (name.startsWith("@@")) name = name.substring(2);
+        
         this.name = name;
     }
 
@@ -56,6 +59,10 @@ public class ClassVarNode extends Node implements INameNode {
         return iVisitor.visitClassVarNode(this);
     }
 
+    public String getDecoratedName() {
+        return "@@" + getName();
+    }
+    
     /**
      * Gets the name.
      * @return Returns a String
@@ -76,5 +83,9 @@ public class ClassVarNode extends Node implements INameNode {
         String thisName = getName();
         
         return thisName != null && thisName.equals(name);
-    }    
+    }
+    
+    public SourcePosition getNamePosition() {
+        return getPosition().fromEnd(getName().length());
+    }
 }

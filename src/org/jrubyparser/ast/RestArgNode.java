@@ -63,4 +63,9 @@ public class RestArgNode extends ArgumentNode implements IParameter {
     public int getIndex() {
         return index;
     }
+    
+    @Override
+    public SourcePosition getNamePosition() {
+        return getPosition().fromEnd(getName().length());
+    }    
 }

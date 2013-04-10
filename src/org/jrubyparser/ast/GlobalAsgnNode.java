@@ -41,7 +41,9 @@ public class GlobalAsgnNode extends AssignableNode implements INameNode {
 
     public GlobalAsgnNode(SourcePosition position, String name, Node valueNode) {
         super(position, valueNode);
-
+        
+        if (name.startsWith("$")) name = name.substring(1);
+        
         this.name = name;
     }
 
@@ -57,6 +59,11 @@ public class GlobalAsgnNode extends AssignableNode implements INameNode {
     public Object accept(NodeVisitor iVisitor) {
         return iVisitor.visitGlobalAsgnNode(this);
     }
+    
+    public String getDecoratedName() {
+        return "$" + getName();
+    }
+    
     /**
      * Gets the name.
      * @return Returns a String
@@ -79,4 +86,9 @@ public class GlobalAsgnNode extends AssignableNode implements INameNode {
         return createList(getValue());
     }
     
+    public SourcePosition getNamePosition() {
+        int length = getName().length();
+
+        return getPosition().fromBeginning(length+1).fromEnd(length);
+    }    
 }

@@ -33,6 +33,7 @@ import java.util.List;
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 
+//FIXME: I don't think this should be a namednode/inamenode but I need to audit how it is used.
 /** 
  * Represents a symbol (:symbol_name).
  */
@@ -51,5 +52,5 @@ public class SymbolNode extends NamedNode implements ILiteralNode, INameNode {
     
     public List<Node> childNodes() {
         return EMPTY_LIST;
-    }
+    }  
 }

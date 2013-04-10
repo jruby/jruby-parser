@@ -92,7 +92,7 @@ public class LocalVarNode extends NamedNode implements ILocalVariable {
         return scope;
     }
     
-    public List<ILocalVariable> getOccurences() {
+    public List<ILocalVariable> getOccurrences() {
         return getDefinedScope().getVariableReferencesNamed(getName());
     } 
 
@@ -104,7 +104,7 @@ public class LocalVarNode extends NamedNode implements ILocalVariable {
      * closest to beginning of scope.
      */
     public ILocalVariable getDeclaration() {
-        for (ILocalVariable variable: getOccurences()) {
+        for (ILocalVariable variable: getOccurrences()) {
             if (variable instanceof IParameter) return variable;
             if (variable instanceof LocalAsgnNode) return variable;
         }

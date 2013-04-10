@@ -68,6 +68,10 @@ public class AttrAssignNode extends Node implements INameNode, IArgumentNode {
         return visitor.visitAttrAssignNode(this);
     }
 
+    public String getDecoratedName() {
+        return getName();
+    }
+    
     /**
      * Gets the name.
      * name is the name of the method called
@@ -143,5 +147,12 @@ public class AttrAssignNode extends Node implements INameNode, IArgumentNode {
 
     public List<Node> childNodes() {
         return Node.createList(receiver, arg);
+    }
+
+    public SourcePosition getNamePosition() {
+        SourcePosition pos = getPosition();
+        
+        return new SourcePosition(pos.getFile(), pos.getStartLine(), pos.getEndLine(), pos.getStartOffset(),
+                pos.getStartOffset() + getName().length());
     }
 }

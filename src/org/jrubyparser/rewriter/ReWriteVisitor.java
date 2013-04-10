@@ -264,7 +264,7 @@ public class ReWriteVisitor implements NodeVisitor {
         printCommentsBefore(iVisited);
 
         if (iVisited instanceof ArgumentNode) {
-            print(((ArgumentNode) iVisited).getName());
+            print(((ArgumentNode) iVisited).getDecoratedName());
         } else {
             iVisited.accept(this);
         }
@@ -403,7 +403,7 @@ public class ReWriteVisitor implements NodeVisitor {
         if (iVisited.getPre() != null) arguments.addAll(iVisited.getPre().childNodes());
         if (iVisited.getOptional() != null) arguments.addAll(iVisited.getOptional().childNodes());
         if (iVisited.getRest() != null) {
-            arguments.add(new ConstNode(iVisited.getRest().getPosition(), '*' + iVisited.getRest().getName()));
+            arguments.add(new ConstNode(iVisited.getRest().getPosition(), iVisited.getRest().getDecoratedName()));
         }
         if (iVisited.getPost() != null) arguments.addAll(iVisited.getPost().childNodes());
         if (iVisited.getBlock() != null) arguments.add(iVisited.getBlock());
@@ -435,7 +435,7 @@ public class ReWriteVisitor implements NodeVisitor {
             Node n = it.next();
 
             if (n instanceof ArgumentNode) {
-                print(((ArgumentNode) n).getName());
+                print(((ArgumentNode) n).getDecoratedName());
                 printCommentsInArgs(n, it.hasNext());
             } else {
                 visitNode(n);
@@ -491,8 +491,7 @@ public class ReWriteVisitor implements NodeVisitor {
     }
 
     public Object visitBlockArgNode(BlockArgNode iVisited) {
-        print('&');
-        print(iVisited.getName());
+        print(iVisited.getDecoratedName());
         return null;
     }
 
@@ -537,7 +536,7 @@ public class ReWriteVisitor implements NodeVisitor {
     }
 
     public Object visitClassVarNode(ClassVarNode iVisited) {
-        print(iVisited.getName());
+        print(iVisited.getDecoratedName());
         return null;
     }
 
@@ -690,8 +689,7 @@ public class ReWriteVisitor implements NodeVisitor {
     }
 
     public Object visitColon3Node(Colon3Node iVisited) {
-        print("::");
-        print(iVisited.getName());
+        print(iVisited.getDecoratedName());
         return null;
     }
 
@@ -774,7 +772,7 @@ public class ReWriteVisitor implements NodeVisitor {
     }
 
     public Object visitDVarNode(DVarNode iVisited) {
-        print(iVisited.getName());
+        print(iVisited.getDecoratedName());
         return null;
     }
 
@@ -940,7 +938,7 @@ public class ReWriteVisitor implements NodeVisitor {
     }
 
     public Object visitGlobalVarNode(GlobalVarNode iVisited) {
-        print(iVisited.getName());
+        print(iVisited.getDecoratedName());
         return null;
     }
 
@@ -966,7 +964,7 @@ public class ReWriteVisitor implements NodeVisitor {
     }
 
     private void printAsgnNode(AssignableNode n) {
-        print(((INameNode) n).getName());
+        print(((INameNode) n).getDecoratedName());
         if (n.getValue() == null || n.getValue().isInvisible()) return;
         printAssignmentOperator();
         visitNewlineInParentheses(n.getValue());
@@ -978,7 +976,7 @@ public class ReWriteVisitor implements NodeVisitor {
     }
 
     public Object visitInstVarNode(InstVarNode iVisited) {
-        print(iVisited.getName());
+        print(iVisited.getDecoratedName());
         return null;
     }
 
@@ -1116,13 +1114,13 @@ public class ReWriteVisitor implements NodeVisitor {
     }
 
     public Object visitLocalAsgnNode(LocalAsgnNode iVisited) {
-        config.getLocalVariables().addLocalVariable(iVisited.getIndex(), iVisited.getName());
+        config.getLocalVariables().addLocalVariable(iVisited.getIndex(), iVisited.getDecoratedName());
         printAsgnNode(iVisited);
         return null;
     }
 
     public Object visitLocalVarNode(LocalVarNode iVisited) {
-        print(iVisited.getName());
+        print(iVisited.getDecoratedName());
         return null;
     }
 
@@ -1570,7 +1568,7 @@ public class ReWriteVisitor implements NodeVisitor {
     }
 
     public Object visitSymbolNode(SymbolNode symbol) {
-        print(':').print(symbol.getName());
+        print(symbol.getDecoratedName());
         return null;
     }
 
@@ -1773,7 +1771,7 @@ public class ReWriteVisitor implements NodeVisitor {
     }
 
     public Object visitRestArgNode(RestArgNode iVisited) {
-        print("*" + iVisited.getName());
+        print(iVisited.getDecoratedName());
         return null;
     }
 

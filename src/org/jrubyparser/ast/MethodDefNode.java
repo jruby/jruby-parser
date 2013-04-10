@@ -91,6 +91,10 @@ public abstract class MethodDefNode extends Node implements INameNode, ILocalSco
             return getBody();
         }
 
+        public String getDecoratedName() {
+            return getName();
+        }
+        
 	/**
 	 * Gets the name's node.
 	 * @return Returns an ArgumentNode
@@ -115,6 +119,10 @@ public abstract class MethodDefNode extends Node implements INameNode, ILocalSco
             String thisName = getName();
         
             return thisName != null && thisName.equals(name);
+        }
+        
+        public SourcePosition getNamePosition() {
+            return getNameNode().getNamePosition();
         }
         
         /**

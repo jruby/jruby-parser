@@ -62,6 +62,10 @@ public class DAsgnNode extends AssignableNode implements ILocalVariable {
         return iVisitor.visitDAsgnNode(this);
     }
     
+    public String getDecoratedName() {
+        return getName();
+    }
+    
     /**
      * Gets the name.
      * @return Returns a String
@@ -113,16 +117,23 @@ public class DAsgnNode extends AssignableNode implements ILocalVariable {
         return scope;
     }
     
-    public List<ILocalVariable> getOccurences() {
+    public List<ILocalVariable> getOccurrences() {
         return getDefinedScope().getVariableReferencesNamed(getName());
     }   
 
     public ILocalVariable getDeclaration() {
-        for (ILocalVariable variable: getOccurences()) {
+        for (ILocalVariable variable: getOccurrences()) {
             if (variable instanceof IParameter) return variable;
             if (variable instanceof DAsgnNode) return variable;
         }
         
         return this;
     }
+    
+    public SourcePosition getNamePosition() {
+        SourcePosition pos = getPosition();
+        
+        return new SourcePosition(pos.getFile(), pos.getStartLine(), pos.getEndLine(), 
+                pos.getStartOffset(), pos.getStartOffset() + getName().length());
+    }    
 }

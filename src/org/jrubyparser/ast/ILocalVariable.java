@@ -25,5 +25,5 @@ public interface ILocalVariable extends INameNode {
     /**
      * Find all occurences of this variable including itself.
      */
-    public List<ILocalVariable> getOccurences();
+    public List<ILocalVariable> getOccurrences();
 }

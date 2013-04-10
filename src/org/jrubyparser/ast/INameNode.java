@@ -27,7 +27,26 @@
  ***** END LICENSE BLOCK *****/
 package org.jrubyparser.ast;
 
+import org.jrubyparser.SourcePosition;
+
 public interface INameNode extends INameMatchable {
+    /**
+     * Get the plain name without sigils.
+     */
     public String getName();
+    
+    /**
+     * Get the name including any leading sigils.
+     */
+    public String getDecoratedName();
+    
+    /**
+     * Set the name (name should not include sigils).
+     */
     public void setName(String newName);
+    
+    /**
+     * The position of just the name part of the node.
+     */
+    public SourcePosition getNamePosition();
 }

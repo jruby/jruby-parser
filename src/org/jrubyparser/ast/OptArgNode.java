@@ -60,6 +60,10 @@ public class OptArgNode extends Node implements INameNode {
     public List<Node> childNodes() {
         return Node.createList(value);
     }
+    
+    public String getDecoratedName() {
+        return getName();
+    }
 
     public String getName() {
         if (value instanceof INameNode) return ((INameNode) value).getName();
@@ -76,4 +80,10 @@ public class OptArgNode extends Node implements INameNode {
         
         return thisName != null && thisName.equals(name);
     }
+    
+    public SourcePosition getNamePosition() {
+        if (value instanceof INameNode) return ((INameNode) value).getNamePosition();
+        
+        return getPosition();
+    } 
 }

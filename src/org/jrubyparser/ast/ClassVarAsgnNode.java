@@ -34,7 +34,7 @@ import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 
 /**
- * Class variable assignment node.
+ * Class variable assignment node (e.g. @@foo = 1).
  */
 public class ClassVarAsgnNode extends AssignableNode implements INameNode {
     private String name;
@@ -45,6 +45,8 @@ public class ClassVarAsgnNode extends AssignableNode implements INameNode {
      */
     public ClassVarAsgnNode(SourcePosition position, String name, Node valueNode) {
         super(position, valueNode);
+        
+        if (name.startsWith("@@")) name = name.substring(2);
         
         this.name = name;
     }
@@ -59,6 +61,10 @@ public class ClassVarAsgnNode extends AssignableNode implements INameNode {
      **/
     public Object accept(NodeVisitor iVisitor) {
         return iVisitor.visitClassVarAsgnNode(this);
+    }
+    
+    public String getDecoratedName() {
+        return "@@" + getName();
     }
 
     /**
@@ -82,5 +88,10 @@ public class ClassVarAsgnNode extends AssignableNode implements INameNode {
     public List<Node> childNodes() {
         return createList(getValue());
     }
-    
+
+    public SourcePosition getNamePosition() {
+        int length = getName().length();
+        
+        return getPosition().fromBeginning(length + 2).fromEnd(length);
+    }
 }

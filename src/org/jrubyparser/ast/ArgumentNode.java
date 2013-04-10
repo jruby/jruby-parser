@@ -81,6 +81,10 @@ public class ArgumentNode extends Node implements IParameter {
         return location & 0xffff;
     }
     
+    public String getDecoratedName() {
+        return getName();
+    }
+    
     public String getName() {
         return identifier;
     }
@@ -104,11 +108,15 @@ public class ArgumentNode extends Node implements IParameter {
         return getClosestIScope(); // argument list elements always belong to closest scope
     }
 
-    public List<ILocalVariable> getOccurences() {
+    public List<ILocalVariable> getOccurrences() {
         return getDefinedScope().getVariableReferencesNamed(getName());
     }
 
     public ILocalVariable getDeclaration() {
         return this;
+    }
+
+    public SourcePosition getNamePosition() {
+        return getPosition();
     }
 }

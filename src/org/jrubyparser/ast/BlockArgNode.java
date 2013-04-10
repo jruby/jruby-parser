@@ -51,6 +51,10 @@ public class BlockArgNode extends NamedNode implements IParameter {
     public NodeType getNodeType() {
         return NodeType.BLOCKARGNODE;
     }
+    
+    public String getDecoratedName() {
+        return "&" + getName();
+    }
 
     /**
      * Accept for the visitor pattern.
@@ -84,11 +88,18 @@ public class BlockArgNode extends NamedNode implements IParameter {
         return getClosestIScope(); // argument list elements always belong to closest scope
     }
     
-    public List<ILocalVariable> getOccurences() {
+    public List<ILocalVariable> getOccurrences() {
         return getDefinedScope().getVariableReferencesNamed(getName());
     }    
 
     public ILocalVariable getDeclaration() {
         return this;
+    }
+
+    public SourcePosition getNamePosition() {
+        SourcePosition pos = getPosition();
+        
+        return new SourcePosition(pos.getFile(), pos.getStartLine(), pos.getEndLine(), 
+                pos.getEndOffset() - getName().length(), pos.getEndOffset());
     }
 }

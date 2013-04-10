@@ -12,27 +12,37 @@ end
 ###########
 
 class AstPositionMatcher
-  def initialize(*args)
-    @position = args
+  def initialize(method, *args)
+    @method, @position = method, args
+  end
+
+  def position
+    @actual.__send__(@method).to_a
   end
  
   def matches?(actual)
     @actual = actual
-    actual.position.to_a == @position
+    position == @position
   end
  
   def failure_message
-    return %[expected #{@actual.position.to_a.inspect} to have position #{@position.inspect}]
+    return %[expected #{position.inspect} to have position #{@position.inspect}]
   end
  
   def negative_failure_message
-    return %[expected #{@actual.position.to_a.inspect} to not have position #{@position.inspect}]
+    return %[expected #{position.inspect} to not have position #{@position.inspect}]
   end
 end
  
 module HavePosition
   def have_position(*args)
-    AstPositionMatcher.new(*args)
+    AstPositionMatcher.new(:position, *args)
+  end
+end
+
+module HaveNamePosition
+  def have_name_position(*args)
+    AstPositionMatcher.new(:name_position, *args)
   end
 end
 
@@ -224,6 +234,7 @@ end
 #module Spec::Example::ExampleMethods
 class Object
   include HavePosition
+  include HaveNamePosition
   include HaveName
   include HaveNameAndPosition
   include HaveArgCounts

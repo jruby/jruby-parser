@@ -42,6 +42,9 @@ public class InstVarNode extends Node implements INameNode {
 
     public InstVarNode(SourcePosition position, String name) {
         super(position);
+        
+        if (name.startsWith("@")) name = name.substring(1);
+ 
         this.name = name;
     }
 
@@ -55,6 +58,10 @@ public class InstVarNode extends Node implements INameNode {
      **/
     public Object accept(NodeVisitor iVisitor) {
         return iVisitor.visitInstVarNode(this);
+    }
+    
+    public String getDecoratedName() {
+        return "@" + getName();
     }
 
     /**
@@ -77,5 +84,9 @@ public class InstVarNode extends Node implements INameNode {
     
     public List<Node> childNodes() {
         return EMPTY_LIST;
+    }
+    
+    public SourcePosition getNamePosition() {
+        return getPosition().fromEnd(getName().length());
     }
 }
