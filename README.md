@@ -26,6 +26,8 @@ root.to_source # b = bar(true)
 
 Assume: jay 1.0.2 installed (https://github.com/jruby/jay):
 
+Do not follow the instructions in the jay INSTALL file about creating a wrapper script - when you run jay you want to run the jay executable in the src directory.
+
 ```sh
 ./bin/generate_parser Ruby19Parser Ruby19
 ./bin/generate_parser Ruby18Parser Ruby18
