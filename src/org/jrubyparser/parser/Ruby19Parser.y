@@ -818,16 +818,16 @@ arg             : lhs '=' arg {
                     $$ = support.getOperatorCallNode($1, "**", $3, support.getPosition(null));
                 }
                 | tUMINUS_NUM tINTEGER tPOW arg {
-                    $$ = support.getOperatorCallNode($1, support.getOperatorCallNode($2, "**", $4, support.getPosition(null)));
+                    $$ = support.getOperatorCallNode(support.getOperatorCallNode($2, "**", $4, support.getPosition(null)), "-@");
                 }
                 | tUMINUS_NUM tFLOAT tPOW arg {
-                    $$ = support.getOperatorCallNode($1, support.getOperatorCallNode($2, "**", $4, support.getPosition(null)));
+                    $$ = support.getOperatorCallNode(support.getOperatorCallNode($2, "**", $4, support.getPosition(null)), "-@");
                 }
                 | tUPLUS arg {
                     $$ = support.getOperatorCallNode($1, $2);
                 }
                 | tUMINUS arg {
-                    $$ = support.getOperatorCallNode($1, $2);
+                    $$ = support.getOperatorCallNode($2, "-@");
                 }
                 | arg tPIPE arg {
                     $$ = support.getOperatorCallNode($1, "|", $3, support.getPosition(null));
