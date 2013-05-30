@@ -39,6 +39,12 @@ describe JRubyParser do
           caret_nodes.first.occurrences.to_a.should =~ caret_nodes
         end
       end
+      carets_parse("def foo(^a); ^a[:b] = 1; ^a[:b]; end", v).tap do |_, nodes|
+        nodes.first.occurrences.to_a.should =~ nodes
+      end
+      carets_parse("def foo(^a); b = ^a ? {} : []; end", v).tap do |_, nodes|
+        nodes.first.occurrences.to_a.should =~ nodes
+      end
     end
 
     it "finds all root variable occurrences via get_occurrences [#{v}]" do

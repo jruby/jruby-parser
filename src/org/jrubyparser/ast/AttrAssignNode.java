@@ -150,9 +150,10 @@ public class AttrAssignNode extends Node implements INameNode, IArgumentNode {
     }
 
     public SourcePosition getNamePosition() {
-        SourcePosition pos = getPosition();
-        
-        return new SourcePosition(pos.getFile(), pos.getStartLine(), pos.getEndLine(), pos.getStartOffset(),
-                pos.getStartOffset() + getName().length());
+        return getPosition().fromBeginning(getName().length());
     }
+    
+    public SourcePosition getDecoratedNamePosition() {
+        return getNamePosition();
+    }    
 }

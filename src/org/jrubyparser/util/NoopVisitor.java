@@ -64,6 +64,7 @@ import org.jrubyparser.ast.LocalVarNode;
 import org.jrubyparser.ast.Match2Node;
 import org.jrubyparser.ast.Match3Node;
 import org.jrubyparser.ast.MatchNode;
+import org.jrubyparser.ast.MethodNameNode;
 import org.jrubyparser.ast.ModuleNode;
 import org.jrubyparser.ast.MultipleAsgn19Node;
 import org.jrubyparser.ast.MultipleAsgnNode;
@@ -114,7 +115,7 @@ import org.jrubyparser.ast.ZSuperNode;
  */
 public class NoopVisitor implements NodeVisitor {
     
-    private Object visit(Node parent) {
+    protected Object visit(Node parent) {
         for (Node node: parent.childNodes()) {
             node.accept(this);
         }
@@ -369,7 +370,11 @@ public class NoopVisitor implements NodeVisitor {
     public Object visitModuleNode(ModuleNode iVisited) {
         return visit(iVisited);
     }
-
+    
+    public Object visitMethodNameNode(MethodNameNode iVisited) {
+        return visit(iVisited);
+    }
+    
     public Object visitNewlineNode(NewlineNode iVisited) {
         return visit(iVisited);
     }

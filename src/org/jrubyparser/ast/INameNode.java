@@ -49,4 +49,9 @@ public interface INameNode extends INameMatchable {
      * The position of just the name part of the node.
      */
     public SourcePosition getNamePosition();
+    
+    /**
+     * The position of the name + any sigils that come with it.
+     */
+    public SourcePosition getDecoratedNamePosition();
 }

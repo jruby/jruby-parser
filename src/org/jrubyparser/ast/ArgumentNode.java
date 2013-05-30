@@ -119,4 +119,8 @@ public class ArgumentNode extends Node implements IParameter {
     public SourcePosition getNamePosition() {
         return getPosition();
     }
+    
+    public SourcePosition getDecoratedNamePosition() {
+        return getNamePosition();
+    }
 }

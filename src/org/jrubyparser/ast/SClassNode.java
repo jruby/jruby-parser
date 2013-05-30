@@ -44,7 +44,7 @@ import org.jrubyparser.util.ILocalVariableVisitor;
  * end
  * </pre>
  */
-public class SClassNode extends Node implements ILocalScope {
+public class SClassNode extends Node implements ILocalScope, IModuleScope {
     private Node receiverNode;
     private StaticScope scope;
     private Node bodyNode;

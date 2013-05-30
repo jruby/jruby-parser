@@ -39,7 +39,7 @@ import org.jrubyparser.util.ILocalVariableVisitor;
  * method definition node.
  */
 public class DefnNode extends MethodDefNode {
-    public DefnNode(SourcePosition position, ArgumentNode nameNode, ArgsNode argsNode, 
+    public DefnNode(SourcePosition position, MethodNameNode nameNode, ArgsNode argsNode, 
             StaticScope scope, Node bodyNode) {
         super(position, nameNode, argsNode, scope, bodyNode);
     }

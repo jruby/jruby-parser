@@ -46,5 +46,9 @@ public abstract class NamedNode extends Node implements INameNode {
     
     public SourcePosition getNamePosition() {
         return getPosition();
+    }
+    
+    public SourcePosition getDecoratedNamePosition() {
+        return getPosition();
     }    
 }

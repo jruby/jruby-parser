@@ -104,6 +104,7 @@ import org.jrubyparser.ast.LocalVarNode;
 import org.jrubyparser.ast.Match2Node;
 import org.jrubyparser.ast.Match3Node;
 import org.jrubyparser.ast.MatchNode;
+import org.jrubyparser.ast.MethodNameNode;
 import org.jrubyparser.ast.ModuleNode;
 import org.jrubyparser.ast.MultipleAsgn19Node;
 import org.jrubyparser.ast.MultipleAsgnNode;
@@ -1123,7 +1124,10 @@ public class ReWriteVisitor implements NodeVisitor {
         print(iVisited.getDecoratedName());
         return null;
     }
-
+    public Object visitMethodNameNode(MethodNameNode iVisited) {
+        return null;
+    }
+    
     public Object visitMultipleAsgnNode(MultipleAsgnNode iVisited) {
         if (iVisited.getHead() != null) {
             factory.createMultipleAssignmentReWriteVisitor().visitAndPrintWithSeparator(iVisited.getHead().childNodes().iterator());

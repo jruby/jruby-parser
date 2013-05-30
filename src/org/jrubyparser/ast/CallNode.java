@@ -181,4 +181,8 @@ public class CallNode extends Node implements INameNode, IArgumentNode, BlockAcc
         return new SourcePosition(pos.getFile(), pos.getStartLine(), pos.getEndLine(),
                 pos.getEndOffset(), pos.getEndOffset() + getName().length());
     }
+    
+    public SourcePosition getDecoratedNamePosition() {
+        return getNamePosition();
+    }
 }

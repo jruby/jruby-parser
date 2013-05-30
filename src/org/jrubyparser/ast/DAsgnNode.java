@@ -131,9 +131,10 @@ public class DAsgnNode extends AssignableNode implements ILocalVariable {
     }
     
     public SourcePosition getNamePosition() {
-        SourcePosition pos = getPosition();
-        
-        return new SourcePosition(pos.getFile(), pos.getStartLine(), pos.getEndLine(), 
-                pos.getStartOffset(), pos.getStartOffset() + getName().length());
-    }    
+        return getPosition().fromBeginning(getName().length());
+    }
+    
+    public SourcePosition getDecoratedNamePosition() {
+        return getNamePosition();
+    }
 }

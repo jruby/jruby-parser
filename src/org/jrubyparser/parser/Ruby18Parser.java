@@ -77,6 +77,7 @@ import org.jrubyparser.ast.InstVarNode;
 import org.jrubyparser.ast.IterNode;
 import org.jrubyparser.ast.ListNode;
 import org.jrubyparser.ast.LiteralNode;
+import org.jrubyparser.ast.MethodNameNode;
 import org.jrubyparser.ast.ModuleNode;
 import org.jrubyparser.ast.MultipleAsgnNode;
 import org.jrubyparser.ast.NewlineNode;
@@ -146,7 +147,7 @@ public class Ruby18Parser implements RubyParser {
         support.setWarnings(warnings);
         lexer.setWarnings(warnings);
     }
-					// line 150 "-"
+					// line 151 "-"
   // %token constants
   public static final int kCLASS = 257;
   public static final int kMODULE = 258;
@@ -1476,7 +1477,7 @@ states[368] = new ParserState() {
 };
 states[33] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
-                  ((AssignableNode)yyVals[-2+yyTop]).setValue(((Node)yyVals[0+yyTop]));
+                  ((AssignableNode)yyVals[-2+yyTop]).setValueNode(((Node)yyVals[0+yyTop]));
 		  yyVal = ((MultipleAsgnNode)yyVals[-2+yyTop]);
                   ((MultipleAsgnNode)yyVals[-2+yyTop]).setPosition(support.union(((MultipleAsgnNode)yyVals[-2+yyTop]), ((Node)yyVals[0+yyTop])));
     return yyVal;
@@ -2161,13 +2162,13 @@ states[176] = new ParserState() {
 		  String asgnOp = (String) ((Token)yyVals[-1+yyTop]).getValue();
 
 		  if (asgnOp.equals("||")) {
-	              ((AssignableNode)yyVals[-2+yyTop]).setValue(((Node)yyVals[0+yyTop]));
+	              ((AssignableNode)yyVals[-2+yyTop]).setValueNode(((Node)yyVals[0+yyTop]));
 	              yyVal = new OpAsgnOrNode(support.union(((AssignableNode)yyVals[-2+yyTop]), ((Node)yyVals[0+yyTop])), support.gettable2(((AssignableNode)yyVals[-2+yyTop])), ((AssignableNode)yyVals[-2+yyTop]));
 		  } else if (asgnOp.equals("&&")) {
-	              ((AssignableNode)yyVals[-2+yyTop]).setValue(((Node)yyVals[0+yyTop]));
+	              ((AssignableNode)yyVals[-2+yyTop]).setValueNode(((Node)yyVals[0+yyTop]));
                       yyVal = new OpAsgnAndNode(support.union(((AssignableNode)yyVals[-2+yyTop]), ((Node)yyVals[0+yyTop])), support.gettable2(((AssignableNode)yyVals[-2+yyTop])), ((AssignableNode)yyVals[-2+yyTop]));
 		  } else {
-		      ((AssignableNode)yyVals[-2+yyTop]).setValue(support.getOperatorCallNode(support.gettable2(((AssignableNode)yyVals[-2+yyTop])), asgnOp, ((Node)yyVals[0+yyTop])));
+		      ((AssignableNode)yyVals[-2+yyTop]).setValueNode(support.getOperatorCallNode(support.gettable2(((AssignableNode)yyVals[-2+yyTop])), asgnOp, ((Node)yyVals[0+yyTop])));
                       ((AssignableNode)yyVals[-2+yyTop]).setPosition(support.union(((AssignableNode)yyVals[-2+yyTop]), ((Node)yyVals[0+yyTop])));
 		      yyVal = ((AssignableNode)yyVals[-2+yyTop]);
 		  }
@@ -2598,7 +2599,7 @@ states[315] = new ParserState() {
                   Node body = ((Node)yyVals[-1+yyTop]); /*$5 == null ? NilImplicitNode.NIL : $5;*/
 
                   /* NOEX_PRIVATE for toplevel */
-                  yyVal = new DefnNode(support.union(((Token)yyVals[-5+yyTop]), ((Token)yyVals[0+yyTop])), new ArgumentNode(((Token)yyVals[-4+yyTop]).getPosition(), (String) ((Token)yyVals[-4+yyTop]).getValue()), ((ArgsNode)yyVals[-2+yyTop]), support.getCurrentScope(), body);
+                  yyVal = new DefnNode(support.union(((Token)yyVals[-5+yyTop]), ((Token)yyVals[0+yyTop])), new MethodNameNode(((Token)yyVals[-4+yyTop]).getPosition(), (String) ((Token)yyVals[-4+yyTop]).getValue()), ((ArgsNode)yyVals[-2+yyTop]), support.getCurrentScope(), body);
                   support.popCurrentScope();
                   support.setInDef(false);
     return yyVal;
@@ -2809,7 +2810,7 @@ states[318] = new ParserState() {
                   /* TODO: We should use implicit nil for body, but problem (punt til later)*/
                   Node body = ((Node)yyVals[-1+yyTop]); /*$8 == null ? NilImplicitNode.NIL : $8;*/
 
-                  yyVal = new DefsNode(support.union(((Token)yyVals[-8+yyTop]), ((Token)yyVals[0+yyTop])), ((Node)yyVals[-7+yyTop]), new ArgumentNode(((Token)yyVals[-4+yyTop]).getPosition(), (String) ((Token)yyVals[-4+yyTop]).getValue()), ((ArgsNode)yyVals[-2+yyTop]), support.getCurrentScope(), body);
+                  yyVal = new DefsNode(support.union(((Token)yyVals[-8+yyTop]), ((Token)yyVals[0+yyTop])), ((Node)yyVals[-7+yyTop]), new MethodNameNode(((Token)yyVals[-4+yyTop]).getPosition(), (String) ((Token)yyVals[-4+yyTop]).getValue()), ((ArgsNode)yyVals[-2+yyTop]), support.getCurrentScope(), body);
                   support.popCurrentScope();
                   support.setInSingle(support.getInSingle() - 1);
     return yyVal;
@@ -3408,10 +3409,10 @@ states[292] = new ParserState() {
 states[24] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
                   support.checkExpression(((Node)yyVals[0+yyTop]));
-		  if (((MultipleAsgnNode)yyVals[-2+yyTop]).getHead() != null) {
-		      ((MultipleAsgnNode)yyVals[-2+yyTop]).setValue(new ToAryNode(support.getPosition(((MultipleAsgnNode)yyVals[-2+yyTop])), ((Node)yyVals[0+yyTop])));
+		  if (((MultipleAsgnNode)yyVals[-2+yyTop]).getHeadNode() != null) {
+		      ((MultipleAsgnNode)yyVals[-2+yyTop]).setValueNode(new ToAryNode(support.getPosition(((MultipleAsgnNode)yyVals[-2+yyTop])), ((Node)yyVals[0+yyTop])));
 		  } else {
-		      ((MultipleAsgnNode)yyVals[-2+yyTop]).setValue(support.newArrayNode(support.getPosition(((MultipleAsgnNode)yyVals[-2+yyTop])), ((Node)yyVals[0+yyTop])));
+		      ((MultipleAsgnNode)yyVals[-2+yyTop]).setValueNode(support.newArrayNode(support.getPosition(((MultipleAsgnNode)yyVals[-2+yyTop])), ((Node)yyVals[0+yyTop])));
 		  }
 		  yyVal = ((MultipleAsgnNode)yyVals[-2+yyTop]);
     return yyVal;
@@ -3473,13 +3474,13 @@ states[25] = new ParserState() {
 
 		  String asgnOp = (String) ((Token)yyVals[-1+yyTop]).getValue();
 		  if (asgnOp.equals("||")) {
-	              ((AssignableNode)yyVals[-2+yyTop]).setValue(((Node)yyVals[0+yyTop]));
+	              ((AssignableNode)yyVals[-2+yyTop]).setValueNode(((Node)yyVals[0+yyTop]));
 	              yyVal = new OpAsgnOrNode(support.union(((AssignableNode)yyVals[-2+yyTop]), ((Node)yyVals[0+yyTop])), support.gettable2(((AssignableNode)yyVals[-2+yyTop])), ((AssignableNode)yyVals[-2+yyTop]));
 		  } else if (asgnOp.equals("&&")) {
-	              ((AssignableNode)yyVals[-2+yyTop]).setValue(((Node)yyVals[0+yyTop]));
+	              ((AssignableNode)yyVals[-2+yyTop]).setValueNode(((Node)yyVals[0+yyTop]));
                       yyVal = new OpAsgnAndNode(support.union(((AssignableNode)yyVals[-2+yyTop]), ((Node)yyVals[0+yyTop])), support.gettable2(((AssignableNode)yyVals[-2+yyTop])), ((AssignableNode)yyVals[-2+yyTop]));
 		  } else {
-                      ((AssignableNode)yyVals[-2+yyTop]).setValue(support.getOperatorCallNode(support.gettable2(((AssignableNode)yyVals[-2+yyTop])), asgnOp, ((Node)yyVals[0+yyTop])));
+                      ((AssignableNode)yyVals[-2+yyTop]).setValueNode(support.getOperatorCallNode(support.gettable2(((AssignableNode)yyVals[-2+yyTop])), asgnOp, ((Node)yyVals[0+yyTop])));
                       ((AssignableNode)yyVals[-2+yyTop]).setPosition(support.union(((AssignableNode)yyVals[-2+yyTop]), ((Node)yyVals[0+yyTop])));
 		      yyVal = ((AssignableNode)yyVals[-2+yyTop]);
 		  }
@@ -3898,10 +3899,10 @@ states[367] = new ParserState() {
 };
 states[32] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
-                  if (((MultipleAsgnNode)yyVals[-2+yyTop]).getHead() != null) {
-		      ((MultipleAsgnNode)yyVals[-2+yyTop]).setValue(new ToAryNode(support.getPosition(((MultipleAsgnNode)yyVals[-2+yyTop])), ((Node)yyVals[0+yyTop])));
+                  if (((MultipleAsgnNode)yyVals[-2+yyTop]).getHeadNode() != null) {
+		      ((MultipleAsgnNode)yyVals[-2+yyTop]).setValueNode(new ToAryNode(support.getPosition(((MultipleAsgnNode)yyVals[-2+yyTop])), ((Node)yyVals[0+yyTop])));
 		  } else {
-		      ((MultipleAsgnNode)yyVals[-2+yyTop]).setValue(support.newArrayNode(support.getPosition(((MultipleAsgnNode)yyVals[-2+yyTop])), ((Node)yyVals[0+yyTop])));
+		      ((MultipleAsgnNode)yyVals[-2+yyTop]).setValueNode(support.newArrayNode(support.getPosition(((MultipleAsgnNode)yyVals[-2+yyTop])), ((Node)yyVals[0+yyTop])));
 		  }
 		  yyVal = ((MultipleAsgnNode)yyVals[-2+yyTop]);
     return yyVal;
@@ -3954,7 +3955,7 @@ states[66] = new ParserState() {
   }
 };
 }
-					// line 1906 "Ruby18Parser.y"
+					// line 1907 "Ruby18Parser.y"
 
     /** The parse method use an lexer stream and parse it to an AST node 
      * structure
@@ -3990,4 +3991,4 @@ states[66] = new ParserState() {
     // +++
     // Helper Methods
 }
-					// line 7837 "-"
+					// line 7838 "-"

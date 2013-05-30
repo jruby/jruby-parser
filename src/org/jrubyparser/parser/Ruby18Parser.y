@@ -74,6 +74,7 @@ import org.jrubyparser.ast.InstVarNode;
 import org.jrubyparser.ast.IterNode;
 import org.jrubyparser.ast.ListNode;
 import org.jrubyparser.ast.LiteralNode;
+import org.jrubyparser.ast.MethodNameNode;
 import org.jrubyparser.ast.ModuleNode;
 import org.jrubyparser.ast.MultipleAsgnNode;
 import org.jrubyparser.ast.NewlineNode;
@@ -1209,7 +1210,7 @@ primary       : literal
                   Node body = $5; //$5 == null ? NilImplicitNode.NIL : $5;
 
                   /* NOEX_PRIVATE for toplevel */
-                  $$ = new DefnNode(support.union($1, $6), new ArgumentNode($2.getPosition(), (String) $2.getValue()), $<ArgsNode>4, support.getCurrentScope(), body);
+                  $$ = new DefnNode(support.union($1, $6), new MethodNameNode($2.getPosition(), (String) $2.getValue()), $<ArgsNode>4, support.getCurrentScope(), body);
                   support.popCurrentScope();
                   support.setInDef(false);
               }
@@ -1223,7 +1224,7 @@ primary       : literal
                   // TODO: We should use implicit nil for body, but problem (punt til later)
                   Node body = $8; //$8 == null ? NilImplicitNode.NIL : $8;
 
-                  $$ = new DefsNode(support.union($1, $9), $2, new ArgumentNode($5.getPosition(), (String) $5.getValue()), $<ArgsNode>7, support.getCurrentScope(), body);
+                  $$ = new DefsNode(support.union($1, $9), $2, new MethodNameNode($5.getPosition(), (String) $5.getValue()), $<ArgsNode>7, support.getCurrentScope(), body);
                   support.popCurrentScope();
                   support.setInSingle(support.getInSingle() - 1);
               }

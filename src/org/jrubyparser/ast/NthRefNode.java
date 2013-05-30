@@ -36,7 +36,7 @@ import org.jrubyparser.SourcePosition;
 /** 
  * Represents a $number ($0..$9) variable.
   */
-public class NthRefNode extends Node {
+public class NthRefNode extends Node implements IGlobalVariable {
     private int matchNumber;
 
     public NthRefNode(SourcePosition position, int matchNumber) {
@@ -67,5 +67,28 @@ public class NthRefNode extends Node {
     public List<Node> childNodes() {
         return EMPTY_LIST;
     }
-    
+
+    public String getName() {
+        return "" + getMatchNumber();
+    }
+
+    public String getDecoratedName() {
+        return "$" + getName();
+    }
+
+    public void setName(String newName) {
+        matchNumber = new Integer(newName);
+    }
+
+    public SourcePosition getNamePosition() {
+        return getPosition().fromEnd(getName().length());
+    }
+
+    public SourcePosition getDecoratedNamePosition() {
+        return getPosition();
+    }
+
+    public boolean isNameMatch(String name) {
+        return getName().equals(name);
+    }
 }

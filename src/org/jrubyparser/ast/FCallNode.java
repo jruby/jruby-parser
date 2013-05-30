@@ -155,4 +155,8 @@ public class FCallNode extends Node implements INameNode, IArgumentNode, BlockAc
     public SourcePosition getNamePosition() {
         return getPosition().fromBeginning(getName().length());
     }
+    
+    public SourcePosition getDecoratedNamePosition() {
+        return getNamePosition();
+    }    
 }

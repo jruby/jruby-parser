@@ -42,4 +42,8 @@ public abstract class BareKeywordNode extends Node implements INameNode {
     public SourcePosition getNamePosition() {
         return getPosition();
     }
+    
+    public SourcePosition getDecoratedNamePosition() {
+        return getPosition();
+    }    
 }

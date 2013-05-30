@@ -100,4 +100,8 @@ public class ConstDeclNode extends AssignableNode implements INameNode {
     public SourcePosition getNamePosition() {
         return getPosition().fromBeginning(getName().length());
     }
+    
+    public SourcePosition getDecoratedNamePosition() {
+        return getNamePosition();
+    }
 }
