@@ -9,6 +9,7 @@ PARSER = Parser.new
 CONFIG_18 = ParserConfiguration.new
 CONFIG_19 = ParserConfiguration.new(0, CompatVersion::RUBY1_9)
 CONFIG_20 = ParserConfiguration.new(0, CompatVersion::RUBY2_0)
+VERSIONS_MAP = { 1.8 => CONFIG_18,  1.9 => CONFIG_19,  2.0 => CONFIG_20 }
 VERSIONS = [1.8, 1.9, 2.0]
 
 class Object
@@ -19,8 +20,7 @@ class Object
 
   # Parse the provided code into an AST
   def parse(code, version=1.8)
-    config = version == 1.8  ? CONFIG_18 : CONFIG_19
-    PARSER.parse "<code>", source(code), config
+    PARSER.parse "<code>", source(code), VERSIONS_MAP[version]
   end
 
   ##

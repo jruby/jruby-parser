@@ -40,6 +40,7 @@ import org.jrubyparser.lexer.SyntaxException;
 import org.jrubyparser.parser.ParserConfiguration;
 import org.jrubyparser.parser.Ruby18Parser;
 import org.jrubyparser.parser.Ruby19Parser;
+import org.jrubyparser.parser.Ruby20Parser;
 import org.jrubyparser.parser.RubyParser;
 
 /**
@@ -67,9 +68,11 @@ public class Parser {
 
         RubyParser parser;
         if (configuration.getVersion() == CompatVersion.RUBY1_8) {
-            parser = new Ruby18Parser();
-        } else {
+            parser = new Ruby18Parser();            
+        } else if (configuration.getVersion() == CompatVersion.RUBY1_9) {
             parser = new Ruby19Parser();
+        } else {
+            parser = new Ruby20Parser();
         }
 
         // TODO: Warning interface from configuration?
