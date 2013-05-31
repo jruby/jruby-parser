@@ -5,7 +5,7 @@ require 'parser_helpers'
 require 'node_helpers'
 
 describe Parser do
-  [1.8, 1.9].each do |v|
+  VERSIONS.each do |v|
     it "parses a 0-arg method sans parens [#{v}]" do
       parse("def foo\nend\n", v).find_node(:defn).tap do |defn|
         defn.should have_name_and_position("foo", 0, 1, 0, 11)

@@ -5,7 +5,7 @@ require 'jruby-parser'
 require 'parser_helpers'
 
 describe JRubyParser do
-  [JRubyParser::Compat::RUBY1_8, JRubyParser::Compat::RUBY1_9].each do |v|
+  VERSIONS.each do |v|
     it "children can ask for the method it is contained in [#{v}]" do
       parse("def foo; true if false; end").find_node(:defn) do |defn|
         defn.find_node(:true).method_for.should == defn

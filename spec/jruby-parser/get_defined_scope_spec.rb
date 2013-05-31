@@ -5,7 +5,7 @@ require 'jruby-parser'
 require 'parser_helpers'
 
 describe JRubyParser do
-  [1.8, 1.9].each do |v|
+  VERSIONS.each do |v|
     it "finds method via get_defined_scope [#{v}]" do
       caret_parse("def foo(^a); end", v).tap do |root, caret_node|
         caret_node.defined_scope.should == root.find_node(:defn)

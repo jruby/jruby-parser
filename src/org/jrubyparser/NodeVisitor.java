@@ -79,6 +79,8 @@ import org.jrubyparser.ast.IfNode;
 import org.jrubyparser.ast.InstAsgnNode;
 import org.jrubyparser.ast.InstVarNode;
 import org.jrubyparser.ast.IterNode;
+import org.jrubyparser.ast.KeywordArgNode;
+import org.jrubyparser.ast.KeywordRestArgNode;
 import org.jrubyparser.ast.ListNode;
 import org.jrubyparser.ast.LiteralNode;
 import org.jrubyparser.ast.LocalAsgnNode;
@@ -184,6 +186,8 @@ public interface NodeVisitor {
     public Object visitInstVarNode(InstVarNode iVisited);
     public Object visitIfNode(IfNode iVisited);
     public Object visitIterNode(IterNode iVisited);
+    public Object visitKeywordArgNode(KeywordArgNode iVisited);
+    public Object visitKeywordRestArgNode(KeywordRestArgNode iVisited);
     public Object visitListNode(ListNode iVisited);
     public Object visitLiteralNode(LiteralNode iVisited);
     public Object visitLocalAsgnNode(LocalAsgnNode iVisited);

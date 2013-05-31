@@ -8,6 +8,8 @@ import org.jrubyparser.CompatVersion
 PARSER = Parser.new
 CONFIG_18 = ParserConfiguration.new
 CONFIG_19 = ParserConfiguration.new(0, CompatVersion::RUBY1_9)
+CONFIG_20 = ParserConfiguration.new(0, CompatVersion::RUBY2_0)
+VERSIONS = [1.8, 1.9, 2.0]
 
 class Object
   # Wrap the code in what the JRubyParser expects

@@ -5,7 +5,7 @@ require 'jruby-parser'
 require 'parser_helpers'
 
 describe JRubyParser do
-  [1.8, 1.9].each do |v|
+  VERSIONS.each do |v|
     it "finds fcall via simple symbol search [#{v}]" do
       parse("b = foo(1)").tap do |root|
         fcall = root.find_type(:fcall)

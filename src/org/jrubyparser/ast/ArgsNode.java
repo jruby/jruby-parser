@@ -46,8 +46,10 @@ import org.jrubyparser.SourcePosition;
 public class ArgsNode extends Node {
     private ListNode pre;
     private ListNode optional;
-    private ListNode post; // Only in ruby 1.9 methods
+    private ListNode post; // 1.9+
     protected ArgumentNode rest;
+    private ListNode keywords; // 2.0+
+    private KeywordRestArgNode keywordRest; // 2.0+
     private BlockArgNode block;
     
     /**
@@ -59,13 +61,15 @@ public class ArgsNode extends Node {
      * @param block An optional block argument (&amp;arg).
      **/
     public ArgsNode(SourcePosition position, ListNode pre, ListNode optional, RestArgNode rest,
-            ListNode post, BlockArgNode block) {
+            ListNode post, ListNode keywords, KeywordRestArgNode keywordRest, BlockArgNode block) {
         super(position);
 
         this.pre = (ListNode) adopt(pre);
         this.optional = (ListNode) adopt(optional);
         this.post = (ListNode) adopt(post);
         this.rest = (ArgumentNode) adopt(rest);
+        this.keywords = keywords;
+        this.keywordRest = keywordRest;
         this.block = (BlockArgNode) adopt(block);
     }
 

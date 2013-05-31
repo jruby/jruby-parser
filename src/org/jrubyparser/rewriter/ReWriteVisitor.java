@@ -97,6 +97,8 @@ import org.jrubyparser.ast.IfNode;
 import org.jrubyparser.ast.InstAsgnNode;
 import org.jrubyparser.ast.InstVarNode;
 import org.jrubyparser.ast.IterNode;
+import org.jrubyparser.ast.KeywordArgNode;
+import org.jrubyparser.ast.KeywordRestArgNode;
 import org.jrubyparser.ast.ListNode;
 import org.jrubyparser.ast.LiteralNode;
 import org.jrubyparser.ast.LocalAsgnNode;
@@ -1428,6 +1430,14 @@ public class ReWriteVisitor implements NodeVisitor {
         return null;
     }
 
+    public Object visitKeywordArgNode(KeywordArgNode iVisited) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public Object visitKeywordRestArgNode(KeywordRestArgNode iVisited) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
     public Object visitRetryNode(RetryNode iVisited) {
         print("retry");
         return null;

@@ -57,6 +57,8 @@ import org.jrubyparser.ast.IfNode;
 import org.jrubyparser.ast.InstAsgnNode;
 import org.jrubyparser.ast.InstVarNode;
 import org.jrubyparser.ast.IterNode;
+import org.jrubyparser.ast.KeywordArgNode;
+import org.jrubyparser.ast.KeywordRestArgNode;
 import org.jrubyparser.ast.ListNode;
 import org.jrubyparser.ast.LiteralNode;
 import org.jrubyparser.ast.LocalAsgnNode;
@@ -331,6 +333,14 @@ public class NoopVisitor implements NodeVisitor {
         return visit(iVisited);
     }
     
+    public Object visitKeywordArgNode(KeywordArgNode iVisited) {
+        return visit(iVisited);
+    }
+
+    public Object visitKeywordRestArgNode(KeywordRestArgNode iVisited) {
+        return visit(iVisited);
+    }
+    
     public Object visitListNode(ListNode iVisited) {
         return visit(iVisited);
     }
@@ -534,5 +544,4 @@ public class NoopVisitor implements NodeVisitor {
     public Object visitZSuperNode(ZSuperNode iVisited) {
         return visit(iVisited);
     }
-    
 }
