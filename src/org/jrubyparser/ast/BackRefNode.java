@@ -40,7 +40,7 @@ import org.jrubyparser.SourcePosition;
  *    - $` what precedes the last successful match
  *    - $' what follows the last successful match
  */
-public class BackRefNode extends Node {
+public class BackRefNode extends Node implements IGlobalVariable {
     /**
      * the character which generated the back reference
      */
@@ -74,6 +74,30 @@ public class BackRefNode extends Node {
     
     public List<Node> childNodes() {
         return EMPTY_LIST;
+    }
+
+    public String getName() {
+        return "" + type;
+    }
+
+    public String getDecoratedName() {
+        return "$" + getName();
+    }
+
+    public void setName(String newName) {
+        type = newName.charAt(0); // FIXME: Some sanity to only allowing one char and a correct one?
+    }
+
+    public SourcePosition getNamePosition() {
+        return getPosition().fromEnd(getName().length());
+    }
+
+    public SourcePosition getDecoratedNamePosition() {
+        return getPosition();
+    }
+
+    public boolean isNameMatch(String name) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
 }

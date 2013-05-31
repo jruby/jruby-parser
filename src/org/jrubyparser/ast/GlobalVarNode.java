@@ -36,7 +36,7 @@ import org.jrubyparser.SourcePosition;
 /**
  *	access to a global variable.
  */
-public class GlobalVarNode extends Node implements INameNode {
+public class GlobalVarNode extends Node implements IGlobalVariable {
     private String name;
 
     public GlobalVarNode(SourcePosition position, String name) {
@@ -87,5 +87,9 @@ public class GlobalVarNode extends Node implements INameNode {
     
     public SourcePosition getNamePosition() {
         return getPosition().fromEnd(getName().length());
-    }    
+    }
+    
+    public SourcePosition getDecoratedNamePosition() {
+        return getPosition();
+    }
 }

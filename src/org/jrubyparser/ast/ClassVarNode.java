@@ -36,7 +36,7 @@ import org.jrubyparser.SourcePosition;
 /**
  * Access to a class variable.
  */
-public class ClassVarNode extends Node implements INameNode {
+public class ClassVarNode extends Node implements IClassVariable {
     private String name;
 
     public ClassVarNode(SourcePosition position, String name) {
@@ -87,5 +87,9 @@ public class ClassVarNode extends Node implements INameNode {
     
     public SourcePosition getNamePosition() {
         return getPosition().fromEnd(getName().length());
+    }
+    
+    public SourcePosition getDecoratedNamePosition() {
+        return getPosition();
     }
 }

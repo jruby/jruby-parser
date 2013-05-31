@@ -37,7 +37,7 @@ import static org.jrubyparser.ast.Node.EMPTY_LIST;
 /** 
  * Represents an instance variable accessor.
  */
-public class InstVarNode extends Node implements INameNode {
+public class InstVarNode extends Node implements IInstanceVariable {
     private String name;
 
     public InstVarNode(SourcePosition position, String name) {
@@ -88,5 +88,9 @@ public class InstVarNode extends Node implements INameNode {
     
     public SourcePosition getNamePosition() {
         return getPosition().fromEnd(getName().length());
+    }
+    
+    public SourcePosition getDecoratedNamePosition() {
+        return getPosition();
     }
 }

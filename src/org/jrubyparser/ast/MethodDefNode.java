@@ -37,19 +37,19 @@ import org.jrubyparser.StaticScope;
 import org.jrubyparser.util.VariableHelper;
 
 public abstract class MethodDefNode extends Node implements INameNode, ILocalScope, IParameterScope {
-	protected ArgumentNode nameNode;
+	protected MethodNameNode nameNode;
 	protected ArgsNode argsNode;
 	protected StaticScope scope;
 	protected Node bodyNode;
 
-	public MethodDefNode(SourcePosition position, ArgumentNode nameNode, ArgsNode argsNode, 
+	public MethodDefNode(SourcePosition position, MethodNameNode nameNode, ArgsNode argsNode, 
 	        StaticScope scope, Node bodyNode) {
             super(position);
             
             // TODO: Adding implicit nils caused multiple problems in compiler -- revist after landing
             //assert bodyNode != null : "bodyNode is not null";
             
-            this.nameNode = (ArgumentNode) adopt(nameNode);
+            this.nameNode = (MethodNameNode) adopt(nameNode);
             this.argsNode = (ArgsNode) adopt(argsNode);
             this.scope = scope;
             this.bodyNode = adopt(bodyNode);
@@ -99,7 +99,7 @@ public abstract class MethodDefNode extends Node implements INameNode, ILocalSco
 	 * Gets the name's node.
 	 * @return Returns an ArgumentNode
 	 */
-	public ArgumentNode getNameNode() {
+	public MethodNameNode getNameNode() {
 	    return nameNode;
 	}
 
@@ -124,6 +124,10 @@ public abstract class MethodDefNode extends Node implements INameNode, ILocalSco
         public SourcePosition getNamePosition() {
             return getNameNode().getNamePosition();
         }
+        
+        public SourcePosition getDecoratedNamePosition() {
+            return getNameNode().getNamePosition();
+        }        
         
         /**
          * Given a name (presumably retrieve via getNormativeSignatureNameList()) is this parmeter used

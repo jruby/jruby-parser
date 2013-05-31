@@ -87,6 +87,7 @@ public class ILocalVariableVisitor extends NoopVisitor {
     @Override
     public Object visitDAsgnNode(DAsgnNode iVisited) {
         addVariableIfInScopeAndRightName(iVisited);
+        visit(iVisited.getValue());
         return null;
     }
 
@@ -109,6 +110,7 @@ public class ILocalVariableVisitor extends NoopVisitor {
     @Override
     public Object visitLocalAsgnNode(LocalAsgnNode iVisited) {
         addVariableIfInScopeAndRightName(iVisited);
+        visit(iVisited.getValue());
         return null;
     }
 

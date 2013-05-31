@@ -88,4 +88,8 @@ public class Colon3Node extends Node implements INameNode {
     public SourcePosition getNamePosition() {
         return getPosition().fromEnd(getName().length());
     }
+    
+    public SourcePosition getDecoratedNamePosition() {
+        return getNamePosition();
+    }
 }

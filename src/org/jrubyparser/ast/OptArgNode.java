@@ -85,5 +85,9 @@ public class OptArgNode extends Node implements INameNode {
         if (value instanceof INameNode) return ((INameNode) value).getNamePosition();
         
         return getPosition();
-    } 
+    }
+    
+    public SourcePosition getDecoratedNamePosition() {
+        return getNamePosition();
+    }
 }

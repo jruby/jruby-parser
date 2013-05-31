@@ -86,6 +86,7 @@ import org.jrubyparser.ast.LocalVarNode;
 import org.jrubyparser.ast.Match2Node;
 import org.jrubyparser.ast.Match3Node;
 import org.jrubyparser.ast.MatchNode;
+import org.jrubyparser.ast.MethodNameNode;
 import org.jrubyparser.ast.ModuleNode;
 import org.jrubyparser.ast.MultipleAsgn19Node;
 import org.jrubyparser.ast.MultipleAsgnNode;
@@ -192,6 +193,7 @@ public interface NodeVisitor {
     public Object visitMatch2Node(Match2Node iVisited);
     public Object visitMatch3Node(Match3Node iVisited);
     public Object visitMatchNode(MatchNode iVisited);
+    public Object visitMethodNameNode(MethodNameNode iVisited);
     public Object visitModuleNode(ModuleNode iVisited);
     public Object visitNewlineNode(NewlineNode iVisited);
     public Object visitNextNode(NextNode iVisited);

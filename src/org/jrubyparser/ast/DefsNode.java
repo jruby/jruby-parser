@@ -41,7 +41,7 @@ import org.jrubyparser.util.ILocalVariableVisitor;
 public class DefsNode extends MethodDefNode {
     private Node receiverNode;
     
-    public DefsNode(SourcePosition position, Node receiverNode, ArgumentNode nameNode, ArgsNode argsNode, 
+    public DefsNode(SourcePosition position, Node receiverNode, MethodNameNode nameNode, ArgsNode argsNode, 
             StaticScope scope, Node bodyNode) {
         super(position, nameNode, argsNode, scope, bodyNode);
         

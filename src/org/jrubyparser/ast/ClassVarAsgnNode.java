@@ -36,7 +36,7 @@ import org.jrubyparser.SourcePosition;
 /**
  * Class variable assignment node (e.g. @@foo = 1).
  */
-public class ClassVarAsgnNode extends AssignableNode implements INameNode {
+public class ClassVarAsgnNode extends AssignableNode implements IClassVariable {
     private String name;
 
     /**
@@ -90,8 +90,10 @@ public class ClassVarAsgnNode extends AssignableNode implements INameNode {
     }
 
     public SourcePosition getNamePosition() {
-        int length = getName().length();
-        
-        return getPosition().fromBeginning(length + 2).fromEnd(length);
+        return getDecoratedNamePosition().fromEnd(getName().length());
+    }
+    
+    public SourcePosition getDecoratedNamePosition() {
+        return getPosition().fromBeginning(getDecoratedName().length());
     }
 }

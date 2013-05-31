@@ -38,7 +38,7 @@ import org.jrubyparser.util.ILocalVariableVisitor;
 /**
  * A class statement (name, superClass, body). Classes bodies also define their own scope. 
  */
-public class ClassNode extends Node implements IScopingNode, ILocalScope {
+public class ClassNode extends Node implements IScopingNode, ILocalScope, IModuleScope {
     private Colon3Node cpath;
     private StaticScope scope;
     private Node bodyNode;

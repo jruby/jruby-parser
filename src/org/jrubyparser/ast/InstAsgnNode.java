@@ -33,11 +33,12 @@ import java.util.List;
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 import static org.jrubyparser.ast.Node.createList;
+import org.jrubyparser.util.IInstanceVariableVisitor;
 
 /** 
  * Represents an instance variable assignment.
  */
-public class InstAsgnNode extends AssignableNode implements INameNode {
+public class InstAsgnNode extends AssignableNode implements IInstanceVariable {
     private String name;
 
     /**
@@ -91,7 +92,14 @@ public class InstAsgnNode extends AssignableNode implements INameNode {
     }
     
     public SourcePosition getNamePosition() {
-        int length = getName().length();
-        return getPosition().fromBeginning(length+1).fromEnd(length);
+        return getDecoratedNamePosition().fromEnd(getName().length());
+    }
+    
+    public SourcePosition getDecoratedNamePosition() {
+        return getPosition().fromBeginning(getDecoratedName().length());
+    }
+    
+    public List<IInstanceVariable> getOccurences() {
+        return IInstanceVariableVisitor.findOccurrencesIn((Node) getClosestModule(), getName());
     }
 }

@@ -96,10 +96,12 @@ public class BlockArgNode extends NamedNode implements IParameter {
         return this;
     }
 
+    @Override
     public SourcePosition getNamePosition() {
-        SourcePosition pos = getPosition();
-        
-        return new SourcePosition(pos.getFile(), pos.getStartLine(), pos.getEndLine(), 
-                pos.getEndOffset() - getName().length(), pos.getEndOffset());
+        return getPosition().fromEnd(getName().length());
     }
+    
+    public SourcePosition getDecoratedNamePosition() {
+        return getPosition();
+    }    
 }

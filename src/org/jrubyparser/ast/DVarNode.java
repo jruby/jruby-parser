@@ -110,9 +110,5 @@ public class DVarNode extends NamedNode implements ILocalVariable {
         assert false: "Never found declaration for DVarNode";
         
         return null; // Should not reach here
-    }    
-
-    public SourcePosition getNamePosition() {
-        return getPosition();
     }
 }

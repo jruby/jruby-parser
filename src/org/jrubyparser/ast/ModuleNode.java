@@ -38,7 +38,7 @@ import org.jrubyparser.util.ILocalVariableVisitor;
 /** 
  * Represents a module definition.
  */
-public class ModuleNode extends Node implements IScopingNode, ILocalScope {
+public class ModuleNode extends Node implements IScopingNode, ILocalScope, IModuleScope {
     private Colon3Node cpath;
     private StaticScope scope;
     private Node bodyNode;

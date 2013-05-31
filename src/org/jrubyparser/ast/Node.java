@@ -228,6 +228,21 @@ public abstract class Node implements ISourcePositionHolder {
     }
     
     /**
+     * Get closest parent Module/Class/SClass for this node
+     */
+    public IModuleScope getClosestModule() {
+        if (isInvisible()) return null; // FIXME: Invisible nodes do not have reasonable parentage
+        
+        IScope p = getClosestIScope();
+        
+        while (p != null && !(p instanceof IModuleScope)) {
+            p = ((Node) p).getClosestIScope();
+        }
+        
+        return (IModuleScope) p; // null or an IModuleScope
+    }
+    
+    /**
      * Return closest iter node unless this is contained within a non-block scope and then return
      * null instead.
      */

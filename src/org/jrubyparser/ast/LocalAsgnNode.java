@@ -149,4 +149,8 @@ public class LocalAsgnNode extends AssignableNode implements ILocalVariable {
     public SourcePosition getNamePosition() {
         return getPosition().fromBeginning(getName().length());
     }
+    
+    public SourcePosition getDecoratedNamePosition() {
+        return getNamePosition();
+    }
 }
