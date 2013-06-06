@@ -1,5 +1,6 @@
 package org.jrubyparser.parser;
 
+import org.jrubyparser.ISourcePositionHolder;
 import org.jrubyparser.SourcePosition;
 import org.jrubyparser.ast.BlockArgNode;
 import org.jrubyparser.ast.KeywordRestArgNode;
@@ -8,7 +9,7 @@ import org.jrubyparser.ast.ListNode;
 /**
  * Simple struct to hold values until they can be inserted into the AST.
  */
-public class ArgsTailHolder {
+public class ArgsTailHolder implements ISourcePositionHolder {
     private SourcePosition position;
     private BlockArgNode blockArg;
     private ListNode keywordArgs;
@@ -25,6 +26,10 @@ public class ArgsTailHolder {
     public SourcePosition getPosition() {
         return position;
     }
+    
+    public void setPosition(SourcePosition position) {
+        this.position = position;
+    }    
     
     public BlockArgNode getBlockArg() {
         return blockArg;

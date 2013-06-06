@@ -302,7 +302,7 @@ top_compstmt  : top_stmts opt_terms {
 
 top_stmts     : none
               | top_stmt {
-                    $$ = support.newline_node($1, support.getPosition($1));
+                    $$ = support.newline_node($1, support.getPosition($1, true));
               }
               | top_stmts terms top_stmt {
                     $$ = support.appendToBlock($1, support.newline_node($3, support.getPosition($3)));
@@ -770,7 +770,7 @@ reswords        : k__LINE__ | k__FILE__ | k__ENCODING__ | klBEGIN | klEND
 arg             : lhs '=' arg {
                     $$ = support.node_assign($1, $3);
                     // FIXME: Consider fixing node_assign itself rather than single case
-                    $<Node>$.setPosition(support.getPosition($1));
+                    $<Node>$.setPosition(support.union($1, $3));
                 }
                 | lhs '=' arg kRESCUE_MOD arg {
                     SourcePosition position = $4.getPosition();
@@ -1248,7 +1248,7 @@ primary         : literal
                     // TODO: We should use implicit nil for body, but problem (punt til later)
                     Node body = $5; //$5 == null ? NilImplicitNode.NIL : $5;
 
-                    $$ = new DefnNode($1.getPosition(), new MethodNameNode($2.getPosition(), (String) $2.getValue()), $4, support.getCurrentScope(), body);
+                    $$ = new DefnNode(support.union($1, $6), new MethodNameNode($2.getPosition(), (String) $2.getValue()), $4, support.getCurrentScope(), body);
                     support.popCurrentScope();
                     support.setInDef(false);
                 }
@@ -1262,7 +1262,7 @@ primary         : literal
                     // TODO: We should use implicit nil for body, but problem (punt til later)
                     Node body = $8; //$8 == null ? NilImplicitNode.NIL : $8;
 
-                    $$ = new DefsNode($1.getPosition(), $2, new MethodNameNode($5.getPosition(), (String) $5.getValue()), $7, support.getCurrentScope(), body);
+                    $$ = new DefsNode(support.union($1, $9), $2, new MethodNameNode($5.getPosition(), (String) $5.getValue()), $7, support.getCurrentScope(), body);
                     support.popCurrentScope();
                     support.setInSingle(support.getInSingle() - 1);
                 }
@@ -1898,7 +1898,7 @@ superclass      : term {
 // ENEBO: Look at command_start stuff I am ripping out
 f_arglist       : tLPAREN2 f_args rparen {
                     $$ = $2;
-                    $<ISourcePositionHolder>$.setPosition($1.getPosition());
+                    $<ISourcePositionHolder>$.setPosition(support.union($1, $3));
                     lexer.setState(LexState.EXPR_BEG);
                     lexer.commandStart = true;
                 }
@@ -1910,13 +1910,13 @@ f_arglist       : tLPAREN2 f_args rparen {
 
 
 args_tail       : f_kwarg ',' f_kwrest opt_f_block_arg {
-                    $$ = support.new_args_tail($1.getPosition(), $1, $3, $4);
+                    $$ = support.new_args_tail(support.union($1, $4), $1, $3, $4);
                 }
                 | f_kwarg opt_f_block_arg {
-                    $$ = support.new_args_tail($1.getPosition(), $1, null, $2);
+                    $$ = support.new_args_tail(support.union($1, $2), $1, null, $2);
                 }
                 | f_kwrest opt_f_block_arg {
-                    $$ = support.new_args_tail($1.getPosition(), null, $1, $2);
+                    $$ = support.new_args_tail(support.union($1, $2), null, $1, $2);
                 }
                 | f_block_arg {
                     $$ = support.new_args_tail($1.getPosition(), null, null, $1);
@@ -1931,43 +1931,43 @@ opt_args_tail   : ',' args_tail {
 
 // [!null]
 f_args          : f_arg ',' f_optarg ',' f_rest_arg opt_args_tail {
-                    $$ = support.new_args($1.getPosition(), $1, $3, $5, null, $6);
+                    $$ = support.new_args(support.union($1, $6), $1, $3, $5, null, $6);
                 }
                 | f_arg ',' f_optarg ',' f_rest_arg ',' f_arg opt_args_tail {
-                    $$ = support.new_args($1.getPosition(), $1, $3, $5, $7, $8);
+                    $$ = support.new_args(support.union($1, $8), $1, $3, $5, $7, $8);
                 }
                 | f_arg ',' f_optarg opt_args_tail {
-                    $$ = support.new_args($1.getPosition(), $1, $3, null, null, $4);
+                    $$ = support.new_args(support.union($1, $4), $1, $3, null, null, $4);
                 }
                 | f_arg ',' f_optarg ',' f_arg opt_args_tail {
-                    $$ = support.new_args($1.getPosition(), $1, $3, null, $5, $6);
+                    $$ = support.new_args(support.union($1, $6), $1, $3, null, $5, $6);
                 }
                 | f_arg ',' f_rest_arg opt_args_tail {
-                    $$ = support.new_args($1.getPosition(), $1, null, $3, null, $4);
+                    $$ = support.new_args(support.union($1, $4), $1, null, $3, null, $4);
                 }
                 | f_arg ',' f_rest_arg ',' f_arg opt_args_tail {
-                    $$ = support.new_args($1.getPosition(), $1, null, $3, $5, $6);
+                    $$ = support.new_args(support.union($1, $6), $1, null, $3, $5, $6);
                 }
                 | f_arg opt_args_tail {
-                    $$ = support.new_args($1.getPosition(), $1, null, null, null, $2);
+                    $$ = support.new_args(support.union($1, $2), $1, null, null, null, $2);
                 }
                 | f_optarg ',' f_rest_arg opt_args_tail {
-                    $$ = support.new_args($1.getPosition(), null, $1, $3, null, $4);
+                    $$ = support.new_args(support.union($1, $4), null, $1, $3, null, $4);
                 }
                 | f_optarg ',' f_rest_arg ',' f_arg opt_args_tail {
-                    $$ = support.new_args($1.getPosition(), null, $1, $3, $5, $6);
+                    $$ = support.new_args(support.union($1, $6), null, $1, $3, $5, $6);
                 }
                 | f_optarg opt_args_tail {
-                    $$ = support.new_args($1.getPosition(), null, $1, null, null, $2);
+                    $$ = support.new_args(support.union($1, $2), null, $1, null, null, $2);
                 }
                 | f_optarg ',' f_arg opt_args_tail {
-                    $$ = support.new_args($1.getPosition(), null, $1, null, $3, $4);
+                    $$ = support.new_args(support.union($1, $4), null, $1, null, $3, $4);
                 }
                 | f_rest_arg opt_args_tail {
-                    $$ = support.new_args($1.getPosition(), null, null, $1, null, $2);
+                    $$ = support.new_args(support.union($1, $2), null, null, $1, null, $2);
                 }
                 | f_rest_arg ',' f_arg opt_args_tail {
-                    $$ = support.new_args($1.getPosition(), null, null, $1, $3, $4);
+                    $$ = support.new_args(support.union($1, $4), null, null, $1, $3, $4);
                 }
                 | args_tail {
                     $$ = support.new_args($1.getPosition(), null, null, null, null, $1);
@@ -2018,7 +2018,7 @@ f_arg_item      : f_norm_arg {
 
 // [!null]
 f_arg           : f_arg_item {
-                    $$ = new ArrayNode(lexer.getPosition(), $1);
+                    $$ = new ArrayNode($1.getPosition(), $1);
                 }
                 | f_arg ',' f_arg_item {
                     $1.add($3);

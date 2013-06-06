@@ -6,6 +6,11 @@ require 'node_helpers'
 
 describe Parser do
   VERSIONS.each do |v|
+    if v == 2.0
+      it "test 2.0" do
+        parse("def foo(a:1); p a; end", v)
+      end
+    end
     if v != 1.8
       it "parses a simple multiple assignment [#{v}]" do
         parse("a,b,c = 1,2,3", v).find_node(:multipleasgn19).tap do |masgn|

@@ -159,7 +159,10 @@ public interface Tokens {
     int tCOMMENT    = Ruby18Parser.tCOMMENT;
     int tWHITESPACE = Ruby18Parser.tWHITESPACE;
     int tDOCUMENTATION = Ruby18Parser.tDOCUMENTATION;
-
+    int tSYMBOLS_BEG = Ruby20Parser.tSYMBOLS_BEG;
+    int tQSYMBOLS_BEG = Ruby20Parser.tQSYMBOLS_BEG;
+    int tDSTAR = Ruby20Parser.tDSTAR;
+    
     String[] operators = {"+@", "-@", "**", "<=>", "==", "===", "!=", ">=", "<=", "&&",
                           "||", "=~", "!~", "..", "...", "[]", "[]=", "<<", ">>", "::"};
 }
