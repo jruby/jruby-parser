@@ -86,7 +86,8 @@ public class AliasNode extends Node {
     }
 
     /**
-    * Returns the actual string name of the old method from the alias statement, rather than the node representing it.
+    * Returns the actual string name of the old method from the alias statement,
+    * rather than the node representing it.
     */
     public String getOldNameString() {
         if (oldName instanceof INameNode) return ((INameNode) oldName).getName();
