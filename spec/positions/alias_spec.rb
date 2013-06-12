@@ -14,5 +14,14 @@ describe Parser do
         a.old_name.should have_position(0, 0, 16, 25)
       end
     end
+
+    it "Should parse alias node of CONSTANTS" do
+      parse("alias NEW OLD", v).find_node(:alias).tap do |a|
+        a.new_name_string.should == "NEW"
+        a.old_name_string.should == "OLD"
+        a.new_name.should have_position(0, 0, 6, 9)
+        a.old_name.should have_position(0, 0, 10, 13)
+      end
+    end
   end
 end
