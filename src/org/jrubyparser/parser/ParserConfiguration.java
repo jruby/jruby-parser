@@ -31,6 +31,7 @@
 package org.jrubyparser.parser;
 
 import org.jrubyparser.CompatVersion;
+import org.jrubyparser.StaticScope;
 
 public class ParserConfiguration {
     // What linenumber will the source think it starts from?
@@ -40,12 +41,23 @@ public class ParserConfiguration {
     private boolean isDebug = false;
 
     private CompatVersion version = CompatVersion.RUBY1_8;
+    
+    // This scope is sent replaces the root scope.  The common scenario for this is
+    // having the parser accurately parse in an eval() context where local variables
+    // are already defined.  Without this, we would make all vars end getting declared
+    // as vcalls instead of localvars.
+    private StaticScope scope = null;
 
     public ParserConfiguration() {}
     
     public ParserConfiguration(int lineNumber, CompatVersion version) {
+        this(lineNumber, version, null);
+    }
+    
+    public ParserConfiguration(int lineNumber, CompatVersion version, StaticScope scope) {
         this.lineNumber = lineNumber;
         this.version = version;
+        this.scope = scope;
     }
 
     public boolean isDebug() {
@@ -58,6 +70,10 @@ public class ParserConfiguration {
 
     public CompatVersion getVersion() {
         return version;
+    }
+    
+    public StaticScope getScope() {
+        return scope;
     }
     
     public String getEncoding() {

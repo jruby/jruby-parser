@@ -920,7 +920,9 @@ public class ParserSupport {
     *  Description of the RubyMethod
     */
     public void initTopLocalVariables() {
-        currentScope = new LocalStaticScope(null);
+        StaticScope scope = configuration.getScope();
+        
+        currentScope = scope == null ? new LocalStaticScope(null) : scope;
         
         result.setScope(currentScope);
     }
