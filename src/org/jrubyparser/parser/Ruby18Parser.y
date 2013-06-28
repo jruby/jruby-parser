@@ -841,7 +841,7 @@ arg           : lhs '=' arg {
                   $$ = support.getOperatorCallNode($1, "===", $3, support.getPosition(null));
               }
               | arg tNEQ arg {
-                  $$ = new NotNode(support.union($1, $3), support.getOperatorCallNode($1, "==", $3, support.getPosition(null)));
+                  $$ = support.getOperatorCallNode($1, "!=", $3, support.getPosition(null));
               }
               | arg tMATCH arg {
                   $$ = support.getMatchNode($1, $3);
