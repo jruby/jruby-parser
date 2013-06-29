@@ -120,7 +120,10 @@ import org.jrubyparser.StaticScope;
 import org.jrubyparser.ast.AliasNode;
 import org.jrubyparser.ast.BinaryOperatorNode;
 import org.jrubyparser.ast.BlockArg18Node;
+import org.jrubyparser.ast.DSymbolNode;
 import org.jrubyparser.ast.EncodingNode;
+import org.jrubyparser.ast.KeywordArgNode;
+import org.jrubyparser.ast.KeywordRestArgNode;
 import org.jrubyparser.ast.UndefNode;
 import org.jrubyparser.lexer.Lexer;
 
@@ -917,7 +920,9 @@ public class ParserSupport {
     *  Description of the RubyMethod
     */
     public void initTopLocalVariables() {
-        currentScope = new LocalStaticScope(null);
+        StaticScope scope = configuration.getScope();
+        
+        currentScope = scope == null ? new LocalStaticScope(null) : scope;
         
         result.setScope(currentScope);
     }
@@ -1098,11 +1103,39 @@ public class ParserSupport {
     private Node checkForNilNode(Node node, SourcePosition defaultPosition) {
         return (node == null) ? new NilNode(defaultPosition) : node; 
     }
+    
+    public Node asSymbol(SourcePosition position, Node value) {
+        // FIXME: This might have an encoding issue since toString generally uses iso-8859-1
+        if (value instanceof StrNode) return new SymbolNode(position, ((StrNode) value).getValue().toString());
+        
+        return new DSymbolNode(position, (DStrNode) value);
+    }
+    
+    public ArgsTailHolder new_args_tail(SourcePosition position, ListNode keywordArg, 
+            Token keywordRestArgName, BlockArgNode blockArg) {
+        if (keywordRestArgName == null) return new ArgsTailHolder(position, keywordArg, null, blockArg);
+        
+        String restKwargsName = (String) keywordRestArgName.getValue();
+
+        int slot = currentScope.exists(restKwargsName);
+        if (slot == -1) slot = currentScope.addVariable(restKwargsName);
+
+        KeywordRestArgNode keywordRestArg = new KeywordRestArgNode(position, restKwargsName, slot);
+        
+        return new ArgsTailHolder(position, keywordArg, keywordRestArg, blockArg);
+    }      
 
     public Node new_args(SourcePosition position, ListNode pre, ListNode optional, RestArgNode rest,
             ListNode post, BlockArgNode block) {
-        return new ArgsNode(position, pre, optional, rest, post, block);
+        return new ArgsNode(position, pre, optional, rest, post, null, null, block);
     }
+    
+    public Node new_args(SourcePosition position, ListNode pre, ListNode optional, RestArgNode rest,
+            ListNode post, ArgsTailHolder tail) {
+        if (tail == null) return new_args(position, pre, optional, rest, post, (BlockArgNode) null);
+        
+        return new ArgsNode(position, pre, optional, rest, post, tail.getKeywordArgs(), tail.getKeywordRestArgNode(), tail.getBlockArg());
+    }    
 
     public Node newAlias(SourcePosition position, Node newNode, Node oldNode) {
         return new AliasNode(position, newNode, oldNode);
@@ -1330,5 +1363,9 @@ public class ParserSupport {
 	} 
 
 	return lexer.getPosition(null, inclusive);
-    }     
+    }
+    
+    public KeywordArgNode keyword_arg(SourcePosition position, AssignableNode assignable) {
+        return new KeywordArgNode(position, assignable);
+    }
 }

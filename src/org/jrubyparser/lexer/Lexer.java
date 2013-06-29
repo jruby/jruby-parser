@@ -364,6 +364,7 @@ public class Lexer {
 
     // Are we lexing Ruby 1.8 or 1.9+ syntax
     private boolean isOneEight;
+    private boolean isTwoZero;
     // Count of nested parentheses (1.9 only)
     private int parenNest = 0;
     // 1.9 only
@@ -468,6 +469,7 @@ public class Lexer {
         resetStacks();
         lex_strterm = null;
         commandStart = true;
+        if (parserSupport != null) isTwoZero = parserSupport.getConfiguration().getVersion().is2_0();
     }
     
     /**
@@ -627,6 +629,10 @@ public class Lexer {
     private boolean isARG() {
         return lex_state == LexState.EXPR_ARG || lex_state == LexState.EXPR_CMDARG;
     }
+    
+   private boolean isSpaceArg(int c, boolean spaceSeen) {
+        return isARG() && spaceSeen && !Character.isWhitespace(c);
+    }    
 
     private void determineExpressionState() {
         switch (lex_state) {
@@ -755,6 +761,22 @@ public class Lexer {
             setState(LexState.EXPR_FNAME);
             yaccValue = new Token("%"+c+begin, getPosition());
             return Tokens.tSYMBEG;
+        case 'I':
+            if (isTwoZero) {
+                lex_strterm = new StringTerm(str_dquote | STR_FUNC_QWORDS, begin, end);
+                do {c = src.read();} while (Character.isWhitespace(c));                
+                src.unread(c);
+                yaccValue = new Token("%" + c + begin, getPosition());
+                return Tokens.tSYMBOLS_BEG;
+            }
+        case 'i':
+            if (isTwoZero) {
+                lex_strterm = new StringTerm(/* str_squote | */STR_FUNC_QWORDS, begin, end);
+                do {c = src.read();} while (Character.isWhitespace(c));
+                src.unread(c);
+                yaccValue = new Token("%" + c + begin, getPosition());
+                return Tokens.tQSYMBOLS_BEG;
+            }
 
         default:
             throw new SyntaxException(PID.STRING_UNKNOWN_TYPE, getPosition(), getCurrentLine(),
@@ -1515,7 +1537,7 @@ public class Lexer {
         //if the warning is generated, the getPosition() on line 954 (this line + 18) will create
         //a wrong position if the "inclusive" flag is not set.
         SourcePosition tmpPosition = getPosition();
-        if (isARG() && spaceSeen && !Character.isWhitespace(c)) {
+        if (isSpaceArg(c, spaceSeen)) {
             if (warnings.isVerbose()) warnings.warning(ID.ARGUMENT_AS_PREFIX, tmpPosition, "`&' interpreted as argument prefix", "&");
             c = Tokens.tAMPER;
         } else if (isBEG()) {
@@ -1931,7 +1953,7 @@ public class Lexer {
                 src.unread(c2);
                 setState(LexState.EXPR_BEG);
                 src.read();
-                yaccValue = new Token(tempVal, getPosition());
+                yaccValue = new Token(tempVal, Tokens.tLABEL, getPosition());
                 return Tokens.tLABEL;
             }
             src.unread(c2);
@@ -2120,7 +2142,7 @@ public class Lexer {
             yaccValue = new Token("->", getPosition());
             return Tokens.tLAMBDA;
         }
-        if (isBEG() || (isARG() && spaceSeen && !Character.isWhitespace(c))) {
+        if (isBEG() || isSpaceArg(c, spaceSeen)) {
             if (isARG()) arg_ambiguous();
             setState(LexState.EXPR_BEG);
             src.unread(c);
@@ -2147,7 +2169,7 @@ public class Lexer {
             return Tokens.tOP_ASGN;
         }
         
-        if (isARG() && spaceSeen && !Character.isWhitespace(c)) return parseQuote(c);
+        if (isSpaceArg(c, spaceSeen)) return parseQuote(c);
         
         determineExpressionState();
         
@@ -2202,7 +2224,7 @@ public class Lexer {
             return Tokens.tOP_ASGN;
         }
         
-        if (isBEG() || (isARG() && spaceSeen && !Character.isWhitespace(c))) {
+        if (isBEG() || isSpaceArg(c, spaceSeen)) {
             if (isARG()) arg_ambiguous();
             setState(LexState.EXPR_BEG);
             src.unread(c);
@@ -2341,13 +2363,11 @@ public class Lexer {
             return Tokens.tOP_ASGN;
         }
         src.unread(c);
-        if (isARG() && spaceSeen) {
-            if (!Character.isWhitespace(c)) {
-                arg_ambiguous();
-                lex_strterm = new StringTerm(str_regexp, '\0', '/');
-                yaccValue = new Token("/",getPosition());
-                return Tokens.tREGEXP_BEG;
-            }
+        if (isSpaceArg(c, spaceSeen)) {
+            arg_ambiguous();
+            lex_strterm = new StringTerm(str_regexp, '\0', '/');
+            yaccValue = new Token("/",getPosition());
+            return Tokens.tREGEXP_BEG;
         }
         
         determineExpressionState();
@@ -2368,7 +2388,16 @@ public class Lexer {
             }
             src.unread(c);
             yaccValue = new Token("**", getPosition());
-            c = Tokens.tPOW;
+            
+            if (isTwoZero && isSpaceArg(c, spaceSeen)) {
+                if (warnings.isVerbose()) warnings.warning(ID.ARGUMENT_AS_PREFIX, getPosition(), "`**' interpreted as argument prefix");
+                c = Tokens.tDSTAR;
+            } else if (isTwoZero && isBEG()) {
+                c = Tokens.tDSTAR;
+            } else {
+                //if (!isOneEight) warn_balanced(c, spaceSeen, "*", "argument prefix");
+                c = Tokens.tPOW;
+            }
             break;
         case '=':
             setState(LexState.EXPR_BEG);
@@ -2376,7 +2405,7 @@ public class Lexer {
             return Tokens.tOP_ASGN;
         default:
             src.unread(c);
-            if (isARG() && spaceSeen && !Character.isWhitespace(c)) {
+            if (isSpaceArg(c, spaceSeen)) {
                 if (warnings.isVerbose()) warnings.warning(ID.ARGUMENT_AS_PREFIX, getPosition(), "`*' interpreted as argument prefix", "*");
                 c = Tokens.tSTAR;
             } else if (isBEG()) {

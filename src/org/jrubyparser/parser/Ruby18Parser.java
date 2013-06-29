@@ -1888,7 +1888,7 @@ states[72] = new ParserState() {
 };
 states[206] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
-                  yyVal = new NotNode(support.union(((Node)yyVals[-2+yyTop]), ((Node)yyVals[0+yyTop])), support.getOperatorCallNode(((Node)yyVals[-2+yyTop]), "==", ((Node)yyVals[0+yyTop]), support.getPosition(null)));
+                  yyVal = support.getOperatorCallNode(((Node)yyVals[-2+yyTop]), "!=", ((Node)yyVals[0+yyTop]), support.getPosition(null));
     return yyVal;
   }
 };
@@ -3112,7 +3112,7 @@ states[20] = new ParserState() {
 };
 states[456] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
-                   yyVal = support.new_args(support.createEmptyArgsNodePosition(support.getPosition(null)), null, null, null, null, null);
+                   yyVal = support.new_args(support.createEmptyArgsNodePosition(support.getPosition(null)), null, null, null, null, (BlockArgNode) null);
     return yyVal;
   }
 };

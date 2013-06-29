@@ -34,7 +34,11 @@ import org.jrubyparser.SourcePosition;
  * a bare '*'
  */
 public class UnnamedRestArgNode extends RestArgNode {
+    public UnnamedRestArgNode(SourcePosition position, String name, int index) {
+        super(position, name, index);
+    }
+    
     public UnnamedRestArgNode(SourcePosition position, int index) {
-        super(position, "", index);
+        this(position, "", index);
     }
 }

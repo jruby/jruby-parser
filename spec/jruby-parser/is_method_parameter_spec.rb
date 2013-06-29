@@ -5,7 +5,7 @@ require 'jruby-parser'
 require 'parser_helpers'
 
 describe JRubyParser do
-  [1.8, 1.9].each do |v|
+  VERSIONS.each do |v|
     it "finds  parameter via is_method_parameter [#{v}]" do
       caret_parse("def foo(^a); end", v).tap do |root, caret_node|
         caret_node.method_parameter?.should == true

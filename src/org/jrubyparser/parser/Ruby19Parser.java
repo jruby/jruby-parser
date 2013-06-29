@@ -2376,7 +2376,7 @@ states[411] = new ParserState() {
 states[344] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
                     RestArgNode rest = new UnnamedRestArgNode(((ListNode)yyVals[-1+yyTop]).getPosition(), support.getCurrentScope().addVariable("*"));
-                    yyVal = support.new_args(((ListNode)yyVals[-1+yyTop]).getPosition(), ((ListNode)yyVals[-1+yyTop]), null, rest, null, null);
+                    yyVal = support.new_args(((ListNode)yyVals[-1+yyTop]).getPosition(), ((ListNode)yyVals[-1+yyTop]), null, rest, null, (BlockArgNode) null);
     return yyVal;
   }
 };
@@ -2523,7 +2523,7 @@ states[111] = new ParserState() {
 };
 states[480] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
-                    yyVal = support.new_args(support.getPosition(null), null, null, null, null, null);
+                    yyVal = support.new_args(support.getPosition(null), null, null, null, null, (BlockArgNode) null);
     return yyVal;
   }
 };
@@ -3151,7 +3151,7 @@ states[421] = new ParserState() {
 states[354] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
     /* was $$ = null;*/
-                   yyVal = support.new_args(support.getPosition(null), null, null, null, null, null);
+                    yyVal = support.new_args(support.getPosition(null), null, null, null, null, (BlockArgNode) null);
     return yyVal;
   }
 };
@@ -3346,7 +3346,7 @@ states[423] = new ParserState() {
 };
 states[356] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
-                    yyVal = support.new_args(support.getPosition(null), null, null, null, null, null);
+                    yyVal = support.new_args(support.getPosition(null), null, null, null, null, (BlockArgNode) null);
     return yyVal;
   }
 };
@@ -3422,7 +3422,7 @@ states[424] = new ParserState() {
 };
 states[357] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
-                    yyVal = support.new_args(support.getPosition(null), null, null, null, null, null);
+                    yyVal = support.new_args(support.getPosition(null), null, null, null, null, (BlockArgNode) null);
     return yyVal;
   }
 };

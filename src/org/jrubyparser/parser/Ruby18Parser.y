@@ -841,7 +841,7 @@ arg           : lhs '=' arg {
                   $$ = support.getOperatorCallNode($1, "===", $3, support.getPosition(null));
               }
               | arg tNEQ arg {
-                  $$ = new NotNode(support.union($1, $3), support.getOperatorCallNode($1, "==", $3, support.getPosition(null)));
+                  $$ = support.getOperatorCallNode($1, "!=", $3, support.getPosition(null));
               }
               | arg tMATCH arg {
                   $$ = support.getMatchNode($1, $3);
@@ -1743,7 +1743,7 @@ f_args         : f_arg ',' f_optarg ',' f_rest_arg opt_f_block_arg {
                    $$ = support.new_args(support.getPosition($1), null, null, null, null, $1);
                }
                | /* none */ {
-                   $$ = support.new_args(support.createEmptyArgsNodePosition(support.getPosition(null)), null, null, null, null, null);
+                   $$ = support.new_args(support.createEmptyArgsNodePosition(support.getPosition(null)), null, null, null, null, (BlockArgNode) null);
                }
 
 // Token:f_norm_arg - normal argument to method declaration [!null]

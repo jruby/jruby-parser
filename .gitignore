@@ -8,3 +8,4 @@ dist
 nbproject/private
 lib/jruby-parser.jar
 pkg
+.ruby-version

@@ -5,7 +5,7 @@ require 'jruby-parser'
 require 'parser_helpers'
 
 describe JRubyParser do
-  [1.8, 1.9].each do |v|
+  VERSIONS.each do |v|
     it "finds fcall via simple getNodeAt search [#{v}]" do
       caret_parse("b = fo^o(1)", v).tap do |root, caret_node|
         root.find_node(:fcall).should == caret_node

@@ -5,7 +5,7 @@ require 'jruby-parser'
 require 'parser_helpers'
 
 describe JRubyParser do
-  [1.8, 1.9].each do |v|
+  VERSIONS.each do |v|
     it "finds all def variable occurrences via get_occurrences [#{v}]" do
       carets_parse("def foo(^a); ^a; end", v).tap do |_, caret_nodes|
         caret_nodes.first.occurrences.to_a.should =~ caret_nodes

@@ -84,5 +84,29 @@ public class AliasNode extends Node {
 
         return false;
     }
-    
+
+    /**
+    * Returns the actual string name of the old method from the alias statement,
+    * rather than the node representing it.
+    */
+    public String getOldNameString() {
+        if (oldName instanceof INameNode) return ((INameNode) oldName).getName();
+        if (oldName instanceof StrNode) return ((StrNode) oldName).getValue();
+        if (oldName instanceof LiteralNode) return ((LiteralNode) oldName).getName();
+
+        return "";
+    }
+
+    /**
+     * Returns the actual string name that the method is being aliased to from the alias statement,
+     * rather than the node representing it.
+     */
+    public String getNewNameString() {
+        if (newName instanceof INameNode) return ((INameNode) newName).getName();
+        if (newName instanceof StrNode) return ((StrNode) newName).getValue();
+        if (newName instanceof LiteralNode) return ((LiteralNode) newName).getName();
+
+        return "";
+    }
+
 }

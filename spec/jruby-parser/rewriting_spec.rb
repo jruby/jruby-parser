@@ -2,7 +2,7 @@ $LOAD_PATH.unshift File.dirname(__FILE__) + "/../../lib"
 require 'jruby-parser'
 
 describe JRubyParser do
-  [1.8, 1.9].each do |v|
+  VERSIONS.each do |v|
     it "rewrites method name from foo to bar [#{v}]" do
       parse("b = foo(1)").tap do |root|
         fcall = root.find_node(:fcall)
