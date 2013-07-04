@@ -1795,7 +1795,7 @@ public class ReWriteVisitor implements NodeVisitor {
     }
 
     public Object visitLiteralNode(LiteralNode iVisited) {
-        print("literal");
+        print(iVisited.getName());
         return null;
     }
 }

@@ -12,7 +12,7 @@ import org.jrubyparser.lexer.Token;
  * are nodes and by having literals also be nodes means they have a common
  * subtype which is not Object.
  */
-public class LiteralNode extends Node implements InvisibleNode {
+public class LiteralNode extends Node {
     private String name;
 
     public LiteralNode(Token token) {

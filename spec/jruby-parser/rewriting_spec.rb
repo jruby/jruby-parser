@@ -53,5 +53,9 @@ describe JRubyParser do
         op.value = 3
       end.to_source.should == "1[2] += 3"
     end
+
+    it "rewrites an alias of barewords [#{v}]" do
+      parse("alias foo bar").to_source.should == "alias foo bar"
+    end
   end
 end
