@@ -38,6 +38,7 @@ import org.jrubyparser.StaticScope;
 import org.jrubyparser.ast.CommentNode;
 import org.jrubyparser.ast.Node;
 import org.jrubyparser.ast.PreExeNode;
+import org.jrubyparser.ast.SyntaxNode;
 
 /**
  */
@@ -48,12 +49,8 @@ public class ParserResult {
     private Node ast;
     // __END__ marker offset (-1 means none present)
     private int endOffset = -1;
-    private List<CommentNode> commentNodes;
+    private List<SyntaxNode> syntaxNodes;
     private StaticScope scope;
-
-    public List<CommentNode> getCommentNodes() {
-        return commentNodes == null ? EMPTY_COMMENT_LIST : commentNodes;
-    }
     
     public Node getAST() {
         return ast;
@@ -67,11 +64,11 @@ public class ParserResult {
         this.ast = ast;
     }
 
-    public void addComment(CommentNode node) {
-        if (commentNodes == null) commentNodes = new ArrayList<CommentNode>();
-        commentNodes.add(node);
+    public void addSyntax(SyntaxNode node) {
+        if (syntaxNodes == null) syntaxNodes = new ArrayList<SyntaxNode>();
+        syntaxNodes.add(node);
     }
-    
+        
     public void addBeginNode(PreExeNode node) {
         if (beginNodes == null) beginNodes = new ArrayList<Node>();
     	beginNodes.add(node);
@@ -84,6 +81,10 @@ public class ParserResult {
     public int getEndOffset() {
     	return endOffset;
     }
+    
+    public List<SyntaxNode> getSyntaxNodes() {
+        return syntaxNodes;
+    } 
     
     public void setEndOffset(int endOffset) {
     	this.endOffset = endOffset;
