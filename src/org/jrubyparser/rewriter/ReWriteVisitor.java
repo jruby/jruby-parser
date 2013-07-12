@@ -139,6 +139,7 @@ import org.jrubyparser.ast.SplatNode;
 import org.jrubyparser.ast.StrNode;
 import org.jrubyparser.ast.SuperNode;
 import org.jrubyparser.ast.SymbolNode;
+import org.jrubyparser.ast.SyntaxNode;
 import org.jrubyparser.ast.ToAryNode;
 import org.jrubyparser.ast.TrueNode;
 import org.jrubyparser.ast.UndefNode;
@@ -693,6 +694,11 @@ public class ReWriteVisitor implements NodeVisitor {
 
     public Object visitColon3Node(Colon3Node iVisited) {
         print(iVisited.getDecoratedName());
+        return null;
+    }
+    
+    public Object visitCommentNode(CommentNode iVisited) {
+        print(iVisited.getContent());
         return null;
     }
 
@@ -1583,6 +1589,11 @@ public class ReWriteVisitor implements NodeVisitor {
 
     public Object visitSymbolNode(SymbolNode symbol) {
         print(symbol.getDecoratedName());
+        return null;
+    }
+    
+    public Object visitSyntaxNode(SyntaxNode iVisited) {
+        print(iVisited.getContent());
         return null;
     }
 

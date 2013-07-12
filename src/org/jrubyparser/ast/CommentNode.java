@@ -39,29 +39,23 @@ import org.jrubyparser.SourcePosition;
  * this if we envisioned some wacky annotation system, but we have no crazy ideas yet.
  *   
  */
-public class CommentNode extends Node {
-    // Textual data (this is missing newline as a single line comment and =begin..=end
-    // comments do contain the intermediary newlines.
-    String content;
+public class CommentNode extends SyntaxNode {
 
     public CommentNode(SourcePosition position, String content) {
-        super(position);
-
-        this.content = content;
+        super(position, content);
     }
 
+    @Override
     public NodeType getNodeType() {
         return NodeType.COMMENTNODE;
     }
 
+    @Override
     public Object accept(NodeVisitor visitor) {
-        return null;
-    }
-    
-    public String getContent() {
-        return content;
+        return visitor.visitCommentNode(this);
     }
 
+    @Override
     public List<Node> childNodes() {
         return EMPTY_LIST;
     }
