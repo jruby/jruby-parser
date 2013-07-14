@@ -2,7 +2,7 @@
 
 JRuby once had a parser which kept track of all sorts of extra information when it built it's Abstract Syntax Tree (AST).  Stuff like character offsets where a particular element started or ended.  The impact of this extra information was a more than noticeable amount of memory and a bit of a perf impact.  At the time we decided to discontinue having this sort of parser in JRuby we create JRubyParser.
 
-JRubyParser.java is just the Java code which is slowly evolving into everything a Ruby IDE project could want.  Ability to know know where source elements are; whether a syntax is correct; source re-writing....
+JRubyParser.java is just the Java code which is slowly evolving into everything a Ruby IDE project could want.  Ability to know where source elements are; whether a syntax is correct; source re-writing....
 
 Netbeans and Eclipse are two users of JRubyParser.  We have a vested interest in making parsing Ruby a convenient and simple task for Java programmers.
 
@@ -24,7 +24,7 @@ root.to_source # b = bar(true)
 
 ## Generate new parser code (only needed on hacking .y files):
 
-Assume: jay 1.0.2 installed (https://github.com/jruby/jay):
+Assume: [jay 1.0.2](https://github.com/jruby/jay) installed
 
 ```sh
 ./bin/generate_parser Ruby19Parser Ruby19
