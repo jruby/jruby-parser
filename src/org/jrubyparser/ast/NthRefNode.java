@@ -28,8 +28,6 @@
  ***** END LICENSE BLOCK *****/
 package org.jrubyparser.ast;
 
-import java.util.List;
-
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 
@@ -63,11 +61,7 @@ public class NthRefNode extends Node implements IGlobalVariable {
     public int getMatchNumber() {
         return matchNumber;
     }
-    
-    public List<Node> childNodes() {
-        return EMPTY_LIST;
-    }
-
+ 
     public String getName() {
         return "" + getMatchNumber();
     }

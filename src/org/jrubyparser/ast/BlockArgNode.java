@@ -52,6 +52,7 @@ public class BlockArgNode extends NamedNode implements IParameter {
         return NodeType.BLOCKARGNODE;
     }
     
+    @Override
     public String getDecoratedName() {
         return "&" + getName();
     }
@@ -70,10 +71,6 @@ public class BlockArgNode extends NamedNode implements IParameter {
      */
     public int getCount() {
         return count;
-    }
-	
-    public List<Node> childNodes() {
-        return EMPTY_LIST;
     }
     
     // 1.9+
@@ -101,6 +98,7 @@ public class BlockArgNode extends NamedNode implements IParameter {
         return getPosition().fromEnd(getName().length());
     }
     
+    @Override
     public SourcePosition getDecoratedNamePosition() {
         return getPosition();
     }    

@@ -28,8 +28,6 @@
  ***** END LICENSE BLOCK *****/
 package org.jrubyparser.ast;
 
-import java.util.List;
-
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 
@@ -120,9 +118,4 @@ public class WhileNode extends Node {
     public boolean evaluateAtStart() {
         return evaluateAtStart;
     }
-
-    public List<Node> childNodes() {
-        return Node.createList(conditionNode, bodyNode);
-    }
-
 }

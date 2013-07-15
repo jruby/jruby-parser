@@ -28,11 +28,8 @@
  ***** END LICENSE BLOCK *****/
 package org.jrubyparser.ast;
 
-import java.util.List;
-
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
-import static org.jrubyparser.ast.Node.EMPTY_LIST;
 
 /**
  * The access to a Constant.
@@ -78,10 +75,6 @@ public class ConstNode extends Node implements INameNode {
         
         return thisName != null && thisName.equals(name);
     }
-
-    public List<Node> childNodes() {
-        return EMPTY_LIST;
-    }    
 
     public SourcePosition getNamePosition() {
         return getPosition();

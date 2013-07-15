@@ -28,8 +28,6 @@
  ***** END LICENSE BLOCK *****/
 package org.jrubyparser.ast;
 
-import java.util.List;
-
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 
@@ -64,9 +62,4 @@ public class HashNode extends Node {
     public ListNode getListNode() {
         return listNode;
     }
-    
-    public List<Node> childNodes() {
-        return createList(listNode);
-    }
-    
 }

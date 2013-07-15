@@ -84,10 +84,6 @@ public class MultipleAsgn19Node extends AssignableNode {
     public ListNode getPost() {
         return post;
     }
-
-    public List<Node> childNodes() {
-        return Node.createList(pre, rest, post, getValue());
-    }
     
     public int getRequiredCount() {
         return getPreCount() + getPostCount();

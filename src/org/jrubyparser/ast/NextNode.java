@@ -66,9 +66,4 @@ public class NextNode extends Node {
     public Node getValueNode() {
         return valueNode;
     }
-    
-    public List<Node> childNodes() {
-        return createList(valueNode);
-    }
-    
 }

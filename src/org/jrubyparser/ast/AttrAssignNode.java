@@ -28,8 +28,6 @@
  ***** END LICENSE BLOCK *****/
 package org.jrubyparser.ast;
 
-import java.util.List;
-
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 
@@ -142,11 +140,6 @@ public class AttrAssignNode extends Node implements INameNode, IArgumentNode {
 
     public void setHasParens(boolean hasParens) {
         this.hasParens = hasParens;
-    }
-
-
-    public List<Node> childNodes() {
-        return Node.createList(receiver, arg);
     }
 
     public SourcePosition getNamePosition() {

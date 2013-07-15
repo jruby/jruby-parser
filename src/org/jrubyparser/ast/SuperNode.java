@@ -28,8 +28,6 @@
  ***** END LICENSE BLOCK *****/
 package org.jrubyparser.ast;
 
-import java.util.List;
-
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 
@@ -72,10 +70,6 @@ public class SuperNode extends Node implements BlockAcceptingNode, IArgumentNode
         return argsNode;
     }
     
-    public List<Node> childNodes() {
-        return iterNode != null ? createList(argsNode, iterNode) : createList(argsNode); 
-    }
-
     @Deprecated
     public Node getIterNode() {
         return getIter();

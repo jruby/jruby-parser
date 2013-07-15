@@ -28,8 +28,6 @@
  ***** END LICENSE BLOCK *****/
 package org.jrubyparser.ast;
 
-import java.util.List;
-
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 
@@ -80,11 +78,7 @@ public class GlobalVarNode extends Node implements IGlobalVariable {
         
         return thisName != null && thisName.equals(name);
     }
-    
-    public List<Node> childNodes() {
-        return EMPTY_LIST;
-    }
-    
+
     public SourcePosition getNamePosition() {
         return getPosition().fromEnd(getName().length());
     }

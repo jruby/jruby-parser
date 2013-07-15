@@ -28,8 +28,6 @@
  ***** END LICENSE BLOCK *****/
 package org.jrubyparser.ast;
 
-import java.util.List;
-
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 
@@ -169,10 +167,6 @@ public class CallNode extends Node implements INameNode, IArgumentNode, BlockAcc
     
     public void setReceiver(Node receiver) {
         this.receiverNode = adopt(receiver);
-    }
-
-    public List<Node> childNodes() {
-        return Node.createList(receiverNode, argsNode, iterNode);
     }
 
     public SourcePosition getNamePosition() {

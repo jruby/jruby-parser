@@ -1,6 +1,5 @@
 package org.jrubyparser.ast;
 
-import java.util.List;
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 
@@ -18,10 +17,5 @@ public class MethodNameNode extends NamedNode {
     
     public Object accept(NodeVisitor visitor) {
         return visitor.visitMethodNameNode(this);
-    }    
-
-    @Override
-    public List<Node> childNodes() {
-        return EMPTY_LIST;
     }
 }

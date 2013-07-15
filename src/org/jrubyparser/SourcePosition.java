@@ -29,10 +29,6 @@
 package org.jrubyparser;
 
 import java.io.Serializable;
-import java.util.Collection;
-
-import org.jrubyparser.ast.CommentNode;
-import org.jrubyparser.ast.Node;
 
 /**
  * Position within a source.
@@ -51,8 +47,6 @@ public class SourcePosition implements Serializable {
     private int startOffset;
     private final int endOffset;
     
-    private Collection<CommentNode> comments = Node.EMPTY_COMMENT_LIST;
-
     /**
      * Creates a default source position - required for serialization.
      */
@@ -204,10 +198,6 @@ public class SourcePosition implements Serializable {
         
         return combinedPosition;             
     }
-
-    public Collection<CommentNode> getComments() {
-        return comments;
-    }
     
     /**
      * Make a new SourcePosition instance which will be the index starting at the end of this one of
@@ -220,10 +210,6 @@ public class SourcePosition implements Serializable {
     
     public SourcePosition makeEmptyPositionBeforeThis() {
         return new SourcePosition(file, startLine, endLine, startOffset, startOffset);        
-    }
-
-    public void setComments(Collection<CommentNode> comments) {
-        this.comments = comments;
     }
 
     /** For nodes which are added to the AST which are not proper syntactical elements. */
@@ -260,16 +246,6 @@ public class SourcePosition implements Serializable {
 
         @Override
         public SourcePosition union(SourcePosition position) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public Collection<CommentNode> getComments() {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public void setComments(Collection<CommentNode> comments) {
             throw new UnsupportedOperationException("Not supported yet.");
         }
     };

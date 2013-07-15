@@ -28,8 +28,6 @@
  ***** END LICENSE BLOCK *****/
 package org.jrubyparser.ast;
 
-import java.util.List;
-
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 
@@ -53,10 +51,5 @@ public class CommentNode extends SyntaxNode {
     @Override
     public Object accept(NodeVisitor visitor) {
         return visitor.visitCommentNode(this);
-    }
-
-    @Override
-    public List<Node> childNodes() {
-        return EMPTY_LIST;
     }
 }

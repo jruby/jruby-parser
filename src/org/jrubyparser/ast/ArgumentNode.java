@@ -93,10 +93,6 @@ public class ArgumentNode extends Node implements IParameter {
         this.identifier = name;
     }
 
-    public List<Node> childNodes() {
-        return EMPTY_LIST;
-    }
-
     // Fixme: Can we assert name in constructor and remove null check?
     public boolean isNameMatch(String name) {
         String thisName = getName();

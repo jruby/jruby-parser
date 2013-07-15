@@ -28,8 +28,6 @@
  ***** END LICENSE BLOCK *****/
 package org.jrubyparser.ast;
 
-import java.util.List;
-
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 
@@ -71,10 +69,6 @@ public class AliasNode extends Node {
      */
     public Node getOldName() {
         return oldName;
-    }
-    
-    public List<Node> childNodes() {
-        return Node.createList(newName, oldName);
     }
 
     public boolean oldNameMatches(String name) {        

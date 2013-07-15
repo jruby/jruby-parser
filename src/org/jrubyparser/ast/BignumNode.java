@@ -29,7 +29,6 @@
 package org.jrubyparser.ast;
 
 import java.math.BigInteger;
-import java.util.List;
 
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
@@ -59,10 +58,6 @@ public class BignumNode extends Node implements ILiteralNode {
      */
     public BigInteger getValue() {
         return value;
-    }
-    
-    public List<Node> childNodes() {
-        return EMPTY_LIST;
     }
 
     public void setValue(BigInteger value) {

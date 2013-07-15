@@ -28,8 +28,6 @@
  ***** END LICENSE BLOCK *****/
 package org.jrubyparser.ast;
 
-import java.util.List;
-
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 
@@ -76,10 +74,6 @@ public class Match2Node extends Node {
     @Deprecated
     public Node getValueNode() {
         return getValue();
-    }
-
-    public List<Node> childNodes() {
-        return Node.createList(receiverNode, valueNode);
     }
 
     /**

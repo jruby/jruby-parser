@@ -77,11 +77,7 @@ public class LocalVarNode extends NamedNode implements ILocalVariable {
     public int getIndex() {
         return location & 0xffff;
     }
-    
-    public List<Node> childNodes() {
-        return EMPTY_LIST;
-    }
-    
+
     public IScope getDefinedScope() {
         IScope scope = getClosestIScope();
         

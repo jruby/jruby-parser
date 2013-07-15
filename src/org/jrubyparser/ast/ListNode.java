@@ -143,11 +143,7 @@ public class ListNode extends Node {
     public Node getLast() {
     	return list.isEmpty() ? null : list.get(list.size() - 1);
     }
-    
-    public List<Node> childNodes() {
-        return list;
-    }
-    
+
     public Object accept(NodeVisitor visitor) {
         return visitor.visitListNode(this);
     }

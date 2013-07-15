@@ -28,8 +28,6 @@
  ***** END LICENSE BLOCK *****/
 package org.jrubyparser.ast;
 
-import java.util.List;
-
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 
@@ -81,10 +79,6 @@ public class MultipleAsgnNode extends AssignableNode {
     @Deprecated
     public ListNode getHeadNode() {
         return getHead();
-    }
-    
-    public List<Node> childNodes() {
-        return Node.createList(headNode, restNode, getValue());
     }
 
     @Override

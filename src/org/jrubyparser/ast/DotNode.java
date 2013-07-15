@@ -111,9 +111,4 @@ public class DotNode extends Node {
     public boolean isLiteral() {
         return isLiteral;
     }
-    
-    public List<Node> childNodes() {
-        return Node.createList(beginNode, endNode);
-    }
-    
 }

@@ -28,8 +28,6 @@
  ***** END LICENSE BLOCK *****/
 package org.jrubyparser.ast;
 
-import java.util.List;
-
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 
@@ -63,9 +61,4 @@ public class UndefNode extends Node {
     public Node getName() {
         return name;
     }
-    
-    public List<Node> childNodes() {
-        return Node.createList(name);
-    }
-    
 }

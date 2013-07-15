@@ -28,8 +28,6 @@
  ***** END LICENSE BLOCK *****/
 package org.jrubyparser.ast;
 
-import java.util.List;
-
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 
@@ -112,11 +110,4 @@ public class RescueBodyNode extends Node {
     public void setExceptions(Node exceptions) {
         this.exceptionNodes = adopt(exceptions);
     }
-    
-    public List<Node> childNodes() {
-    	if (optRescueNode != null) return Node.createList(exceptionNodes, bodyNode, optRescueNode);
-    	
-    	return Node.createList(exceptionNodes, bodyNode);
-    }
-    
 }

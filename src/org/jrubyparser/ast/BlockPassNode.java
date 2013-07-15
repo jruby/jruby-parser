@@ -28,8 +28,6 @@
  ***** END LICENSE BLOCK *****/
 package org.jrubyparser.ast;
 
-import java.util.List;
-
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 
@@ -100,9 +98,4 @@ public class BlockPassNode extends Node {
     public void setArgs(Node argsNode) {
         this.argsNode = adopt(argsNode);
     }
-    
-    public List<Node> childNodes() {
-        return Node.createList(argsNode, bodyNode);
-    }
-    
 }

@@ -28,8 +28,6 @@
  ***** END LICENSE BLOCK *****/
 package org.jrubyparser.ast;
 
-import java.util.List;
-
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 
@@ -133,9 +131,5 @@ public class OpElementAsgnNode extends Node {
     
     public void setValue(Node value) {
         this.valueNode = adopt(value);
-    }
-
-    public List<Node> childNodes() {
-        return Node.createList(receiverNode, argsNode, valueNode);
     }
 }

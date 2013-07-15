@@ -28,8 +28,6 @@
  ***** END LICENSE BLOCK *****/
 package org.jrubyparser.ast;
 
-import java.util.List;
-
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 
@@ -66,9 +64,4 @@ public class EvStrNode extends Node {
     public Node getBody() {
         return body;
     }
-    
-    public List<Node> childNodes() {
-        return createList(body);
-    }
-    
 }

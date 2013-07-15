@@ -112,10 +112,6 @@ public class ClassNode extends Node implements IScopingNode, ILocalScope, IModul
     public Node getSuperNode() {
         return getSuper();
     }
-
-    public List<Node> childNodes() {
-        return Node.createList(cpath, bodyNode, superNode);
-    }
      
     public List<ILocalVariable> getVariableReferencesNamed(String name) {
         return ILocalVariableVisitor.findOccurrencesIn(this, name);

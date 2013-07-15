@@ -29,10 +29,8 @@
 package org.jrubyparser.ast;
 
 import java.util.List;
-
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
-import static org.jrubyparser.ast.Node.createList;
 import org.jrubyparser.util.IInstanceVariableVisitor;
 
 /** 
@@ -86,11 +84,7 @@ public class InstAsgnNode extends AssignableNode implements IInstanceVariable {
         
         return thisName != null && thisName.equals(name);
     }
-        
-    public List<Node> childNodes() {
-        return createList(getValue());
-    }
-    
+
     public SourcePosition getNamePosition() {
         return getDecoratedNamePosition().fromEnd(getName().length());
     }

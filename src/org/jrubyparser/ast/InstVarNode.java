@@ -28,11 +28,8 @@
  ***** END LICENSE BLOCK *****/
 package org.jrubyparser.ast;
 
-import java.util.List;
-
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
-import static org.jrubyparser.ast.Node.EMPTY_LIST;
 
 /** 
  * Represents an instance variable accessor.
@@ -81,11 +78,7 @@ public class InstVarNode extends Node implements IInstanceVariable {
         
         return thisName != null && thisName.equals(name);
     }    
-    
-    public List<Node> childNodes() {
-        return EMPTY_LIST;
-    }
-    
+
     public SourcePosition getNamePosition() {
         return getPosition().fromEnd(getName().length());
     }

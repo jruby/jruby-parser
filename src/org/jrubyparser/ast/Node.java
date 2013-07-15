@@ -29,7 +29,6 @@
 package org.jrubyparser.ast;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import org.jrubyparser.NodeVisitor;
@@ -40,13 +39,11 @@ import org.jrubyparser.SourcePosition;
  * Base class for all Nodes in the AST
  */
 public abstract class Node implements ISourcePositionHolder {    
-    // We define an actual list to get around bug in java integration (1387115)
-    static final List<Node> EMPTY_LIST = new ArrayList<Node>();
-    public static final List<CommentNode> EMPTY_COMMENT_LIST = new ArrayList<CommentNode>();
+    private SourcePosition position;
     
     private Node parent = null;
-    
-    private SourcePosition position;
+
+    private List<Node> children = new ArrayList<Node>();    
 
     public Node(SourcePosition position) {
         assert position != null;
@@ -63,7 +60,11 @@ public abstract class Node implements ISourcePositionHolder {
     // Parentage methods
     
     public Node adopt(Node child) {
-        if (child != null) child.setParent(this);
+        if (child != null) {
+            child.setParent(this);
+            children.add(child);
+        }
+        
         return child;
     }
     
@@ -96,7 +97,9 @@ public abstract class Node implements ISourcePositionHolder {
     }
     
     public abstract Object accept(NodeVisitor visitor);
-    public abstract List<Node> childNodes();
+    public List<Node> childNodes() {
+        return children;
+    }
 
     protected static List<Node> createList(Node... nodes) {
         ArrayList<Node> list = new ArrayList<Node>();
@@ -133,53 +136,9 @@ public abstract class Node implements ISourcePositionHolder {
         return nodeType;
     }
     
-    public void addComment(CommentNode comment) {
-        Collection<CommentNode> comments = position.getComments();
-        if (comments == null) {
-            comments = new ArrayList<CommentNode>();
-            position.setComments(comments);
-        }
-
-        comments.add(comment);
-    }
-    
-    public void addComments(Collection<CommentNode> moreComments) {
-        Collection<CommentNode> comments = position.getComments();
-        if (comments == EMPTY_COMMENT_LIST) {
-            comments = new ArrayList<CommentNode>();
-            position.setComments(comments);
-        }
-
-        comments.addAll(moreComments);
-    }
-    
-    public Collection<CommentNode> getComments() {
-        return position.getComments();
-    }
-    
-    public boolean hasComments() {
-        return getComments() != EMPTY_COMMENT_LIST;
-    }
-    
+    // FIXME: I believe we need to impl and keep this method for codefolding
     public SourcePosition getPositionIncludingComments() {
-        if (!hasComments()) return position;
-        
-        String fileName = position.getFile();
-        int startOffset = position.getStartOffset();
-        int endOffset = position.getEndOffset();
-        int startLine = position.getStartLine();
-        int endLine = position.getEndLine();
-        
-        // Since this is only used for IDEs this is safe code, but there is an obvious abstraction issue here.
-        SourcePosition commentIncludingPos = 
-            new SourcePosition(fileName, startLine, endLine, startOffset, endOffset);
-        
-        for (CommentNode comment: getComments()) {
-            commentIncludingPos = 
-                SourcePosition.combinePosition(commentIncludingPos, comment.getPosition());
-        }       
-
-        return commentIncludingPos;
+        return position;
     }
 
     /**

@@ -1,6 +1,5 @@
 package org.jrubyparser.ast;
 
-import java.util.List;
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.lexer.Token;
 
@@ -31,10 +30,6 @@ public class LiteralNode extends Node {
      **/
     public Object accept(NodeVisitor iVisitor) {
         return iVisitor.visitLiteralNode(this);
-    }
-
-    public List<Node> childNodes() {
-        return EMPTY_LIST;
     }
 
     @Override

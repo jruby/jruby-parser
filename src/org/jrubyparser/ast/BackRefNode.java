@@ -28,8 +28,6 @@
  ***** END LICENSE BLOCK *****/
 package org.jrubyparser.ast;
 
-import java.util.List;
-
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 
@@ -70,10 +68,6 @@ public class BackRefNode extends Node implements IGlobalVariable {
      */
     public char getType() {
         return type;
-    }
-    
-    public List<Node> childNodes() {
-        return EMPTY_LIST;
     }
 
     public String getName() {

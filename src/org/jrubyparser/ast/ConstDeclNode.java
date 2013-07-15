@@ -28,8 +28,6 @@
  ***** END LICENSE BLOCK *****/
 package org.jrubyparser.ast;
 
-import java.util.List;
-
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 
@@ -91,10 +89,6 @@ public class ConstDeclNode extends AssignableNode implements INameNode {
      */
     public Node getConstNode() {
         return (Node) constNode;
-    }
-    
-    public List<Node> childNodes() {
-        return createList(getValue());
     }
 
     public SourcePosition getNamePosition() {

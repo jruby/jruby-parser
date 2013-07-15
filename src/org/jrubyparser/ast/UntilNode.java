@@ -28,8 +28,6 @@
  ***** END LICENSE BLOCK *****/
 package org.jrubyparser.ast;
 
-import java.util.List;
-
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 
@@ -104,10 +102,6 @@ public class UntilNode extends Node {
         this.conditionNode = adopt(condition);
     }
 
-    public List<Node> childNodes() {
-        return Node.createList(conditionNode, bodyNode);
-    }
-    
     /**
      * Determine whether this is while or do while
      * @return true if you are a while, false if do while

@@ -102,10 +102,6 @@ public class DAsgnNode extends AssignableNode implements ILocalVariable {
     public int getIndex() {
         return location & 0xffff;
     }
-    
-    public List<Node> childNodes() {
-        return createList(getValue());
-    }
 
     public IScope getDefinedScope() {
         IScope scope = getClosestIScope();

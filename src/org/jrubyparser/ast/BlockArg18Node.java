@@ -1,6 +1,5 @@
 package org.jrubyparser.ast;
 
-import java.util.List;
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 
@@ -38,11 +37,6 @@ public class BlockArg18Node extends Node {
     @Override
     public Object accept(NodeVisitor visitor) {
         return visitor.visitBlockArg18Node(this);
-    }
-
-    @Override
-    public List<Node> childNodes() {
-        return createList(normalBlockArgs, blockArgAssignee);
     }
 
     @Override

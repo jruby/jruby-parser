@@ -97,10 +97,6 @@ public class ModuleNode extends Node implements IScopingNode, ILocalScope, IModu
     public Colon3Node getCPath() {
         return cpath;
     }
-    
-    public List<Node> childNodes() {
-        return Node.createList(cpath, bodyNode);
-    }
 
     public List<ILocalVariable> getVariableReferencesNamed(String name) {
         return ILocalVariableVisitor.findOccurrencesIn(this, name);

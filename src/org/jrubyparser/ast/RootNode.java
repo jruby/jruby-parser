@@ -94,10 +94,6 @@ public class RootNode extends Node implements ILocalScope {
         return iVisitor.visitRootNode(this);
     }
 
-    public List<Node> childNodes() {
-        return createList(bodyNode);
-    }
-    
     public List<ILocalVariable> getVariableReferencesNamed(String name) {
         return ILocalVariableVisitor.findOccurrencesIn(this, name);
     }    

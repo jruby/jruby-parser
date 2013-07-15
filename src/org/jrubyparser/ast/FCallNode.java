@@ -147,10 +147,6 @@ public class FCallNode extends Node implements INameNode, IArgumentNode, BlockAc
         
         return thisName != null && thisName.equals(name);
     }
-    
-    public List<Node> childNodes() {
-        return createList(argsNode, iterNode);
-    }
 
     public SourcePosition getNamePosition() {
         return getPosition().fromBeginning(getName().length());

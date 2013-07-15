@@ -28,8 +28,6 @@
  ***** END LICENSE BLOCK *****/
 package org.jrubyparser.ast;
 
-import java.util.List;
-
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 
@@ -71,10 +69,5 @@ public class ArgsCatNode extends Node implements BinaryOperatorNode {
     @Deprecated
     public Node getSecondNode() {
         return getSecond();
-    }
-    
-    public List<Node> childNodes() {
-        return Node.createList(firstNode, secondNode);
-    }
-    
+    }    
 }

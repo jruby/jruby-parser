@@ -27,7 +27,6 @@
  ***** END LICENSE BLOCK *****/
 package org.jrubyparser.ast;
 
-import java.util.List;
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 
@@ -54,11 +53,6 @@ public class OptArgNode extends Node implements INameNode {
     @Override
     public Object accept(NodeVisitor visitor) {
         return visitor.visitOptArgNode(this);
-    }
-
-    @Override
-    public List<Node> childNodes() {
-        return Node.createList(value);
     }
     
     public String getDecoratedName() {
