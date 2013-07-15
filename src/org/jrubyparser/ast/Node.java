@@ -68,6 +68,15 @@ public abstract class Node implements ISourcePositionHolder {
         return child;
     }
     
+    public Node adopt(Node child, int index) {
+        if (child != null) {
+            child.setParent(this);
+            children.add(index, child);
+        }
+        
+        return child;
+    }
+    
     public Node getParent() {
         return parent;
     }
@@ -148,6 +157,13 @@ public abstract class Node implements ISourcePositionHolder {
     public boolean isInvisible() {
         return this instanceof InvisibleNode;
     }
+    
+    /**
+     * Is this AST node considered a leaf node?
+     */
+    public boolean isLeaf() {
+        return childNodes().isEmpty();
+    }
 
     /**
      * @return the nodeId
@@ -161,6 +177,80 @@ public abstract class Node implements ISourcePositionHolder {
      * @param nodes 
      */
     public void insertAll(List<? extends Node> nodes) {
+        if (nodes == null || nodes.isEmpty()) return;
+
+        for (Node current: nodes) {
+            insertNode(current);
+        }
+    }
+    
+    public void insertNode(Node node) {
+        int direction = comparePositionWith(node);
+        
+        if (isLeaf()) {
+            if (direction < 0) {
+                //System.out.println("BEFORE: ADDING TO " + this + " WITH " + node);
+                insertBefore(node);
+            } else if (direction > 0) {
+                //System.out.println("AFTER: ADDING TO " + this + " WITH " + node);
+                insertAfter(node);
+            } else {
+                assert false: "Tried to insert inside a lead node";
+            }
+        } else {
+            if (direction < 0) { // ROOT NODE since all other nodes will be bounded by root node
+                adopt(node, 0);
+                setPosition(node.getPosition().union(getPosition()));
+            } else if (direction == 0) {
+                boolean addedToChild = false;
+                int i = 0;
+                for (Node child: childNodes()) {
+                    direction = child.comparePositionWith(node);
+                
+                    if (direction < 0) { 
+                        //System.out.println("BEFORE(R): ADDING TO " + this + " WITH " + node);
+                        adopt(node, i+1);
+                        addedToChild = true;
+                        break;
+                    } else if (direction == 0) {
+                        //System.out.println("RECURSING: ADDING TO " + this + " WITH " + node);
+                        child.insertNode(node);
+                        addedToChild = true;
+                        break;
+                    }
+                }
+
+                if (!addedToChild) {
+                    //System.out.println("AFTER(R): ADDING TO " + this + " WITH " + node);
+                    adopt(node);
+                }
+                
+            } else if (direction > 0) {
+                //System.out.println("EOF: ADDING TO " + this + " WITH " + node);
+                adopt(node); // Add  to end of last child element of root
+                setPosition(node.getPosition().union(getPosition()));
+            }
+        }
+    }
+    
+    public void insertBefore(Node newNode) {
+        getParent().adopt(newNode, getParent().childNodes().indexOf(this));
+    }
+    
+    public void insertAfter(Node newNode) {
+        getParent().adopt(newNode, getParent().childNodes().indexOf(this) + 1);
+    }
+    
+    /**
+     * Is the testNode before, inside, or after this node?
+     * 
+     * @return -1 if before, 0 is inside, or 1 if after
+     */
+    public int comparePositionWith(Node testNode) {
+        if (testNode.getPosition().getStartOffset() < getPosition().getStartOffset()) return -1;
+        if (testNode.getPosition().getEndOffset() > getPosition().getEndOffset()) return 1;
+        
+        return 0;
     }
     
     /**

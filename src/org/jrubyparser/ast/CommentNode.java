@@ -52,4 +52,9 @@ public class CommentNode extends SyntaxNode {
     public Object accept(NodeVisitor visitor) {
         return visitor.visitCommentNode(this);
     }
+    
+    @Override
+    public String toString() {
+        return "Comment: " + getContent();
+    }
 }

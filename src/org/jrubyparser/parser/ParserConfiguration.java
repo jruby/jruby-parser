@@ -89,4 +89,8 @@ public class ParserConfiguration {
     public SyntaxGathering getSyntax() {
         return syntax;
     }
+    
+    public void setSyntax(SyntaxGathering syntax) {
+        this.syntax = syntax;
+    }
 }

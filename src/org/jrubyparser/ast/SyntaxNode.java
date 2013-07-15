@@ -40,8 +40,10 @@ public class SyntaxNode extends Node {
     // text for this region of syntax
     private String content;
     
-    public SyntaxNode(SourcePosition position, String syntax) {
+    public SyntaxNode(SourcePosition position, String content) {
         super(position);
+        
+        this.content = content;
     }
 
     @Override

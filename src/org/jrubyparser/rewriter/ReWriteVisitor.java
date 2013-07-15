@@ -1706,9 +1706,11 @@ public class ReWriteVisitor implements NodeVisitor {
         print(iVisited.getName().substring(0, iVisited.getName().length() - 1));
     }
 
-    public Object visitRootNode(RootNode iVisited) {
-        config.getLocalVariables().addLocalVariable(iVisited.getStaticScope());
-        visitNode(iVisited.getBody());
+    public Object visitRootNode(RootNode root) {
+        config.getLocalVariables().addLocalVariable(root.getStaticScope());
+        for (Node child: root.childNodes()) {
+            visitNode(child);
+        }
         if (config.hasHereDocument()) config.fetchHereDocument().print();
 
         return null;

@@ -4,7 +4,7 @@ require 'jruby-parser'
 describe JRubyParser do
   VERSIONS.each do |v|
     it "rewrites method name from foo to bar [#{v}]" do
-      parse("b = foo(1)").tap do |root|
+      rparse("b = foo(1)").tap do |root|
         fcall = root.find_node(:fcall)
         fcall.name = 'bar'
       end.to_source.should == "b = bar(1)"
@@ -57,5 +57,10 @@ describe JRubyParser do
     it "rewrites an alias of barewords [#{v}]" do
       parse("alias foo bar").to_source.should == "alias foo bar"
     end
+
+#    it "rewrites a comment on first line [#{v}]" do
+#      code = "# comment 1\nfoo(1)\n"
+#      rparse(code).to_source.should == code
+#    end
   end
 end

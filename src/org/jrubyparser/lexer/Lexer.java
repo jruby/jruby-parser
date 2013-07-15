@@ -53,7 +53,6 @@ import org.jrubyparser.IRubyWarnings;
 import org.jrubyparser.IRubyWarnings.ID;
 import org.jrubyparser.SourcePosition;
 import org.jrubyparser.lexer.SyntaxException.PID;
-import org.jrubyparser.parser.ParserConfiguration;
 import org.jrubyparser.parser.ParserSupport;
 import org.jrubyparser.parser.Tokens;
 import org.jrubyparser.util.CStringBuilder;
