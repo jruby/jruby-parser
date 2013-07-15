@@ -194,6 +194,15 @@ public abstract class Node implements ISourcePositionHolder {
      * @return the nodeId
      */
     public abstract NodeType getNodeType();
+
+    /**
+     * Put entire list of nodes into their proper positions based on the SourcePosition specified
+     * by each node in the list.  This list must be in sorted order to work.
+     * 
+     * @param nodes 
+     */
+    public void insertAll(List<? extends Node> nodes) {
+    }
     
     /**
      * Find the leaf node (which is not invisible) at the specified offset).

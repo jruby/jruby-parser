@@ -38,6 +38,7 @@ import org.jrubyparser.ast.Node;
 import org.jrubyparser.lexer.LexerSource;
 import org.jrubyparser.lexer.SyntaxException;
 import org.jrubyparser.parser.ParserConfiguration;
+import org.jrubyparser.parser.ParserResult;
 import org.jrubyparser.parser.Ruby18Parser;
 import org.jrubyparser.parser.Ruby19Parser;
 import org.jrubyparser.parser.Ruby20Parser;
@@ -82,7 +83,12 @@ public class Parser {
 
         Node ast = null;
         try {
-            ast = parser.parse(configuration, lexerSource).getAST();
+            ParserResult result = parser.parse(configuration, lexerSource);
+            
+            // We want some amount of extra syntax-only elements properly added to the AST tree
+            if (configuration.getSyntax() != ParserConfiguration.SyntaxGathering.NONE) result.weaveInExtraSyntax();
+            
+            ast = result.getAST();
         } catch(IOException e) {
             // TODO: What should this raise something for IDEs?
         }

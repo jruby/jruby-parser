@@ -97,4 +97,8 @@ public class ParserResult {
     public StaticScope getScope() {
         return scope;
     }
+
+    public void weaveInExtraSyntax() {
+        ast.insertAll(getSyntaxNodes());
+    }
 }
