@@ -1,6 +1,6 @@
-require_relative '../helpers'
+require_relative '../../helpers'
 
-describe JRubyParser do
+describe org.jrubyparser.ast.Node do
   VERSIONS.each do |v|
     it "finds a variable's parameter declaration via get_declaration [#{v}]" do
       carets_parse("def foo(^a); ^a; end", v).tap do |_, caret_nodes|
