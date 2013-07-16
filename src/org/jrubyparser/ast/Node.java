@@ -266,7 +266,12 @@ public abstract class Node implements ISourcePositionHolder {
 
         int thisIndex = siblings.indexOf(this);
         
-        if (thisIndex == 0) return comments;
+        if (thisIndex == 0) {
+            // # one\ndef foo... and similar are pretty common to see a newline node in the middle
+            if (getParent() instanceof NewlineNode) return getParent().getPreviousComments();
+
+            return comments;
+        }
         
         for (int i = thisIndex - 1; i >= 0; i--) {
             Node current = siblings.get(i);
