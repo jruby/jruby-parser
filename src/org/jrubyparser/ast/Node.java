@@ -12,7 +12,7 @@
  * implied. See the License for the specific language governing
  * rights and limitations under the License.
  *
- * Copyright (C) 2009 Thomas E. Enebo <tom.enebo@gmail.com>
+ * Copyright (C) 2013 The JRuby team
  * 
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
@@ -145,9 +145,12 @@ public abstract class Node implements ISourcePositionHolder {
         return nodeType;
     }
     
-    // FIXME: I believe we need to impl and keep this method for codefolding
     public SourcePosition getPositionIncludingComments() {
-        return position;
+        List<CommentNode> comments = getPreviousComments();
+        
+        if (comments.isEmpty()) return getPosition();
+        
+        return comments.get(0).getPosition().union(getPosition());
     }
 
     /**
@@ -251,6 +254,45 @@ public abstract class Node implements ISourcePositionHolder {
         if (testNode.getPosition().getEndOffset() > getPosition().getEndOffset()) return 1;
         
         return 0;
+    }
+    
+    /**
+     * Look for all comment nodes immediately preceeding this one.  Additional pure-syntax nodes
+     * will not break up contiguous comments (e.g. extra whitespace or an errant ';').
+     */
+    public List<CommentNode> getPreviousComments() {
+        List<CommentNode> comments = new ArrayList<CommentNode>();
+        List<Node> siblings = getParent().childNodes();
+
+        int thisIndex = siblings.indexOf(this);
+        
+        if (thisIndex == 0) return comments;
+        
+        for (int i = thisIndex - 1; i >= 0; i--) {
+            Node current = siblings.get(i);
+            
+            if (!(current instanceof SyntaxNode)) break;
+            if (current instanceof CommentNode) comments.add((CommentNode) current);
+        }
+        
+        return comments;
+    }
+    
+    /**
+     * Get the comment which happens to appear on the same line as this node immediately after it.
+     */
+    public CommentNode getInlineComment() {
+        List<Node> siblings = getParent().childNodes();
+
+        int thisIndex = siblings.indexOf(this);
+        
+        if (thisIndex + 1 > siblings.size()) return null;
+        
+        Node nextNode = siblings.get(thisIndex + 1);
+        
+        if (nextNode instanceof CommentNode) return (CommentNode) nextNode;
+        
+        return null;
     }
     
     /**

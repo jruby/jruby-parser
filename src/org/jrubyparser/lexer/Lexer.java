@@ -52,6 +52,7 @@ import org.jrubyparser.ast.StrNode;
 import org.jrubyparser.IRubyWarnings;
 import org.jrubyparser.IRubyWarnings.ID;
 import org.jrubyparser.SourcePosition;
+import org.jrubyparser.ast.SyntaxNode;
 import org.jrubyparser.lexer.SyntaxException.PID;
 import org.jrubyparser.parser.ParserSupport;
 import org.jrubyparser.parser.Tokens;
@@ -990,17 +991,14 @@ public class Lexer {
         }
         src.unread(c);
 
-        // ENEBO: When is parserSupport actually null?
-        if (parserSupport != null) {
-            // Store away each comment to parser result so IDEs can do whatever they want with them.
-            SourcePosition position = startPosition.union(getPosition());
-
-            parserSupport.getResult().addSyntax(new CommentNode(position, tokenBuffer.toString()));
-        } else {
-            getPosition();
-        }
+        addSyntax(new CommentNode(startPosition.union(getPosition()), tokenBuffer.toString()));
         
         return c;
+    }
+    
+    private void addSyntax(SyntaxNode node) {
+        // ENEBO: When is parserSupport actually null? (Maybe pure-lexing from something like netbeans?)
+        if (parserSupport != null) parserSupport.getResult().addSyntax(node);
     }
     
     /*
@@ -1362,8 +1360,7 @@ public class Lexer {
 
                             if (collectComments()) {
                         	// Store away each comment to parser result so IDEs can do whatever they want with them.
-                        	SourcePosition position = startPosition.union(getPosition());
-                                parserSupport.getResult().addSyntax(new CommentNode(position, tokenBuffer.toString()));
+                                addSyntax(new CommentNode(startPosition.union(getPosition()), tokenBuffer.toString()));
                             }
                             if (preserveSpaces) {
                         	yaccValue = new Token("here-doc", getPosition());
@@ -1470,7 +1467,7 @@ public class Lexer {
                 return at();
             case '_':
                 if (src.wasBeginOfLine() && src.matchMarker(END_MARKER, false, true)) {
-                	if (parserSupport != null) parserSupport.getResult().setEndOffset(src.getOffset());
+                    if (parserSupport != null) parserSupport.getResult().setEndOffset(src.getOffset());
                     return EOF;
                 }
                 return identifier(c, commandState);

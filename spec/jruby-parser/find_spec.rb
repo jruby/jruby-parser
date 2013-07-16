@@ -1,8 +1,4 @@
-$LOAD_PATH.unshift File.dirname(__FILE__) + "/../../lib"
-$LOAD_PATH.unshift File.dirname(__FILE__) + "/../helpers"
-require 'java'
-require 'jruby-parser'
-require 'parser_helpers'
+require_relative '../helpers'
 
 describe JRubyParser do
   VERSIONS.each do |v|
