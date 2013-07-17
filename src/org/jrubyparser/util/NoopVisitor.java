@@ -120,6 +120,8 @@ import org.jrubyparser.ast.ZSuperNode;
 public class NoopVisitor implements NodeVisitor {
     
     protected Object visit(Node parent) {
+        if (parent == null) return null;
+        
         for (Node node: parent.childNodes()) {
             node.accept(this);
         }

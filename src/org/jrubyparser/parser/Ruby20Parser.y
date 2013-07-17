@@ -68,7 +68,6 @@ import org.jrubyparser.ast.MethodNameNode;
 import org.jrubyparser.ast.ModuleNode;
 import org.jrubyparser.ast.MultipleAsgn19Node;
 import org.jrubyparser.ast.NextNode;
-import org.jrubyparser.ast.NilImplicitNode;
 import org.jrubyparser.ast.NilNode;
 import org.jrubyparser.ast.Node;
 import org.jrubyparser.ast.OpAsgnAndNode;
@@ -331,7 +330,6 @@ bodystmt      : compstmt opt_rescue opt_else opt_ensure {
                       node = support.appendToBlock($1, $3);
                   }
                   if ($4 != null) {
-                      if (node == null) node = NilImplicitNode.NIL;
                       node = new EnsureNode(support.getPosition($1), node, $4);
                   }
 
@@ -363,7 +361,7 @@ stmt_or_begin   : stmt {
                 | kBEGIN {
                    support.yyerror("BEGIN is permitted only at toplevel");
                 } tLCURLY top_compstmt tRCURLY {
-                    $$ = new BeginNode(support.getPosition($1), $2 == null ? NilImplicitNode.NIL : $2);
+                    $$ = new BeginNode(support.getPosition($1), $2);
                 }
 
 stmt            : kALIAS fitem {
@@ -404,7 +402,7 @@ stmt            : kALIAS fitem {
                     }
                 }
                 | stmt kRESCUE_MOD stmt {
-                    Node body = $3 == null ? NilImplicitNode.NIL : $3;
+                    Node body = $3;
                     $$ = new RescueNode(support.getPosition($1), $1, new RescueBodyNode(support.getPosition($1), null, body, null), null);
                 }
                 | klEND tLCURLY compstmt tRCURLY {
@@ -621,10 +619,10 @@ mlhs_post       : mlhs_item {
                 }
 
 mlhs_node       : user_variable {
-                    $$ = support.assignable($1, NilImplicitNode.NIL);
+                    $$ = support.assignable($1, null);
                 }
                 | keyword_variable {
-                    $$ = support.assignable($1, NilImplicitNode.NIL);
+                    $$ = support.assignable($1, null);
                 }
                 | primary_value '[' opt_call_args rbracket {
                     $$ = support.aryset($1, $3);
@@ -645,7 +643,7 @@ mlhs_node       : user_variable {
 
                     SourcePosition position = support.getPosition($1);
 
-                    $$ = new ConstDeclNode(position, null, support.new_colon2(position, $1, (String) $3.getValue()), NilImplicitNode.NIL);
+                    $$ = new ConstDeclNode(position, null, support.new_colon2(position, $1, (String) $3.getValue()), null);
                 }
                 | tCOLON3 tCONSTANT {
                     if (support.isInDef() || support.isInSingle()) {
@@ -654,17 +652,17 @@ mlhs_node       : user_variable {
 
                     SourcePosition position = $1.getPosition();
 
-                    $$ = new ConstDeclNode(position, null, support.new_colon3(position, (String) $2.getValue()), NilImplicitNode.NIL);
+                    $$ = new ConstDeclNode(position, null, support.new_colon3(position, (String) $2.getValue()), null);
                 }
                 | backref {
                     support.backrefAssignError($1);
                 }
 
 lhs             : user_variable {
-                    $$ = support.assignable($1, NilImplicitNode.NIL);
+                    $$ = support.assignable($1, null);
                 }
                 | keyword_variable {
-                    $$ = support.assignable($1, NilImplicitNode.NIL);
+                    $$ = support.assignable($1, null);
                 }
                 | primary_value '[' opt_call_args rbracket {
                     $$ = support.aryset($1, $3);
@@ -685,7 +683,7 @@ lhs             : user_variable {
 
                     SourcePosition position = support.getPosition($1);
 
-                    $$ = new ConstDeclNode(position, null, support.new_colon2(position, $1, (String) $3.getValue()), NilImplicitNode.NIL);
+                    $$ = new ConstDeclNode(position, null, support.new_colon2(position, $1, (String) $3.getValue()), null);
                 }
                 | tCOLON3 tCONSTANT {
                     if (support.isInDef() || support.isInSingle()) {
@@ -694,7 +692,7 @@ lhs             : user_variable {
 
                     SourcePosition position = $1.getPosition();
 
-                    $$ = new ConstDeclNode(position, null, support.new_colon3(position, (String) $2.getValue()), NilImplicitNode.NIL);
+                    $$ = new ConstDeclNode(position, null, support.new_colon3(position, (String) $2.getValue()), null);
                 }
                 | backref {
                     support.backrefAssignError($1);
@@ -774,7 +772,7 @@ arg             : lhs '=' arg {
                 }
                 | lhs '=' arg kRESCUE_MOD arg {
                     SourcePosition position = $4.getPosition();
-                    Node body = $5 == null ? NilImplicitNode.NIL : $5;
+                    Node body = $5;
                     $$ = support.node_assign($1, new RescueNode(position, $3, new RescueBodyNode(position, null, body, null), null));
                 }
                 | var_lhs tOP_ASGN arg {
@@ -797,7 +795,7 @@ arg             : lhs '=' arg {
                 | var_lhs tOP_ASGN arg kRESCUE_MOD arg {
                     support.checkExpression($3);
                     SourcePosition pos = $4.getPosition();
-                    Node body = $5 == null ? NilImplicitNode.NIL : $5;
+                    Node body = $5;
                     Node rescue = new RescueNode($4.getPosition(), $3, new RescueBodyNode($4.getPosition(), null, body, null), null);
 
                     pos = $1.getPosition();
@@ -955,7 +953,7 @@ arg             : lhs '=' arg {
 
 arg_value       : arg {
                     support.checkExpression($1);
-                    $$ = $1 != null ? $1 : NilImplicitNode.NIL;
+                    $$ = $1;
                 }
 
 aref_args       : none
@@ -1093,7 +1091,7 @@ primary         : literal
                      $$ = support.new_fcall($1, null, null);
                 }
                 | kBEGIN bodystmt kEND {
-                    $$ = new BeginNode(support.getPosition($1), $2 == null ? NilImplicitNode.NIL : $2);
+                    $$ = new BeginNode(support.getPosition($1), $2);
                 }
                 | tLPAREN_ARG {
                     lexer.setState(LexState.EXPR_ENDARG);
@@ -1134,7 +1132,7 @@ primary         : literal
                     $$ = new HashNode($1.getPosition(), $2);
                 }
                 | kRETURN {
-                    $$ = new ReturnNode($1.getPosition(), NilImplicitNode.NIL);
+                    $$ = new ReturnNode($1.getPosition(), null);
                 }
                 | kYIELD tLPAREN2 call_args rparen {
                     $$ = support.new_yield($1.getPosition(), $3);
@@ -1152,7 +1150,7 @@ primary         : literal
                     $$ = support.getOperatorCallNode(support.getConditionNode($3), "!");
                 }
                 | kNOT tLPAREN2 rparen {
-                    $$ = support.getOperatorCallNode(NilImplicitNode.NIL, "!");
+                    $$ = support.getOperatorCallNode(null, "!");
                 }
                 | operation brace_block {
                     $$ = support.new_fcall($1, $2, null);
@@ -1181,7 +1179,7 @@ primary         : literal
                 } expr_value do {
                     lexer.getConditionState().end();
                 } compstmt kEND {
-                    Node body = $6 == null ? NilImplicitNode.NIL : $6;
+                    Node body = $6;
                     $$ = new WhileNode($1.getPosition(), support.getConditionNode($3), body);
                 }
                 | kUNTIL {
@@ -1189,7 +1187,7 @@ primary         : literal
                 } expr_value do {
                   lexer.getConditionState().end();
                 } compstmt kEND {
-                    Node body = $6 == null ? NilImplicitNode.NIL : $6;
+                    Node body = $6;
                     $$ = new UntilNode($1.getPosition(), support.getConditionNode($3), body);
                 }
                 | kCASE expr_value opt_terms case_body kEND {
@@ -1212,7 +1210,7 @@ primary         : literal
                     }
                     support.pushLocalScope();
                 } bodystmt kEND {
-                    Node body = $5 == null ? NilImplicitNode.NIL : $5;
+                    Node body = $5;
 
                     $$ = new ClassNode($1.getPosition(), $<Colon3Node>2, support.getCurrentScope(), body, $3);
                     support.popCurrentScope();
@@ -1236,7 +1234,7 @@ primary         : literal
                     }
                     support.pushLocalScope();
                 } bodystmt kEND {
-                    Node body = $4 == null ? NilImplicitNode.NIL : $4;
+                    Node body = $4;
 
                     $$ = new ModuleNode($1.getPosition(), $<Colon3Node>2, support.getCurrentScope(), body);
                     support.popCurrentScope();
@@ -1245,8 +1243,7 @@ primary         : literal
                     support.setInDef(true);
                     support.pushLocalScope();
                 } f_arglist bodystmt kEND {
-                    // TODO: We should use implicit nil for body, but problem (punt til later)
-                    Node body = $5; //$5 == null ? NilImplicitNode.NIL : $5;
+                    Node body = $5;
 
                     $$ = new DefnNode(support.union($1, $6), new MethodNameNode($2.getPosition(), (String) $2.getValue()), $4, support.getCurrentScope(), body);
                     support.popCurrentScope();
@@ -1259,18 +1256,17 @@ primary         : literal
                     support.pushLocalScope();
                     lexer.setState(LexState.EXPR_ENDFN); /* force for args */
                 } f_arglist bodystmt kEND {
-                    // TODO: We should use implicit nil for body, but problem (punt til later)
-                    Node body = $8; //$8 == null ? NilImplicitNode.NIL : $8;
+                    Node body = $8;
 
                     $$ = new DefsNode(support.union($1, $9), $2, new MethodNameNode($5.getPosition(), (String) $5.getValue()), $7, support.getCurrentScope(), body);
                     support.popCurrentScope();
                     support.setInSingle(support.getInSingle() - 1);
                 }
                 | kBREAK {
-                    $$ = new BreakNode($1.getPosition(), NilImplicitNode.NIL);
+                    $$ = new BreakNode($1.getPosition(), null);
                 }
                 | kNEXT {
-                    $$ = new NextNode($1.getPosition(), NilImplicitNode.NIL);
+                    $$ = new NextNode($1.getPosition(), null);
                 }
                 | kREDO {
                     $$ = new RedoNode($1.getPosition());
@@ -1282,7 +1278,6 @@ primary         : literal
 primary_value   : primary {
                     support.checkExpression($1);
                     $$ = $1;
-                    if ($$ == null) $$ = NilImplicitNode.NIL;
                 }
 
 then            : term
@@ -1307,7 +1302,7 @@ for_var         : lhs
                 }
 
 f_marg          : f_norm_arg {
-                     $$ = support.assignable($1, NilImplicitNode.NIL);
+                     $$ = support.assignable($1, null);
                 }
                 | tLPAREN f_margs rparen {
                     $$ = $2;
@@ -1577,7 +1572,7 @@ opt_rescue      : kRESCUE exc_list exc_var then compstmt opt_rescue {
                     } else {
                         node = $5;
                     }
-                    Node body = node == null ? NilImplicitNode.NIL : node;
+                    Node body = node;
                     $$ = new RescueBodyNode($1.getPosition(), $2, body, $6);
                 }
                 | { 
@@ -1868,10 +1863,10 @@ var_ref         : user_variable {
 
 // [!null]
 var_lhs         : user_variable {
-                    $$ = support.assignable($1, NilImplicitNode.NIL);
+                    $$ = support.assignable($1, null);
                 }
                 | keyword_variable {
-                    $$ = support.assignable($1, NilImplicitNode.NIL);
+                    $$ = support.assignable($1, null);
                 }
 
 // [!null]

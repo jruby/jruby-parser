@@ -35,6 +35,7 @@
  ***** END LICENSE BLOCK *****/
 package org.jrubyparser.parser;
 
+import javax.swing.text.Position;
 import org.jrubyparser.ast.AndNode;
 import org.jrubyparser.ast.ArgsCatNode;
 import org.jrubyparser.ast.ArgsNode;
@@ -86,7 +87,6 @@ import org.jrubyparser.ast.Match3Node;
 import org.jrubyparser.ast.MatchNode;
 import org.jrubyparser.ast.MultipleAsgnNode;
 import org.jrubyparser.ast.NewlineNode;
-import org.jrubyparser.ast.NilImplicitNode;
 import org.jrubyparser.ast.NilNode;
 import org.jrubyparser.ast.Node;
 import org.jrubyparser.ast.NthRefNode;
@@ -274,7 +274,7 @@ public class ParserSupport {
             case Tokens.k__LINE__:
                 throw new SyntaxException(PID.INVALID_ASSIGNMENT, lhs.getPosition(), "Can't assign to __LINE__", "__LINE__");
             case Tokens.tIDENTIFIER:
-                return currentScope.assign(value != NilImplicitNode.NIL ? union(lhs, value) : lhs.getPosition(), (String) lhs.getValue(), makeNullNil(value));
+                return currentScope.assign(union(lhs, value), (String) lhs.getValue(), value);
             case Tokens.tCONSTANT:
                 if (isInDef() || isInSingle()) {
                     throw new SyntaxException(PID.DYNAMIC_CONSTANT_ASSIGNMENT, lhs.getPosition(), "dynamic constant assignment");
@@ -334,8 +334,6 @@ public class ParserSupport {
         position = topOfAST != null ? topOfAST.getPosition() : position;
 
         if (result.getBeginNodes().isEmpty()) {
-            if (topOfAST == null) topOfAST = NilImplicitNode.NIL;
-            
             return new RootNode(position, result.getScope(), topOfAST);
         }
         
@@ -448,12 +446,11 @@ public class ParserSupport {
 
     public Node arg_add(SourcePosition position, Node node1, Node node2) {
         if (node1 == null) {
-            if (node2 == null) {
-                return new ListNode(position, NilImplicitNode.NIL);
-            } else {
-                return new ListNode(node2.getPosition(), node2);
-            }
+            if (node2 == null) return new ListNode(position);
+
+            return new ListNode(node2.getPosition(), node2);
         }
+
         if (node1 instanceof ListNode) return ((ListNode) node1).add(node2);
         
         return new ArgsPushNode(position, node1, node2);
@@ -682,10 +679,6 @@ public class ParserSupport {
         return false;
     }
     
-    protected Node makeNullNil(Node node) {
-        return node == null ? NilImplicitNode.NIL : node;
-    }
-
     private Node cond0(Node node) {
         checkAssignmentInCondition(node);
         
@@ -703,12 +696,12 @@ public class ParserSupport {
             leftNode = cond0(((AndNode) node).getFirst());
             rightNode = cond0(((AndNode) node).getSecond());
             
-            return new AndNode(node.getPosition(), makeNullNil(leftNode), makeNullNil(rightNode));
+            return new AndNode(node.getPosition(), leftNode, rightNode);
         case ORNODE:
             leftNode = cond0(((OrNode) node).getFirst());
             rightNode = cond0(((OrNode) node).getSecond());
             
-            return new OrNode(node.getPosition(), makeNullNil(leftNode), makeNullNil(rightNode));
+            return new OrNode(node.getPosition(), leftNode, rightNode);
         case DOTNODE: {
             DotNode dotNode = (DotNode) node;
             if (dotNode.isLiteral()) return node; 
@@ -732,7 +725,7 @@ public class ParserSupport {
     }
 
     public Node getConditionNode(Node node) {
-        if (node == null) return NilImplicitNode.NIL;
+        if (node == null) return null;
 
         if (node instanceof NewlineNode) {
             return new NewlineNode(node.getPosition(), cond0(((NewlineNode) node).getNextNode()));
@@ -748,27 +741,27 @@ public class ParserSupport {
     }
     
     public SplatNode newSplatNode(SourcePosition position, Node node) {
-        return new SplatNode(position, makeNullNil(node));
+        return new SplatNode(position, node);
     }
     
     public ArrayNode newArrayNode(SourcePosition position, Node firstNode) {
-        return new ArrayNode(position, makeNullNil(firstNode));
+        return new ArrayNode(position, firstNode);
     }
 
     public AndNode newAndNode(SourcePosition position, Node left, Node right) {
         checkExpression(left);
         
-        if (left == null && right == null) return new AndNode(position, makeNullNil(left), makeNullNil(right));
+        if (left == null && right == null) return new AndNode(position, left, right);
         
-        return new AndNode(union(left, right), makeNullNil(left), makeNullNil(right));
+        return new AndNode(union(left, right), left, right);
     }
 
     public OrNode newOrNode(SourcePosition position, Node left, Node right) {
         checkExpression(left);
 
-        if (left == null && right == null) return new OrNode(position, makeNullNil(left), makeNullNil(right));
+        if (left == null && right == null) return new OrNode(position, left, right);
         
-        return new OrNode(union(left, right), makeNullNil(left), makeNullNil(right));
+        return new OrNode(union(left, right), left, right);
     }
 
     /**
@@ -800,8 +793,6 @@ public class ParserSupport {
 
     
     public WhenNode newWhenNode(SourcePosition position, Node expressionNodes, Node bodyNode, Node nextCase) {
-        if (bodyNode == null) bodyNode = NilImplicitNode.NIL;
-
         if (expressionNodes instanceof SplatNode || expressionNodes instanceof ArgsCatNode) {
             return new WhenNode(position, expressionNodes, bodyNode, nextCase);
         }
@@ -847,15 +838,7 @@ public class ParserSupport {
         // We need to union with rightmost existing element.
         ISourcePositionHolder holder = getRightmostHolderForCall(name, args, iter);
 
-        SourcePosition position;
-        if (receiver == null) {
-            receiver = NilImplicitNode.NIL;
-            position = holder.getPosition();
-        } else if (receiver instanceof NilImplicitNode) {
-            position = holder.getPosition();
-        } else {
-            position = union(receiver, holder);
-        }
+        SourcePosition position = receiver == null ? holder.getPosition() : union(receiver, holder);
 
         // Make sure we always have args for rewriting potential
         if (args == null) args = new ListNode(name.getPosition().makeEmptyPositionAfterThis());

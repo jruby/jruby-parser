@@ -126,9 +126,5 @@ describe Parser do
         # FIXME: Need arg tests
       end
     end
-
-    it "parses an nil receiver [#{v}]" do
-      parse("().foo", v).find_node(:call).receiver_node.should_not be_nil
-    end
   end
 end

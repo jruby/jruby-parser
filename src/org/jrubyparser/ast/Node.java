@@ -250,6 +250,11 @@ public abstract class Node implements ISourcePositionHolder {
      * @return -1 if before, 0 is inside, or 1 if after
      */
     public int comparePositionWith(Node testNode) {
+        try {
+            getPosition().getStartOffset();
+        } catch (UnsupportedOperationException e) {
+            System.out.println("This is : "+ getClass().getName());
+        }
         if (testNode.getPosition().getStartOffset() < getPosition().getStartOffset()) return -1;
         if (testNode.getPosition().getEndOffset() > getPosition().getEndOffset()) return 1;
         
@@ -262,7 +267,11 @@ public abstract class Node implements ISourcePositionHolder {
      */
     public List<CommentNode> getPreviousComments() {
         List<CommentNode> comments = new ArrayList<CommentNode>();
-        List<Node> siblings = getParent().childNodes();
+        Node parent = getParent();
+        
+        if (parent == null) return comments;
+        
+        List<Node> siblings = parent.childNodes();
 
         int thisIndex = siblings.indexOf(this);
         

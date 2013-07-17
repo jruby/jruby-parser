@@ -33,7 +33,6 @@ import org.jrubyparser.ast.ClassVarAsgnNode;
 import org.jrubyparser.ast.ConstDeclNode;
 import org.jrubyparser.ast.GlobalAsgnNode;
 import org.jrubyparser.ast.InstAsgnNode;
-import org.jrubyparser.ast.NilImplicitNode;
 import org.jrubyparser.ast.Node;
 import org.jrubyparser.SourcePosition;
 import org.jrubyparser.lexer.SyntaxException;
@@ -63,7 +62,7 @@ public class ParserSupport19 extends ParserSupport {
             case Tokens.tLABEL: // keyword args (only 2.0 grammar can ever call assignable with this token)
             case Tokens.tIDENTIFIER:
                 // ENEBO: 1.9 has CURR nodes for local/block variables.  We don't.  I believe we follow proper logic
-                return currentScope.assign(value != NilImplicitNode.NIL ? union(lhs, value) : lhs.getPosition(), (String) lhs.getValue(), makeNullNil(value));
+                return currentScope.assign(value != null ? union(lhs, value) : lhs.getPosition(), (String) lhs.getValue(), value);
             case Tokens.tCONSTANT:
                 if (isInDef() || isInSingle()) {
                     throw new SyntaxException(PID.DYNAMIC_CONSTANT_ASSIGNMENT, lhs.getPosition(), "dynamic constant assignment");

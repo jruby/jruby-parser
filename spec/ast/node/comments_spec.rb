@@ -7,8 +7,16 @@ describe org.jrubyparser.ast.Node do
         defn.previous_comments.to_a.map(&:content).should =~ ["# c1"]
       end
 
+      rparse("# c1\ndef self.[]\nend", v).find_node(:defs).tap do |defs|
+        defs.previous_comments.to_a.map(&:content).should =~ ["# c1"]
+      end
+
       rparse("# c1\nclass Foo\nend", v).find_node(:class).tap do |defn|
         defn.previous_comments.to_a.map(&:content).should =~ ["# c1"]
+      end
+
+      rparse("# c1\nif 1; end", v).find_node(:if).tap do |ifn|
+        ifn.previous_comments.to_a.map(&:content).should =~ ["# c1"]
       end
     end
 
@@ -19,6 +27,10 @@ describe org.jrubyparser.ast.Node do
 
       rparse("# c1\n# c2\nclass Foo\nend", v).find_node(:class).tap do |defn|
         defn.previous_comments.to_a.map(&:content).should =~ ["# c1", "# c2"]
+      end
+
+      rparse("# c1\n# c2\nif 1\nend", v).find_node(:if).tap do |ifn|
+        ifn.previous_comments.to_a.map(&:content).should =~ ["# c1", "# c2"]
       end
     end
 
