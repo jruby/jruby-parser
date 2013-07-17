@@ -190,49 +190,35 @@ public abstract class Node implements ISourcePositionHolder {
     public void insertNode(Node node) {
         int direction = comparePositionWith(node);
         
-        if (isLeaf()) {
-            if (direction < 0) {
-                //System.out.println("BEFORE: ADDING TO " + this + " WITH " + node);
-                insertBefore(node);
-            } else if (direction > 0) {
-                //System.out.println("AFTER: ADDING TO " + this + " WITH " + node);
-                insertAfter(node);
-            } else {
-                assert false: "Tried to insert inside a lead node";
-            }
-        } else {
-            if (direction < 0) { // ROOT NODE since all other nodes will be bounded by root node
+        if (direction < 0) {
+            if (getParent() == null) { // first-line comment
                 adopt(node, 0);
-                setPosition(node.getPosition().union(getPosition()));
-            } else if (direction == 0) {
-                boolean addedToChild = false;
-                int i = 0;
-                for (Node child: childNodes()) {
-                    direction = child.comparePositionWith(node);
-                
-                    if (direction < 0) { 
-                        //System.out.println("BEFORE(R): ADDING TO " + this + " WITH " + node);
-                        adopt(node, i+1);
-                        addedToChild = true;
-                        break;
-                    } else if (direction == 0) {
-                        //System.out.println("RECURSING: ADDING TO " + this + " WITH " + node);
-                        child.insertNode(node);
-                        addedToChild = true;
-                        break;
-                    }
-                }
-
-                if (!addedToChild) {
-                    //System.out.println("AFTER(R): ADDING TO " + this + " WITH " + node);
-                    adopt(node);
-                }
-                
-            } else if (direction > 0) {
-                //System.out.println("EOF: ADDING TO " + this + " WITH " + node);
-                adopt(node); // Add  to end of last child element of root
-                setPosition(node.getPosition().union(getPosition()));
+            } else {
+                insertBefore(node);
             }
+        } else if (direction > 0) {
+            insertAfter(node);
+        } else {
+            int i = 0;
+            boolean addedToChild = false;
+            for (Node child: childNodes()) {
+                direction = child.comparePositionWith(node);
+                
+                if (direction < 0) { // Immediately before current child
+                    adopt(node, i);
+                    addedToChild = true;
+                    break;
+                } else if (direction == 0) { // inside child
+                    child.insertNode(node);
+                    addedToChild = true;
+                    break;
+                }
+                
+                i++;
+            }
+            
+            // must be after last child
+            if (!addedToChild) adopt(node);
         }
     }
     
@@ -250,11 +236,6 @@ public abstract class Node implements ISourcePositionHolder {
      * @return -1 if before, 0 is inside, or 1 if after
      */
     public int comparePositionWith(Node testNode) {
-        try {
-            getPosition().getStartOffset();
-        } catch (UnsupportedOperationException e) {
-            System.out.println("This is : "+ getClass().getName());
-        }
         if (testNode.getPosition().getStartOffset() < getPosition().getStartOffset()) return -1;
         if (testNode.getPosition().getEndOffset() > getPosition().getEndOffset()) return 1;
         
