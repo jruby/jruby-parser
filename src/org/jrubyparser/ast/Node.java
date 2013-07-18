@@ -77,6 +77,35 @@ public abstract class Node implements ISourcePositionHolder {
         return child;
     }
     
+    /**
+     * Adopt the node in it's proper location amongst the children of this node.
+     * Used internally by insertNode.  It is possible subclasses will know enough to use it
+     * so it is marked protected. 
+     */
+    protected Node adoptUsingNodesPosition(Node node) {
+        int i = 0;
+        boolean added = false;
+        for (Node child: childNodes()) {
+            int direction = child.comparePositionWith(node);
+                
+            if (direction < 0) { // Immediately before current child
+                adopt(node, i);
+                added = true;
+                break;
+            } else if (direction == 0) { // inside child
+                child.insertNode(node);
+                added = true;
+                break;
+            }
+                
+            i++;
+        }
+        
+        if (!added) adopt(node);  // must be after last child
+        
+        return node;
+    }
+    
     public Node getParent() {
         return parent;
     }
@@ -192,33 +221,14 @@ public abstract class Node implements ISourcePositionHolder {
         
         if (direction < 0) {
             if (getParent() == null) { // first-line comment
-                adopt(node, 0);
+                adoptUsingNodesPosition(node);
             } else {
                 insertBefore(node);
             }
         } else if (direction > 0) {
             insertAfter(node);
         } else {
-            int i = 0;
-            boolean addedToChild = false;
-            for (Node child: childNodes()) {
-                direction = child.comparePositionWith(node);
-                
-                if (direction < 0) { // Immediately before current child
-                    adopt(node, i);
-                    addedToChild = true;
-                    break;
-                } else if (direction == 0) { // inside child
-                    child.insertNode(node);
-                    addedToChild = true;
-                    break;
-                }
-                
-                i++;
-            }
-            
-            // must be after last child
-            if (!addedToChild) adopt(node);
+            adoptUsingNodesPosition(node);
         }
     }
     
@@ -258,7 +268,14 @@ public abstract class Node implements ISourcePositionHolder {
         
         if (thisIndex == 0) {
             // # one\ndef foo... and similar are pretty common to see a newline node in the middle
-            if (getParent() instanceof NewlineNode) return getParent().getPreviousComments();
+            if (getParent() instanceof NewlineNode) {
+                // top of file will start out script with a block
+                comments = getParent().getPreviousComments();
+                
+                if (comments.size() == 0 && getParent().getParent() instanceof BlockNode) {
+                    return getParent().getParent().getPreviousComments();
+                }
+            }
 
             return comments;
         }
