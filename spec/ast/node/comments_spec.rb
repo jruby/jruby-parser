@@ -7,6 +7,10 @@ describe org.jrubyparser.ast.Node do
         defn.previous_comments.to_a.map(&:content).should =~ ["# c1"]
       end
 
+      rparse("# c1\ndef foo; end\nfoo\n", v).find_node(:defn).tap do |defn|
+        defn.previous_comments.to_a.map(&:content).should =~ ["# c1"]
+      end
+
       rparse("# c1\ndef self.[]\nend", v).find_node(:defs).tap do |defs|
         defs.previous_comments.to_a.map(&:content).should =~ ["# c1"]
       end
