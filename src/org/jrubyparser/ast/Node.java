@@ -237,7 +237,12 @@ public abstract class Node implements ISourcePositionHolder {
     }
     
     public void insertAfter(Node newNode) {
-        getParent().adopt(newNode, getParent().childNodes().indexOf(this) + 1);
+        if (getParent() != null) {
+            getParent().adopt(newNode, getParent().childNodes().indexOf(this) + 1);
+        } else {
+            adopt(newNode, childNodes().indexOf(this) + 1);
+        }
+
     }
     
     /**
