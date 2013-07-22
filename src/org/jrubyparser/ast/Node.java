@@ -105,7 +105,7 @@ public abstract class Node implements ISourcePositionHolder {
         
         return node;
     }
-    
+
     public Node getParent() {
         return parent;
     }
