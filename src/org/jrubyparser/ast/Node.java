@@ -46,7 +46,7 @@ public abstract class Node implements ISourcePositionHolder {
     private List<Node> children = new ArrayList<Node>();    
 
     public Node(SourcePosition position) {
-        assert position != null;
+        // FIXME: We used to assert to guarantee we always had a non-null position, but rewriting ruby source depends on this temporarily being null
         this.position = position;
     }
 
