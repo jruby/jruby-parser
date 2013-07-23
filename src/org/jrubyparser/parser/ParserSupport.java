@@ -35,7 +35,6 @@
  ***** END LICENSE BLOCK *****/
 package org.jrubyparser.parser;
 
-import javax.swing.text.Position;
 import org.jrubyparser.ast.AndNode;
 import org.jrubyparser.ast.ArgsCatNode;
 import org.jrubyparser.ast.ArgsNode;
@@ -323,8 +322,6 @@ public class ParserSupport {
     }
     
     public SourcePosition union(SourcePosition first, SourcePosition second) {
-        if (first == SourcePosition.INVALID_POSITION) return second;
-        if (second == SourcePosition.INVALID_POSITION) return first;
         if (first.getStartOffset() < second.getStartOffset()) return first.union(second); 
 
         return second.union(first);
