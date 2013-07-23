@@ -43,5 +43,17 @@ describe org.jrubyparser.ast.Node do
         call.inline_comment.content.should == "# inline"
       end
     end
+
+    it "can handle a trailing comment [#{v}]" do
+      rparse("def foo\n end\n #trailing").find_node(:defn).tap do |defn|
+        defn.previous_comments.to_a.map(&:content).should =~ []
+      end
+    end
+
+    it "places trailing comments as last element in root [#{v}]" do
+      rparse("def foo\n end\n #trailing").child_nodes.to_a.last.tap do |child|
+        child.content.should =~ /#trailing/
+      end
+    end
   end
 end
