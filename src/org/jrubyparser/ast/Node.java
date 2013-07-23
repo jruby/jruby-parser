@@ -232,7 +232,7 @@ public abstract class Node implements ISourcePositionHolder {
         if (getParent() != null) {
             getParent().adopt(newNode, getParent().childNodes().indexOf(this) + 1);
         } else {
-            adopt(newNode, childNodes().indexOf(this) + 1);
+            adopt(newNode);
         }
 
     }
