@@ -14,14 +14,14 @@ describe JRubyParser do
       end.to_source.should == "b = bar 1"
     end
 
-    it "rewrites between different coercible ruby types [#{v}]" do
-      [1, 1.0, true, false, nil, "a"].each do |replace|
-        parse("foo 1").tap do |root|
-          fcall = root.find_node(:fcall)
-          fcall.args[0] = replace
-        end.to_source.should == "foo #{replace.inspect}"
-      end
-    end
+   it "rewrites between different coercible ruby types [#{v}]" do
+     [1, 1.0, true, false, nil, "a"].each do |replace|
+       parse("foo 1").tap do |root|
+         fcall = root.find_node(:fcall)
+         fcall.args[0] = replace
+       end.to_source.should == "foo #{replace.inspect}"
+     end
+   end
 
     it "rewrites receiver of a call [#{v}]" do
       parse("1.to_f(1)").tap do |root|
