@@ -49,7 +49,6 @@ public class ClassNode extends Node implements IScopingNode, ILocalScope, IModul
         
         assert cpath != null : "cpath is not null";
         assert scope != null : "scope is not null";
-        assert bodyNode != null : "bodyNode is not null";
         
         this.cpath = (Colon3Node) adopt(cpath);
         this.scope = scope;

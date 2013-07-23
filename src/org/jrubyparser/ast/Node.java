@@ -46,7 +46,7 @@ public abstract class Node implements ISourcePositionHolder {
     private List<Node> children = new ArrayList<Node>();    
 
     public Node(SourcePosition position) {
-        assert position != null;
+        // FIXME: We used to assert to guarantee we always had a non-null position, but rewriting ruby source depends on this temporarily being null
         this.position = position;
     }
 
@@ -181,14 +181,6 @@ public abstract class Node implements ISourcePositionHolder {
         
         return comments.get(0).getPosition().union(getPosition());
     }
-
-    /**
-     * Is the current node something that is syntactically visible in the AST.  IDE consumers
-     * should ignore these elements.
-     */
-    public boolean isInvisible() {
-        return this instanceof InvisibleNode;
-    }
     
     /**
      * Is this AST node considered a leaf node?
@@ -240,7 +232,7 @@ public abstract class Node implements ISourcePositionHolder {
         if (getParent() != null) {
             getParent().adopt(newNode, getParent().childNodes().indexOf(this) + 1);
         } else {
-            adopt(newNode, childNodes().indexOf(this) + 1);
+            adopt(newNode);
         }
 
     }
@@ -263,7 +255,6 @@ public abstract class Node implements ISourcePositionHolder {
      */
     public List<CommentNode> getPreviousComments() {
         List<CommentNode> comments = new ArrayList<CommentNode>();
-        Node parent = getParent();
         
         if (parent == null) return comments;
         
@@ -277,7 +268,7 @@ public abstract class Node implements ISourcePositionHolder {
                 // top of file will start out script with a block
                 comments = getParent().getPreviousComments();
                 
-                if (comments.size() == 0 && getParent().getParent() instanceof BlockNode) {
+                if (comments.isEmpty() && getParent().getParent() instanceof BlockNode) {
                     return getParent().getParent().getPreviousComments();
                 }
             }
@@ -318,12 +309,11 @@ public abstract class Node implements ISourcePositionHolder {
      */
     public Node getNodeAt(int offset) {
         // offset < 0 is for method chaining of methods which will return -1 if an index or node is not found (baby optimization)
-        if (isInvisible() || offset < 0) return null;
+        if (offset < 0) return null;
         
         for (Node child : childNodes()) {  // Check children for more specific results
-            if (child.isInvisible()) continue;
-
             Node found = child.getNodeAt(offset);
+            
             if (found != null && !found.getPosition().isEmpty()) return found; // refactoring includes place-holders (empty)...ignore them
         }
 
@@ -335,8 +325,6 @@ public abstract class Node implements ISourcePositionHolder {
      * @return the method or null if one cannot be found
      */
     public MethodDefNode getMethodFor() {
-        if (isInvisible()) return null; // FIXME: Invisible nodes do not have reasonable parentage
-        
         for (Node p = this; p != null; p = p.getParent()) {
             if (p instanceof MethodDefNode) return (MethodDefNode) p;
         }
@@ -348,8 +336,6 @@ public abstract class Node implements ISourcePositionHolder {
      * Get closest parent Module/Class/SClass for this node
      */
     public IModuleScope getClosestModule() {
-        if (isInvisible()) return null; // FIXME: Invisible nodes do not have reasonable parentage
-        
         IScope p = getClosestIScope();
         
         while (p != null && !(p instanceof IModuleScope)) {
@@ -364,8 +350,6 @@ public abstract class Node implements ISourcePositionHolder {
      * null instead.
      */
     public IterNode getInnermostIter() {
-        if (isInvisible()) return null; // FIXME: Invisible nodes do not have reasonable parentage
-        
         for (Node p = this; p != null; p = p.getParent()) {
             if (p instanceof ILocalScope) return null; // foo { def bar; im_here; end }
             if (p instanceof IterNode) return (IterNode) p;
@@ -390,8 +374,6 @@ public abstract class Node implements ISourcePositionHolder {
      * @return 
      */
     public IScope getClosestIScope() {
-        if (isInvisible()) return null; // FIXME: Invisible nodes do not have reasonable parentage
-        
         for (Node current = this.getParent(); current != null; current = current.getParent()) {
             if (current instanceof IScope) return (IScope) current;
         }

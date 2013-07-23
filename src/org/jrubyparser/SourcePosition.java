@@ -211,42 +211,4 @@ public class SourcePosition implements Serializable {
     public SourcePosition makeEmptyPositionBeforeThis() {
         return new SourcePosition(file, startLine, endLine, startOffset, startOffset);        
     }
-
-    /** For nodes which are added to the AST which are not proper syntactical elements. */
-    public static final SourcePosition INVALID_POSITION = new SourcePosition() {
-        @Override
-        public String getFile() {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public int getStartLine() {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public int getEndLine() {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public void adjustStartOffset(int relativeValue) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public int getStartOffset() {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public int getEndOffset() {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public SourcePosition union(SourcePosition position) {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-    };
 }
