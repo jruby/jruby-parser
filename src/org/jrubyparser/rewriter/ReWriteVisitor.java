@@ -237,7 +237,7 @@ public class ReWriteVisitor implements NodeVisitor {
     }
 
     public void visitNode(Node iVisited) {
-        if (iVisited == null || iVisited.isInvisible()) return;
+        if (iVisited == null) return;
 
         if (iVisited instanceof ArgumentNode) {
             print(((ArgumentNode) iVisited).getDecoratedName());
@@ -893,7 +893,7 @@ public class ReWriteVisitor implements NodeVisitor {
 
     private void printAsgnNode(AssignableNode n) {
         print(((INameNode) n).getDecoratedName());
-        if (n.getValue() == null || n.getValue().isInvisible()) return;
+        if (n.getValue() == null) return;
         printAssignmentOperator();
         visitNewlineInParentheses(n.getValue());
     }
@@ -1059,7 +1059,7 @@ public class ReWriteVisitor implements NodeVisitor {
         if (iVisited.getHead() != null) {
             factory.createMultipleAssignmentReWriteVisitor().visitAndPrintWithSeparator(iVisited.getHead().childNodes().iterator());
         }
-        if (iVisited.getValue() == null || iVisited.getValue().isInvisible()) {
+        if (iVisited.getValue() == null) {
             visitNode(iVisited.getRest());
             return null;
         }
@@ -1080,7 +1080,7 @@ public class ReWriteVisitor implements NodeVisitor {
         if (iVisited.getPre() != null) {
             factory.createMultipleAssignmentReWriteVisitor().visitAndPrintWithSeparator(iVisited.getPre().childNodes().iterator());
         }
-        if (iVisited.getValue() == null || iVisited.getValue().isInvisible()) {
+        if (iVisited.getValue() == null) {
             visitNode(iVisited.getRest());
             return null;
         }
@@ -1281,7 +1281,7 @@ public class ReWriteVisitor implements NodeVisitor {
     }
 
     public Object visitRescueBodyNode(RescueBodyNode iVisited) {
-        if (!iVisited.getBody().isInvisible() && config.getLastPosition().getStartLine() == getEndLine(iVisited.getBody())) {
+        if (iVisited.getBody() != null && config.getLastPosition().getStartLine() == getEndLine(iVisited.getBody())) {
             print(" rescue ");
         } else {
             print("rescue");
@@ -1331,13 +1331,12 @@ public class ReWriteVisitor implements NodeVisitor {
     public Object visitRescueNode(RescueNode iVisited) {
         visitNode(iVisited.getBody());
         config.getIndentor().outdent();
+        
+        Node body = iVisited.getRescue().getBody();
 
-        if (!iVisited.getRescue().getBody().isInvisible()
-                && getStartLine(iVisited) != getEndLine(iVisited.getRescue().getBody())) {
-            printNewlineAndIndentation();
-        }
+        if (body != null && getStartLine(iVisited) != getEndLine(body)) printNewlineAndIndentation();
 
-        if (iVisited.getRescue().getBody().isInvisible()) {
+        if (body == null) {
             printNewlineAndIndentation();
             print("rescue");
             printExceptionNode(iVisited.getRescue());
@@ -1378,7 +1377,7 @@ public class ReWriteVisitor implements NodeVisitor {
     public Object visitReturnNode(ReturnNode iVisited) {
         print("return");
         enterCall();
-        if (!iVisited.getValue().isInvisible()) {
+        if (iVisited.getValue() != null) {
             print(' ');
             visitNode(unwrapSingleArrayNode(iVisited.getValue()));
         }
