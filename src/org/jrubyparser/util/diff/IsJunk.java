@@ -31,40 +31,7 @@ package org.jrubyparser.util.diff;
 
 import org.jrubyparser.ast.Node;
 
-
-public class SequenceMatcher
+public interface IsJunk
 {
-    private IsJunk isJunk;
-    private Node newNode;
-    private Node oldNode;
-    private boolean autojunk = true;
-
-    public SequenceMatcher(Node newNode, Node oldNode) {
-        this(null, newNode, oldNode);
-    }
-
-    public SequenceMatcher(IsJunk isJunk, Node newNode, Node oldNode) {
-        if (isJunk == null) {
-            autojunk = false;
-        } else {
-            this.isJunk = isJunk;
-        }
-
-        setSequences(newNode, oldNode);
-
-    }
-
-    public void setSequences(Node newNode, Node oldNode) {
-        setSequenceOne(newNode);
-        setSequenceTwo(oldNode);
-    }
-
-    public void setSequenceOne(Node newNode) {
-        this.newNode = newNode;
-    }
-
-    public void setSequenceTwo(Node oldNode) {
-        this.oldNode = oldNode;
-    }
+    public boolean checkJunk(Node a);
 }
-
