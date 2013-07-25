@@ -32,6 +32,10 @@ package org.jrubyparser.util.diff;
 import org.jrubyparser.ast.Node;
 
 
+/**
+ * The SequenceMatcher class is used to produce a list of matching nodes.
+ * @see NodeDiff
+ */
 public class SequenceMatcher
 {
     private IsJunk isJunk;
@@ -39,10 +43,29 @@ public class SequenceMatcher
     private Node oldNode;
     private boolean autojunk = true;
 
+    /**
+     * Create a SequenceMatcher object without a function for sorting out junk.
+     *
+     * @param newNode
+     * @param oldNode
+     */
     public SequenceMatcher(Node newNode, Node oldNode) {
         this(null, newNode, oldNode);
     }
 
+    /**
+     * isJunk is an object which implements the {@link IsJunk} interface and the
+     * #checkJunk() method. checkJunk is a method which takes a Node and determines
+     * whether or not it should be compared against the other node.
+     *
+     * We pass in two nodes. Later, we can use the #setSequence, #setSequenceOne and
+     * #setSequenceTwo methods to change out one or both of the nodes and create a new set of
+     * matches.
+     *
+     * @param isJunk
+     * @param newNode
+     * @param oldNode
+     */
     public SequenceMatcher(IsJunk isJunk, Node newNode, Node oldNode) {
         if (isJunk == null) {
             autojunk = false;

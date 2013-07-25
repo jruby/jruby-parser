@@ -35,6 +35,11 @@ import org.jrubyparser.ast.Node;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The NodeDiff class takes two Node objects, and via the SequenceMatcher class,
+ * determines the differences between the two objects and creates a diff, which
+ * is a List containing the Nodes which are different between the two.
+ */
 public class NodeDiff
 {
     protected List<Node> diff;
