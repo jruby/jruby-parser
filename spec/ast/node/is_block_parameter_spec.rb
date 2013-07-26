@@ -1,10 +1,6 @@
-$LOAD_PATH.unshift File.dirname(__FILE__) + "/../../lib"
-$LOAD_PATH.unshift File.dirname(__FILE__) + "/../helpers"
-require 'java'
-require 'jruby-parser'
-require 'parser_helpers'
+require_relative '../../helpers'
 
-describe JRubyParser do
+describe org.jrubyparser.ast.Node do
   VERSIONS.each do |v|
     it "finds parameter via is_block_parameter [#{v}]" do
       caret_parse("proc { |^a| }", v).tap do |root, caret_node|

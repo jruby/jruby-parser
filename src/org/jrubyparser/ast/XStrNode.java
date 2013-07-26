@@ -28,8 +28,6 @@
  ***** END LICENSE BLOCK *****/
 package org.jrubyparser.ast;
 
-import java.util.List;
-
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 
@@ -63,9 +61,4 @@ public class XStrNode extends Node implements ILiteralNode {
     public String getValue() {
         return value;
     }
-    
-    public List<Node> childNodes() {
-        return EMPTY_LIST;
-    }
-    
 }

@@ -66,14 +66,9 @@ public class ListNode extends Node {
     }
     
     public ListNode add(Node node) {
-        // Ruby Grammar productions return plenty of nulls.
-        if (node == null || node == NilImplicitNode.NIL) {
-            list.add(NilImplicitNode.NIL);
-
-            return this;
-        }
-
         list.add(adopt(node));
+        
+        if (node == null) return this;
 
         if (getPosition() == null) {
             setPosition(node.getPosition());
@@ -123,9 +118,7 @@ public class ListNode extends Node {
         // sometimes the last node is a NilImplicitNode which has no valid position
         for (int i = list.size() - 1; i >= 0; i--) {
             Node last = list.get(i);
-            if (last != NilImplicitNode.NIL) {
-                return last.getPosition();
-            }
+            if (last != null) return last.getPosition();
         }
         return null;
     }
@@ -143,11 +136,7 @@ public class ListNode extends Node {
     public Node getLast() {
     	return list.isEmpty() ? null : list.get(list.size() - 1);
     }
-    
-    public List<Node> childNodes() {
-        return list;
-    }
-    
+
     public Object accept(NodeVisitor visitor) {
         return visitor.visitListNode(this);
     }

@@ -115,10 +115,6 @@ public class SClassNode extends Node implements ILocalScope, IModuleScope {
         this.receiverNode = adopt(receiver);
     }
     
-    public List<Node> childNodes() {
-        return Node.createList(receiverNode, bodyNode);
-    }
-    
     public List<ILocalVariable> getVariableReferencesNamed(String name) {
         return ILocalVariableVisitor.findOccurrencesIn(this, name);
     }    

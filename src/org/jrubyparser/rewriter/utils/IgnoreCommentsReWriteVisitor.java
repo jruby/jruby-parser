@@ -28,17 +28,16 @@
 
 package org.jrubyparser.rewriter.utils;
 
-import org.jrubyparser.ast.Node;
+import org.jrubyparser.ast.CommentNode;
 import org.jrubyparser.rewriter.ReWriteVisitor;
 
-public class IgnoreCommentsReWriteVisitor extends ReWriteVisitor {
-	
-	public IgnoreCommentsReWriteVisitor(ReWriterContext config) {
-		super(config);
-	}
-	
+public class IgnoreCommentsReWriteVisitor extends ReWriteVisitor {	
+    public IgnoreCommentsReWriteVisitor(ReWriterContext config) {
+        super(config);
+    }
+
     @Override
-	protected boolean printCommentsAfter(Node iVisited) {
-		return false;
-	}
-}	
+    public Object visitCommentNode(CommentNode iVisited) {
+        return null;
+    }
+}

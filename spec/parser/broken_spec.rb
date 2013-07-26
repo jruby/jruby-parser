@@ -1,8 +1,4 @@
-$LOAD_PATH.unshift File.dirname(__FILE__) + "/../helpers"
-$LOAD_PATH.unshift File.dirname(__FILE__) + "/../../lib"
-require 'jruby-parser'
-require 'parser_helpers'
-require 'node_helpers'
+require_relative '../helpers'
 
 import org.jrubyparser.lexer.StringTerm
 import org.jrubyparser.lexer.SyntaxException

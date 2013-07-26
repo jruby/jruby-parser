@@ -1,8 +1,4 @@
-$LOAD_PATH.unshift File.dirname(__FILE__) + "/../helpers"
-$LOAD_PATH.unshift File.dirname(__FILE__) + "/../../lib"
-require 'jruby-parser'
-require 'parser_helpers'
-require 'node_helpers'
+require_relative '../helpers'
 
 # Notes:
 # 1. All heredocs include end newline right after end marker because that whitespace is part of

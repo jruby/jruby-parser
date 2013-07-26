@@ -28,8 +28,6 @@
  ***** END LICENSE BLOCK *****/
 package org.jrubyparser.ast;
 
-import java.util.List;
-
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 
@@ -92,10 +90,6 @@ public class YieldNode extends Node implements IArgumentNode {
 
     public boolean getExpandArguments() {
         return expandedArguments;
-    }
-
-    public List<Node> childNodes() {
-        return createList(argsNode);
     }
 
     public boolean hasParens() {

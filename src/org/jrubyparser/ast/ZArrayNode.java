@@ -28,8 +28,6 @@
  ***** END LICENSE BLOCK *****/
 package org.jrubyparser.ast;
 
-import java.util.List;
-
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 
@@ -54,9 +52,4 @@ public class ZArrayNode extends Node implements ILiteralNode {
     public Object accept(NodeVisitor iVisitor) {
         return iVisitor.visitZArrayNode(this);
     }
-    
-    public List<Node> childNodes() {
-        return EMPTY_LIST;
-    }
-    
 }

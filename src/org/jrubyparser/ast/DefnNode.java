@@ -51,11 +51,7 @@ public class DefnNode extends MethodDefNode {
     public Object accept(NodeVisitor iVisitor) {
         return iVisitor.visitDefnNode(this);
     }
-    
-    public List<Node> childNodes() {
-        return Node.createList(nameNode, argsNode, bodyNode);
-    }
-    
+
     public List<ILocalVariable> getVariableReferencesNamed(String name) {
         return ILocalVariableVisitor.findOccurrencesIn(this, name);
     }

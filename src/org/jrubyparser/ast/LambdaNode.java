@@ -27,7 +27,6 @@
  ***** END LICENSE BLOCK *****/
 package org.jrubyparser.ast;
 
-import java.util.List;
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 import org.jrubyparser.StaticScope;
@@ -58,10 +57,4 @@ public class LambdaNode extends IterNode {
     public Object accept(NodeVisitor visitor) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-
-    @Override
-    public List<Node> childNodes() {
-        return Node.createList(getArgs(), getBody());
-    }
-
 }

@@ -27,7 +27,6 @@
  ***** END LICENSE BLOCK *****/
 package org.jrubyparser.ast;
 
-import java.util.List;
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 /**
@@ -58,11 +57,6 @@ public class ArgAuxillaryNode extends Node {
 
     @Override
     public Object accept(NodeVisitor visitor) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public List<Node> childNodes() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

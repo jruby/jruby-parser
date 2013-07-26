@@ -1,8 +1,4 @@
-$LOAD_PATH.unshift File.dirname(__FILE__) + "/../helpers"
-$LOAD_PATH.unshift File.dirname(__FILE__) + "/../../lib"
-require 'jruby-parser'
-require 'parser_helpers'
-require 'node_helpers'
+require_relative '../helpers'
 
 describe Parser do
   [1.8, 1.9].each do |v|
@@ -129,10 +125,6 @@ describe Parser do
         call.iter_node.should have_position(0, 1, 6, 16)
         # FIXME: Need arg tests
       end
-    end
-
-    it "parses an nil receiver [#{v}]" do
-      parse("().foo", v).find_node(:call).receiver_node.should_not be_nil
     end
   end
 end

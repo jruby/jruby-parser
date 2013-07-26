@@ -28,8 +28,6 @@
  ***** END LICENSE BLOCK *****/
 package org.jrubyparser.ast;
 
-import java.util.List;
-
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 
@@ -88,9 +86,4 @@ public class IfNode extends Node {
     public Node getThenBody() {
         return thenBody;
     }
-    
-    public List<Node> childNodes() {
-        return Node.createList(condition, thenBody, elseBody);
-    }
-    
 }

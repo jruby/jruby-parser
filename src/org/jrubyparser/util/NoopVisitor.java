@@ -29,6 +29,7 @@ import org.jrubyparser.ast.ClassVarDeclNode;
 import org.jrubyparser.ast.ClassVarNode;
 import org.jrubyparser.ast.Colon2Node;
 import org.jrubyparser.ast.Colon3Node;
+import org.jrubyparser.ast.CommentNode;
 import org.jrubyparser.ast.ConstDeclNode;
 import org.jrubyparser.ast.ConstNode;
 import org.jrubyparser.ast.DAsgnNode;
@@ -99,6 +100,7 @@ import org.jrubyparser.ast.SplatNode;
 import org.jrubyparser.ast.StrNode;
 import org.jrubyparser.ast.SuperNode;
 import org.jrubyparser.ast.SymbolNode;
+import org.jrubyparser.ast.SyntaxNode;
 import org.jrubyparser.ast.ToAryNode;
 import org.jrubyparser.ast.TrueNode;
 import org.jrubyparser.ast.UndefNode;
@@ -118,6 +120,8 @@ import org.jrubyparser.ast.ZSuperNode;
 public class NoopVisitor implements NodeVisitor {
     
     protected Object visit(Node parent) {
+        if (parent == null) return null;
+        
         for (Node node: parent.childNodes()) {
             node.accept(this);
         }
@@ -222,6 +226,10 @@ public class NoopVisitor implements NodeVisitor {
     }
 
     public Object visitColon3Node(Colon3Node iVisited) {
+        return visit(iVisited);
+    }
+    
+    public Object visitCommentNode(CommentNode iVisited) {
         return visit(iVisited);
     }
 
@@ -494,6 +502,10 @@ public class NoopVisitor implements NodeVisitor {
     }
 
     public Object visitSymbolNode(SymbolNode iVisited) {
+        return visit(iVisited);
+    }
+    
+    public Object visitSyntaxNode(SyntaxNode iVisited) {
         return visit(iVisited);
     }
 

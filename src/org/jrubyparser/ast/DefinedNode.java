@@ -28,8 +28,6 @@
  ***** END LICENSE BLOCK *****/
 package org.jrubyparser.ast;
 
-import java.util.List;
-
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 
@@ -71,9 +69,4 @@ public class DefinedNode extends Node {
     public Node getExpressionNode() {
         return getExpression();
     }
-    
-    public List<Node> childNodes() {
-        return createList(expressionNode);
-    }
-
 }

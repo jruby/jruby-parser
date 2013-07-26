@@ -28,8 +28,6 @@
  ***** END LICENSE BLOCK *****/
 package org.jrubyparser.ast;
 
-import java.util.List;
-
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 
@@ -62,9 +60,5 @@ public class FixnumNode extends Node implements ILiteralNode {
     
     public void setValue(long value) {
         this.value = value;
-    }
-    
-    public List<Node> childNodes() {
-        return EMPTY_LIST;
     }
 }

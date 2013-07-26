@@ -18,4 +18,6 @@ end
 ant_import # load all ant targets as rake tasks
 
 desc "Run specs"
-RSpec::Core::RakeTask.new
+RSpec::Core::RakeTask.new do |r|
+  r.ruby_opts = "-J-ea -Ilib"
+end

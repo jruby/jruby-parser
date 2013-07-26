@@ -102,11 +102,7 @@ public class IterNode extends Node implements IBlockScope {
     public Node getVarNode() {
         return getVar();
     }
-    
-    public List<Node> childNodes() {
-        return Node.createList(varNode, bodyNode);
-    }
-    
+
     /**
      * Given a name (presumably retrieve via getNormativeSignatureNameList()) is this parmeter used
      * in this method definition?

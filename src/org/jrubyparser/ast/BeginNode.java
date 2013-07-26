@@ -28,8 +28,6 @@
  ***** END LICENSE BLOCK *****/
 package org.jrubyparser.ast;
 
-import java.util.List;
-
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 
@@ -75,9 +73,4 @@ public class BeginNode extends Node {
     public void setBody(Node body) {
         this.bodyNode = adopt(body);
     }
-    
-    public List<Node> childNodes() {
-        return createList(bodyNode);
-    }
-    
 }

@@ -28,8 +28,6 @@
  ***** END LICENSE BLOCK *****/
 package org.jrubyparser.ast;
 
-import java.util.List;
-
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 
@@ -70,11 +68,7 @@ public class ClassVarNode extends Node implements IClassVariable {
     public String getName() {
         return name;
     }
-    
-    public List<Node> childNodes() {
-        return EMPTY_LIST;
-    }
-    
+
     public void setName(String name) {
         this.name = name;
     }

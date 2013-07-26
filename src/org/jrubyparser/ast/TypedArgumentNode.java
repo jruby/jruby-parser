@@ -5,7 +5,6 @@
 
 package org.jrubyparser.ast;
 
-import java.util.List;
 import org.jrubyparser.SourcePosition;
 
 /**
@@ -23,10 +22,5 @@ public class TypedArgumentNode extends ArgumentNode {
     
     public Node getTypeNode() {
         return typeNode;
-    }
-    
-    @Override
-    public List<Node> childNodes() {
-        return createList(typeNode);
     }
 }

@@ -1,6 +1,5 @@
 package org.jrubyparser.ast;
 
-import java.util.List;
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.lexer.Token;
 
@@ -12,7 +11,7 @@ import org.jrubyparser.lexer.Token;
  * are nodes and by having literals also be nodes means they have a common
  * subtype which is not Object.
  */
-public class LiteralNode extends Node implements InvisibleNode {
+public class LiteralNode extends Node {
     private String name;
 
     public LiteralNode(Token token) {
@@ -31,10 +30,6 @@ public class LiteralNode extends Node implements InvisibleNode {
      **/
     public Object accept(NodeVisitor iVisitor) {
         return iVisitor.visitLiteralNode(this);
-    }
-
-    public List<Node> childNodes() {
-        return EMPTY_LIST;
     }
 
     @Override

@@ -52,6 +52,7 @@ import org.jrubyparser.ast.StrNode;
 import org.jrubyparser.IRubyWarnings;
 import org.jrubyparser.IRubyWarnings.ID;
 import org.jrubyparser.SourcePosition;
+import org.jrubyparser.ast.SyntaxNode;
 import org.jrubyparser.lexer.SyntaxException.PID;
 import org.jrubyparser.parser.ParserSupport;
 import org.jrubyparser.parser.Tokens;
@@ -340,9 +341,6 @@ public class Lexer {
     private StrTerm lex_strterm;
     public boolean commandStart;
     
-    // Whether we're processing comments
-    private boolean doComments;
-
     // Give a name to a value.  Enebo: This should be used more.
     static final int EOF = -1;
 
@@ -548,10 +546,6 @@ public class Lexer {
      */
     public void setParserSupport(ParserSupport parserSupport) {
         this.parserSupport = parserSupport;
-        // TODO: Probably don't need this either
-        if (parserSupport.getConfiguration() != null) {
-            this.doComments = true;
-        }
     }
 
     /**
@@ -961,6 +955,16 @@ public class Lexer {
         setEncoding(matcher.group(1));
     }
     
+    // FIXME: Consider stashing some boolean rather that running this set of conditionals a million times.
+    public boolean collectComments() {
+        switch (parserSupport.getConfiguration().getSyntax()) {
+            case COMMENTS: case ALL:
+                return true;
+        }
+        
+        return false;
+    }
+    
     /**
      * Read a comment up to end of line.  When found each comment will get stored away into
      * the parser result so that any interested party can use them as they seem fit.  One idea
@@ -971,12 +975,7 @@ public class Lexer {
      * @return newline or eof value 
      */
     protected int readComment(int c) throws IOException {
-        if (doComments) {
-            return readCommentLong(c);
-        }
-        
-        return src.skipUntil('\n');
-        
+        return collectComments() ? readCommentLong(c) : src.skipUntil('\n');
     }
     
     private int readCommentLong(int c) throws IOException {
@@ -992,17 +991,14 @@ public class Lexer {
         }
         src.unread(c);
 
-        // ENEBO: When is parserSupport actually null?
-        if (parserSupport != null) {
-            // Store away each comment to parser result so IDEs can do whatever they want with them.
-            SourcePosition position = startPosition.union(getPosition());
-
-            parserSupport.getResult().addComment(new CommentNode(position, tokenBuffer.toString()));
-        } else {
-            getPosition();
-        }
+        addSyntax(new CommentNode(startPosition.union(getPosition()), tokenBuffer.toString()));
         
         return c;
+    }
+    
+    private void addSyntax(SyntaxNode node) {
+        // ENEBO: When is parserSupport actually null? (Maybe pure-lexing from something like netbeans?)
+        if (parserSupport != null) parserSupport.getResult().addSyntax(node);
     }
     
     /*
@@ -1328,7 +1324,7 @@ public class Lexer {
                     
                     if (src.matchMarker(BEGIN_DOC_MARKER, false, false)) {
                 	SourcePosition startPosition = src.getPosition();
-                        if (doComments) {
+                        if (collectComments()) {
                             tokenBuffer.setLength(0);
                             tokenBuffer.append('=');
                             tokenBuffer.append(BEGIN_DOC_MARKER);
@@ -1340,13 +1336,13 @@ public class Lexer {
                             src.unread(c);
                             for (;;) {
                                 c = src.read();
-                                if (doComments) tokenBuffer.append(c);
+                                if (collectComments()) tokenBuffer.append(c);
 
                                 // If a line is followed by a blank line put
                                 // it back.
                                 while (c == '\n') {
                                     c = src.read();
-                                    if (doComments) tokenBuffer.append(c);
+                                    if (collectComments()) tokenBuffer.append(c);
                                 }
                                 if (c == EOF) {
                                     throw new SyntaxException(PID.STRING_HITS_EOF, getPosition(), 
@@ -1354,18 +1350,17 @@ public class Lexer {
                                 }
                                 if (c != '=') continue;
                                 if (src.wasBeginOfLine() && src.matchMarker(END_DOC_MARKER, false, false)) {
-                                    if (doComments) tokenBuffer.append(END_DOC_MARKER);
+                                    if (collectComments()) tokenBuffer.append(END_DOC_MARKER);
                                     String list = src.readLineBytes();
-                                    if (doComments) tokenBuffer.append(list);
+                                    if (collectComments()) tokenBuffer.append(list);
                                     src.unread('\n');
                                     break;
                                 }
                             }
 
-                            if (doComments) {
+                            if (collectComments()) {
                         	// Store away each comment to parser result so IDEs can do whatever they want with them.
-                        	SourcePosition position = startPosition.union(getPosition());
-                                parserSupport.getResult().addComment(new CommentNode(position, tokenBuffer.toString()));
+                                addSyntax(new CommentNode(startPosition.union(getPosition()), tokenBuffer.toString()));
                             }
                             if (preserveSpaces) {
                         	yaccValue = new Token("here-doc", getPosition());
@@ -1472,7 +1467,7 @@ public class Lexer {
                 return at();
             case '_':
                 if (src.wasBeginOfLine() && src.matchMarker(END_MARKER, false, true)) {
-                	if (parserSupport != null) parserSupport.getResult().setEndOffset(src.getOffset());
+                    if (parserSupport != null) parserSupport.getResult().setEndOffset(src.getOffset());
                     return EOF;
                 }
                 return identifier(c, commandState);

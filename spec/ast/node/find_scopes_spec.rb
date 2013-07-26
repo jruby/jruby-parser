@@ -1,10 +1,7 @@
-$LOAD_PATH.unshift File.dirname(__FILE__) + "/../../lib"
-$LOAD_PATH.unshift File.dirname(__FILE__) + "/../helpers"
-require 'java'
-require 'jruby-parser'
-require 'parser_helpers'
+require_relative '../../helpers'
 
-describe JRubyParser do
+# FIXME: Move each of these methods into their respective spec files (e.g method_for_spec.rb)
+describe org.jrubyparser.ast.Node do
   VERSIONS.each do |v|
     it "children can ask for the method it is contained in [#{v}]" do
       parse("def foo; true if false; end").find_node(:defn) do |defn|

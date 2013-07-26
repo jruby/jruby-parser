@@ -28,8 +28,6 @@
  ***** END LICENSE BLOCK *****/
 package org.jrubyparser.ast;
 
-import java.util.List;
-
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 
@@ -55,9 +53,5 @@ public class StarNode extends Node {
      */
     public Object accept(NodeVisitor visitor) {
     	return null; // never visited, should be fine
-    }
-    
-    public List<Node> childNodes() {
-        return EMPTY_LIST;
     }
 }

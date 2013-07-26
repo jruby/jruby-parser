@@ -1,10 +1,9 @@
-$LOAD_PATH.unshift File.dirname(__FILE__) + "/../../lib"
-require 'jruby-parser'
+require_relative '../helpers'
 
 describe JRubyParser do
   VERSIONS.each do |v|
     it "rewrites method name from foo to bar [#{v}]" do
-      parse("b = foo(1)").tap do |root|
+      rparse("b = foo(1)").tap do |root|
         fcall = root.find_node(:fcall)
         fcall.name = 'bar'
       end.to_source.should == "b = bar(1)"
@@ -15,14 +14,14 @@ describe JRubyParser do
       end.to_source.should == "b = bar 1"
     end
 
-    it "rewrites between different coercible ruby types [#{v}]" do
-      [1, 1.0, true, false, nil, "a"].each do |replace|
-        parse("foo 1").tap do |root|
-          fcall = root.find_node(:fcall)
-          fcall.args[0] = replace
-        end.to_source.should == "foo #{replace.inspect}"
-      end
-    end
+   it "rewrites between different coercible ruby types [#{v}]" do
+     [1, 1.0, true, false, nil, "a"].each do |replace|
+       parse("foo 1").tap do |root|
+         fcall = root.find_node(:fcall)
+         fcall.args[0] = replace
+       end.to_source.should == "foo #{replace.inspect}"
+     end
+   end
 
     it "rewrites receiver of a call [#{v}]" do
       parse("1.to_f(1)").tap do |root|
@@ -53,5 +52,14 @@ describe JRubyParser do
         op.value = 3
       end.to_source.should == "1[2] += 3"
     end
+
+    it "rewrites an alias of barewords [#{v}]" do
+      parse("alias foo bar").to_source.should == "alias foo bar"
+    end
+
+#    it "rewrites a comment on first line [#{v}]" do
+#      code = "# comment 1\nfoo(1)\n"
+#      rparse(code).to_source.should == code
+#    end
   end
 end

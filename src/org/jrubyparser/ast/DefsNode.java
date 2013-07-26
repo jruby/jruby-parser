@@ -74,10 +74,6 @@ public class DefsNode extends MethodDefNode {
     public Node getReceiverNode() {
         return getReceiver();
     }
-    
-    public List<Node> childNodes() {
-        return Node.createList(receiverNode, nameNode, argsNode, bodyNode);
-    }
 
     public List<ILocalVariable> getVariableReferencesNamed(String name) {
         return ILocalVariableVisitor.findOccurrencesIn(this, name);

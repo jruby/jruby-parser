@@ -28,8 +28,6 @@
  ***** END LICENSE BLOCK *****/
 package org.jrubyparser.ast;
 
-import java.util.List;
-
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 
@@ -122,9 +120,5 @@ public class FlipNode extends Node {
      */
     public int getIndex() {
         return location & 0xffff;
-    }
-    
-    public List<Node> childNodes() {
-        return Node.createList(beginNode, endNode);
     }
 }

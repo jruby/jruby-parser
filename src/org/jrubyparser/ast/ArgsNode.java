@@ -142,13 +142,6 @@ public class ArgsNode extends Node {
     public BlockArgNode getBlock() {
         return block;
     }
-
-    public List<Node> childNodes() {
-        if (post != null) return Node.createList(pre, optional, rest, post, block);
-
-        return Node.createList(pre, optional, rest, block);
-    }
-    
  
     /**
      * Return a list of all possible parameter names.  IDE's can use this to generate

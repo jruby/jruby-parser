@@ -28,8 +28,6 @@
  ***** END LICENSE BLOCK *****/
 package org.jrubyparser.ast;
 
-import java.util.List;
-
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 
@@ -67,10 +65,6 @@ public class Colon3Node extends Node implements INameNode {
      */
     public String getName() {
         return name;
-    }
-    
-    public List<Node> childNodes() {
-        return EMPTY_LIST;
     }
 
     public void setName(String name) {

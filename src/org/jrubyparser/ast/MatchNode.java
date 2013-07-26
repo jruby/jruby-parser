@@ -28,8 +28,6 @@
  ***** END LICENSE BLOCK *****/
 package org.jrubyparser.ast;
 
-import java.util.List;
-
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 
@@ -68,9 +66,4 @@ public class MatchNode extends Node {
     public Node getRegexpNode() {
         return getRegexp();
     }
-
-    public List<Node> childNodes() {
-        return createList(regexpNode);
-    }
-    
 }

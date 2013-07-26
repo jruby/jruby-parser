@@ -28,8 +28,6 @@
  ***** END LICENSE BLOCK *****/
 package org.jrubyparser.ast;
 
-import java.util.List;
-
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 import org.jrubyparser.StaticScope;
@@ -78,10 +76,4 @@ public class ForNode extends IterNode {
     public Object accept(NodeVisitor iVisitor) {
         return iVisitor.visitForNode(this);
     }
-    
-    @Override
-    public List<Node> childNodes() {
-        return Node.createList(getVar(), getBody(), iterNode);
-    }
-    
 }

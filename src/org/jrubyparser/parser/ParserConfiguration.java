@@ -34,6 +34,8 @@ import org.jrubyparser.CompatVersion;
 import org.jrubyparser.StaticScope;
 
 public class ParserConfiguration {
+    public enum SyntaxGathering { NONE, COMMENTS, ALL };
+    
     // What linenumber will the source think it starts from?
     private int lineNumber = 0;
 
@@ -47,6 +49,9 @@ public class ParserConfiguration {
     // are already defined.  Without this, we would make all vars end getting declared
     // as vcalls instead of localvars.
     private StaticScope scope = null;
+    
+    // What additional purely syntactical elements should we retain in the AST.
+    private SyntaxGathering syntax = SyntaxGathering.NONE;
 
     public ParserConfiguration() {}
     
@@ -58,6 +63,7 @@ public class ParserConfiguration {
         this.lineNumber = lineNumber;
         this.version = version;
         this.scope = scope;
+        this.syntax = SyntaxGathering.NONE;
     }
 
     public boolean isDebug() {
@@ -78,5 +84,13 @@ public class ParserConfiguration {
     
     public String getEncoding() {
         return "UTF-8"; // TODO: Replace with charset from IDE?
+    }
+    
+    public SyntaxGathering getSyntax() {
+        return syntax;
+    }
+    
+    public void setSyntax(SyntaxGathering syntax) {
+        this.syntax = syntax;
     }
 }

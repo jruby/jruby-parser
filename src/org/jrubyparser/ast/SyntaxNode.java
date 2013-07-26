@@ -12,8 +12,8 @@
  * implied. See the License for the specific language governing
  * rights and limitations under the License.
  *
- * Copyright (C) 2009 Thomas E. Enebo <tom.enebo@gmail.com>
- * 
+ * Copyright (C) 2013 The JRuby Team
+ *  
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
  * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
@@ -31,44 +31,32 @@ package org.jrubyparser.ast;
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 
-/** 
- * Represents a && (and) operator.
+/**
+ * This represents extra syntax which has no value to a runtime but is necessary to preserve
+ * syntax in the case of rewriting or any other syntactical analysis.  Comments and potentially
+ * other pieces of syntax may subclass this so it is easier to process those in a visitor.
  */
-public class AndNode extends Node implements BinaryOperatorNode {
-    private Node firstNode;
-    private Node secondNode;
-
-    public AndNode(SourcePosition position, Node firstNode, Node secondNode) {
+public class SyntaxNode extends Node {
+    // text for this region of syntax
+    private String content;
+    
+    public SyntaxNode(SourcePosition position, String content) {
         super(position);
         
-        assert firstNode != null : "AndNode.first == null";
-        assert secondNode != null : "AndNode.second == null";
-        
-        this.firstNode = adopt(firstNode);
-        this.secondNode = adopt(secondNode);
+        this.content = content;
     }
 
+    @Override
     public NodeType getNodeType() {
-        return NodeType.ANDNODE;
+        return NodeType.SYNTAXNODE;
+    }
+    
+    @Override
+    public Object accept(NodeVisitor visitor) {
+        return visitor.visitSyntaxNode(this);
     }
 
-    public Object accept(NodeVisitor iVisitor) {
-        return iVisitor.visitAndNode(this);
-    }
-
-    /**
-     * Gets the secondNode.
-     * @return Returns a Node
-     */
-    public Node getSecond() {
-        return secondNode;
-    }
-
-    /**
-     * Gets the firstNode.
-     * @return Returns a Node
-     */
-    public Node getFirst() {
-        return firstNode;
+    public String getContent() {
+        return content;
     }
 }

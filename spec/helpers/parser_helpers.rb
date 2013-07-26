@@ -14,14 +14,21 @@ VERSIONS_MAP = {
 }
 VERSIONS = [1.8, 1.9, 2.0]
 
+SYNTAX_MAP = {
+  nil => ParserConfiguration::SyntaxGathering::NONE,
+  :all => ParserConfiguration::SyntaxGathering::ALL
+}
+
 class Object
   # Wrap the code in what the JRubyParser expects
   def source(code)
     StringReader.new code.to_s
   end
 
-  def config(version, scope=nil)
-    ParserConfiguration.new(0, VERSIONS_MAP[version], scope)
+  def config(version, scope=nil, syntax=nil)
+    ParserConfiguration.new(0, VERSIONS_MAP[version], scope).tap do |c|
+      c.syntax = SYNTAX_MAP[syntax]
+    end
   end
 
   # Create a static scope that we can pass to the parser that has
@@ -36,6 +43,39 @@ class Object
   # Parse the provided code into an AST
   def parse(code, version=1.8, scope=nil)
     PARSER.parse "<code>", source(code), config(version, scope)
+  end
+
+# def node_value(node)
+#   name = node.getClass.name
+
+#   value = node.value if node.respond_to?(:value)
+#   value = node.name if node.respond_to?(:name)
+
+#   name + (value ? ("(" + value.to_s + ")" ) : "")
+# end
+
+# def node_position(node)
+#   if node.invisible?
+#     "<none>"
+#   else
+#     node.position 
+#   end
+# end
+
+# def display(node, indent="")
+#   puts "#{indent}#{node_value(node)}: #{node_position(node)}"
+#   node.child_nodes.each do |child|
+#     display(child, indent + "  ")
+#   end
+# end
+
+
+  # Parse the provided code into an AST with full syntax collection.
+  # The 'r' is for rewriting...
+  def rparse(code, version=1.8, scope=nil)
+    root = PARSER.parse "<code>", source(code), config(version, scope, :all)
+#    display(root)
+    root
   end
 
   ##

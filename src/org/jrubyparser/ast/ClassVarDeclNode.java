@@ -28,8 +28,6 @@
  ***** END LICENSE BLOCK *****/
 package org.jrubyparser.ast;
 
-import java.util.List;
-
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 
@@ -79,10 +77,6 @@ public class ClassVarDeclNode extends AssignableNode implements IClassVariable {
         String thisName = getName();
         
         return thisName != null && thisName.equals(name);
-    }
-    
-    public List<Node> childNodes() {
-        return createList(getValue());
     }
     
     public SourcePosition getNamePosition() {

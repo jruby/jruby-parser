@@ -1,8 +1,6 @@
 package org.jrubyparser.ast;
 
-import java.util.List;
 import org.jrubyparser.SourcePosition;
-import static org.jrubyparser.ast.Node.EMPTY_LIST;
 
 /**
  * Ruby keywords like self,true,false,nil.
@@ -14,10 +12,6 @@ public abstract class BareKeywordNode extends Node implements INameNode {
         super(position);
      
         this.name = name;
-    }
-    
-    public List<Node> childNodes() {
-        return EMPTY_LIST;
     }
     
     public String getDecoratedName() {

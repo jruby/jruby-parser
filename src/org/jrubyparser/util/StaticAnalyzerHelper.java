@@ -156,7 +156,8 @@ public class StaticAnalyzerHelper {
     }
         
     private static ListNode asList(Node node) {
-        if (node == null) return new ListNode(SourcePosition.INVALID_POSITION);
+        // FIXME: This needs an actual position
+        if (node == null) return new ListNode(null);
         
         return !(node instanceof ListNode) ? new ListNode(node.getPosition(), node) : (ListNode) node;
         

@@ -49,7 +49,6 @@ public class ClassNode extends Node implements IScopingNode, ILocalScope, IModul
         
         assert cpath != null : "cpath is not null";
         assert scope != null : "scope is not null";
-        assert bodyNode != null : "bodyNode is not null";
         
         this.cpath = (Colon3Node) adopt(cpath);
         this.scope = scope;
@@ -111,10 +110,6 @@ public class ClassNode extends Node implements IScopingNode, ILocalScope, IModul
     @Deprecated
     public Node getSuperNode() {
         return getSuper();
-    }
-
-    public List<Node> childNodes() {
-        return Node.createList(cpath, bodyNode, superNode);
     }
      
     public List<ILocalVariable> getVariableReferencesNamed(String name) {

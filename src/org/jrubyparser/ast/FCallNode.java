@@ -28,7 +28,6 @@
  ***** END LICENSE BLOCK *****/
 package org.jrubyparser.ast;
 
-import java.util.List;
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 
@@ -146,10 +145,6 @@ public class FCallNode extends Node implements INameNode, IArgumentNode, BlockAc
         String thisName = getName();
         
         return thisName != null && thisName.equals(name);
-    }
-    
-    public List<Node> childNodes() {
-        return createList(argsNode, iterNode);
     }
 
     public SourcePosition getNamePosition() {

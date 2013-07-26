@@ -27,8 +27,6 @@
  ***** END LICENSE BLOCK *****/
 package org.jrubyparser.ast;
 
-import java.util.List;
-
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 
@@ -51,9 +49,4 @@ public class RetryNode extends Node {
     public Object accept(NodeVisitor iVisitor) {
         return iVisitor.visitRetryNode(this);
     }
-    
-    public List<Node> childNodes() {
-        return EMPTY_LIST;
-    }
-
 }

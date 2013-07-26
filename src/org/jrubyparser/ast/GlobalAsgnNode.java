@@ -28,8 +28,6 @@
  ***** END LICENSE BLOCK *****/
 package org.jrubyparser.ast;
 
-import java.util.List;
-
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 
@@ -80,10 +78,6 @@ public class GlobalAsgnNode extends AssignableNode implements IGlobalVariable {
         String thisName = getName();
         
         return thisName != null && thisName.equals(name);
-    }
-    
-    public List<Node> childNodes() {
-        return createList(getValue());
     }
     
     public SourcePosition getNamePosition() {

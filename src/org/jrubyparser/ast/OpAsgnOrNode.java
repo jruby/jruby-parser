@@ -28,8 +28,6 @@
  ***** END LICENSE BLOCK *****/
 package org.jrubyparser.ast;
 
-import java.util.List;
-
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 
@@ -74,9 +72,4 @@ public class OpAsgnOrNode extends Node implements BinaryOperatorNode {
     public Node getSecond() {
         return secondNode;
     }
-    
-    public List<Node> childNodes() {
-        return Node.createList(firstNode, secondNode);
-    }
-    
 }
