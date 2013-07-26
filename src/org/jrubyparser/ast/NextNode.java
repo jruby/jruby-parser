@@ -28,8 +28,6 @@
  ***** END LICENSE BLOCK *****/
 package org.jrubyparser.ast;
 
-import java.util.List;
-
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 
@@ -41,8 +39,6 @@ public class NextNode extends Node {
 
     public NextNode(SourcePosition position, Node valueNode) {
         super(position);
-        
-        assert valueNode != null : "valueNode is not null";
         
         this.valueNode = adopt(valueNode);
     }

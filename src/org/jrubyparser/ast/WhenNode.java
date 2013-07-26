@@ -42,8 +42,6 @@ public class WhenNode extends Node {
     public WhenNode(SourcePosition position, Node expressionNodes, Node bodyNode, Node nextCase) {
         super(position);
 
-        assert bodyNode != null : "bodyNode is not null";
-
         this.expressionNodes = adopt(expressionNodes);
         this.bodyNode = adopt(bodyNode);
         this.nextCase = adopt(nextCase);

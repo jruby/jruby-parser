@@ -40,8 +40,6 @@ public class ReturnNode extends Node {
     public ReturnNode(SourcePosition position, Node valueNode) {
         super(position);
         
-        assert valueNode != null : "valueNode is not null";
-        
         this.valueNode = adopt(valueNode);
     }
 

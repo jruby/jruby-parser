@@ -50,8 +50,6 @@ public class RootNode extends Node implements ILocalScope {
     public RootNode(SourcePosition position, StaticScope scope, Node bodyNode) {
         super(position);
         
-        assert bodyNode != null : "bodyNode is not null";
-        
         this.staticScope = scope;
         this.bodyNode = adopt(bodyNode);
     }

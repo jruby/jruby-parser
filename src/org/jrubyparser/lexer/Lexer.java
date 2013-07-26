@@ -957,6 +957,9 @@ public class Lexer {
     
     // FIXME: Consider stashing some boolean rather that running this set of conditionals a million times.
     public boolean collectComments() {
+        // FIXME: For netbeans lexer-only since we don't have a configuration
+        if (preserveSpaces) return true;
+        
         switch (parserSupport.getConfiguration().getSyntax()) {
             case COMMENTS: case ALL:
                 return true;
