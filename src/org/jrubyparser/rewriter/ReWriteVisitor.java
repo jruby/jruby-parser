@@ -108,7 +108,6 @@ import org.jrubyparser.ast.Match3Node;
 import org.jrubyparser.ast.MatchNode;
 import org.jrubyparser.ast.MethodNameNode;
 import org.jrubyparser.ast.ModuleNode;
-import org.jrubyparser.ast.MultipleAsgn19Node;
 import org.jrubyparser.ast.MultipleAsgnNode;
 import org.jrubyparser.ast.NewlineNode;
 import org.jrubyparser.ast.NextNode;
@@ -1054,29 +1053,8 @@ public class ReWriteVisitor implements NodeVisitor {
     public Object visitMethodNameNode(MethodNameNode iVisited) {
         return null;
     }
-    
-    public Object visitMultipleAsgnNode(MultipleAsgnNode iVisited) {
-        if (iVisited.getHead() != null) {
-            factory.createMultipleAssignmentReWriteVisitor().visitAndPrintWithSeparator(iVisited.getHead().childNodes().iterator());
-        }
-        if (iVisited.getValue() == null) {
-            visitNode(iVisited.getRest());
-            return null;
-        }
-        print(config.getFormatHelper().beforeAssignment());
-        print("=");
-        print(config.getFormatHelper().afterAssignment());
-        enterCall();
-        if (iVisited.getValue() instanceof ArrayNode) {
-            visitAndPrintWithSeparator(iVisited.getValue().childNodes().iterator());
-        } else {
-            visitNode(iVisited.getValue());
-        }
-        leaveCall();
-        return null;
-    }
 
-    public Object visitMultipleAsgnNode(MultipleAsgn19Node iVisited) {
+    public Object visitMultipleAsgnNode(MultipleAsgnNode iVisited) {
         if (iVisited.getPre() != null) {
             factory.createMultipleAssignmentReWriteVisitor().visitAndPrintWithSeparator(iVisited.getPre().childNodes().iterator());
         }

@@ -67,7 +67,7 @@ import org.jrubyparser.ast.ListNode;
 import org.jrubyparser.ast.LiteralNode;
 import org.jrubyparser.ast.MethodNameNode;
 import org.jrubyparser.ast.ModuleNode;
-import org.jrubyparser.ast.MultipleAsgn19Node;
+import org.jrubyparser.ast.MultipleAsgnNode;
 import org.jrubyparser.ast.NextNode;
 import org.jrubyparser.ast.Node;
 import org.jrubyparser.ast.NotNode;
@@ -218,7 +218,7 @@ public class Ruby19Parser implements RubyParser {
 %type <BlockArgNode> opt_f_block_arg f_block_arg
 %type <IterNode> brace_block do_block cmd_brace_block
    // ENEBO: missing mhls_entry
-%type <MultipleAsgn19Node> mlhs mlhs_basic 
+%type <MultipleAsgnNode> mlhs mlhs_basic 
 %type <RescueBodyNode> opt_rescue
 %type <AssignableNode> var_lhs
 %type <LiteralNode> fsym
@@ -503,52 +503,52 @@ command        : operation command_args %prec tLOWEST {
                     $$ = support.new_yield(support.union($1, $2), $2);
                 }
 
-// MultipleAssig19Node:mlhs - [!null]
+// MultipleAssigNode:mlhs - [!null]
 mlhs            : mlhs_basic
                 | tLPAREN mlhs_inner rparen {
                     $$ = $2;
                     $<Node>$.setPosition(support.union($1, $3));
                 }
 
-// MultipleAssign19Node:mlhs_entry - mlhs w or w/o parens [!null]
+// MultipleAssignNode:mlhs_entry - mlhs w or w/o parens [!null]
 mlhs_inner      : mlhs_basic {
                     $$ = $1;
                 }
                 | tLPAREN mlhs_inner rparen {
                     SourcePosition pos = support.union($1, $3);
-                    $$ = new MultipleAsgn19Node(pos, support.newArrayNode(pos, $2), null, null);
+                    $$ = new MultipleAsgnNode(pos, support.newArrayNode(pos, $2), null, null);
                 }
 
-// MultipleAssign19Node:mlhs_basic - multiple left hand side (basic because used in multiple context) [!null]
+// MultipleAssignNode:mlhs_basic - multiple left hand side (basic because used in multiple context) [!null]
 mlhs_basic      : mlhs_head {
-                    $$ = new MultipleAsgn19Node(support.getPosition($1), $1, null, null);
+                    $$ = new MultipleAsgnNode(support.getPosition($1), $1, null, null);
                 }
                 | mlhs_head mlhs_item {
-                    $$ = new MultipleAsgn19Node(support.union($<Node>1, $<Node>2), $1.add($2), null, null);
+                    $$ = new MultipleAsgnNode(support.union($<Node>1, $<Node>2), $1.add($2), null, null);
                 }
                 | mlhs_head tSTAR mlhs_node {
-                    $$ = new MultipleAsgn19Node(support.getPosition($1), $1, $3, (ListNode) null);
+                    $$ = new MultipleAsgnNode(support.getPosition($1), $1, $3, (ListNode) null);
                 }
                 | mlhs_head tSTAR mlhs_node ',' mlhs_post {
-                    $$ = new MultipleAsgn19Node(support.getPosition($1), $1, $3, $5);
+                    $$ = new MultipleAsgnNode(support.getPosition($1), $1, $3, $5);
                 }
                 | mlhs_head tSTAR {
-                    $$ = new MultipleAsgn19Node(support.getPosition($1), $1, new StarNode(support.getPosition(null)), null);
+                    $$ = new MultipleAsgnNode(support.getPosition($1), $1, new StarNode(support.getPosition(null)), null);
                 }
                 | mlhs_head tSTAR ',' mlhs_post {
-                    $$ = new MultipleAsgn19Node(support.getPosition($1), $1, new StarNode(support.getPosition(null)), $4);
+                    $$ = new MultipleAsgnNode(support.getPosition($1), $1, new StarNode(support.getPosition(null)), $4);
                 }
                 | tSTAR mlhs_node {
-                    $$ = new MultipleAsgn19Node(support.getPosition($1), null, $2, null);
+                    $$ = new MultipleAsgnNode(support.getPosition($1), null, $2, null);
                 }
                 | tSTAR mlhs_node ',' mlhs_post {
-                    $$ = new MultipleAsgn19Node(support.getPosition($1), null, $2, $4);
+                    $$ = new MultipleAsgnNode(support.getPosition($1), null, $2, $4);
                 }
                 | tSTAR {
-                      $$ = new MultipleAsgn19Node(support.getPosition($1), null, new StarNode(support.getPosition(null)), null);
+                      $$ = new MultipleAsgnNode(support.getPosition($1), null, new StarNode(support.getPosition(null)), null);
                 }
                 | tSTAR ',' mlhs_post {
-                      $$ = new MultipleAsgn19Node(support.getPosition($1), null, new StarNode(support.getPosition(null)), $3);
+                      $$ = new MultipleAsgnNode(support.getPosition($1), null, new StarNode(support.getPosition(null)), $3);
                 }
 
 mlhs_item       : mlhs_node
@@ -1250,31 +1250,31 @@ f_marg_list     : f_marg {
                 }
 
 f_margs         : f_marg_list {
-                    $$ = new MultipleAsgn19Node(support.getPosition($1), $1, null, null);
+                    $$ = new MultipleAsgnNode(support.getPosition($1), $1, null, null);
                 }
                 | f_marg_list ',' tSTAR f_norm_arg {
-                    $$ = new MultipleAsgn19Node(support.getPosition($1), $1, support.assignable($4, null), null);
+                    $$ = new MultipleAsgnNode(support.getPosition($1), $1, support.assignable($4, null), null);
                 }
                 | f_marg_list ',' tSTAR f_norm_arg ',' f_marg_list {
-                    $$ = new MultipleAsgn19Node(support.getPosition($1), $1, support.assignable($4, null), $6);
+                    $$ = new MultipleAsgnNode(support.getPosition($1), $1, support.assignable($4, null), $6);
                 }
                 | f_marg_list ',' tSTAR {
-                    $$ = new MultipleAsgn19Node(support.getPosition($1), $1, new StarNode(support.getPosition(null)), null);
+                    $$ = new MultipleAsgnNode(support.getPosition($1), $1, new StarNode(support.getPosition(null)), null);
                 }
                 | f_marg_list ',' tSTAR ',' f_marg_list {
-                    $$ = new MultipleAsgn19Node(support.getPosition($1), $1, new StarNode(support.getPosition(null)), $5);
+                    $$ = new MultipleAsgnNode(support.getPosition($1), $1, new StarNode(support.getPosition(null)), $5);
                 }
                 | tSTAR f_norm_arg {
-                    $$ = new MultipleAsgn19Node(support.getPosition($1), null, support.assignable($2, null), null);
+                    $$ = new MultipleAsgnNode(support.getPosition($1), null, support.assignable($2, null), null);
                 }
                 | tSTAR f_norm_arg ',' f_marg_list {
-                    $$ = new MultipleAsgn19Node(support.getPosition($1), null, support.assignable($2, null), $4);
+                    $$ = new MultipleAsgnNode(support.getPosition($1), null, support.assignable($2, null), $4);
                 }
                 | tSTAR {
-                    $$ = new MultipleAsgn19Node(support.getPosition($1), null, new StarNode(support.getPosition(null)), null);
+                    $$ = new MultipleAsgnNode(support.getPosition($1), null, new StarNode(support.getPosition(null)), null);
                 }
                 | tSTAR ',' f_marg_list {
-                    $$ = new MultipleAsgn19Node(support.getPosition($1), null, null, $3);
+                    $$ = new MultipleAsgnNode(support.getPosition($1), null, null, $3);
                 }
 
 block_param     : f_arg ',' f_block_optarg ',' f_rest_arg opt_f_block_arg {

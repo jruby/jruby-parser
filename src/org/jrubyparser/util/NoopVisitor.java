@@ -69,7 +69,6 @@ import org.jrubyparser.ast.Match3Node;
 import org.jrubyparser.ast.MatchNode;
 import org.jrubyparser.ast.MethodNameNode;
 import org.jrubyparser.ast.ModuleNode;
-import org.jrubyparser.ast.MultipleAsgn19Node;
 import org.jrubyparser.ast.MultipleAsgnNode;
 import org.jrubyparser.ast.NewlineNode;
 import org.jrubyparser.ast.NextNode;
@@ -366,10 +365,6 @@ public class NoopVisitor implements NodeVisitor {
     }
 
     public Object visitMultipleAsgnNode(MultipleAsgnNode iVisited) {
-        return visit(iVisited);
-    }
-
-    public Object visitMultipleAsgnNode(MultipleAsgn19Node iVisited) {
         return visit(iVisited);
     }
 

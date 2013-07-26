@@ -10,7 +10,7 @@ import org.jrubyparser.SourcePosition;
 import org.jrubyparser.ast.ArgsCatNode;
 import org.jrubyparser.ast.ArgsPushNode;
 import org.jrubyparser.ast.ListNode;
-import org.jrubyparser.ast.MultipleAsgn19Node;
+import org.jrubyparser.ast.MultipleAsgnNode;
 import org.jrubyparser.ast.Node;
 
 /**
@@ -23,7 +23,7 @@ public class StaticAnalyzerHelper {
     private static short POST = 2;
 
     // FIXME: This feels really icky..
-    public static List<NodePair> calculateStaticAssignments(MultipleAsgn19Node masgn, Node values) {
+    public static List<NodePair> calculateStaticAssignments(MultipleAsgnNode masgn, Node values) {
         List<NodePair> assignments = new ArrayList<NodePair>();
         Node[] rhs = flattenRHSValues(values);
         ListNode rhsPre = (ListNode) rhs[PRE];

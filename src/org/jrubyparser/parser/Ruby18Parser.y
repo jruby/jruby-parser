@@ -376,7 +376,7 @@ stmt          : kALIAS fitem {
               }
               | mlhs '=' command_call {
                   support.checkExpression($3);
-		  if ($1.getHeadNode() != null) {
+		  if ($1.getPre() != null) {
 		      $1.setValueNode(new ToAryNode(support.getPosition($1), $3));
 		  } else {
 		      $1.setValueNode(support.newArrayNode(support.getPosition($1), $3));
@@ -427,7 +427,7 @@ stmt          : kALIAS fitem {
                   $$ = support.node_assign($1, new SValueNode(support.getPosition($1), $3));
               }
  	      | mlhs '=' arg_value {
-                  if ($1.getHeadNode() != null) {
+                  if ($1.getPre() != null) {
 		      $1.setValueNode(new ToAryNode(support.getPosition($1), $3));
 		  } else {
 		      $1.setValueNode(support.newArrayNode(support.getPosition($1), $3));

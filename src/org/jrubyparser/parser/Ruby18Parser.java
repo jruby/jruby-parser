@@ -3405,7 +3405,7 @@ states[292] = new ParserState() {
 states[24] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
                   support.checkExpression(((Node)yyVals[0+yyTop]));
-		  if (((MultipleAsgnNode)yyVals[-2+yyTop]).getHeadNode() != null) {
+		  if (((MultipleAsgnNode)yyVals[-2+yyTop]).getPre() != null) {
 		      ((MultipleAsgnNode)yyVals[-2+yyTop]).setValueNode(new ToAryNode(support.getPosition(((MultipleAsgnNode)yyVals[-2+yyTop])), ((Node)yyVals[0+yyTop])));
 		  } else {
 		      ((MultipleAsgnNode)yyVals[-2+yyTop]).setValueNode(support.newArrayNode(support.getPosition(((MultipleAsgnNode)yyVals[-2+yyTop])), ((Node)yyVals[0+yyTop])));
@@ -3895,7 +3895,7 @@ states[367] = new ParserState() {
 };
 states[32] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
-                  if (((MultipleAsgnNode)yyVals[-2+yyTop]).getHeadNode() != null) {
+                  if (((MultipleAsgnNode)yyVals[-2+yyTop]).getPre() != null) {
 		      ((MultipleAsgnNode)yyVals[-2+yyTop]).setValueNode(new ToAryNode(support.getPosition(((MultipleAsgnNode)yyVals[-2+yyTop])), ((Node)yyVals[0+yyTop])));
 		  } else {
 		      ((MultipleAsgnNode)yyVals[-2+yyTop]).setValueNode(support.newArrayNode(support.getPosition(((MultipleAsgnNode)yyVals[-2+yyTop])), ((Node)yyVals[0+yyTop])));
