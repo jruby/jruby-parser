@@ -49,12 +49,7 @@ public class LambdaNode extends IterNode {
     }
 
     @Override
-    public Node getBody() {
-        return super.getBody();
-    }
-
-    @Override
     public Object accept(NodeVisitor visitor) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return visitor.visitLambdaNode(this);
     }
 }

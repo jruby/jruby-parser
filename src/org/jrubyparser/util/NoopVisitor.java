@@ -60,6 +60,7 @@ import org.jrubyparser.ast.InstVarNode;
 import org.jrubyparser.ast.IterNode;
 import org.jrubyparser.ast.KeywordArgNode;
 import org.jrubyparser.ast.KeywordRestArgNode;
+import org.jrubyparser.ast.LambdaNode;
 import org.jrubyparser.ast.ListNode;
 import org.jrubyparser.ast.LiteralNode;
 import org.jrubyparser.ast.LocalAsgnNode;
@@ -346,6 +347,10 @@ public class NoopVisitor implements NodeVisitor {
 
     public Object visitKeywordRestArgNode(KeywordRestArgNode iVisited) {
         return visit(iVisited);
+    }
+    
+    public Object visitLambdaNode(LambdaNode visited) {
+        return visit(visited);
     }
     
     public Object visitListNode(ListNode iVisited) {

@@ -57,6 +57,13 @@ describe JRubyParser do
       parse("alias foo bar").to_source.should == "alias foo bar"
     end
 
+    if v != 1.8 
+      it "rewrites stabby lambda [#{v}]" do
+        str = "->(a) {puts a}"
+        parse(str, v).to_source.should == str
+      end
+    end
+
 #    it "rewrites a comment on first line [#{v}]" do
 #      code = "# comment 1\nfoo(1)\n"
 #      rparse(code).to_source.should == code

@@ -99,6 +99,7 @@ import org.jrubyparser.ast.InstVarNode;
 import org.jrubyparser.ast.IterNode;
 import org.jrubyparser.ast.KeywordArgNode;
 import org.jrubyparser.ast.KeywordRestArgNode;
+import org.jrubyparser.ast.LambdaNode;
 import org.jrubyparser.ast.ListNode;
 import org.jrubyparser.ast.LiteralNode;
 import org.jrubyparser.ast.LocalAsgnNode;
@@ -1033,6 +1034,29 @@ public class ReWriteVisitor implements NodeVisitor {
             printNewlineAndIndentation();
             print("end");
         }
+        return null;
+    }
+    
+    public Object visitLambdaNode(LambdaNode visited) {
+        print("->(");
+        visitArgsNode(visited.getArgs());
+        print(")");
+        
+        if (isOnSingleLine(visited)) {
+            print(config.getFormatHelper().beforeIterBrackets());
+            print("{");
+            print(config.getFormatHelper().beforeIterVars());
+            config.setSkipNextNewline(true);
+            visitNode(visited.getBody());
+            print(config.getFormatHelper().beforeClosingIterBrackets());
+            print('}');
+        } else {
+            print(" do ");
+            visitNodeInIndentation(visited.getBody());
+            printNewlineAndIndentation();
+            print("end");            
+        }
+
         return null;
     }
     
