@@ -60,6 +60,7 @@ import org.jrubyparser.ast.GlobalVarNode;
 import org.jrubyparser.ast.HashNode;
 import org.jrubyparser.ast.IArgumentNode;
 import org.jrubyparser.ast.IfNode;
+import org.jrubyparser.ast.ImplicitNilNode;
 import org.jrubyparser.ast.InstVarNode;
 import org.jrubyparser.ast.IterNode;
 import org.jrubyparser.ast.LambdaNode;
@@ -977,10 +978,10 @@ args            : arg_value {
                     $$ = support.newSplatNode(support.union($1, $2), $2);
                 }
                 | args ',' arg_value {
-                    Node node = support.splat_array($1);
-
-                    if (node != null) {
-                        $$ = support.list_append(node, $3);
+                    Node lhs = support.splat_array($1);
+                    
+                    if (lhs != null) {
+                        $$ = support.list_append(lhs, $3);
                     } else {
                         $$ = support.arg_append($1, $3);
                     }
@@ -1041,11 +1042,12 @@ primary         : literal
                     $$ = $2;
                 }
                 | tLPAREN compstmt tRPAREN {
-                    if ($2 != null) {
-                        // compstmt position includes both parens around it
-                        ((ISourcePositionHolder) $2).setPosition(support.union($1, $3));
-                    }
-                    $$ = $2;
+                    SourcePosition pos = support.union($1, $3);
+                    Node implicitNil = $2 == null ? new ImplicitNilNode(pos) : $2;
+                    // compstmt position includes both parens around it
+                    if (implicitNil != null) implicitNil.setPosition(pos);
+
+                    $$ = implicitNil;
                 }
                 | primary_value tCOLON2 tCONSTANT {
                     $$ = support.new_colon2(support.union($1, $3), $1, (String) $3.getValue());

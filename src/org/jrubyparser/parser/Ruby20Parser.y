@@ -59,6 +59,7 @@ import org.jrubyparser.ast.ForNode;
 import org.jrubyparser.ast.GlobalVarNode;
 import org.jrubyparser.ast.HashNode;
 import org.jrubyparser.ast.IfNode;
+import org.jrubyparser.ast.ImplicitNilNode;
 import org.jrubyparser.ast.InstVarNode;
 import org.jrubyparser.ast.IterNode;
 import org.jrubyparser.ast.LambdaNode;
@@ -1111,13 +1112,12 @@ primary         : literal
                     $$ = $2;
                 }
                 | tLPAREN compstmt tRPAREN {
-                    if ($2 != null) {
-                        // compstmt position includes both parens around it
-                        ((ISourcePositionHolder) $2).setPosition(support.union($1, $3));
-                        $$ = $2;
-                    } else {
-                        $$ = new NilNode($1.getPosition());
-                    }
+                    SourcePosition pos = support.union($1, $3);
+                    Node implicitNil = $2 == null ? new ImplicitNilNode(pos) : $2;
+                    // compstmt position includes both parens around it
+                    if (implicitNil != null) implicitNil.setPosition(pos);
+
+                    $$ = implicitNil;
                 }
                 | primary_value tCOLON2 tCONSTANT {
                     $$ = support.new_colon2(support.union($1, $3), $1, (String) $3.getValue());

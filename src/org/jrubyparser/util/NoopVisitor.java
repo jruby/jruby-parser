@@ -55,6 +55,7 @@ import org.jrubyparser.ast.GlobalAsgnNode;
 import org.jrubyparser.ast.GlobalVarNode;
 import org.jrubyparser.ast.HashNode;
 import org.jrubyparser.ast.IfNode;
+import org.jrubyparser.ast.ImplicitNilNode;
 import org.jrubyparser.ast.InstAsgnNode;
 import org.jrubyparser.ast.InstVarNode;
 import org.jrubyparser.ast.IterNode;
@@ -324,7 +325,11 @@ public class NoopVisitor implements NodeVisitor {
     public Object visitHashNode(HashNode iVisited) {
         return visit(iVisited);
     }
-
+    
+    public Object visitImplicitNilNode(ImplicitNilNode visited) {
+        return visit(visited);
+    }
+    
     public Object visitInstAsgnNode(InstAsgnNode iVisited) {
         return visit(iVisited);
     }

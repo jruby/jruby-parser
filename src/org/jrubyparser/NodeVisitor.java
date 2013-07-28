@@ -77,6 +77,7 @@ import org.jrubyparser.ast.GlobalAsgnNode;
 import org.jrubyparser.ast.GlobalVarNode;
 import org.jrubyparser.ast.HashNode;
 import org.jrubyparser.ast.IfNode;
+import org.jrubyparser.ast.ImplicitNilNode;
 import org.jrubyparser.ast.InstAsgnNode;
 import org.jrubyparser.ast.InstVarNode;
 import org.jrubyparser.ast.IterNode;
@@ -188,6 +189,7 @@ public interface NodeVisitor {
     public Object visitInstAsgnNode(InstAsgnNode iVisited);
     public Object visitInstVarNode(InstVarNode iVisited);
     public Object visitIfNode(IfNode iVisited);
+    public Object visitImplicitNilNode(ImplicitNilNode visited);
     public Object visitIterNode(IterNode iVisited);
     public Object visitKeywordArgNode(KeywordArgNode iVisited);
     public Object visitKeywordRestArgNode(KeywordRestArgNode iVisited);
@@ -242,5 +244,5 @@ public interface NodeVisitor {
     public Object visitXStrNode(XStrNode iVisited);
     public Object visitYieldNode(YieldNode iVisited);
     public Object visitZArrayNode(ZArrayNode iVisited);
-    public Object visitZSuperNode(ZSuperNode iVisited);
+    public Object visitZSuperNode(ZSuperNode iVisited);    
 }

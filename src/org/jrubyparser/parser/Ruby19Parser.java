@@ -63,6 +63,7 @@ import org.jrubyparser.ast.GlobalVarNode;
 import org.jrubyparser.ast.HashNode;
 import org.jrubyparser.ast.IArgumentNode;
 import org.jrubyparser.ast.IfNode;
+import org.jrubyparser.ast.ImplicitNilNode;
 import org.jrubyparser.ast.InstVarNode;
 import org.jrubyparser.ast.IterNode;
 import org.jrubyparser.ast.LambdaNode;
@@ -134,7 +135,7 @@ public class Ruby19Parser implements RubyParser {
         support.setWarnings(warnings);
         lexer.setWarnings(warnings);
     }
-					// line 138 "-"
+					// line 139 "-"
   // %token constants
   public static final int kCLASS = 257;
   public static final int kMODULE = 258;
@@ -1645,11 +1646,12 @@ states[68] = new ParserState() {
 };
 states[269] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
-                    if (((Node)yyVals[-1+yyTop]) != null) {
-                        /* compstmt position includes both parens around it*/
-                        ((ISourcePositionHolder) ((Node)yyVals[-1+yyTop])).setPosition(support.union(((Token)yyVals[-2+yyTop]), ((Token)yyVals[0+yyTop])));
-                    }
-                    yyVal = ((Node)yyVals[-1+yyTop]);
+                    SourcePosition pos = support.union(((Token)yyVals[-2+yyTop]), ((Token)yyVals[0+yyTop]));
+                    Node implicitNil = ((Node)yyVals[-1+yyTop]) == null ? new ImplicitNilNode(pos) : ((Node)yyVals[-1+yyTop]);
+                    /* compstmt position includes both parens around it*/
+                    if (implicitNil != null) implicitNil.setPosition(pos);
+
+                    yyVal = implicitNil;
     return yyVal;
   }
 };
@@ -2994,10 +2996,10 @@ states[51] = new ParserState() {
 };
 states[252] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
-                    Node node = support.splat_array(((Node)yyVals[-2+yyTop]));
-
-                    if (node != null) {
-                        yyVal = support.list_append(node, ((Node)yyVals[0+yyTop]));
+                    Node lhs = support.splat_array(((Node)yyVals[-2+yyTop]));
+                    
+                    if (lhs != null) {
+                        yyVal = support.list_append(lhs, ((Node)yyVals[0+yyTop]));
                     } else {
                         yyVal = support.arg_append(((Node)yyVals[-2+yyTop]), ((Node)yyVals[0+yyTop]));
                     }
@@ -4231,7 +4233,7 @@ states[267] = new ParserState() {
   }
 };
 }
-					// line 2006 "Ruby19Parser.y"
+					// line 2008 "Ruby19Parser.y"
 
     /** The parse method use an lexer stream and parse it to an AST node 
      * structure
@@ -4266,4 +4268,4 @@ states[267] = new ParserState() {
     // +++
     // Helper Methods
 }
-					// line 8055 "-"
+					// line 8057 "-"

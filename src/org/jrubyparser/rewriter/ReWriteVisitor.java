@@ -94,6 +94,7 @@ import org.jrubyparser.ast.GlobalVarNode;
 import org.jrubyparser.ast.HashNode;
 import org.jrubyparser.ast.INameNode;
 import org.jrubyparser.ast.IfNode;
+import org.jrubyparser.ast.ImplicitNilNode;
 import org.jrubyparser.ast.InstAsgnNode;
 import org.jrubyparser.ast.InstVarNode;
 import org.jrubyparser.ast.IterNode;
@@ -1017,6 +1018,10 @@ public class ReWriteVisitor implements NodeVisitor {
         return true;
     }
 
+    public Object visitImplicitNilNode(ImplicitNilNode visited) {
+        return null;
+    }
+    
     public Object visitIterNode(IterNode iVisited) {
         if (isOnSingleLine(iVisited)) {
             print(config.getFormatHelper().beforeIterBrackets());

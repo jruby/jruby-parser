@@ -62,6 +62,7 @@ import org.jrubyparser.ast.ForNode;
 import org.jrubyparser.ast.GlobalVarNode;
 import org.jrubyparser.ast.HashNode;
 import org.jrubyparser.ast.IfNode;
+import org.jrubyparser.ast.ImplicitNilNode;
 import org.jrubyparser.ast.InstVarNode;
 import org.jrubyparser.ast.IterNode;
 import org.jrubyparser.ast.LambdaNode;
@@ -132,7 +133,7 @@ public class Ruby20Parser implements RubyParser {
         support.setWarnings(warnings);
         lexer.setWarnings(warnings);
     }
-					// line 136 "-"
+					// line 137 "-"
   // %token constants
   public static final int kCLASS = 257;
   public static final int kMODULE = 258;
@@ -2913,13 +2914,12 @@ states[27] = new ParserState() {
 };
 states[289] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
-                    if (((Node)yyVals[-1+yyTop]) != null) {
-                        /* compstmt position includes both parens around it*/
-                        ((ISourcePositionHolder) ((Node)yyVals[-1+yyTop])).setPosition(support.union(((Token)yyVals[-2+yyTop]), ((Token)yyVals[0+yyTop])));
-                        yyVal = ((Node)yyVals[-1+yyTop]);
-                    } else {
-                        yyVal = new NilNode(((Token)yyVals[-2+yyTop]).getPosition());
-                    }
+                    SourcePosition pos = support.union(((Token)yyVals[-2+yyTop]), ((Token)yyVals[0+yyTop]));
+                    Node implicitNil = ((Node)yyVals[-1+yyTop]) == null ? new ImplicitNilNode(pos) : ((Node)yyVals[-1+yyTop]);
+                    /* compstmt position includes both parens around it*/
+                    if (implicitNil != null) implicitNil.setPosition(pos);
+
+                    yyVal = implicitNil;
     return yyVal;
   }
 };
