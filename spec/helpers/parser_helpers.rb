@@ -55,11 +55,7 @@ class Object
 # end
 
 # def node_position(node)
-#   if node.invisible?
-#     "<none>"
-#   else
-#     node.position 
-#   end
+#   node.position 
 # end
 
 # def display(node, indent="")

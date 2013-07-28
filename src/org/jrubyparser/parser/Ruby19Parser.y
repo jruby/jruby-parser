@@ -798,6 +798,7 @@ arg             : lhs '=' arg {
                     $$ = new DotNode(support.union($1, $3), $1, $3, true, isLiteral);
                 }
                 | arg tPLUS arg {
+
                     $$ = support.getOperatorCallNode($1, "+", $3, support.getPosition(null));
                 }
                 | arg tMINUS arg {
@@ -1016,7 +1017,7 @@ mrhs            : args ',' arg_value {
                     }
                 }
                 | tSTAR arg_value {
-                     $$ = support.newSplatNode(support.getPosition($1), $2);  
+                    $$ = support.newSplatNode(support.union($1, $2), $2);  
                 }
 
 primary         : literal
@@ -1121,7 +1122,7 @@ primary         : literal
                   lexer.getConditionState().end();
                 } compstmt kEND {
                     Node body = $6;
-                    $$ = new UntilNode(support.getPosition($1), support.getConditionNode($3), body);
+                    $$ = new UntilNode(support.union($1, $7), support.getConditionNode($3), body);
                 }
                 | kCASE expr_value opt_terms case_body kEND {
                     $$ = support.newCaseNode(support.union($1, $5), $2, $4);

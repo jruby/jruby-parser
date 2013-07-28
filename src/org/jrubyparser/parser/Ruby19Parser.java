@@ -3379,7 +3379,7 @@ states[457] = new ParserState() {
 };
 states[256] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
-                     yyVal = support.newSplatNode(support.getPosition(((Token)yyVals[-1+yyTop])), ((Node)yyVals[0+yyTop]));  
+                    yyVal = support.newSplatNode(support.union(((Token)yyVals[-1+yyTop]), ((Node)yyVals[0+yyTop])), ((Node)yyVals[0+yyTop]));  
     return yyVal;
   }
 };
@@ -3571,7 +3571,7 @@ states[91] = new ParserState() {
 states[292] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
                     Node body = ((Node)yyVals[-1+yyTop]);
-                    yyVal = new UntilNode(support.getPosition(((Token)yyVals[-6+yyTop])), support.getConditionNode(((Node)yyVals[-4+yyTop])), body);
+                    yyVal = new UntilNode(support.union(((Token)yyVals[-6+yyTop]), ((Token)yyVals[0+yyTop])), support.getConditionNode(((Node)yyVals[-4+yyTop])), body);
     return yyVal;
   }
 };
@@ -3995,6 +3995,7 @@ states[331] = new ParserState() {
 };
 states[197] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
+
                     yyVal = support.getOperatorCallNode(((Node)yyVals[-2+yyTop]), "+", ((Node)yyVals[0+yyTop]), support.getPosition(null));
     return yyVal;
   }
@@ -4230,7 +4231,7 @@ states[267] = new ParserState() {
   }
 };
 }
-					// line 2005 "Ruby19Parser.y"
+					// line 2006 "Ruby19Parser.y"
 
     /** The parse method use an lexer stream and parse it to an AST node 
      * structure
@@ -4265,4 +4266,4 @@ states[267] = new ParserState() {
     // +++
     // Helper Methods
 }
-					// line 8054 "-"
+					// line 8055 "-"
