@@ -31,20 +31,12 @@ package org.jrubyparser.ast;
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 
-public class ArgsCatNode extends Node implements BinaryOperatorNode {
-    private Node firstNode;
-    private Node secondNode;
-
+public class ArgsCatNode extends BinaryOperatorBaseNode {
     public ArgsCatNode(SourcePosition position, Node firstNode, Node secondNode) {
-        super(position);
-        
-        assert firstNode != null : "ArgsCatNode.first == null";
-        assert secondNode != null : "ArgsCatNode.second == null";
-
-        this.firstNode = adopt(firstNode);
-        this.secondNode = adopt(secondNode);
+        super(position, firstNode, secondNode);
     }
 
+    @Override
     public NodeType getNodeType() {
         return NodeType.ARGSCATNODE;
     }
@@ -53,17 +45,9 @@ public class ArgsCatNode extends Node implements BinaryOperatorNode {
         return visitor.visitArgsCatNode(this);
     }
     
-    public Node getFirst() {
-        return firstNode;
-    }
-    
     @Deprecated
     public Node getFirstNode() {
         return getFirst();
-    }
-    
-    public Node getSecond() {
-        return secondNode;
     }
     
     @Deprecated

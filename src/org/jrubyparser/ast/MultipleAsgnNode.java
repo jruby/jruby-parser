@@ -42,10 +42,12 @@ public class MultipleAsgnNode extends AssignableNode {
     private Node rest;
     private ListNode post;
 
+    // 1.8-only constructor
     public MultipleAsgnNode(SourcePosition position, ListNode pre, Node rest) {
         this(position, pre, rest, null);
     }
     
+    // 1.9+ constructor
     public MultipleAsgnNode(SourcePosition position, ListNode pre, Node rest, ListNode post) {
         super(position);
         this.pre = (ListNode) adopt(pre);
@@ -56,13 +58,13 @@ public class MultipleAsgnNode extends AssignableNode {
     }
 
     public NodeType getNodeType() {
-        return NodeType.MULTIPLEASGN19NODE;
+        return NodeType.MULTIPLEASGNNODE;
     }
 
     public Object accept(NodeVisitor iVisitor) {
         return iVisitor.visitMultipleAsgnNode(this);
     }
-
+    
     public Node getRest() {
         return rest;
     }

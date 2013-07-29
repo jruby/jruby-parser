@@ -34,20 +34,12 @@ import org.jrubyparser.SourcePosition;
 /**
  * represents '||' (or) statements
  */
-public class OrNode extends Node implements BinaryOperatorNode {
-    private Node firstNode;
-    private Node secondNode;
-
+public class OrNode extends BinaryOperatorBaseNode {
     public OrNode(SourcePosition position, Node firstNode, Node secondNode) {
-        super(position);
-        
-        assert firstNode != null : "firstNode is not null";
-        assert secondNode != null : "secondNode is not null";
-        
-        this.firstNode = adopt(firstNode);
-        this.secondNode = adopt(secondNode);
+        super(position, firstNode, secondNode);
     }
 
+    @Override
     public NodeType getNodeType() {
         return NodeType.ORNODE;
     }
@@ -58,21 +50,5 @@ public class OrNode extends Node implements BinaryOperatorNode {
      **/
     public Object accept(NodeVisitor iVisitor) {
         return iVisitor.visitOrNode(this);
-    }
-
-    /**
-     * Gets the firstNode.
-     * @return Returns a Node
-     */
-    public Node getFirst() {
-        return firstNode;
-    }
-
-    /**
-     * Gets the secondNode.
-     * @return Returns a Node
-     */
-    public Node getSecond() {
-        return secondNode;
     }
 }

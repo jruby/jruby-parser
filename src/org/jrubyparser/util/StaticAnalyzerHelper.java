@@ -12,6 +12,8 @@ import org.jrubyparser.ast.ArgsPushNode;
 import org.jrubyparser.ast.ListNode;
 import org.jrubyparser.ast.MultipleAsgnNode;
 import org.jrubyparser.ast.Node;
+import org.jrubyparser.ast.NodeType;
+import org.jrubyparser.ast.ToAryNode;
 
 /**
  * Separate logic from AST for calculating static relationships in Ruby.
@@ -125,6 +127,9 @@ public class StaticAnalyzerHelper {
      * fashion.
      */
     public static Node[] flattenRHSValues(Node rhs) {
+        // 1.8-only logic
+        if (rhs.getNodeType() == NodeType.TOARYNODE) rhs = ((ToAryNode) rhs).getValue();
+        
         Node[] values = new Node[3];
         
         if (rhs instanceof ArgsPushNode) {

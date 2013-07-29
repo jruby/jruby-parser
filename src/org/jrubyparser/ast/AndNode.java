@@ -34,18 +34,9 @@ import org.jrubyparser.SourcePosition;
 /** 
  * Represents a && (and) operator.
  */
-public class AndNode extends Node implements BinaryOperatorNode {
-    private Node firstNode;
-    private Node secondNode;
-
+public class AndNode extends BinaryOperatorBaseNode {
     public AndNode(SourcePosition position, Node firstNode, Node secondNode) {
-        super(position);
-        
-        assert firstNode != null : "AndNode.first == null";
-        assert secondNode != null : "AndNode.second == null";
-        
-        this.firstNode = adopt(firstNode);
-        this.secondNode = adopt(secondNode);
+        super(position, firstNode, secondNode);
     }
 
     public NodeType getNodeType() {
@@ -54,21 +45,5 @@ public class AndNode extends Node implements BinaryOperatorNode {
 
     public Object accept(NodeVisitor iVisitor) {
         return iVisitor.visitAndNode(this);
-    }
-
-    /**
-     * Gets the secondNode.
-     * @return Returns a Node
-     */
-    public Node getSecond() {
-        return secondNode;
-    }
-
-    /**
-     * Gets the firstNode.
-     * @return Returns a Node
-     */
-    public Node getFirst() {
-        return firstNode;
     }
 }
