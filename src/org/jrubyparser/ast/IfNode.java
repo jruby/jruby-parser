@@ -43,8 +43,6 @@ public class IfNode extends Node {
         super(position);
         
         assert condition != null : "condition is not null";
-//        assert thenBody != null : "thenBody is not null";
-//        assert elseBody != null : "elseBody is not null";
         
         this.condition = adopt(condition);
         this.thenBody = adopt(thenBody);

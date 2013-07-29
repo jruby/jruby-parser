@@ -94,11 +94,13 @@ import org.jrubyparser.ast.GlobalVarNode;
 import org.jrubyparser.ast.HashNode;
 import org.jrubyparser.ast.INameNode;
 import org.jrubyparser.ast.IfNode;
+import org.jrubyparser.ast.ImplicitNilNode;
 import org.jrubyparser.ast.InstAsgnNode;
 import org.jrubyparser.ast.InstVarNode;
 import org.jrubyparser.ast.IterNode;
 import org.jrubyparser.ast.KeywordArgNode;
 import org.jrubyparser.ast.KeywordRestArgNode;
+import org.jrubyparser.ast.LambdaNode;
 import org.jrubyparser.ast.ListNode;
 import org.jrubyparser.ast.LiteralNode;
 import org.jrubyparser.ast.LocalAsgnNode;
@@ -108,7 +110,6 @@ import org.jrubyparser.ast.Match3Node;
 import org.jrubyparser.ast.MatchNode;
 import org.jrubyparser.ast.MethodNameNode;
 import org.jrubyparser.ast.ModuleNode;
-import org.jrubyparser.ast.MultipleAsgn19Node;
 import org.jrubyparser.ast.MultipleAsgnNode;
 import org.jrubyparser.ast.NewlineNode;
 import org.jrubyparser.ast.NextNode;
@@ -1017,6 +1018,10 @@ public class ReWriteVisitor implements NodeVisitor {
         return true;
     }
 
+    public Object visitImplicitNilNode(ImplicitNilNode visited) {
+        return null;
+    }
+    
     public Object visitIterNode(IterNode iVisited) {
         if (isOnSingleLine(iVisited)) {
             print(config.getFormatHelper().beforeIterBrackets());
@@ -1037,6 +1042,29 @@ public class ReWriteVisitor implements NodeVisitor {
         return null;
     }
     
+    public Object visitLambdaNode(LambdaNode visited) {
+        print("->(");
+        visitArgsNode(visited.getArgs());
+        print(")");
+        
+        if (isOnSingleLine(visited)) {
+            print(config.getFormatHelper().beforeIterBrackets());
+            print("{");
+            print(config.getFormatHelper().beforeIterVars());
+            config.setSkipNextNewline(true);
+            visitNode(visited.getBody());
+            print(config.getFormatHelper().beforeClosingIterBrackets());
+            print('}');
+        } else {
+            print(" do ");
+            visitNodeInIndentation(visited.getBody());
+            printNewlineAndIndentation();
+            print("end");            
+        }
+
+        return null;
+    }
+    
     public Object visitListNode(ListNode iVisited) {
         return null;
     }
@@ -1054,29 +1082,8 @@ public class ReWriteVisitor implements NodeVisitor {
     public Object visitMethodNameNode(MethodNameNode iVisited) {
         return null;
     }
-    
-    public Object visitMultipleAsgnNode(MultipleAsgnNode iVisited) {
-        if (iVisited.getHead() != null) {
-            factory.createMultipleAssignmentReWriteVisitor().visitAndPrintWithSeparator(iVisited.getHead().childNodes().iterator());
-        }
-        if (iVisited.getValue() == null) {
-            visitNode(iVisited.getRest());
-            return null;
-        }
-        print(config.getFormatHelper().beforeAssignment());
-        print("=");
-        print(config.getFormatHelper().afterAssignment());
-        enterCall();
-        if (iVisited.getValue() instanceof ArrayNode) {
-            visitAndPrintWithSeparator(iVisited.getValue().childNodes().iterator());
-        } else {
-            visitNode(iVisited.getValue());
-        }
-        leaveCall();
-        return null;
-    }
 
-    public Object visitMultipleAsgnNode(MultipleAsgn19Node iVisited) {
+    public Object visitMultipleAsgnNode(MultipleAsgnNode iVisited) {
         if (iVisited.getPre() != null) {
             factory.createMultipleAssignmentReWriteVisitor().visitAndPrintWithSeparator(iVisited.getPre().childNodes().iterator());
         }
