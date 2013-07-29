@@ -346,7 +346,7 @@ compstmt        : stmts opt_terms {
 
 stmts           : none
                 | stmt_or_begin {
-                    $$ = support.newline_node($1, support.getPosition($1));
+                    $$ = support.newline_node($1, support.getPosition($1, true));
                 }
                 | stmts terms stmt_or_begin {
                     $$ = support.appendToBlock($1, support.newline_node($3, support.getPosition($3)));
