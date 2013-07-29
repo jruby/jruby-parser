@@ -42,8 +42,6 @@ public class RescueBodyNode extends Node {
     public RescueBodyNode(SourcePosition position, Node exceptionNodes, Node bodyNode, RescueBodyNode optRescueNode) {
         super(position);
         
-       assert bodyNode != null : "bodyNode is not null";
-        
         this.exceptionNodes = adopt(exceptionNodes);
         this.bodyNode = adopt(bodyNode);
         this.optRescueNode = (RescueBodyNode) adopt(optRescueNode);

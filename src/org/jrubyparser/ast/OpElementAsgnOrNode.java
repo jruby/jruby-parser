@@ -12,7 +12,7 @@
  * implied. See the License for the specific language governing
  * rights and limitations under the License.
  *
- * Copyright (C) 2009 Thomas E. Enebo <tom.enebo@gmail.com>
+ * Copyright (C) 2013 Thomas E. Enebo <tom.enebo@gmail.com>
  * 
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
@@ -28,38 +28,13 @@
  ***** END LICENSE BLOCK *****/
 package org.jrubyparser.ast;
 
-import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 
-/** 
- * Represents a 'next' statement.
+/**
+ *
  */
-public class NextNode extends Node {
-    private Node valueNode;
-
-    public NextNode(SourcePosition position, Node valueNode) {
-        super(position);
-        
-        this.valueNode = adopt(valueNode);
-    }
-
-    public NodeType getNodeType() {
-        return NodeType.NEXTNODE;
-    }
-    
-    /**
-     * Accept for the visitor pattern.
-     * @param iVisitor the visitor
-     **/
-    public Object accept(NodeVisitor iVisitor) {
-        return iVisitor.visitNextNode(this);
-    }
-    
-    /**
-     * Gets the valueNode.
-     * @return Returns a Node
-     */
-    public Node getValueNode() {
-        return valueNode;
+public class OpElementAsgnOrNode extends OpElementAsgnNode {
+    public OpElementAsgnOrNode(SourcePosition position, Node receiverNode, String operatorName, Node argsNode, Node valueNode) { 
+        super(position, receiverNode, operatorName, argsNode, valueNode);
     }
 }

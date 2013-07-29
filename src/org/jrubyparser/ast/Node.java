@@ -135,6 +135,7 @@ public abstract class Node implements ISourcePositionHolder {
     }
     
     public abstract Object accept(NodeVisitor visitor);
+    
     public List<Node> childNodes() {
         return children;
     }

@@ -31,6 +31,7 @@ package org.jrubyparser.ast;
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 
+// 1.8-only node
 public class ToAryNode extends Node {
     private Node node;
 

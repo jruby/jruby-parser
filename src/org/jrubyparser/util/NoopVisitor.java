@@ -55,11 +55,13 @@ import org.jrubyparser.ast.GlobalAsgnNode;
 import org.jrubyparser.ast.GlobalVarNode;
 import org.jrubyparser.ast.HashNode;
 import org.jrubyparser.ast.IfNode;
+import org.jrubyparser.ast.ImplicitNilNode;
 import org.jrubyparser.ast.InstAsgnNode;
 import org.jrubyparser.ast.InstVarNode;
 import org.jrubyparser.ast.IterNode;
 import org.jrubyparser.ast.KeywordArgNode;
 import org.jrubyparser.ast.KeywordRestArgNode;
+import org.jrubyparser.ast.LambdaNode;
 import org.jrubyparser.ast.ListNode;
 import org.jrubyparser.ast.LiteralNode;
 import org.jrubyparser.ast.LocalAsgnNode;
@@ -69,7 +71,6 @@ import org.jrubyparser.ast.Match3Node;
 import org.jrubyparser.ast.MatchNode;
 import org.jrubyparser.ast.MethodNameNode;
 import org.jrubyparser.ast.ModuleNode;
-import org.jrubyparser.ast.MultipleAsgn19Node;
 import org.jrubyparser.ast.MultipleAsgnNode;
 import org.jrubyparser.ast.NewlineNode;
 import org.jrubyparser.ast.NextNode;
@@ -324,7 +325,11 @@ public class NoopVisitor implements NodeVisitor {
     public Object visitHashNode(HashNode iVisited) {
         return visit(iVisited);
     }
-
+    
+    public Object visitImplicitNilNode(ImplicitNilNode visited) {
+        return visit(visited);
+    }
+    
     public Object visitInstAsgnNode(InstAsgnNode iVisited) {
         return visit(iVisited);
     }
@@ -349,6 +354,10 @@ public class NoopVisitor implements NodeVisitor {
         return visit(iVisited);
     }
     
+    public Object visitLambdaNode(LambdaNode visited) {
+        return visit(visited);
+    }
+    
     public Object visitListNode(ListNode iVisited) {
         return visit(iVisited);
     }
@@ -366,10 +375,6 @@ public class NoopVisitor implements NodeVisitor {
     }
 
     public Object visitMultipleAsgnNode(MultipleAsgnNode iVisited) {
-        return visit(iVisited);
-    }
-
-    public Object visitMultipleAsgnNode(MultipleAsgn19Node iVisited) {
         return visit(iVisited);
     }
 

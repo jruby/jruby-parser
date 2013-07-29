@@ -71,8 +71,9 @@ import org.jrubyparser.ast.FloatNode;
 import org.jrubyparser.ast.ForNode;
 import org.jrubyparser.ast.GlobalVarNode;
 import org.jrubyparser.ast.HashNode;
-import org.jrubyparser.ast.IfNode;
 import org.jrubyparser.ast.IArgumentNode;
+import org.jrubyparser.ast.IfNode;
+import org.jrubyparser.ast.ImplicitNilNode;
 import org.jrubyparser.ast.InstVarNode;
 import org.jrubyparser.ast.IterNode;
 import org.jrubyparser.ast.ListNode;
@@ -146,7 +147,7 @@ public class Ruby18Parser implements RubyParser {
         support.setWarnings(warnings);
         lexer.setWarnings(warnings);
     }
-					// line 150 "-"
+					// line 151 "-"
   // %token constants
   public static final int kCLASS = 257;
   public static final int kMODULE = 258;
@@ -2257,7 +2258,7 @@ states[177] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
 		  support.checkExpression(((Node)yyVals[0+yyTop]));
 
-                  yyVal = support.new_opElementAsgnNode(support.getPosition(((Node)yyVals[-5+yyTop])), ((Node)yyVals[-5+yyTop]), (String) ((Token)yyVals[-1+yyTop]).getValue(), ((Node)yyVals[-3+yyTop]), ((Node)yyVals[0+yyTop]));
+                  yyVal = support.new_opElementAsgnNode(support.union(((Node)yyVals[-5+yyTop]), ((Node)yyVals[0+yyTop])), ((Node)yyVals[-5+yyTop]), (String) ((Token)yyVals[-1+yyTop]).getValue(), ((Node)yyVals[-3+yyTop]), ((Node)yyVals[0+yyTop]));
     return yyVal;
   }
 };
@@ -2392,14 +2393,12 @@ states[78] = new ParserState() {
 };
 states[279] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
-                  if (((Node)yyVals[-1+yyTop]) != null) {
-                      /* compstmt position includes both parens around it*/
-                      ((ISourcePositionHolder) ((Node)yyVals[-1+yyTop])).setPosition(support.union(((Token)yyVals[-2+yyTop]), ((Token)yyVals[0+yyTop])));
+                  SourcePosition pos = support.union(((Token)yyVals[-2+yyTop]), ((Token)yyVals[0+yyTop]));
+                  Node implicitNil = ((Node)yyVals[-1+yyTop]) == null ? new ImplicitNilNode(pos) : ((Node)yyVals[-1+yyTop]);
+                  /* compstmt position includes both parens around it*/
+                  if (implicitNil != null) implicitNil.setPosition(pos);
 
-                      yyVal = ((Node)yyVals[-1+yyTop]);
-                  } else {
-                      yyVal = new NilNode(support.getPosition(((Token)yyVals[-2+yyTop])));
-                  }
+                  yyVal = implicitNil;
     return yyVal;
   }
 };
@@ -3405,7 +3404,7 @@ states[292] = new ParserState() {
 states[24] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
                   support.checkExpression(((Node)yyVals[0+yyTop]));
-		  if (((MultipleAsgnNode)yyVals[-2+yyTop]).getHeadNode() != null) {
+		  if (((MultipleAsgnNode)yyVals[-2+yyTop]).getPre() != null) {
 		      ((MultipleAsgnNode)yyVals[-2+yyTop]).setValueNode(new ToAryNode(support.getPosition(((MultipleAsgnNode)yyVals[-2+yyTop])), ((Node)yyVals[0+yyTop])));
 		  } else {
 		      ((MultipleAsgnNode)yyVals[-2+yyTop]).setValueNode(support.newArrayNode(support.getPosition(((MultipleAsgnNode)yyVals[-2+yyTop])), ((Node)yyVals[0+yyTop])));
@@ -3549,7 +3548,7 @@ states[26] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
                   support.checkExpression(((Node)yyVals[0+yyTop]));
 
-                  yyVal = support.new_opElementAsgnNode(support.getPosition(((Node)yyVals[-5+yyTop])), ((Node)yyVals[-5+yyTop]), (String) ((Token)yyVals[-1+yyTop]).getValue(), ((Node)yyVals[-3+yyTop]), ((Node)yyVals[0+yyTop]));
+                  yyVal = support.new_opElementAsgnNode(support.union(((Node)yyVals[-5+yyTop]), ((Node)yyVals[0+yyTop])), ((Node)yyVals[-5+yyTop]), (String) ((Token)yyVals[-1+yyTop]).getValue(), ((Node)yyVals[-3+yyTop]), ((Node)yyVals[0+yyTop]));
 
     return yyVal;
   }
@@ -3895,7 +3894,7 @@ states[367] = new ParserState() {
 };
 states[32] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
-                  if (((MultipleAsgnNode)yyVals[-2+yyTop]).getHeadNode() != null) {
+                  if (((MultipleAsgnNode)yyVals[-2+yyTop]).getPre() != null) {
 		      ((MultipleAsgnNode)yyVals[-2+yyTop]).setValueNode(new ToAryNode(support.getPosition(((MultipleAsgnNode)yyVals[-2+yyTop])), ((Node)yyVals[0+yyTop])));
 		  } else {
 		      ((MultipleAsgnNode)yyVals[-2+yyTop]).setValueNode(support.newArrayNode(support.getPosition(((MultipleAsgnNode)yyVals[-2+yyTop])), ((Node)yyVals[0+yyTop])));
@@ -3951,7 +3950,7 @@ states[66] = new ParserState() {
   }
 };
 }
-					// line 1903 "Ruby18Parser.y"
+					// line 1902 "Ruby18Parser.y"
 
     /** The parse method use an lexer stream and parse it to an AST node 
      * structure
@@ -3987,4 +3986,4 @@ states[66] = new ParserState() {
     // +++
     // Helper Methods
 }
-					// line 7834 "-"
+					// line 7833 "-"

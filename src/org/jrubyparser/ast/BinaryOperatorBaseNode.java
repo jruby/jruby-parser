@@ -12,7 +12,7 @@
  * implied. See the License for the specific language governing
  * rights and limitations under the License.
  *
- * Copyright (C) 2009 Thomas E. Enebo <tom.enebo@gmail.com>
+ * Copyright (C) 2013 Thomas E. Enebo <tom.enebo@gmail.com>
  * 
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
@@ -28,38 +28,34 @@
  ***** END LICENSE BLOCK *****/
 package org.jrubyparser.ast;
 
-import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 
-/** 
- * Represents a 'next' statement.
+/**
+ *
  */
-public class NextNode extends Node {
-    private Node valueNode;
+public abstract class BinaryOperatorBaseNode extends Node implements BinaryOperatorNode {
+    private Node firstNode;
+    private Node secondNode;
 
-    public NextNode(SourcePosition position, Node valueNode) {
+    public BinaryOperatorBaseNode(SourcePosition position, Node firstNode, Node secondNode) {
         super(position);
         
-        this.valueNode = adopt(valueNode);
+        assert firstNode != null : "ArgsCatNode.first == null";
+        assert secondNode != null : "ArgsCatNode.second == null";
+
+        this.firstNode = adopt(firstNode);
+        this.secondNode = adopt(secondNode);
     }
 
     public NodeType getNodeType() {
-        return NodeType.NEXTNODE;
+        return NodeType.ARGSCATNODE;
     }
     
-    /**
-     * Accept for the visitor pattern.
-     * @param iVisitor the visitor
-     **/
-    public Object accept(NodeVisitor iVisitor) {
-        return iVisitor.visitNextNode(this);
+    public Node getFirst() {
+        return firstNode;
     }
     
-    /**
-     * Gets the valueNode.
-     * @return Returns a Node
-     */
-    public Node getValueNode() {
-        return valueNode;
-    }
+    public Node getSecond() {
+        return secondNode;
+    }    
 }

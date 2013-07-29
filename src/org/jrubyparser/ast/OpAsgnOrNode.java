@@ -31,20 +31,12 @@ package org.jrubyparser.ast;
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 
-public class OpAsgnOrNode extends Node implements BinaryOperatorNode {
-    private Node firstNode;
-    private Node secondNode;
-
+public class OpAsgnOrNode extends BinaryOperatorBaseNode {
     public OpAsgnOrNode(SourcePosition position, Node headNode, Node valueNode) {
-        super(position);
-        
-        assert headNode != null : "headNode is not null";
-        assert valueNode != null : "valueNode is not null";
-        
-        firstNode = adopt(headNode);
-        secondNode = adopt(valueNode);
+        super(position, headNode, valueNode);
     }
 
+    @Override
     public NodeType getNodeType() {
         return NodeType.OPASGNORNODE;
     }
@@ -55,21 +47,5 @@ public class OpAsgnOrNode extends Node implements BinaryOperatorNode {
      **/
     public Object accept(NodeVisitor iVisitor) {
         return iVisitor.visitOpAsgnOrNode(this);
-    }
-
-    /**
-     * Gets the firstNode.
-     * @return Returns a Node
-     */
-    public Node getFirst() {
-        return firstNode;
-    }
-
-    /**
-     * Gets the secondNode.
-     * @return Returns a Node
-     */
-    public Node getSecond() {
-        return secondNode;
     }
 }
