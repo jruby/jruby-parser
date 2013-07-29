@@ -437,7 +437,7 @@ stmt            : kALIAS fitem {
                 }
                 | primary_value '[' opt_call_args rbracket tOP_ASGN command_call {
   // FIXME: arg_concat logic missing for opt_call_args
-                    $$ = support.new_opElementAsgnNode(support.getPosition($1), $1, (String) $5.getValue(), $3, $6);
+                    $$ = support.new_opElementAsgnNode(support.union($1, $6), $1, (String) $5.getValue(), $3, $6);
                 }
                 | primary_value tDOT tIDENTIFIER tOP_ASGN command_call {
                     $$ = new OpAsgnNode(support.getPosition($1), $1, $5, (String) $3.getValue(), (String) $4.getValue());
@@ -815,7 +815,7 @@ arg             : lhs '=' arg {
                 }
                 | primary_value '[' opt_call_args rbracket tOP_ASGN arg {
   // FIXME: arg_concat missing for opt_call_args
-                    $$ = support.new_opElementAsgnNode(support.getPosition($1), $1, (String) $5.getValue(), $3, $6);
+                    $$ = support.new_opElementAsgnNode(support.union($1, $6), $1, (String) $5.getValue(), $3, $6);
                 }
                 | primary_value tDOT tIDENTIFIER tOP_ASGN arg {
                     $$ = new OpAsgnNode(support.getPosition($1), $1, $5, (String) $3.getValue(), (String) $4.getValue());

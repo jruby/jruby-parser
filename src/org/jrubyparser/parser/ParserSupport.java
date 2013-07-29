@@ -123,6 +123,8 @@ import org.jrubyparser.ast.DSymbolNode;
 import org.jrubyparser.ast.EncodingNode;
 import org.jrubyparser.ast.KeywordArgNode;
 import org.jrubyparser.ast.KeywordRestArgNode;
+import org.jrubyparser.ast.OpElementAsgnAndNode;
+import org.jrubyparser.ast.OpElementAsgnOrNode;
 import org.jrubyparser.ast.UndefNode;
 import org.jrubyparser.lexer.Lexer;
 
@@ -817,6 +819,12 @@ public class ParserSupport {
     }
     
     public Node new_opElementAsgnNode(SourcePosition position, Node receiverNode, String operatorName, Node argsNode, Node valueNode) {
+        if ("||".equals(operatorName)) {
+            return new OpElementAsgnOrNode(position, receiverNode, operatorName, argsNode, valueNode);
+        } else if ("&&".equals(operatorName)) {
+            return new OpElementAsgnAndNode(position, receiverNode, operatorName, argsNode, valueNode);
+        }
+        
         return new OpElementAsgnNode(position, receiverNode, operatorName, argsNode, valueNode);
     }
     

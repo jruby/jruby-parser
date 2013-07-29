@@ -403,7 +403,7 @@ stmt          : kALIAS fitem {
               | primary_value '[' aref_args tRBRACK tOP_ASGN command_call {
                   support.checkExpression($6);
 
-                  $$ = support.new_opElementAsgnNode(support.getPosition($1), $1, (String) $5.getValue(), $3, $6);
+                  $$ = support.new_opElementAsgnNode(support.union($1, $6), $1, (String) $5.getValue(), $3, $6);
 
               }
               | primary_value tDOT tIDENTIFIER tOP_ASGN command_call {
@@ -736,7 +736,7 @@ arg           : lhs '=' arg {
               | primary_value '[' aref_args tRBRACK tOP_ASGN arg {
 		  support.checkExpression($6);
 
-                  $$ = support.new_opElementAsgnNode(support.getPosition($1), $1, (String) $5.getValue(), $3, $6);
+                  $$ = support.new_opElementAsgnNode(support.union($1, $6), $1, (String) $5.getValue(), $3, $6);
               }
               | primary_value tDOT tIDENTIFIER tOP_ASGN arg {
 		  support.checkExpression($5);
