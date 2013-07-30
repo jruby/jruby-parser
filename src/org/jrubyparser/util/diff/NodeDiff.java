@@ -49,7 +49,7 @@ public class NodeDiff
 
     }
 
-    public List<Node> diff(IsJunk isJunk, Node newNode, Node oldNode) {
+    public List<Node> diff(Node newNode, Node oldNode, IsJunk isJunk) {
         diff = new ArrayList<Node>();
         return diff;
     }

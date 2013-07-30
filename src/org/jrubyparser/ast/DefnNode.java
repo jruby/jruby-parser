@@ -13,7 +13,7 @@
  * rights and limitations under the License.
  *
  * Copyright (C) 2009 Thomas E. Enebo <tom.enebo@gmail.com>
- * 
+ *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
  * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
@@ -39,7 +39,7 @@ import org.jrubyparser.util.ILocalVariableVisitor;
  * method definition node.
  */
 public class DefnNode extends MethodDefNode {
-    public DefnNode(SourcePosition position, MethodNameNode nameNode, ArgsNode argsNode, 
+    public DefnNode(SourcePosition position, MethodNameNode nameNode, ArgsNode argsNode,
             StaticScope scope, Node bodyNode) {
         super(position, nameNode, argsNode, scope, bodyNode);
     }

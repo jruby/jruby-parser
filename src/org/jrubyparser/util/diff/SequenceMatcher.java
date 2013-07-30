@@ -31,6 +31,8 @@ package org.jrubyparser.util.diff;
 
 import org.jrubyparser.ast.Node;
 
+import java.util.ArrayList;
+
 
 /**
  * The SequenceMatcher class is used to produce a list of matching nodes.
@@ -41,7 +43,8 @@ public class SequenceMatcher
     private IsJunk isJunk;
     private Node newNode;
     private Node oldNode;
-    private boolean autojunk = true;
+    private boolean hasIsJunk = true;
+    protected ArrayList<Node> matchingNodes;
 
     /**
      * Create a SequenceMatcher object without a function for sorting out junk.
@@ -50,12 +53,12 @@ public class SequenceMatcher
      * @param oldNode
      */
     public SequenceMatcher(Node newNode, Node oldNode) {
-        this(null, newNode, oldNode);
+        this(newNode, oldNode, null);
     }
 
     /**
      * isJunk is an object which implements the {@link IsJunk} interface and the
-     * #checkJunk() method. checkJunk is a method which takes a Node and determines
+     * #hasIsJunk() method. hasIsJunk is a method which takes a Node and determines
      * whether or not it should be compared against the other node.
      *
      * We pass in two nodes. Later, we can use the #setSequence, #setSequenceOne and
@@ -66,11 +69,12 @@ public class SequenceMatcher
      * @param newNode
      * @param oldNode
      */
-    public SequenceMatcher(IsJunk isJunk, Node newNode, Node oldNode) {
+    public SequenceMatcher(Node newNode, Node oldNode, IsJunk isJunk) {
         if (isJunk == null) {
-            autojunk = false;
+            hasIsJunk = false;
         } else {
             this.isJunk = isJunk;
+            isJunk.checkJunk(newNode);
         }
 
         setSequences(newNode, oldNode);
@@ -87,7 +91,21 @@ public class SequenceMatcher
     }
 
     public void setSequenceTwo(Node oldNode) {
-        this.oldNode = oldNode;
+        if (this.oldNode == oldNode) {
+            return;
+        } else {
+            this.oldNode = oldNode;
+            this.matchingNodes = null;
+
+        }
+    }
+
+    public Node getSequenceOne() {
+        return this.newNode;
+    }
+
+    public Node getSequenceTwo() {
+        return this.oldNode;
     }
 }
 
