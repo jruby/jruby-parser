@@ -32,6 +32,7 @@ package org.jrubyparser.util.diff;
 import org.jrubyparser.ast.Node;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -40,11 +41,12 @@ import java.util.ArrayList;
  */
 public class SequenceMatcher
 {
-    private IsJunk isJunk;
-    private Node newNode;
-    private Node oldNode;
-    private boolean hasIsJunk = true;
-    protected ArrayList<Node> matchingNodes;
+    protected IsJunk isJunk;
+    protected Node newNode;
+    protected Node oldNode;
+    protected boolean hasIsJunk = true;
+    protected ArrayList<Node> flatChildren = new ArrayList<Node>();
+    protected ArrayList<Node> matchingNodes = new ArrayList<Node>();
 
     /**
      * Create a SequenceMatcher object without a function for sorting out junk.
@@ -57,6 +59,8 @@ public class SequenceMatcher
     }
 
     /**
+     * SequenceMatcher compares two nodes for matching nodes.
+     *
      * isJunk is an object which implements the {@link IsJunk} interface and the
      * #hasIsJunk() method. hasIsJunk is a method which takes a Node and determines
      * whether or not it should be compared against the other node.
@@ -107,5 +111,24 @@ public class SequenceMatcher
     public Node getSequenceTwo() {
         return this.oldNode;
     }
+
+    public void flattenChildren(Node node) {
+        List<Node> children = node.childNodes();
+
+        if (children.isEmpty())
+            return;
+
+        for (Node child: children) {
+            flatChildren.add(child);
+            flattenChildren(child);
+        }
+
+    }
+
+    public ArrayList<Node> getFlatChildren() {
+        return flatChildren;
+    }
+
+
 }
 
