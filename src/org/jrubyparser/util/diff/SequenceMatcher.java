@@ -45,8 +45,8 @@ public class SequenceMatcher
     protected Node newNode;
     protected Node oldNode;
     protected boolean hasIsJunk = true;
-    protected ArrayList<Node> flatChildren = new ArrayList<Node>();
-    protected ArrayList<Node> matchingNodes = new ArrayList<Node>();
+    ArrayList<Node> flatChildren;
+    protected ArrayList<Node> matchingNodes;
 
     /**
      * Create a SequenceMatcher object without a function for sorting out junk.
@@ -78,9 +78,9 @@ public class SequenceMatcher
             hasIsJunk = false;
         } else {
             this.isJunk = isJunk;
-            isJunk.checkJunk(newNode);
         }
 
+        flatChildren = new ArrayList<Node>();
         setSequences(newNode, oldNode);
 
     }
@@ -99,7 +99,9 @@ public class SequenceMatcher
             return;
         } else {
             this.oldNode = oldNode;
-            this.matchingNodes = null;
+            this.matchingNodes  = new ArrayList<Node>();
+            flatChildren.clear();
+            flattenChildren(oldNode);
 
         }
     }
@@ -112,21 +114,53 @@ public class SequenceMatcher
         return this.oldNode;
     }
 
+    /**
+     * We use this method to work through the tree of nodes building out a flat list
+     * and simultaneously checking for "junk" against the user supplied #isJunk() method.
+     *
+     * @param node This is the oldNode passed in either when SM is created or by calling #setSequenceTwo().
+     */
     public void flattenChildren(Node node) {
         List<Node> children = node.childNodes();
+
 
         if (children.isEmpty())
             return;
 
-        for (Node child: children) {
-            flatChildren.add(child);
-            flattenChildren(child);
+        if (hasIsJunk == true) {
+            for (Node child: children) {
+                if (!isJunk.checkJunk(child)) {
+                    flatChildren.add(child);
+                    flattenChildren(child);
+                } else {
+                    flattenChildren(child);
+                }
+            }
+
+        } else {
+            for (Node child: children) {
+                flatChildren.add(child);
+                flattenChildren(child);
+            }
+
         }
 
     }
 
     public ArrayList<Node> getFlatChildren() {
         return flatChildren;
+    }
+
+    public int calcComplexity(Node node) {
+        List<Node> children;
+        int complexitySum = 1;
+        if (!node.isLeaf()) {
+            children = node.childNodes();
+            for (Node child : children) {
+                complexitySum = complexitySum + calcComplexity(child);
+            }
+        }
+        return complexitySum;
     }
 
 

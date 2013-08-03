@@ -17,7 +17,7 @@ describe org.jrubyparser.util.diff.SequenceMatcher do
     nodeA = parse('a = "a"')
     nodeB = parse('b = "b"')
     check = false
-    sm = SeqMatch.new(nodeA, nodeB) do |node|
+    SeqMatch.new(nodeA, nodeB) do |node|
       check = true
     end
     check.should == true
@@ -32,5 +32,11 @@ describe org.jrubyparser.util.diff.SequenceMatcher do
     fc.to_a[-1].node_type.should == org.jrubyparser.ast.NodeType::STRNODE
   end
 
-end
+  it 'should calculate the complexity of a node' do
+    nodeA = parse("def foo(bar)\n bar\n end\n foo('astring')")
+    nodeB = parse('b = "b"')
+    sm = SeqMatch.new(nodeA, nodeB)
+    sm.calcComplexity(nodeA).should == 14
+  end
 
+end
