@@ -133,7 +133,7 @@ public class SequenceMatcher
                     flatChildren.add(child);
                     flattenChildren(child);
                 } else {
-                    flattenChildren(child);
+                    flatChildren.add(child);
                 }
             }
 
@@ -150,19 +150,6 @@ public class SequenceMatcher
     public ArrayList<Node> getFlatChildren() {
         return flatChildren;
     }
-
-    public int calcComplexity(Node node) {
-        List<Node> children;
-        int complexitySum = 1;
-        if (!node.isLeaf()) {
-            children = node.childNodes();
-            for (Node child : children) {
-                complexitySum = complexitySum + calcComplexity(child);
-            }
-        }
-        return complexitySum;
-    }
-
 
 }
 
