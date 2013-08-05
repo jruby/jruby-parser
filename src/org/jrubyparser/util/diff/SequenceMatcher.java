@@ -46,7 +46,6 @@ public class SequenceMatcher
     protected Node newNode;
     protected Node oldNode;
     protected boolean hasIsJunk = true;
-    ArrayList<Node> flatChildren;
     protected ArrayList<Change> diffNodes;
 
     /**
@@ -81,7 +80,6 @@ public class SequenceMatcher
             this.isJunk = isJunk;
         }
 
-        flatChildren = new ArrayList<Node>();
         setSequences(newNode, oldNode);
 
     }
@@ -101,9 +99,6 @@ public class SequenceMatcher
         } else {
             this.oldNode = oldNode;
             this.diffNodes  = new ArrayList<>();
-            flatChildren.clear();
-            flattenChildren(oldNode);
-
         }
     }
 
@@ -185,45 +180,25 @@ public class SequenceMatcher
         }
     }
 
-    public ArrayList<Change> getDiffNodes() {
-        return diffNodes;
-    }
+    public void checkDiffForMoves() {
+        Iterator<Change> newn = diffNodes.iterator();
 
-    /**
-     * We use this method to work through the tree of nodes building out a flat list
-     * and simultaneously checking for "junk" against the user supplied #isJunk() method.
-     *
-     * @param node This is the oldNode passed in either when SM is created or by calling #setSequenceTwo().
-     */
-    public void flattenChildren(Node node) {
-        List<Node> children = node.childNodes();
-
-
-        if (children.isEmpty())
-            return;
-
-        if (hasIsJunk == true) {
-            for (Node child: children) {
-                if (!isJunk.checkJunk(child)) {
-                    flatChildren.add(child);
-                    flattenChildren(child);
-                } else {
-                    flatChildren.add(child);
+        for (Change change : diffNodes) {
+            Node oldNode = change.getOldNode();
+            while (newn.hasNext()) {
+                Change newChange = newn.next();
+                Node newNode = newChange.getNewNode();
+                if (oldNode.isSame(newNode)) {
+                    change.setNewNode(newNode);
+                    change.setNewCost(newNode.getComplexity());
+                    diffNodes.remove(newChange);
                 }
             }
-
-        } else {
-            for (Node child: children) {
-                flatChildren.add(child);
-                flattenChildren(child);
-            }
-
         }
-
     }
 
-    public ArrayList<Node> getFlatChildren() {
-        return flatChildren;
+    public ArrayList<Change> getDiffNodes() {
+        return diffNodes;
     }
 
 }
