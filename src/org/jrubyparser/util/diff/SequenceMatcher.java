@@ -32,6 +32,7 @@ package org.jrubyparser.util.diff;
 import org.jrubyparser.ast.Node;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 
@@ -46,13 +47,13 @@ public class SequenceMatcher
     protected Node oldNode;
     protected boolean hasIsJunk = true;
     ArrayList<Node> flatChildren;
-    protected ArrayList<Node> matchingNodes;
+    protected ArrayList<Change> diffNodes;
 
     /**
      * Create a SequenceMatcher object without a function for sorting out junk.
      *
-     * @param newNode
-     * @param oldNode
+     * @param newNode The current version of the node.
+     * @param oldNode The original version of the node being checked.
      */
     public SequenceMatcher(Node newNode, Node oldNode) {
         this(newNode, oldNode, null);
@@ -69,9 +70,9 @@ public class SequenceMatcher
      * #setSequenceTwo methods to change out one or both of the nodes and create a new set of
      * matches.
      *
-     * @param isJunk
-     * @param newNode
-     * @param oldNode
+     * @param isJunk A callback used to let users choose nodes not to be checked in diff.
+     * @param newNode The current version of the node.
+     * @param oldNode The node in the old version.
      */
     public SequenceMatcher(Node newNode, Node oldNode, IsJunk isJunk) {
         if (isJunk == null) {
@@ -99,7 +100,7 @@ public class SequenceMatcher
             return;
         } else {
             this.oldNode = oldNode;
-            this.matchingNodes  = new ArrayList<Node>();
+            this.diffNodes  = new ArrayList<>();
             flatChildren.clear();
             flattenChildren(oldNode);
 
@@ -112,6 +113,80 @@ public class SequenceMatcher
 
     public Node getSequenceTwo() {
         return this.oldNode;
+    }
+
+    /**
+     * Checks whether two nodes qualify as 'equal' according or should be added
+     * to diff. This would be a good place to override if you need to manipulate
+     * how diffing is done.
+     *
+     * @param newNode The current version of the node.
+     * @param oldNode The original version of the node being checked.
+     * @return This returns a boolean which says whether the nodes are equal or not.
+     */
+    public boolean isSameNode(Node newNode, Node oldNode) {
+        return newNode.getNodeType() == oldNode.getNodeType() && newNode.isSame(oldNode);
+    }
+
+    /**
+     * Decides what to do with nodes being diffed.
+     *
+     * @param childNew The current version of the node being diffed.
+     * @param childOld The original version of the node being diffed.
+     */
+    public void sortNodesIntoDiff(Node childNew, Node childOld) {
+
+        if (isSameNode(childNew, childOld)) {
+            if (childNew.isLeaf()) {
+                if (childOld.isLeaf()) {
+                    return;
+                } else {
+                    this.diffNodes.add(new Change(null, 0, childOld, childOld.getComplexity()));
+                }
+            } else if (childOld.isLeaf()) {
+                this.diffNodes.add(new Change(childNew, childNew.getComplexity(), null, 0));
+            } else {
+                findChanges(childNew, childOld);
+            }
+        } else {
+            this.diffNodes.add(new Change(childNew, childNew.getComplexity(), childOld, childOld.getComplexity()));
+        }
+
+    }
+
+    /**
+     * This method does the diffing by iterating through the nodes and
+     * calling itself recursively.
+     *
+     * @param newNode The node in the new version.
+     * @param oldNode The node in the old version.
+     */
+    public void findChanges(Node newNode, Node oldNode) {
+
+        Iterator<Node> oldChildren = oldNode.childNodes().iterator();
+        List<Node> newChildren = newNode.childNodes();
+
+        for (Node childNew : newChildren) {
+            if (oldChildren.hasNext()) {
+                Node childOld = oldChildren.next();
+
+                if (hasIsJunk) {
+                    if (!isJunk.checkJunk(childNew) && !isJunk.checkJunk(childOld)) {
+                        sortNodesIntoDiff(childNew, childOld);
+                    } else {
+                        findChanges(childNew, childOld);
+                    }
+
+                    } else {
+                    sortNodesIntoDiff(childNew, childOld);
+                }
+                }
+
+        }
+    }
+
+    public ArrayList<Change> getDiffNodes() {
+        return diffNodes;
     }
 
     /**
