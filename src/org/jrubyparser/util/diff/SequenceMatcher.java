@@ -45,7 +45,6 @@ public class SequenceMatcher
     protected IsJunk isJunk;
     protected Node newNode;
     protected Node oldNode;
-    protected boolean hasIsJunk = true;
     protected ArrayList<Change> diffNodes;
 
     /**
@@ -74,39 +73,31 @@ public class SequenceMatcher
      * @param oldNode The node in the old version.
      */
     public SequenceMatcher(Node newNode, Node oldNode, IsJunk isJunk) {
-        if (isJunk == null) {
-            hasIsJunk = false;
-        } else {
-            this.isJunk = isJunk;
-        }
+        this.isJunk = isJunk;
 
         setSequences(newNode, oldNode);
+        this.diffNodes  = new ArrayList<>();
 
     }
 
     public void setSequences(Node newNode, Node oldNode) {
-        setSequenceOne(newNode);
-        setSequenceTwo(oldNode);
+        setNewNode(newNode);
+        setOldNode(oldNode);
     }
 
-    public void setSequenceOne(Node newNode) {
+    public void setNewNode(Node newNode) {
         this.newNode = newNode;
     }
 
-    public void setSequenceTwo(Node oldNode) {
-        if (this.oldNode == oldNode) {
-            return;
-        } else {
+    public void setOldNode(Node oldNode) {
             this.oldNode = oldNode;
-            this.diffNodes  = new ArrayList<>();
-        }
     }
 
-    public Node getSequenceOne() {
+    public Node getNewNode() {
         return this.newNode;
     }
 
-    public Node getSequenceTwo() {
+    public Node getOldNode() {
         return this.oldNode;
     }
 
@@ -124,6 +115,36 @@ public class SequenceMatcher
     }
 
     /**
+     * We use this to determine if two nodes are similar enough in internal
+     * structure to be considered modified versions of the same node
+     *
+     * @param newNode The node in the new version.
+     * @param oldNode The original version of the node being checked.
+     * @return Returns an int which measures the editing distance between two nodes
+     */
+    public int findDistance(Node newNode, Node oldNode) {
+        int distance = 1;
+
+        Node biggest = calcComplexity(newNode) >= calcComplexity(oldNode) ? newNode : oldNode;
+        Node smallest = biggest == newNode ? oldNode : newNode;
+
+        Iterator<Node> sck = smallest.childNodes().iterator();
+
+        for (Node bchild : biggest.childNodes()) {
+            if (sck.hasNext()) {
+                Node schild = sck.next();
+                if (!isSameNode(schild, bchild)) {
+                    distance = distance + 1 * (findDistance(schild, bchild));
+                }
+            } else {
+                distance = distance + 1 * (calcComplexity(bchild));
+            }
+        }
+
+        return distance;
+    }
+
+    /**
      * Decides what to do with nodes being diffed.
      *
      * @param childNew The current version of the node being diffed.
@@ -136,17 +157,48 @@ public class SequenceMatcher
                 if (childOld.isLeaf()) {
                     return;
                 } else {
-                    this.diffNodes.add(new Change(null, 0, childOld, childOld.getComplexity()));
+                    deleteNode(childOld);
                 }
             } else if (childOld.isLeaf()) {
-                this.diffNodes.add(new Change(childNew, childNew.getComplexity(), null, 0));
+                insertNode(childNew);
             } else {
                 findChanges(childNew, childOld);
             }
         } else {
-            this.diffNodes.add(new Change(childNew, childNew.getComplexity(), childOld, childOld.getComplexity()));
+            if (childNew.getNodeType() == childOld.getNodeType() && findDistance(childNew, childOld) <= 3) {
+                diffNodes.add(new Change(childNew, calcComplexity(childNew), childOld, calcComplexity(childOld)));
+
+                // TODO : Figure out what to do with this
+//                if (node instanceof ILocalScope && !(node instanceof RootNode)) {
+//
+//                }
+            } else {
+                handleMismatchedNodes(childNew, childOld);
+            }
+
         }
 
+    }
+
+    /**
+     * Here we deal with the case where two nodes are mismatched.
+     * This can be due to the insertion or deletion of a node in the
+     * new source.
+     *
+     * @param childNew The current version of the node being diffed.
+     * @param childOld The original version of the node being diffed.
+     */
+    public void handleMismatchedNodes(Node childNew, Node childOld) {
+        insertNode(childNew);
+        deleteNode(childOld);
+    }
+
+    public void insertNode(Node node) {
+        diffNodes.add(new Change(node, calcComplexity(node), null, 0));
+    }
+
+    public void deleteNode(Node node) {
+        diffNodes.add(new Change(null, 0, node, calcComplexity(node)));
     }
 
     /**
@@ -165,7 +217,7 @@ public class SequenceMatcher
             if (oldChildren.hasNext()) {
                 Node childOld = oldChildren.next();
 
-                if (hasIsJunk) {
+                if (!(isJunk == null)) {
                     if (!isJunk.checkJunk(childNew) && !isJunk.checkJunk(childOld)) {
                         sortNodesIntoDiff(childNew, childOld);
                     } else {
@@ -181,16 +233,17 @@ public class SequenceMatcher
     }
 
     public void checkDiffForMoves() {
-        Iterator<Change> newn = diffNodes.iterator();
 
         for (Change change : diffNodes) {
             Node oldNode = change.getOldNode();
+            //TODO : Null checks for old and new nodes!
+            Iterator<Change> newn = diffNodes.iterator();
             while (newn.hasNext()) {
                 Change newChange = newn.next();
                 Node newNode = newChange.getNewNode();
                 if (oldNode.isSame(newNode)) {
                     change.setNewNode(newNode);
-                    change.setNewCost(newNode.getComplexity());
+                    change.setNewCost(calcComplexity(newNode));
                     diffNodes.remove(newChange);
                 }
             }
@@ -198,7 +251,30 @@ public class SequenceMatcher
     }
 
     public ArrayList<Change> getDiffNodes() {
+        if (diffNodes.isEmpty()) {
+            diffNodes  = new ArrayList<>();
+            findChanges(getNewNode(), getOldNode());
+            checkDiffForMoves();
+        }
         return diffNodes;
+    }
+
+    /**
+     * Returns an integer representing how many levels of nesting of children the
+     * node has.
+     *
+     * @return Returns an int
+     */
+    public int calcComplexity(Node node) {
+        if (node.isLeaf()) return 1;
+
+        int complexity = 1;
+
+        for (Node child : node.childNodes()) {
+            complexity = complexity + calcComplexity(child);
+        }
+
+        return complexity;
     }
 
 }
