@@ -8,17 +8,26 @@ describe org.jrubyparser.util.diff.SequenceMatcher do
     nodeA = parse('a = "a"')
     nodeB = parse('b = "b"')
     sm = SequenceMatcher.new(nodeA, nodeB)
-    sm.sequence_one.should == nodeA
-    sm.sequence_two.should == nodeB
+    sm.new_node.should == nodeA
+    sm.old_node.should == nodeB
   end
+
+  it 'should calculate the complexity of a node' do
+    nodeA = parse("def foo(bar)\n bar\n end\n foo('astring')")
+    nodeB = parse('b = "b"')
+    sm = SequenceMatcher.new(nodeA, nodeB)
+    sm.calc_complexity(nodeA).should == 14
+  end
+
 
   it 'should call a callback passed in' do
     nodeA = parse('a = "a"')
     nodeB = parse('b = "b"')
     check = false
-    SequenceMatcher.new(nodeA, nodeB) do |node|
+    sm = SequenceMatcher.new(nodeA, nodeB) do |node|
       check = true
     end
+    sm.diff_nodes
     check.should == true
   end
 
