@@ -78,35 +78,15 @@ public abstract class Node implements ISourcePositionHolder {
     }
 
     /**
-     * Returns an integer representing how many levels of nesting of children the
-     * node has.
+     *Checks node for 'sameness' for diffing.
      *
-     * @return Returns an int
+     * @param other The node to be compared to.
+     * @return Returns a boolean.
      */
-    public int getComplexity() {
-        return calcComplexity(this);
+    public boolean isSame(Node other) {
+        return getNodeType() == other.getNodeType();
     }
 
-    public int calcComplexity(Node node) {
-        List<Node> children;
-        int complexitySum = 1;
-        if (!node.isLeaf()) {
-            children = node.childNodes();
-            for (Node child : children) {
-                complexitySum = complexitySum + calcComplexity(child);
-            }
-        }
-        return complexitySum;
-    }
-
-    public boolean isSame(Node node) {
-        if (this.getNodeType() == node.getNodeType()) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-    
     /**
      * Adopt the node in it's proper location amongst the children of this node.
      * Used internally by insertNode.  It is possible subclasses will know enough to use it
