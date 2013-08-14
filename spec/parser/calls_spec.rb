@@ -56,35 +56,11 @@ describe Parser do
       end
     end
 
-    # The not operator is always a node and never a call.
-
-    it "should parse not as a node" do
-      parse("not x", v).find_node(:notn).tap do |notn|
-        notn.should_not == nil
-      end
-    end
-
     # Unlike - and +, other unary operators such as  are not decorated.
 
     it "should not decorate ~" do
       parse("~x", v).find_node(:call).tap do |call|
         call.name.should == "~"
-      end
-    end
-  end
-
-  # The ! operator used to be a node and is now a call.
-
-  it "should parse 1.8 ! as a node" do
-    parse("!x", 1.8).find_node(:not).tap do |notn|
-      notn.should_not == nil
-    end
-  end
-
-  [1.9, 2.0].each do |v|
-    it "should parse 1.9 and 2.0 ! as a call" do
-      parse("!x", v).find_node(:call).tap do |call|
-        call.name.should == "!"
       end
     end
   end
