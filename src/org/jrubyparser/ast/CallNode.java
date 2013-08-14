@@ -129,7 +129,12 @@ public class CallNode extends Node implements INameNode, IArgumentNode, BlockAcc
     }
     
     public String getDecoratedName() {
-        return getName();
+        // Remove unary decorator
+        if (name.endsWith("@")) {
+            return name.substring(0, name.length() - 2);
+        } else {
+            return name;
+        }
     }
 
     /**

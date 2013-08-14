@@ -368,7 +368,7 @@ public class ParserSupport {
     
     // unary operators
     public Node getOperatorCallNode(Token operator, Node receiver) {
-        String name = (String) operator.getValue();
+        String name = (String) operator.getValue() + "@";
         
         return new CallNode(union(operator.getPosition(), receiver.getPosition()), receiver, name,
                 new ArrayNode(createEmptyArgsNodePosition(receiver.getPosition())));
