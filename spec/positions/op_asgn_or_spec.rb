@@ -1,7 +1,7 @@
 require_relative '../helpers'
 
 describe Parser do
-  [1.8, 1.9].each do |v|
+  VERSIONS.each do |v|
     it "Should parse attr assign" do
       parse("foo ||= bar", v).find_node(:opasgnor).tap do |opasgn|
         opasgn.should have_position(0, 0, 0, 11)
