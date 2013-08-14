@@ -71,10 +71,6 @@ describe Parser do
         call.name.should == "~"
       end
     end
-
-    it "dummy" do
-      puts parse("not x", v)
-    end
   end
 
   # The ! operator used to be a node and is now a call.
