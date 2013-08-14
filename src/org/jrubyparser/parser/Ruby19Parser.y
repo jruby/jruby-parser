@@ -90,6 +90,7 @@ import org.jrubyparser.ast.SelfNode;
 import org.jrubyparser.ast.StarNode;
 import org.jrubyparser.ast.StrNode;
 import org.jrubyparser.ast.SymbolNode;
+import org.jrubyparser.ast.UnaryCallNode;
 import org.jrubyparser.ast.UnnamedRestArgNode;
 import org.jrubyparser.ast.UntilNode;
 import org.jrubyparser.ast.VAliasNode;
@@ -818,16 +819,16 @@ arg             : lhs '=' arg {
                     $$ = support.getOperatorCallNode($1, "**", $3, support.getPosition(null));
                 }
                 | tUMINUS_NUM tINTEGER tPOW arg {
-                    $$ = support.getOperatorCallNode($1, support.getOperatorCallNode($2, "**", $4, support.getPosition(null)));
+                    $$ = support.getUnaryCallNode(support.getOperatorCallNode($2, "**", $4, support.getPosition(null)), $1);
                 }
                 | tUMINUS_NUM tFLOAT tPOW arg {
-                    $$ = support.getOperatorCallNode($1, support.getOperatorCallNode($2, "**", $4, support.getPosition(null)));
+                    $$ = support.getUnaryCallNode(support.getOperatorCallNode($2, "**", $4, support.getPosition(null)), $1);
                 }
                 | tUPLUS arg {
-                    $$ = support.getOperatorCallNode($1, $2);
+                    $$ = support.getUnaryCallNode($2, $1);
                 }
                 | tUMINUS arg {
-                    $$ = support.getOperatorCallNode($1, $2);
+                    $$ = support.getUnaryCallNode($2, $1);
                 }
                 | arg tPIPE arg {
                     $$ = support.getOperatorCallNode($1, "|", $3, support.getPosition(null));
