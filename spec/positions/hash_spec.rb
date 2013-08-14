@@ -1,7 +1,7 @@
 require_relative '../helpers'
 
 describe Parser do
-  [1.8, 1.9].each do |v|
+  VERSIONS.each do |v|
     it "should parse a hash literal (a=>b) [#{v}]" do
       parse("{:one => 1, :two => 2}", v).find_node(:hash).tap do |hash|
         hash.should have_position(0, 0, 0, 22)

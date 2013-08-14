@@ -1169,7 +1169,7 @@ primary         : literal
                     }
                     $<BlockAcceptingNode>1.setIter($2);
                     $$ = $1;
-                    $<Node>$.setPosition($1.getPosition());
+                    $<Node>$.setPosition(support.union($1, $2));
                 }
                 | tLAMBDA lambda {
                     $$ = $2;

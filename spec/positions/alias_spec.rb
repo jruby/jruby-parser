@@ -1,7 +1,7 @@
 require_relative '../helpers'
 
 describe Parser do
-  [1.8, 1.9].each do |v|
+  VERSIONS.each do |v|
     it "Should parse alias node of symbols" do
       parse("alias :new_name :old_name", v).find_node(:alias).tap do |a|
         a.new_name_string.should == "new_name"
