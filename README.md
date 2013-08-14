@@ -27,14 +27,19 @@ root.to_source # b = bar(true)
 Assume: [jay 1.0.2](https://github.com/jruby/jay) installed
 
 ```sh
-./bin/generate_parser Ruby19Parser Ruby19
 ./bin/generate_parser Ruby18Parser Ruby18
+./bin/generate_parser Ruby19Parser Ruby19
+./bin/generate_parser Ruby18Parser Ruby20
 ```
 
-# Build jruby-parser
+# Build and test using Rake
 
-'jruby -S rake' or 'jruby -S rake build'
+`jruby -S rake`
 
-## Maven
+## Build and package using Maven to get a JAR
 
-'mvn compile'
+```sh
+mvn compile
+mvn package
+```
+
