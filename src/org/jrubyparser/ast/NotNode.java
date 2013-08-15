@@ -32,7 +32,11 @@ import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 
 /**
- * not is !
+ * The 'not' operator, as it was in 1.8. In 1.9 and 2.0 'not' is syntactic
+ * sugar for '!' with a different precedence but semantically identical,
+ * and there we represent applications of 'not' with a call to '!' with a
+ * name of '!' and a lexical name of 'not'. So you will not see this node
+ * except in a 1.8 AST.
  */
 public class NotNode extends Node {
     private Node conditionNode;

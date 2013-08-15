@@ -43,6 +43,7 @@ import org.jrubyparser.ast.BlockArgNode;
 import org.jrubyparser.ast.BlockNode;
 import org.jrubyparser.ast.BlockPassNode;
 import org.jrubyparser.ast.BreakNode;
+import org.jrubyparser.ast.CallNode;
 import org.jrubyparser.ast.ClassNode;
 import org.jrubyparser.ast.ClassVarNode;
 import org.jrubyparser.ast.Colon3Node;
@@ -136,7 +137,7 @@ public class Ruby19Parser implements RubyParser {
         support.setWarnings(warnings);
         lexer.setWarnings(warnings);
     }
-					// line 140 "-"
+					// line 141 "-"
   // %token constants
   public static final int kCLASS = 257;
   public static final int kMODULE = 258;
@@ -2005,6 +2006,7 @@ states[306] = new ParserState() {
 states[38] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
                     yyVal = support.getOperatorCallNode(((Token)yyVals[-2+yyTop]), support.getConditionNode(((Node)yyVals[0+yyTop])));
+                    ((CallNode)yyVal).setName("!");
     return yyVal;
   }
 };
@@ -2558,6 +2560,7 @@ states[78] = new ParserState() {
 states[279] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
                     yyVal = support.getOperatorCallNode(((Token)yyVals[-3+yyTop]), support.getConditionNode(((Node)yyVals[-1+yyTop])));
+                    ((CallNode)yyVal).setName("!");
     return yyVal;
   }
 };
@@ -2638,6 +2641,7 @@ states[79] = new ParserState() {
 states[280] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
                     yyVal = support.getOperatorCallNode(((Token)yyVals[-2+yyTop]), null);
+                    ((CallNode)yyVal).setName("!");
     return yyVal;
   }
 };
@@ -4234,7 +4238,7 @@ states[267] = new ParserState() {
   }
 };
 }
-					// line 2009 "Ruby19Parser.y"
+					// line 2013 "Ruby19Parser.y"
 
     /** The parse method use an lexer stream and parse it to an AST node 
      * structure
@@ -4269,4 +4273,4 @@ states[267] = new ParserState() {
     // +++
     // Helper Methods
 }
-					// line 8058 "-"
+					// line 8062 "-"

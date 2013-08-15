@@ -1,16 +1,16 @@
 require_relative '../helpers'
 
 describe Parser do
-  [1.8, 1.9, 2.0].each do |v|
+  VERSIONS.each do |v|
     # Parsing normal forms of Ruby method calls.
 
     it "should parse a call" do
-      parse("def foo; end; self.foo", v).find_node(:call).tap do |fcall|
-        fcall.name.should == "foo"
+      parse("def foo; end; self.foo", v).find_node(:call).tap do |call|
+        call.name.should == "foo"
       end
 
-      parse("def foo; end; self.foo()", v).find_node(:call).tap do |fcall|
-        fcall.name.should == "foo"
+      parse("def foo; end; self.foo()", v).find_node(:call).tap do |call|
+        call.name.should == "foo"
       end
     end
 
@@ -61,6 +61,35 @@ describe Parser do
     it "should not decorate ~" do
       parse("~x", v).find_node(:call).tap do |call|
         call.name.should == "~"
+      end
+    end
+  end
+
+  # 'not' in 1.8 was simply a not node, while '!' was a call
+
+  it "should parse 'not' and '!' as a node and" do
+    parse("not x", 1.8).find_node(:not).tap do |notn|
+      notn.should_not == nil
+    end
+
+    parse("! x", 1.8).find_node(:not).tap do |notn|
+      notn.should_not == nil
+    end
+  end
+
+  # In 1.9 and 2.0 'not' was a call to '!', but we annotate the name of the
+  # method as lexically being 'not'. '!' is still just a call.
+
+  [1.9, 2.0].each do |v|
+    it "should parse 'not' as a call to '!' with lexical name 'not' and parse '!' as a call" do
+      parse("not x", v).find_node(:call).tap do |call|
+        call.name.should == "!"
+        call.lexical_name.should == "not"
+      end
+
+      parse("! x", v).find_node(:call).tap do |call|
+        call.name.should == "!"
+        call.lexical_name.should == "!"
       end
     end
   end

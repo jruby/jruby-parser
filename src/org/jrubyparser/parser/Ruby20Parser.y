@@ -40,6 +40,7 @@ import org.jrubyparser.ast.BlockArgNode;
 import org.jrubyparser.ast.BlockNode;
 import org.jrubyparser.ast.BlockPassNode;
 import org.jrubyparser.ast.BreakNode;
+import org.jrubyparser.ast.CallNode;
 import org.jrubyparser.ast.ClassNode;
 import org.jrubyparser.ast.ClassVarNode;
 import org.jrubyparser.ast.Colon3Node;
@@ -489,10 +490,11 @@ expr            : command_call
                     $$ = support.newOrNode($2.getPosition(), $1, $3);
                 }
                 | kNOT opt_nl expr {
-                    $$ = support.getOperatorCallNode(support.getConditionNode($3), "!");
+                    $$ = support.getOperatorCallNode($1, support.getConditionNode($3));
+                    $<CallNode>$.setName("!");
                 }
                 | tBANG command_call {
-                    $$ = support.getOperatorCallNode(support.getConditionNode($2), "!");
+                    $$ = support.getOperatorCallNode($1, support.getConditionNode($2));
                 }
                 | arg
 
@@ -1154,10 +1156,12 @@ primary         : literal
                     $$ = new DefinedNode(support.union($1, $5), $4);
                 }
                 | kNOT tLPAREN2 expr rparen {
-                    $$ = support.getOperatorCallNode(support.getConditionNode($3), "!");
+                    $$ = support.getOperatorCallNode($1, support.getConditionNode($3));
+                    $<CallNode>$.setName("!");
                 }
                 | kNOT tLPAREN2 rparen {
-                    $$ = support.getOperatorCallNode(null, "!");
+                    $$ = support.getOperatorCallNode($1, null);
+                    $<CallNode>$.setName("!");
                 }
                 | operation brace_block {
                     $$ = support.new_fcall($1, $2, null);

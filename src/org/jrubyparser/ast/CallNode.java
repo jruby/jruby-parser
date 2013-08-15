@@ -39,6 +39,7 @@ public class CallNode extends Node implements INameNode, IArgumentNode, BlockAcc
     private Node argsNode;
     protected Node iterNode;
     protected String name;
+    protected String lexicalName;
     private boolean hasParens = false;
 
     public CallNode(SourcePosition position, Node receiverNode, String name, Node argsNode) {
@@ -52,9 +53,10 @@ public class CallNode extends Node implements INameNode, IArgumentNode, BlockAcc
         assert receiverNode != null : "receiverNode is not null";
         
         this.receiverNode = adopt(receiverNode);
-	setArgs(argsNode);
+        setArgs(argsNode);
         this.iterNode = adopt(iterNode);
         this.name = name;
+        lexicalName = name;
     }
 
     public NodeType getNodeType() {
@@ -129,7 +131,7 @@ public class CallNode extends Node implements INameNode, IArgumentNode, BlockAcc
     }
     
     public String getLexicalName() {
-        return getName();
+        return lexicalName;
     }
 
     /**
@@ -143,6 +145,10 @@ public class CallNode extends Node implements INameNode, IArgumentNode, BlockAcc
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void setLexicalName(String lexcicalName) {
+        this.lexicalName = lexicalName;
     }
 
     public boolean isNameMatch(String name) {

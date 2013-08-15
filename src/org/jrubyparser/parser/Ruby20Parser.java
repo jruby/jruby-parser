@@ -43,6 +43,7 @@ import org.jrubyparser.ast.BlockArgNode;
 import org.jrubyparser.ast.BlockNode;
 import org.jrubyparser.ast.BlockPassNode;
 import org.jrubyparser.ast.BreakNode;
+import org.jrubyparser.ast.CallNode;
 import org.jrubyparser.ast.ClassNode;
 import org.jrubyparser.ast.ClassVarNode;
 import org.jrubyparser.ast.Colon3Node;
@@ -134,7 +135,7 @@ public class Ruby20Parser implements RubyParser {
         support.setWarnings(warnings);
         lexer.setWarnings(warnings);
     }
-					// line 138 "-"
+					// line 139 "-"
   // %token constants
   public static final int kCLASS = 257;
   public static final int kMODULE = 258;
@@ -3412,7 +3413,8 @@ states[561] = new ParserState() {
 };
 states[299] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
-                    yyVal = support.getOperatorCallNode(support.getConditionNode(((Node)yyVals[-1+yyTop])), "!");
+                    yyVal = support.getOperatorCallNode(((Token)yyVals[-3+yyTop]), support.getConditionNode(((Node)yyVals[-1+yyTop])));
+                    ((CallNode)yyVal).setName("!");
     return yyVal;
   }
 };
@@ -3460,7 +3462,8 @@ states[562] = new ParserState() {
 };
 states[300] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
-                    yyVal = support.getOperatorCallNode(null, "!");
+                    yyVal = support.getOperatorCallNode(((Token)yyVals[-2+yyTop]), null);
+                    ((CallNode)yyVal).setName("!");
     return yyVal;
   }
 };
@@ -4024,7 +4027,8 @@ states[508] = new ParserState() {
 };
 states[50] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
-                    yyVal = support.getOperatorCallNode(support.getConditionNode(((Node)yyVals[0+yyTop])), "!");
+                    yyVal = support.getOperatorCallNode(((Token)yyVals[-2+yyTop]), support.getConditionNode(((Node)yyVals[0+yyTop])));
+                    ((CallNode)yyVal).setName("!");
     return yyVal;
   }
 };
@@ -4061,7 +4065,7 @@ states[509] = new ParserState() {
 };
 states[51] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
-                    yyVal = support.getOperatorCallNode(support.getConditionNode(((Node)yyVals[0+yyTop])), "!");
+                    yyVal = support.getOperatorCallNode(((Token)yyVals[-1+yyTop]), support.getConditionNode(((Node)yyVals[0+yyTop])));
     return yyVal;
   }
 };
@@ -4625,7 +4629,7 @@ states[523] = new ParserState() {
   }
 };
 }
-					// line 2210 "Ruby20Parser.y"
+					// line 2214 "Ruby20Parser.y"
 
     /** The parse method use an lexer stream and parse it to an AST node 
      * structure
@@ -4657,4 +4661,4 @@ states[523] = new ParserState() {
         return support.getResult();
     }
 }
-					// line 8682 "-"
+					// line 8686 "-"
