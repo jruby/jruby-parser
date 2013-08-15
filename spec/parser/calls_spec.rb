@@ -56,40 +56,44 @@ describe Parser do
       end
     end
 
-    # Unlike - and +, other unary operators such as  are not decorated.
+    # Unlike - and +, other unary operators such as ~ are not decorated.
 
     it "should not decorate ~" do
       parse("~x", v).find_node(:call).tap do |call|
         call.name.should == "~"
       end
     end
-  end
 
-  # 'not' in 1.8 was simply a not node, while '!' was a call
+    if v == 1.8
+      # 'not' and '!' in 1.8 were both simply a not node
 
-  it "should parse 'not' and '!' as a node and" do
-    parse("not x", 1.8).find_node(:not).tap do |notn|
-      notn.should_not == nil
-    end
-
-    parse("! x", 1.8).find_node(:not).tap do |notn|
-      notn.should_not == nil
-    end
-  end
-
-  # In 1.9 and 2.0 'not' was a call to '!', but we annotate the name of the
-  # method as lexically being 'not'. '!' is still just a call.
-
-  [1.9, 2.0].each do |v|
-    it "should parse 'not' as a call to '!' with lexical name 'not' and parse '!' as a call" do
-      parse("not x", v).find_node(:call).tap do |call|
-        call.name.should == "!"
-        call.lexical_name.should == "not"
+      it "should parse 'not' as a node" do
+        parse("not x", 1.8).find_node(:not).tap do |notn|
+          notn.should_not == nil
+        end
       end
 
-      parse("! x", v).find_node(:call).tap do |call|
-        call.name.should == "!"
-        call.lexical_name.should == "!"
+      it "should parse '!' as a node" do
+        parse("! x", 1.8).find_node(:not).tap do |notn|
+          notn.should_not == nil
+        end
+      end
+    else
+      # In 1.9 and 2.0 'not' was a call to '!', but we annotate the name of the
+      # method as lexically being 'not'. '!' is still just a call.
+
+      it "should parse 'not' as a call to '!' with lexical name 'not'" do
+        parse("not x", v).find_node(:call).tap do |call|
+          call.name.should == "!"
+          call.lexical_name.should == "not"
+        end
+      end
+
+      it "should parse '!' as a call" do
+        parse("! x", v).find_node(:call).tap do |call|
+          call.name.should == "!"
+          call.lexical_name.should == "!"
+        end
       end
     end
   end
