@@ -39,26 +39,17 @@ import org.jrubyparser.SourcePosition;
  * distinct from use of other operators, so they are made distinct in the AST
  * with this node.
  */
-public class UnaryCallNode extends Node implements INameNode, IArgumentNode, BlockAcceptingNode {
+public class UnaryCallNode extends Node implements INameNode {
     private Node receiverNode;
-    private Node argsNode;
-    protected Node iterNode;
     protected String lexicalName;
     private boolean hasParens = false;
 
-    public UnaryCallNode(SourcePosition position, Node receiverNode, String lexicalName, Node argsNode) {
-        this(position, receiverNode, lexicalName, argsNode, null);
-    }
-    
-    public UnaryCallNode(SourcePosition position, Node receiverNode, String lexicalName, Node argsNode, 
-            Node iterNode) {
+    public UnaryCallNode(SourcePosition position, Node receiverNode, String lexicalName) {
         super(position);
         
         assert receiverNode != null : "receiverNode is not null";
         
         this.receiverNode = adopt(receiverNode);
-        setArgs(argsNode);
-        this.iterNode = adopt(iterNode);
         this.lexicalName = lexicalName;
     }
 
@@ -72,57 +63,6 @@ public class UnaryCallNode extends Node implements INameNode, IArgumentNode, Blo
      **/
     public Object accept(NodeVisitor iVisitor) {
         return iVisitor.visitUnaryCallNode(this);
-    }
-    
-    @Deprecated
-    public Node getIterNode() {
-        return getIter();
-    }
-    
-    public Node getIter() {
-        return iterNode;
-    }
-    
-    public Node setIterNode(Node iterNode) {
-        setIter(iterNode);
-        
-        return this;
-    }
-    
-    public void setIter(Node iter) {
-        this.iterNode = adopt(iter);
-    }
-
-    /**
-     * Gets the argsNode representing the method's arguments' value for this call.
-     * @return argsNode
-     */
-    @Deprecated
-    public Node getArgsNode() {
-        return getArgs();
-    }
-    
-    public Node getArgs() {
-        return argsNode;
-    }
-    
-    /**
-     * Set the argsNode.
-     * 
-     * @param argsNode set the arguments for this node.
-     */
-    @Deprecated
-    public Node setArgsNode(Node argsNode) {
-        setArgs(argsNode);
-        
-        return getArgs();
-    }
-    
-    public void setArgs(Node argsNode) {
-        if (argsNode == null) {
-      argsNode = new ListNode(getReceiver().getPosition());
-        }
-        this.argsNode = adopt(argsNode);
     }
 
     public boolean hasParens() {

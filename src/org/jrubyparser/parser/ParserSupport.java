@@ -370,8 +370,7 @@ public class ParserSupport {
     public Node getUnaryCallNode(Node receiver, Token operator) {
         final String lexicalName = (String) operator.getValue();
 
-        return new UnaryCallNode(union(operator.getPosition(), receiver.getPosition()), receiver, lexicalName,
-                new ArrayNode(createEmptyArgsNodePosition(receiver.getPosition())));
+        return new UnaryCallNode(union(operator.getPosition(), receiver.getPosition()), receiver, lexicalName);
     }
 
     public Node getOperatorCallNode(Token operator, Node receiver) {

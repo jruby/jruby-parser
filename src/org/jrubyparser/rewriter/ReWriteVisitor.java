@@ -143,6 +143,7 @@ import org.jrubyparser.ast.SymbolNode;
 import org.jrubyparser.ast.SyntaxNode;
 import org.jrubyparser.ast.ToAryNode;
 import org.jrubyparser.ast.TrueNode;
+import org.jrubyparser.ast.UnaryCallNode;
 import org.jrubyparser.ast.UndefNode;
 import org.jrubyparser.ast.UntilNode;
 import org.jrubyparser.ast.VAliasNode;
@@ -1529,6 +1530,12 @@ public class ReWriteVisitor implements NodeVisitor {
 
     public Object visitTrueNode(TrueNode iVisited) {
         print("true");
+        return null;
+    }
+
+    public Object visitUnaryCallNode(UnaryCallNode iVisited) {
+        print(iVisited.getLexicalName());
+        visitNode(iVisited.getReceiver());
         return null;
     }
 
