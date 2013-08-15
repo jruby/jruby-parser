@@ -128,7 +128,7 @@ public class CallNode extends Node implements INameNode, IArgumentNode, BlockAcc
         this.hasParens = hasParens;
     }
     
-    public String getDecoratedName() {
+    public String getLexicalName() {
         return getName();
     }
 
@@ -176,7 +176,7 @@ public class CallNode extends Node implements INameNode, IArgumentNode, BlockAcc
                 pos.getEndOffset(), pos.getEndOffset() + getName().length());
     }
     
-    public SourcePosition getDecoratedNamePosition() {
+    public SourcePosition getLexicalNamePosition() {
         return getNamePosition();
     }
 }

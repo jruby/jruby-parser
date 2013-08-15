@@ -66,7 +66,7 @@ public class AttrAssignNode extends Node implements INameNode, IArgumentNode {
         return visitor.visitAttrAssignNode(this);
     }
 
-    public String getDecoratedName() {
+    public String getLexicalName() {
         return getName();
     }
     
@@ -146,7 +146,7 @@ public class AttrAssignNode extends Node implements INameNode, IArgumentNode {
         return getPosition().fromBeginning(getName().length());
     }
     
-    public SourcePosition getDecoratedNamePosition() {
+    public SourcePosition getLexicalNamePosition() {
         return getNamePosition();
     }    
 }

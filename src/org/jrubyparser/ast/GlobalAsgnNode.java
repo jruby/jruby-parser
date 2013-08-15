@@ -58,7 +58,7 @@ public class GlobalAsgnNode extends AssignableNode implements IGlobalVariable {
         return iVisitor.visitGlobalAsgnNode(this);
     }
     
-    public String getDecoratedName() {
+    public String getLexicalName() {
         return "$" + getName();
     }
     
@@ -81,10 +81,10 @@ public class GlobalAsgnNode extends AssignableNode implements IGlobalVariable {
     }
     
     public SourcePosition getNamePosition() {
-        return getDecoratedNamePosition().fromEnd(getName().length());
+        return getLexicalNamePosition().fromEnd(getName().length());
     }
     
-    public SourcePosition getDecoratedNamePosition() {
-        return getPosition().fromBeginning(getDecoratedName().length());
+    public SourcePosition getLexicalNamePosition() {
+        return getPosition().fromBeginning(getLexicalName().length());
     }
 }

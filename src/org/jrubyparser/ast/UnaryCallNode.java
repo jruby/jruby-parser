@@ -88,10 +88,6 @@ public class UnaryCallNode extends Node implements INameNode {
         return lexicalName + "@";
     }
 
-    public String getDecoratedName() {
-        return getName();
-    }
-
     public void setLexicalName(String lexicalName) {
         this.lexicalName = lexicalName;
     }
@@ -138,7 +134,7 @@ public class UnaryCallNode extends Node implements INameNode {
                 pos.getEndOffset(), pos.getEndOffset() + getName().length());
     }
     
-    public SourcePosition getDecoratedNamePosition() {
+    public SourcePosition getLexicalNamePosition() {
         return getNamePosition();
     }
 }

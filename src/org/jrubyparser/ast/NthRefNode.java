@@ -66,7 +66,7 @@ public class NthRefNode extends Node implements IGlobalVariable {
         return "" + getMatchNumber();
     }
 
-    public String getDecoratedName() {
+    public String getLexicalName() {
         return "$" + getName();
     }
 
@@ -78,7 +78,7 @@ public class NthRefNode extends Node implements IGlobalVariable {
         return getPosition().fromEnd(getName().length());
     }
 
-    public SourcePosition getDecoratedNamePosition() {
+    public SourcePosition getLexicalNamePosition() {
         return getPosition();
     }
 

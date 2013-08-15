@@ -57,7 +57,7 @@ public class GlobalVarNode extends Node implements IGlobalVariable {
         return iVisitor.visitGlobalVarNode(this);
     }
     
-    public String getDecoratedName() {
+    public String getLexicalName() {
         return "$" + getName();
     }
 
@@ -83,7 +83,7 @@ public class GlobalVarNode extends Node implements IGlobalVariable {
         return getPosition().fromEnd(getName().length());
     }
     
-    public SourcePosition getDecoratedNamePosition() {
+    public SourcePosition getLexicalNamePosition() {
         return getPosition();
     }
 }

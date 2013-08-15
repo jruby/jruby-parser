@@ -63,7 +63,7 @@ public class InstAsgnNode extends AssignableNode implements IInstanceVariable {
         return iVisitor.visitInstAsgnNode(this);
     }
 
-    public String getDecoratedName() {
+    public String getLexicalName() {
         return "@" + getName();
     }
     
@@ -86,11 +86,11 @@ public class InstAsgnNode extends AssignableNode implements IInstanceVariable {
     }
 
     public SourcePosition getNamePosition() {
-        return getDecoratedNamePosition().fromEnd(getName().length());
+        return getLexicalNamePosition().fromEnd(getName().length());
     }
     
-    public SourcePosition getDecoratedNamePosition() {
-        return getPosition().fromBeginning(getDecoratedName().length());
+    public SourcePosition getLexicalNamePosition() {
+        return getPosition().fromBeginning(getLexicalName().length());
     }
     
     public List<IInstanceVariable> getOccurences() {

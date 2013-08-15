@@ -55,7 +55,7 @@ public class OptArgNode extends Node implements INameNode {
         return visitor.visitOptArgNode(this);
     }
     
-    public String getDecoratedName() {
+    public String getLexicalName() {
         return getName();
     }
 
@@ -81,7 +81,7 @@ public class OptArgNode extends Node implements INameNode {
         return getPosition();
     }
     
-    public SourcePosition getDecoratedNamePosition() {
+    public SourcePosition getLexicalNamePosition() {
         return getNamePosition();
     }
 }

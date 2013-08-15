@@ -57,7 +57,7 @@ public class InstVarNode extends Node implements IInstanceVariable {
         return iVisitor.visitInstVarNode(this);
     }
     
-    public String getDecoratedName() {
+    public String getLexicalName() {
         return "@" + getName();
     }
 
@@ -83,7 +83,7 @@ public class InstVarNode extends Node implements IInstanceVariable {
         return getPosition().fromEnd(getName().length());
     }
     
-    public SourcePosition getDecoratedNamePosition() {
+    public SourcePosition getLexicalNamePosition() {
         return getPosition();
     }
 }

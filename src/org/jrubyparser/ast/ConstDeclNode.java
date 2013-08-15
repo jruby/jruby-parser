@@ -60,7 +60,7 @@ public class ConstDeclNode extends AssignableNode implements INameNode {
         return iVisitor.visitConstDeclNode(this);
     }
     
-    public String getDecoratedName() {
+    public String getLexicalName() {
         return getName();
     }
 
@@ -95,7 +95,7 @@ public class ConstDeclNode extends AssignableNode implements INameNode {
         return getPosition().fromBeginning(getName().length());
     }
     
-    public SourcePosition getDecoratedNamePosition() {
+    public SourcePosition getLexicalNamePosition() {
         return getNamePosition();
     }
 }
