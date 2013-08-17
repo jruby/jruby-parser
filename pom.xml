@@ -87,6 +87,7 @@
 
   <build>
     <sourceDirectory>src</sourceDirectory>
+    <defaultGoal>package</defaultGoal>
     <extensions>
       <extension>
         <groupId>org.apache.maven.wagon</groupId> 
