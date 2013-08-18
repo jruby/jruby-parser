@@ -29,7 +29,9 @@
 
 package org.jrubyparser.util.diff;
 
+import org.jrubyparser.ast.NewlineNode;
 import org.jrubyparser.ast.Node;
+import org.jrubyparser.ast.NodeType;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -64,8 +66,8 @@ public class SequenceMatcher
      * #hasIsJunk() method. hasIsJunk is a method which takes a Node and determines
      * whether or not it should be compared against the other node.
      *
-     * We pass in two nodes. Later, we can use the #setSequence, #setSequenceOne and
-     * #setSequenceTwo methods to change out one or both of the nodes and create a new set of
+     * We pass in two nodes. Later, we can use the #setSequence, #setNewNode and
+     * #setOldNode methods to change out one or both of the nodes and create a new set of
      * matches.
      *
      * @param isJunk A callback used to let users choose nodes not to be checked in diff.
@@ -102,9 +104,9 @@ public class SequenceMatcher
     }
 
     /**
-     * Checks whether two nodes qualify as 'equal' according or should be added
-     * to diff. This would be a good place to override if you need to manipulate
-     * how diffing is done.
+     * Checks whether two nodes qualify as 'equal' according to the #isSame() method
+     * or should be added to diff. This would be a good place to override if you
+     * need to manipulate how diffing is done.
      *
      * @param newNode The current version of the node.
      * @param oldNode The original version of the node being checked.
@@ -157,21 +159,16 @@ public class SequenceMatcher
                 if (childOld.isLeaf()) {
                     return;
                 } else {
-                    deleteNode(childOld);
+                    deletedNode(childOld);
                 }
             } else if (childOld.isLeaf()) {
-                insertNode(childNew);
+                insertedNode(childNew);
             } else {
                 findChanges(childNew, childOld);
             }
         } else {
             if (childNew.getNodeType() == childOld.getNodeType() && findDistance(childNew, childOld) <= 3) {
-                diffNodes.add(new Change(childNew, calcComplexity(childNew), childOld, calcComplexity(childOld)));
-
-                // TODO : Figure out what to do with this
-//                if (node instanceof ILocalScope && !(node instanceof RootNode)) {
-//
-//                }
+                modifiedNode(childNew, childOld);
             } else {
                 handleMismatchedNodes(childNew, childOld);
             }
@@ -183,22 +180,53 @@ public class SequenceMatcher
     /**
      * Here we deal with the case where two nodes are mismatched.
      * This can be due to the insertion or deletion of a node in the
-     * new source.
+     * new source. We make an attempt to match them back up here.
      *
      * @param childNew The current version of the node being diffed.
      * @param childOld The original version of the node being diffed.
      */
     public void handleMismatchedNodes(Node childNew, Node childOld) {
-        insertNode(childNew);
-        deleteNode(childOld);
+
+        List<Node> newSiblings = childNew.getParent().childNodes();
+        List<Node> oldSiblings = childOld.getParent().childNodes();
+        boolean nmatch = false;
+        boolean omatch = false;
+
+        for (Node sibling : newSiblings) {
+            if (sibling.isSame(childOld)) {
+                modifiedNode(sibling, childOld);
+                findChanges(sibling, childOld);
+                omatch = true;
+                break;
+            }
+        }
+
+        for (Node sibling : oldSiblings) {
+            if (sibling.isSame(childNew)) {
+                modifiedNode(childNew, sibling);
+                findChanges(childNew, sibling);
+                nmatch = true;
+                break;
+            }
+        }
+
+        if (nmatch == false || omatch == false) {
+            insertedNode(childNew);
+            deletedNode(childOld);
+        }
+
     }
 
-    public void insertNode(Node node) {
+    public void insertedNode(Node node) {
         diffNodes.add(new Change(node, calcComplexity(node), null, 0));
     }
 
-    public void deleteNode(Node node) {
+    public void deletedNode(Node node) {
         diffNodes.add(new Change(null, 0, node, calcComplexity(node)));
+    }
+
+    public void modifiedNode(Node newNode, Node oldNode) {
+        diffNodes.add(new Change(newNode, calcComplexity(newNode), oldNode, calcComplexity(oldNode)));
     }
 
     /**
@@ -214,40 +242,81 @@ public class SequenceMatcher
         List<Node> newChildren = newNode.childNodes();
 
         for (Node childNew : newChildren) {
+            childNew = stripOutNewlines(childNew);
+
             if (oldChildren.hasNext()) {
                 Node childOld = oldChildren.next();
+                childOld = stripOutNewlines(childOld);
 
                 if (!(isJunk == null)) {
-                    if (!isJunk.checkJunk(childNew) && !isJunk.checkJunk(childOld)) {
-                        sortNodesIntoDiff(childNew, childOld);
-                    } else {
-                        findChanges(childNew, childOld);
-                    }
+
+                        // We got an isJunk object from the user and have to check each node against that.
+                        if (!isJunk.checkJunk(childNew) && !isJunk.checkJunk(childOld)) {
+                            sortNodesIntoDiff(childNew, childOld);
+                        } else {
+                            findChanges(childNew, childOld);
+                        }
 
                     } else {
-                    sortNodesIntoDiff(childNew, childOld);
-                }
-                }
+                        // We don't have to check for Junk so we can start sorting right away.
+                        sortNodesIntoDiff(childNew, childOld);
+                    }
+
+            } else {
+                // We have a node left dangling, so we'll insert it into the diff, then check to see if it matches
+                // anything later.
+                insertedNode(childNew);
+            }
 
         }
     }
 
-    public void checkDiffForMoves() {
-
-        for (Change change : diffNodes) {
-            Node oldNode = change.getOldNode();
-            //TODO : Null checks for old and new nodes!
-            Iterator<Change> newn = diffNodes.iterator();
-            while (newn.hasNext()) {
-                Change newChange = newn.next();
-                Node newNode = newChange.getNewNode();
-                if (oldNode.isSame(newNode)) {
-                    change.setNewNode(newNode);
-                    change.setNewCost(calcComplexity(newNode));
-                    diffNodes.remove(newChange);
-                }
-            }
+    /**
+     * Newlines throw off the diffing algorithm's so we strip those out.
+     *
+     * @param node node is a Node that needs checked to see if it is a Newline.
+     * @return returns a Node.
+     */
+    public Node stripOutNewlines(Node node) {
+        if (node.getNodeType() == NodeType.NEWLINENODE) {
+            return ((NewlineNode) node).getNextNode();
+        } else {
+            return node;
         }
+    }
+
+    /**
+     * If a node has been moved, our initial diff will contain two changes:
+     * one insertion and one deletion. Here we match those up, then send their children
+     * back in to check for changes internal to the moved node. This is how we can handle
+     * a method which has been both moved and modified, something impossible for most text-based
+     * diffs.
+     */
+    public void checkDiffForMoves() {
+        ArrayList<Change> diffClone = (ArrayList) diffNodes.clone();
+
+        oldTest:
+            for (Change change : diffClone) {
+                if (change.getOldNode() == null) continue oldTest;
+                Node oldNode = change.getOldNode();
+
+                Iterator<Change> newn = diffClone.iterator();
+                newTest:
+                    while (newn.hasNext()) {
+                        Change newChange = newn.next();
+                        if (newChange.getNewNode() == null) continue newTest;
+                        Node newNode = newChange.getNewNode();
+
+                        // We want to make sure that we aren't just finding an already matched up change.
+
+                        if (diffNodes.indexOf(change) != diffNodes.indexOf(newChange) && oldNode.isSame(newNode)) {
+                            diffNodes.set(diffNodes.indexOf(change), new Change(newNode, calcComplexity(newNode), oldNode, calcComplexity(oldNode)));
+                            diffNodes.remove(newChange);
+                            findChanges(newNode, oldNode);
+                            checkDiffForMoves();
+                        }
+                    }
+            }
     }
 
     public ArrayList<Change> getDiffNodes() {
