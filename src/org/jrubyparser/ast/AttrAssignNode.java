@@ -54,6 +54,35 @@ public class AttrAssignNode extends Node implements INameNode, IArgumentNode {
         this.arg = adopt(arg);
     }
 
+
+    /**
+     * Checks node for 'sameness' for diffing.
+     *
+     * @param node to be compared to
+     * @return Returns a boolean
+     */
+    public boolean isSame(Node node) {
+        if (super.isSame(node)) {
+            AttrAssignNode attrAssignNode = (AttrAssignNode) node;
+
+            if (!isNameMatch(attrAssignNode.getName())) {
+                return false;
+            }
+
+            if (!getReceiver().isSame(attrAssignNode.getReceiver())) {
+                return false;
+            }
+
+            if (!getArgs().isSame(attrAssignNode.getArgs())) {
+               return false;
+            }
+
+            return true;
+        }
+        return false;
+    }
+
+
     public NodeType getNodeType() {
         return NodeType.ATTRASSIGNNODE;
     }

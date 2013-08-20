@@ -272,7 +272,7 @@ public class SequenceMatcher
     }
 
     /**
-     * Newlines throw off the diffing algorithm's so we strip those out.
+     * Newlines throw off the diffing algorithm's so we skip those.
      *
      * @param node node is a Node that needs checked to see if it is a Newline.
      * @return returns a Node.

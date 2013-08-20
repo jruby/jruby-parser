@@ -53,7 +53,25 @@ public class FCallNode extends Node implements INameNode, IArgumentNode, BlockAc
         this.iterNode = adopt(iterNode);
         this.name = name;
     }
-    
+
+
+    /**
+     * Checks node for 'sameness' for diffing.
+     *
+     * @param node to be compared to
+     * @return Returns a boolean
+     */
+    public boolean isSame(Node node) {
+        if (super.isSame(node)) {
+            FCallNode fnode = (FCallNode) node;
+            if (this.isNameMatch(fnode.getName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
     public NodeType getNodeType() {
         return NodeType.FCALLNODE;
     }

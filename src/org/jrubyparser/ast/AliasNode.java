@@ -43,6 +43,24 @@ public class AliasNode extends Node {
         this.newName = adopt(newName);
     }
 
+
+    /**
+     * Checks node for 'sameness' for diffing.
+     *
+     * @param node to be compared to
+     * @return Returns a boolean
+     */
+    public boolean isSame(Node node) {
+        if (super.isSame(node)) {
+            AliasNode aliasNode = (AliasNode) node;
+            if (this.getOldNameString().equals(aliasNode.getOldNameString()) && this.getNewNameString().equals(aliasNode.getNewNameString())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
     public NodeType getNodeType() {
         return NodeType.ALIASNODE;
     }

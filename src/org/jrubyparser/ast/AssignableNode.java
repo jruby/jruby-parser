@@ -45,7 +45,25 @@ public abstract class AssignableNode extends Node {
         
         this.valueNode = adopt(valueNode);
     }
-    
+
+
+    /**
+     * Checks node for 'sameness' for diffing.
+     *
+     * @param node to be compared to
+     * @return Returns a boolean
+     */
+    public boolean isSame(Node node) {
+        if (super.isSame(node)) {
+            AssignableNode assignableNode = (AssignableNode) node;
+            if (this.getValue().isSame(assignableNode.getValue())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
     /**
      * Gets the valueNode.
      * @return Returns a Node

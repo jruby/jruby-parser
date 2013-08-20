@@ -19,6 +19,24 @@ public class KeywordArgNode extends Node {
         this.assignable = assignable;
     }
 
+
+    /**
+     * Checks node for 'sameness' for diffing.
+     *
+     * @param node to be compared to
+     * @return Returns a boolean
+     */
+    public boolean isSame(Node node) {
+        if (super.isSame(node)) {
+            KeywordArgNode mnode = (KeywordArgNode) node;
+            if (this.getAssignable().isSame(mnode.getAssignable())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
     @Override
     public Object accept(NodeVisitor visitor) {
         return visitor.visitKeywordArgNode(this);

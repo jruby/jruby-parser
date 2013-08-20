@@ -4,6 +4,10 @@ import org.jrubyparser.util.diff.Change
 
 describe org.jrubyparser.util.diff.SequenceMatcher do
 
+  before(:each) do
+    SequenceMatcher.__persistent__ = true
+  end
+
   it 'should take two nodes at creation' do
     nodeA = parse('a = "a"')
     nodeB = parse('b = "b"')
@@ -29,6 +33,20 @@ describe org.jrubyparser.util.diff.SequenceMatcher do
     end
     sm.diff_nodes
     check.should == true
+  end
+
+  it 'should diff two Strings of different value' do
+    nodeA = parse("'The rain in Spain falls mainly on the plain. -- My Fair Lady'")
+    nodeB = parse("'The life of the wife is ended by the knife. -- Stewie, Family Guy'")
+    seqm = SequenceMatcher.new(nodeA, nodeB)
+    seqm.diff_nodes.size.should == 1
+  end
+
+  it 'should diff fcalls' do
+    nodeA = parse('a()')
+    nodeB = parse('b()')
+    seqm = SequenceMatcher.new(nodeA, nodeB)
+    seqm.diff_nodes.size.should == 1
   end
 
 end
