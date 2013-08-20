@@ -51,6 +51,26 @@ public class DRegexpNode extends ListNode implements ILiteralNode {
         this.is19 = is19;
     }
 
+
+    /**
+     * Checks node for 'sameness' for diffing.
+     *
+     * @param node to be compared to
+     * @return Returns a boolean
+     */
+    public boolean isSame(Node node) {
+        if (super.isSame(node)) {
+            DRegexpNode mnode = (DRegexpNode) node;
+
+            if (getOptions().equals(mnode.getOptions())) {
+                return true;
+            }
+
+        }
+        return false;
+    }
+
+
     @Override
     public NodeType getNodeType() {
         return NodeType.DREGEXPNODE;

@@ -15,7 +15,25 @@ public abstract class NamedNode extends Node implements INameNode {
         
         this.name = name;
     }
-    
+
+
+    /**
+     * Checks node for 'sameness' for diffing.
+     *
+     * @param node to be compared to
+     * @return Returns a boolean
+     */
+    public boolean isSame(Node node) {
+        if (super.isSame(node)) {
+            NamedNode mnode = (NamedNode) node;
+            if (isNameMatch(mnode.getName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
     public String getLexicalName() {
         return getName();
     }
@@ -38,7 +56,7 @@ public abstract class NamedNode extends Node implements INameNode {
     
     /**
      * Does the supplied name match this one?
-     * @param name
+     * @param testName
      */
     public boolean isNameMatch(String testName) {
         return name.equals(testName);

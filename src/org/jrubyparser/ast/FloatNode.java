@@ -42,6 +42,24 @@ public class FloatNode extends Node implements ILiteralNode {
         this.value = value;
     }
 
+
+    /**
+     * Checks node for 'sameness' for diffing.
+     *
+     * @param node to be compared to
+     * @return Returns a boolean
+     */
+    public boolean isSame(Node node) {
+        if (super.isSame(node)) {
+            FloatNode mnode = (FloatNode) node;
+            if (getValue() == mnode.getValue()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
     public NodeType getNodeType() {
         return NodeType.FLOATNODE;
     }

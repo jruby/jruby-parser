@@ -62,6 +62,26 @@ describe org.jrubyparser.util.diff.SequenceMatcher do
     seqmtoo.diff_nodes.size.should >= 1
   end
 
+  it 'should not diff matching if statements' do
+    nodeA = parse("if 1 == 1\nputs 1\nelse\n1\nend")
+    nodeB = parse("if 1 == 1\nputs 1\nelse\n1\nend")
+    seqm = SequenceMatcher.new(nodeA, nodeB)
+    seqm.diff_nodes.size.should == 0
+  end
+
+  it 'should diff a changed if statement' do
+    nodeA = parse("if 1 == 1\nputs 1\nelse\n1\nend")
+    nodeB = parse("if 2 == 2\nputs 1\nelse\n1\nend")
+    nodeC = parse("if 2 == 2\nputs 3\nelse\n1\nend")
+    nodeD = parse("if 2 == 2\nputs 1\nelse\n2\nend")
+    seqm = SequenceMatcher.new(nodeA, nodeB)
+    seqm2 = SequenceMatcher.new(nodeB, nodeC)
+    seqm3 = SequenceMatcher.new(nodeB, nodeD)
+    seqm.diff_nodes.size.should >= 1
+    seqm2.diff_nodes.size.should >= 1
+    seqm3.diff_nodes.size.should >= 1
+  end
+
 end
 
 describe "Change" do

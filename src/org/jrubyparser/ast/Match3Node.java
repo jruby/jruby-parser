@@ -45,6 +45,25 @@ public class Match3Node extends Node {
         this.valueNode = adopt(valueNode);
     }
 
+
+    /**
+     * Checks node for 'sameness' for diffing.
+     *
+     * @param node to be compared to
+     * @return Returns a boolean
+     */
+    public boolean isSame(Node node) {
+        if (super.isSame(node)) {
+            Match3Node mnode = (Match3Node) node;
+
+            if (getValue().isSame(mnode.getValue()) && getReceiver().isSame(mnode.getReceiver())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
     public NodeType getNodeType() {
         return NodeType.MATCH3NODE;
     }
