@@ -62,7 +62,7 @@ public class LocalAsgnNode extends AssignableNode implements ILocalVariable {
         return iVisitor.visitLocalAsgnNode(this);
     }
     
-    public String getDecoratedName() {
+    public String getLexicalName() {
         return getName();
     }
     
@@ -146,7 +146,7 @@ public class LocalAsgnNode extends AssignableNode implements ILocalVariable {
         return getPosition().fromBeginning(getName().length());
     }
     
-    public SourcePosition getDecoratedNamePosition() {
+    public SourcePosition getLexicalNamePosition() {
         return getNamePosition();
     }
 }

@@ -74,7 +74,7 @@ public class BackRefNode extends Node implements IGlobalVariable {
         return "" + type;
     }
 
-    public String getDecoratedName() {
+    public String getLexicalName() {
         return "$" + getName();
     }
 
@@ -86,7 +86,7 @@ public class BackRefNode extends Node implements IGlobalVariable {
         return getPosition().fromEnd(getName().length());
     }
 
-    public SourcePosition getDecoratedNamePosition() {
+    public SourcePosition getLexicalNamePosition() {
         return getPosition();
     }
 

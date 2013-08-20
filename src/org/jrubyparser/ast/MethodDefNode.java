@@ -107,7 +107,7 @@ public abstract class MethodDefNode extends Node implements INameNode, ILocalSco
             return getBody();
         }
 
-        public String getDecoratedName() {
+        public String getLexicalName() {
             return getName();
         }
         
@@ -141,7 +141,7 @@ public abstract class MethodDefNode extends Node implements INameNode, ILocalSco
             return getNameNode().getNamePosition();
         }
         
-        public SourcePosition getDecoratedNamePosition() {
+        public SourcePosition getLexicalNamePosition() {
             return getNameNode().getNamePosition();
         }        
         

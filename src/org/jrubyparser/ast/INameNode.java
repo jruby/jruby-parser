@@ -38,7 +38,7 @@ public interface INameNode extends INameMatchable {
     /**
      * Get the name including any leading sigils.
      */
-    public String getDecoratedName();
+    public String getLexicalName();
     
     /**
      * Set the name (name should not include sigils).
@@ -53,5 +53,5 @@ public interface INameNode extends INameMatchable {
     /**
      * The position of the name + any sigils that come with it.
      */
-    public SourcePosition getDecoratedNamePosition();
+    public SourcePosition getLexicalNamePosition();
 }

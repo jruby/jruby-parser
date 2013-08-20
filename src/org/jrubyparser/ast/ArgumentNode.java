@@ -99,7 +99,7 @@ public class ArgumentNode extends Node implements IParameter {
         return location & 0xffff;
     }
     
-    public String getDecoratedName() {
+    public String getLexicalName() {
         return getName();
     }
     
@@ -134,7 +134,7 @@ public class ArgumentNode extends Node implements IParameter {
         return getPosition();
     }
     
-    public SourcePosition getDecoratedNamePosition() {
+    public SourcePosition getLexicalNamePosition() {
         return getNamePosition();
     }
 }

@@ -54,7 +54,7 @@ public class ConstNode extends Node implements INameNode {
         return iVisitor.visitConstNode(this);
     }
 
-    public String getDecoratedName() {
+    public String getLexicalName() {
         return getName();
     }
     
@@ -80,7 +80,7 @@ public class ConstNode extends Node implements INameNode {
         return getPosition();
     }
     
-    public SourcePosition getDecoratedNamePosition() {
+    public SourcePosition getLexicalNamePosition() {
         return getPosition();
     }
 }

@@ -53,7 +53,7 @@ public class BlockArgNode extends NamedNode implements IParameter {
     }
     
     @Override
-    public String getDecoratedName() {
+    public String getLexicalName() {
         return "&" + getName();
     }
 
@@ -99,7 +99,7 @@ public class BlockArgNode extends NamedNode implements IParameter {
     }
     
     @Override
-    public SourcePosition getDecoratedNamePosition() {
+    public SourcePosition getLexicalNamePosition() {
         return getPosition();
     }    
 }

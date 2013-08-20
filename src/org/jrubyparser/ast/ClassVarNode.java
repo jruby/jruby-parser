@@ -57,7 +57,7 @@ public class ClassVarNode extends Node implements IClassVariable {
         return iVisitor.visitClassVarNode(this);
     }
 
-    public String getDecoratedName() {
+    public String getLexicalName() {
         return "@@" + getName();
     }
     
@@ -83,7 +83,7 @@ public class ClassVarNode extends Node implements IClassVariable {
         return getPosition().fromEnd(getName().length());
     }
     
-    public SourcePosition getDecoratedNamePosition() {
+    public SourcePosition getLexicalNamePosition() {
         return getPosition();
     }
 }

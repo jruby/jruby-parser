@@ -16,7 +16,7 @@ public abstract class NamedNode extends Node implements INameNode {
         this.name = name;
     }
     
-    public String getDecoratedName() {
+    public String getLexicalName() {
         return getName();
     }
     
@@ -48,7 +48,7 @@ public abstract class NamedNode extends Node implements INameNode {
         return getPosition();
     }
     
-    public SourcePosition getDecoratedNamePosition() {
+    public SourcePosition getLexicalNamePosition() {
         return getPosition();
     }    
 }

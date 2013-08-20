@@ -40,6 +40,7 @@ import org.jrubyparser.ast.BlockArgNode;
 import org.jrubyparser.ast.BlockNode;
 import org.jrubyparser.ast.BlockPassNode;
 import org.jrubyparser.ast.BreakNode;
+import org.jrubyparser.ast.CallNode;
 import org.jrubyparser.ast.ClassNode;
 import org.jrubyparser.ast.ClassVarNode;
 import org.jrubyparser.ast.Colon3Node;
@@ -89,6 +90,7 @@ import org.jrubyparser.ast.SelfNode;
 import org.jrubyparser.ast.StarNode;
 import org.jrubyparser.ast.StrNode;
 import org.jrubyparser.ast.SymbolNode;
+import org.jrubyparser.ast.UnaryCallNode;
 import org.jrubyparser.ast.UnnamedRestArgNode;
 import org.jrubyparser.ast.UntilNode;
 import org.jrubyparser.ast.VAliasNode;
@@ -488,10 +490,11 @@ expr            : command_call
                     $$ = support.newOrNode($2.getPosition(), $1, $3);
                 }
                 | kNOT opt_nl expr {
-                    $$ = support.getOperatorCallNode(support.getConditionNode($3), "!");
+                    $$ = support.getOperatorCallNode($1, support.getConditionNode($3));
+                    $<CallNode>$.setName("!");
                 }
                 | tBANG command_call {
-                    $$ = support.getOperatorCallNode(support.getConditionNode($2), "!");
+                    $$ = support.getOperatorCallNode($1, support.getConditionNode($2));
                 }
                 | arg
 
@@ -868,16 +871,16 @@ arg             : lhs '=' arg {
                     $$ = support.getOperatorCallNode($1, "**", $3, lexer.getPosition());
                 }
                 | tUMINUS_NUM tINTEGER tPOW arg {
-                    $$ = support.getOperatorCallNode(support.getOperatorCallNode($2, "**", $4, lexer.getPosition()), "-@");
+                    $$ = support.getUnaryCallNode(support.getOperatorCallNode($2, "**", $4, lexer.getPosition()), $1);
                 }
                 | tUMINUS_NUM tFLOAT tPOW arg {
-                    $$ = support.getOperatorCallNode(support.getOperatorCallNode($2, "**", $4, lexer.getPosition()), "-@");
+                    $$ = support.getUnaryCallNode(support.getOperatorCallNode($2, "**", $4, lexer.getPosition()), $1);
                 }
                 | tUPLUS arg {
-                    $$ = support.getOperatorCallNode($2, "+@");
+                    $$ = support.getUnaryCallNode($2, $1);
                 }
                 | tUMINUS arg {
-                    $$ = support.getOperatorCallNode($2, "-@");
+                    $$ = support.getUnaryCallNode($2, $1);
                 }
                 | arg tPIPE arg {
                     $$ = support.getOperatorCallNode($1, "|", $3, lexer.getPosition());
@@ -1153,10 +1156,12 @@ primary         : literal
                     $$ = new DefinedNode(support.union($1, $5), $4);
                 }
                 | kNOT tLPAREN2 expr rparen {
-                    $$ = support.getOperatorCallNode(support.getConditionNode($3), "!");
+                    $$ = support.getOperatorCallNode($1, support.getConditionNode($3));
+                    $<CallNode>$.setName("!");
                 }
                 | kNOT tLPAREN2 rparen {
-                    $$ = support.getOperatorCallNode(null, "!");
+                    $$ = support.getOperatorCallNode($1, null);
+                    $<CallNode>$.setName("!");
                 }
                 | operation brace_block {
                     $$ = support.new_fcall($1, $2, null);
@@ -1169,7 +1174,7 @@ primary         : literal
                     }
                     $<BlockAcceptingNode>1.setIter($2);
                     $$ = $1;
-                    $<Node>$.setPosition($1.getPosition());
+                    $<Node>$.setPosition(support.union($1, $2));
                 }
                 | tLAMBDA lambda {
                     $$ = $2;

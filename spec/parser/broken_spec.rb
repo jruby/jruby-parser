@@ -5,7 +5,7 @@ import org.jrubyparser.lexer.SyntaxException
 
 # tests for broken files
 describe Parser do
-  [1.8, 1.9].each do |v|
+  VERSIONS.each do |v|
     it "should raise an unterminated string exception" do
       lambda {
         parse('str = "', v)

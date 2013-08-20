@@ -12,6 +12,7 @@
  * implied. See the License for the specific language governing
  * rights and limitations under the License.
  *
+ * Copyright (C) 2013 Chris Seaton <chris@chrisseaton.com>
  * Copyright (C) 2009 Thomas E. Enebo <tom.enebo@gmail.com>
  * 
  * Alternatively, the contents of this file may be used under the terms of
@@ -32,35 +33,28 @@ import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 
 /**
- * A method or operator call.
+ * An operator call on one of the unary operators '+' or '-' that lexically
+ * appears to have the same name as the binary operator, but semantically has a
+ * name decorated with an '@' sigil. These two operators are syntactically
+ * distinct from use of other operators, so they are made distinct in the AST
+ * with this node.
  */
-public class CallNode extends Node implements INameNode, IArgumentNode, BlockAcceptingNode {
+public class UnaryCallNode extends Node implements INameNode {
     private Node receiverNode;
-    private Node argsNode;
-    protected Node iterNode;
-    protected String name;
     protected String lexicalName;
     private boolean hasParens = false;
 
-    public CallNode(SourcePosition position, Node receiverNode, String name, Node argsNode) {
-        this(position, receiverNode, name, argsNode, null);
-    }
-    
-    public CallNode(SourcePosition position, Node receiverNode, String name, Node argsNode, 
-            Node iterNode) {
+    public UnaryCallNode(SourcePosition position, Node receiverNode, String lexicalName) {
         super(position);
         
         assert receiverNode != null : "receiverNode is not null";
         
         this.receiverNode = adopt(receiverNode);
-        setArgs(argsNode);
-        this.iterNode = adopt(iterNode);
-        this.name = name;
-        lexicalName = name;
+        this.lexicalName = lexicalName;
     }
 
     public NodeType getNodeType() {
-        return NodeType.CALLNODE;
+        return NodeType.UNARYCALLNODE;
     }
     
     /**
@@ -68,58 +62,7 @@ public class CallNode extends Node implements INameNode, IArgumentNode, BlockAcc
      * @param iVisitor the visitor
      **/
     public Object accept(NodeVisitor iVisitor) {
-        return iVisitor.visitCallNode(this);
-    }
-    
-    @Deprecated
-    public Node getIterNode() {
-        return getIter();
-    }
-    
-    public Node getIter() {
-        return iterNode;
-    }
-    
-    public Node setIterNode(Node iterNode) {
-        setIter(iterNode);
-        
-        return this;
-    }
-    
-    public void setIter(Node iter) {
-        this.iterNode = adopt(iter);
-    }
-
-    /**
-     * Gets the argsNode representing the method's arguments' value for this call.
-     * @return argsNode
-     */
-    @Deprecated
-    public Node getArgsNode() {
-        return getArgs();
-    }
-    
-    public Node getArgs() {
-        return argsNode;
-    }
-    
-    /**
-     * Set the argsNode.
-     * 
-     * @param argsNode set the arguments for this node.
-     */
-    @Deprecated
-    public Node setArgsNode(Node argsNode) {
-        setArgs(argsNode);
-        
-        return getArgs();
-    }
-    
-    public void setArgs(Node argsNode) {
-        if (argsNode == null) {
-	    argsNode = new ListNode(getReceiver().getPosition());
-        }
-        this.argsNode = adopt(argsNode);
+        return iVisitor.visitUnaryCallNode(this);
     }
 
     public boolean hasParens() {
@@ -130,25 +73,34 @@ public class CallNode extends Node implements INameNode, IArgumentNode, BlockAcc
         this.hasParens = hasParens;
     }
     
+    /**
+     * Gets the name as it lexically appears in the source code, undecorated by
+     * the '@' sigil.
+     */
     public String getLexicalName() {
         return lexicalName;
     }
 
     /**
-     * Gets the name.
-	 * name is the name of the method called
-     * @return name
+     * Gets the name as it is semantically, decorated by the '@' sigil.
      */
     public String getName() {
-        return name;
+        return lexicalName + "@";
+    }
+
+    public void setLexicalName(String lexicalName) {
+        this.lexicalName = lexicalName;
     }
 
     public void setName(String name) {
-        this.name = name;
+        assert name.startsWith("@");
+        lexicalName = name.substring(1);
     }
 
-    public void setLexicalName(String lexcicalName) {
-        this.lexicalName = lexicalName;
+    public boolean isLexicalNameMatch(String name) {
+        String thisName = getLexicalName();
+        
+        return thisName != null && thisName.equals(name);
     }
 
     public boolean isNameMatch(String name) {
@@ -159,7 +111,7 @@ public class CallNode extends Node implements INameNode, IArgumentNode, BlockAcc
     
     /**
      * Gets the receiverNode.
-	 * receiverNode is the object on which the method is being called
+   * receiverNode is the object on which the method is being called
      * @return receiverNode
      */
     @Deprecated

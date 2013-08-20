@@ -106,6 +106,7 @@ import org.jrubyparser.ast.StarNode;
 import org.jrubyparser.ast.StrNode;
 import org.jrubyparser.ast.SymbolNode;
 import org.jrubyparser.ast.ToAryNode;
+import org.jrubyparser.ast.UnaryCallNode;
 import org.jrubyparser.ast.UnnamedRestArgNode;
 import org.jrubyparser.ast.UntilNode;
 import org.jrubyparser.ast.VAliasNode;
@@ -147,7 +148,7 @@ public class Ruby18Parser implements RubyParser {
         support.setWarnings(warnings);
         lexer.setWarnings(warnings);
     }
-					// line 151 "-"
+					// line 152 "-"
   // %token constants
   public static final int kCLASS = 257;
   public static final int kMODULE = 258;
@@ -3433,7 +3434,7 @@ states[393] = new ParserState() {
 };
 states[192] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
-                  yyVal = support.getOperatorCallNode(support.getOperatorCallNode(((Node)yyVals[-2+yyTop]), "**", ((Node)yyVals[0+yyTop]), support.getPosition(null)), "-@");
+                  yyVal = support.getUnaryCallNode(support.getOperatorCallNode(((Node)yyVals[-2+yyTop]), "**", ((Node)yyVals[0+yyTop]), support.getPosition(null)), ((Token)yyVals[-3+yyTop]));
     return yyVal;
   }
 };
@@ -3515,7 +3516,7 @@ states[394] = new ParserState() {
 };
 states[193] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
-                  yyVal = support.getOperatorCallNode(support.getOperatorCallNode(((FloatNode)yyVals[-2+yyTop]), "**", ((Node)yyVals[0+yyTop]), support.getPosition(null)), "-@");
+                  yyVal = support.getUnaryCallNode(support.getOperatorCallNode(((FloatNode)yyVals[-2+yyTop]), "**", ((Node)yyVals[0+yyTop]), support.getPosition(null)), ((Token)yyVals[-3+yyTop]));
     return yyVal;
   }
 };
@@ -3583,7 +3584,7 @@ states[194] = new ParserState() {
                   if (support.isLiteral(((Node)yyVals[0+yyTop]))) {
 		      yyVal = ((Node)yyVals[0+yyTop]);
 		  } else {
-                      yyVal = support.getOperatorCallNode(((Node)yyVals[0+yyTop]), "+@");
+                      yyVal = support.getUnaryCallNode(((Node)yyVals[0+yyTop]), ((Token)yyVals[-1+yyTop]));
 		  }
     return yyVal;
   }
@@ -3637,7 +3638,7 @@ states[396] = new ParserState() {
 };
 states[195] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
-                  yyVal = support.getOperatorCallNode(((Node)yyVals[0+yyTop]), "-@");
+                  yyVal = support.getUnaryCallNode(((Node)yyVals[0+yyTop]), ((Token)yyVals[-1+yyTop]));
     return yyVal;
   }
 };
@@ -3950,7 +3951,7 @@ states[66] = new ParserState() {
   }
 };
 }
-					// line 1902 "Ruby18Parser.y"
+					// line 1903 "Ruby18Parser.y"
 
     /** The parse method use an lexer stream and parse it to an AST node 
      * structure
@@ -3986,4 +3987,4 @@ states[66] = new ParserState() {
     // +++
     // Helper Methods
 }
-					// line 7833 "-"
+					// line 7834 "-"

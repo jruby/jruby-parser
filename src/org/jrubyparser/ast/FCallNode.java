@@ -143,7 +143,7 @@ public class FCallNode extends Node implements INameNode, IArgumentNode, BlockAc
         this.argsNode = adopt(argsNode);
     }
     
-    public String getDecoratedName() {
+    public String getLexicalName() {
         return getName();
     }
     
@@ -169,7 +169,7 @@ public class FCallNode extends Node implements INameNode, IArgumentNode, BlockAc
         return getPosition().fromBeginning(getName().length());
     }
     
-    public SourcePosition getDecoratedNamePosition() {
+    public SourcePosition getLexicalNamePosition() {
         return getNamePosition();
     }    
 }

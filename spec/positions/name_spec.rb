@@ -1,7 +1,7 @@
 require_relative '../helpers'
 
 describe Parser do
-  [1.8, 1.9].each do |v|
+  VERSIONS.each do |v|
     it "should get name position for lvars [#{v}]" do
       carets_parse("^foo = 1; ^foo", v).tap do |_, (asgn, var)|
         asgn.should have_name_position(0, 0, 0, 3)

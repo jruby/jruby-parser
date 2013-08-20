@@ -55,7 +55,7 @@ public class Colon3Node extends Node implements INameNode {
         return iVisitor.visitColon3Node(this);
     }
 
-    public String getDecoratedName() {
+    public String getLexicalName() {
         return getName();
     }
     
@@ -83,7 +83,7 @@ public class Colon3Node extends Node implements INameNode {
         return getPosition().fromEnd(getName().length());
     }
     
-    public SourcePosition getDecoratedNamePosition() {
+    public SourcePosition getLexicalNamePosition() {
         return getNamePosition();
     }
 }

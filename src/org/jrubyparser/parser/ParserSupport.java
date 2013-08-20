@@ -101,6 +101,7 @@ import org.jrubyparser.ast.StrNode;
 import org.jrubyparser.ast.SuperNode;
 import org.jrubyparser.ast.SymbolNode;
 import org.jrubyparser.ast.TrueNode;
+import org.jrubyparser.ast.UnaryCallNode;
 import org.jrubyparser.ast.WhenNode;
 import org.jrubyparser.ast.YieldNode;
 import org.jrubyparser.ast.ILiteralNode;
@@ -366,7 +367,12 @@ public class ParserSupport {
         return head;
     }
     
-    // unary operators
+    public Node getUnaryCallNode(Node receiver, Token operator) {
+        final String lexicalName = (String) operator.getValue();
+
+        return new UnaryCallNode(union(operator.getPosition(), receiver.getPosition()), receiver, lexicalName);
+    }
+
     public Node getOperatorCallNode(Token operator, Node receiver) {
         String name = (String) operator.getValue();
         

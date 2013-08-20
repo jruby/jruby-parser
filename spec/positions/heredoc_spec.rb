@@ -5,7 +5,7 @@ require_relative '../helpers'
 #    the markers definition.
 
 describe Parser do
-  [1.8, 1.9].each do |v|
+  VERSIONS.each do |v|
     it "parses a heredoc with marker at beginning of line[#{v}]" do
     ast = parse(<<-EOF, v)
 <<END
