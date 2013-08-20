@@ -57,6 +57,36 @@ public class MultipleAsgnNode extends AssignableNode {
         assert pre != null || rest != null : "pre or rest must exist in a multipleasgn19node";
     }
 
+
+    /**
+     * Checks node for 'sameness' for diffing.
+     *
+     * @param node to be compared to
+     * @return Returns a boolean
+     */
+    public boolean isSame(Node node) {
+        if (super.isSame(node)) {
+            MultipleAsgnNode multipleAsgnNode = (MultipleAsgnNode) node;
+
+            if (getPreCount() != multipleAsgnNode.getPreCount()) {
+                return false;
+            }
+
+            if ((getRest() != null && multipleAsgnNode.getRest() == null) || (getRest() == null && multipleAsgnNode.getRest() != null)) {
+                return false;
+            }
+
+            if (getPostCount() != multipleAsgnNode.getPostCount()) {
+                return false;
+            }
+
+            return true;
+
+        }
+        return false;
+    }
+
+
     public NodeType getNodeType() {
         return NodeType.MULTIPLEASGNNODE;
     }

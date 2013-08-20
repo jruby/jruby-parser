@@ -56,9 +56,12 @@ public abstract class AssignableNode extends Node {
     public boolean isSame(Node node) {
         if (super.isSame(node)) {
             AssignableNode assignableNode = (AssignableNode) node;
-            if (this.getValue().isSame(assignableNode.getValue())) {
-                return true;
+            if (getValue() != null && assignableNode.getValue() != null) {
+                 if (this.getValue().isSame(assignableNode.getValue())) {
+                    return true;
+                }
             }
+            return true;
         }
         return false;
     }

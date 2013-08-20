@@ -49,6 +49,19 @@ describe org.jrubyparser.util.diff.SequenceMatcher do
     seqm.diff_nodes.size.should == 1
   end
 
+  it 'should diff massgnnodes' do
+    nodeA = parse('ninjas.each {|x,y,z| puts "#{x}, #{y}, #{z}"}')
+    nodeB = parse('ninjas.each {|m,n,o| puts "#{x}, #{y}, #{z}"}')
+    seqm = SequenceMatcher.new(nodeA, nodeB)
+    seqm.diff_nodes.size.should >= 1
+
+
+    nodeC = parse('ninjas.each {|m,n,o| puts "#{x}, #{y}, #{z}"}')
+    nodeD = parse('ninjas.each {|m| puts "#{x}, #{y}, #{z}"}')
+    seqmtoo = SequenceMatcher.new(nodeC, nodeD)
+    seqmtoo.diff_nodes.size.should >= 1
+  end
+
 end
 
 describe "Change" do

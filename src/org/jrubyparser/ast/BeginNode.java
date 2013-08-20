@@ -39,11 +39,31 @@ public class BeginNode extends Node {
 
     public BeginNode(SourcePosition position, Node bodyNode) {
         super(position);
-        
+
         assert bodyNode != null : "bodyNode is not null";
         
         this.bodyNode = adopt(bodyNode);
     }
+
+
+    /**
+     * Checks node for 'sameness' for diffing.
+     *
+     * @param node to be compared to
+     * @return Returns a boolean
+     */
+    public boolean isSame(Node node) {
+        if (super.isSame(node)) {
+            BeginNode beginNode = (BeginNode) node;
+
+            if (getBody().isSame(beginNode.getBody())) {
+                return true;
+            }
+
+        }
+        return false;
+    }
+
 
     public NodeType getNodeType() {
         return NodeType.BEGINNODE;

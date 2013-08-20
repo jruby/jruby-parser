@@ -78,7 +78,7 @@ public class SequenceMatcher
         this.isJunk = isJunk;
 
         setSequences(newNode, oldNode);
-        this.diffNodes  = new ArrayList<>();
+        this.diffNodes  = new ArrayList<Change>();
 
     }
 
@@ -321,7 +321,7 @@ public class SequenceMatcher
 
     public ArrayList<Change> getDiffNodes() {
         if (diffNodes.isEmpty()) {
-            diffNodes  = new ArrayList<>();
+            diffNodes  = new ArrayList<Change>();
             findChanges(getNewNode(), getOldNode());
             checkDiffForMoves();
         }
