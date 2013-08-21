@@ -42,6 +42,17 @@ public class SplatNode extends Node {
         this.node = adopt(node);
     }
 
+    @Override
+    public boolean isSame(Node other) {
+        if (super.isSame(other)) {
+            SplatNode splatNode = (SplatNode) other;
+            if (getValue().isSame(splatNode.getValue())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public NodeType getNodeType() {
         return NodeType.SPLATNODE;
     }

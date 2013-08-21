@@ -82,6 +82,40 @@ describe org.jrubyparser.util.diff.SequenceMatcher do
     seqm3.diff_nodes.size.should >= 1
   end
 
+  it 'should diff an OpElementAsgnNode' do
+    nodeA = parse("a = [1, 2, 3]\na[1] += 2")
+    nodeB = parse("b = [1, 2, 3]\nb[1] += 2")
+    nodeC = parse("a = [1, 2, 3]\na[2] += 2")
+    nodeD = parse("a = [1, 2, 3]\na[1] += 3")
+
+    seqm = SequenceMatcher.new(nodeA, nodeB)
+    seqm2 = SequenceMatcher.new(nodeA, nodeC)
+    seqm3 = SequenceMatcher.new(nodeA, nodeD)
+
+    seqm.diff_nodes[1].old_node.receiver.name.should == 'b'
+    seqm.diff_nodes[1].new_node.receiver.name.should == 'a'
+    seqm2.diff_nodes[0].old_node.args.get(0).value.should == 2
+    seqm2.diff_nodes[0].new_node.args.get(0).value.should == 1
+    seqm3.diff_nodes[0].old_node.value.value.should == 3
+    seqm3.diff_nodes[0].new_node.value.value.should == 2
+  end
+
+  it 'should diff Regexps' do
+    nodeA = parse("/abc/")
+    nodeB = parse("/abc/")
+    nodeC = parse("/abd/")
+    nodeD = parse("/abc/i")
+
+    seqm = SequenceMatcher.new(nodeA, nodeB)
+    seqm2 = SequenceMatcher.new(nodeA, nodeC)
+    seqm3 = SequenceMatcher.new(nodeA, nodeD)
+
+    seqm.diff_nodes.size.should == 0
+    seqm2.diff_nodes.size.should == 1
+    seqm3.diff_nodes.size.should == 1
+
+  end
+
 end
 
 describe "Change" do

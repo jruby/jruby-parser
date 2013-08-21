@@ -41,6 +41,23 @@ public class ZSuperNode extends Node implements BlockAcceptingNode {
         super(position);
     }
 
+    @Override
+    public boolean isSame(Node other) {
+        if (super.isSame(other)) {
+            ZSuperNode zsuperNode = (ZSuperNode) other;
+            if (getIter() != null && zsuperNode.getIter() != null) {
+                if (getIter().isSame(zsuperNode.getIter())) {
+                    return true;
+                }
+            }
+
+            if (getIter() == null && zsuperNode.getIter() == null) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public NodeType getNodeType() {
         return NodeType.ZSUPERNODE;
     }

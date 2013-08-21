@@ -90,4 +90,15 @@ public class Change {
     public int getTotalCost() {
         return newCost + oldCost;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder(60);
+
+        builder.append("Old Node: ").append(getOldNode()).append(" Complexity: ").append(getOldCost()).append(" Position: ").append(getOldNode().getPosition()).append("\n");
+
+        builder.append("New Node: ").append(getNewNode()).append(" Complexity: ").append(getNewCost()).append(" Position: ").append(getOldNode().getPosition()).append("\n");
+
+        return builder.toString();
+    }
 }

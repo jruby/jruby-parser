@@ -43,6 +43,19 @@ public class ReturnNode extends Node {
         this.valueNode = adopt(valueNode);
     }
 
+    @Override
+    public boolean isSame(Node other) {
+        if (super.isSame(other)) {
+            ReturnNode returnNode = (ReturnNode) other;
+            if (getValue() != null && returnNode.getValue() != null) {
+                if (getValue().isSame(returnNode.getValue())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     public NodeType getNodeType() {
         return NodeType.RETURNNODE;
     }
