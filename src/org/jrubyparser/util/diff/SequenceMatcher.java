@@ -29,6 +29,7 @@
 
 package org.jrubyparser.util.diff;
 
+import org.jrubyparser.ast.BlockNode;
 import org.jrubyparser.ast.NewlineNode;
 import org.jrubyparser.ast.Node;
 import org.jrubyparser.ast.NodeType;
@@ -217,14 +218,32 @@ public class SequenceMatcher
 
     }
 
+    /**
+     * A Node was inserted into the new AST.
+     * It is possible that it was just mismatched, but we will sort that out later.
+     *
+      * @param node recieves a Node.
+     */
     public void insertedNode(Node node) {
         diffNodes.add(new Change(node, calcComplexity(node), null, 0));
     }
 
+    /**
+     * A Node in the old AST is no longer present in the new one.
+     * We assume it was deleted, but we will check for mismatches later.
+     *
+      * @param node Receives a Node.
+     */
     public void deletedNode(Node node) {
         diffNodes.add(new Change(null, 0, node, calcComplexity(node)));
     }
 
+    /**
+     * The node in the new AST has been changed.
+     *
+     * @param newNode The Node from the new AST which was modified.
+     * @param oldNode The original version of the Node, from the old AST.
+     */
     public void modifiedNode(Node newNode, Node oldNode) {
         diffNodes.add(new Change(newNode, calcComplexity(newNode), oldNode, calcComplexity(oldNode)));
     }
@@ -247,6 +266,13 @@ public class SequenceMatcher
             if (oldChildren.hasNext()) {
                 Node childOld = oldChildren.next();
                 childOld = stripOutNewlines(childOld);
+
+                if (childNew.getNodeType() == NodeType.BLOCKNODE) {
+                    if (childOld.getNodeType() == NodeType.BLOCKNODE) {
+                        findChanges(childNew, childOld);
+                        return;
+                    }
+                }
 
                 if (!(isJunk == null)) {
 
@@ -278,6 +304,9 @@ public class SequenceMatcher
      * @return returns a Node.
      */
     public Node stripOutNewlines(Node node) {
+        if (node.getNodeType() == NodeType.BLOCKNODE) {
+            BlockNode blockNode = (BlockNode) node;
+        }
         if (node.getNodeType() == NodeType.NEWLINENODE) {
             return ((NewlineNode) node).getNextNode();
         } else {

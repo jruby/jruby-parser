@@ -94,10 +94,17 @@ public class Change {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder(60);
+        builder.append("\nChange: ");
 
-        builder.append("Old Node: ").append(getOldNode()).append(" Complexity: ").append(getOldCost()).append(" Position: ").append(getOldNode().getPosition()).append("\n");
+        if (getOldNode() != null) {
+            builder.append("\nOld Node: ").append(getOldNode()).append(" Complexity: ").append(getOldCost()).append(" Position: ").append(getOldNode().getPosition()).append("\n");
+        }
+        if (getNewNode() != null) {
+            builder.append("\nNew Node: ").append(getNewNode()).append(" Complexity: ").append(getNewCost()).append(" Position: ").append(getNewNode().getPosition()).append("\n");
+        }
 
-        builder.append("New Node: ").append(getNewNode()).append(" Complexity: ").append(getNewCost()).append(" Position: ").append(getOldNode().getPosition()).append("\n");
+
+
 
         return builder.toString();
     }

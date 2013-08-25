@@ -30,7 +30,9 @@
 
 package org.jrubyparser.util.diff;
 
+import org.jrubyparser.ast.ILocalScope;
 import org.jrubyparser.ast.Node;
+import org.jrubyparser.ast.RootNode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,16 +44,68 @@ import java.util.List;
  */
 public class NodeDiff
 {
-    protected List<Node> diff;
+    protected ArrayList<Change> diff = new ArrayList<Change>();
+    protected ArrayList<DeepDiff> deepdiff = new ArrayList<DeepDiff>();
     protected SequenceMatcher SequenceMatch;
+    Node newNode;
+    Node oldNode;
+    IsJunk isJunk;
 
-    public NodeDiff() {
+    public NodeDiff(Node newNode, Node oldNode) {
+        this(newNode, oldNode, null);
+    }
+
+    public NodeDiff(Node newNode, Node oldNode, IsJunk isJunk) {
+        this.newNode = newNode;
+        this.oldNode = oldNode;
+        this.isJunk = isJunk;
 
     }
 
-    public List<Node> diff(Node newNode, Node oldNode, IsJunk isJunk) {
-        diff = new ArrayList<Node>();
+    public ArrayList<Change> getDiff() {
+        if (diff.isEmpty()) {
+        SequenceMatcher sm = new SequenceMatcher(newNode, oldNode, isJunk);
+        diff = createDiff(sm);
+        }
         return diff;
     }
+
+    public ArrayList<DeepDiff> getDeepDiff() {
+        if (deepdiff.isEmpty()) {
+        SequenceMatcher sm = new SequenceMatcher(newNode, oldNode, isJunk);
+        deepdiff = createDeepDiff(createDiff(sm));
+        }
+        return deepdiff;
+    }
+
+    public ArrayList<Change> createDiff(SequenceMatcher sequenceMatch) {
+        ArrayList<Change> roughDiff = sequenceMatch.getDiffNodes();
+        return roughDiff;
+    }
+
+    public ArrayList<DeepDiff> createDeepDiff(ArrayList<Change> roughDiff) {
+        ArrayList<DeepDiff> complexDiff = new ArrayList<DeepDiff>();
+        for (Change change: roughDiff) {
+           ArrayList<Change> subdiff = getSubdiff(change);
+           complexDiff.add(new DeepDiff(change, subdiff));
+        }
+        return complexDiff;
+    }
+
+     public ArrayList<Change> getSubdiff(Change change) {
+
+        ArrayList<Change> subdiff = new ArrayList<Change>();
+
+        Node oldNode = change.getOldNode();
+        Node newNode = change.getNewNode();
+
+        if ((oldNode == null || newNode == null) || !(oldNode instanceof ILocalScope && !(oldNode instanceof RootNode))) {
+            return null;
+        } else {
+            SequenceMatcher smForSubDiff = new SequenceMatcher(newNode, oldNode);
+            subdiff = smForSubDiff.getDiffNodes();
+            return subdiff;
+        }
+     }
 
 }
