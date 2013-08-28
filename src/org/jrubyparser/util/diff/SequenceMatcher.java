@@ -118,36 +118,6 @@ public class SequenceMatcher
     }
 
     /**
-     * We use this to determine if two nodes are similar enough in internal
-     * structure to be considered modified versions of the same node
-     *
-     * @param newNode The node in the new version.
-     * @param oldNode The original version of the node being checked.
-     * @return Returns an int which measures the editing distance between two nodes
-     */
-    public int findDistance(Node newNode, Node oldNode) {
-        int distance = 1;
-
-        Node biggest = calcComplexity(newNode) >= calcComplexity(oldNode) ? newNode : oldNode;
-        Node smallest = biggest == newNode ? oldNode : newNode;
-
-        Iterator<Node> sck = smallest.childNodes().iterator();
-
-        for (Node bchild : biggest.childNodes()) {
-            if (sck.hasNext()) {
-                Node schild = sck.next();
-                if (!isSameNode(schild, bchild)) {
-                    distance = distance + 1 * (findDistance(schild, bchild));
-                }
-            } else {
-                distance = distance + 1 * (calcComplexity(bchild));
-            }
-        }
-
-        return distance;
-    }
-
-    /**
      * Decides what to do with nodes being diffed.
      *
      * @param childNew The current version of the node being diffed.
@@ -168,15 +138,11 @@ public class SequenceMatcher
                 findChanges(childNew, childOld);
             }
         } else {
-            if (childNew.getNodeType() == childOld.getNodeType() && findDistance(childNew, childOld) <= 3) {
-                modifiedNode(childNew, childOld);
-            } else {
                 handleMismatchedNodes(childNew, childOld);
             }
 
         }
 
-    }
 
     /**
      * Here we deal with the case where two nodes are mismatched.
@@ -271,8 +237,15 @@ public class SequenceMatcher
                     if (childOld.getNodeType() == NodeType.BLOCKNODE) {
                         findChanges(childNew, childOld);
                         return;
+                    } else {
+                        findChanges(childNew, childOld.getParent());
+                        return;
                     }
+                } else if (childOld.getNodeType() == NodeType.BLOCKNODE) {
+                    findChanges(childNew.getParent(), childOld);
+                    return;
                 }
+
 
                 if (!(isJunk == null)) {
 
@@ -304,9 +277,6 @@ public class SequenceMatcher
      * @return returns a Node.
      */
     public Node stripOutNewlines(Node node) {
-        if (node.getNodeType() == NodeType.BLOCKNODE) {
-            BlockNode blockNode = (BlockNode) node;
-        }
         if (node.getNodeType() == NodeType.NEWLINENODE) {
             return ((NewlineNode) node).getNextNode();
         } else {
@@ -339,10 +309,12 @@ public class SequenceMatcher
                         // We want to make sure that we aren't just finding an already matched up change.
 
                         if (diffNodes.indexOf(change) != diffNodes.indexOf(newChange) && oldNode.isSame(newNode)) {
-                            diffNodes.set(diffNodes.indexOf(change), new Change(newNode, calcComplexity(newNode), oldNode, calcComplexity(oldNode)));
-                            diffNodes.remove(newChange);
-                            findChanges(newNode, oldNode);
-                            checkDiffForMoves();
+                            if (diffNodes.contains(change)) {
+                                diffNodes.set(diffNodes.indexOf(change), new Change(newNode, calcComplexity(newNode), oldNode, calcComplexity(oldNode)));
+                                diffNodes.remove(newChange);
+                                findChanges(newNode, oldNode);
+                                checkDiffForMoves();
+                            }
                         }
                     }
             }
