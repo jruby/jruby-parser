@@ -54,12 +54,17 @@ public class NextNode extends Node {
     public Object accept(NodeVisitor iVisitor) {
         return iVisitor.visitNextNode(this);
     }
-    
+
     /**
      * Gets the valueNode.
      * @return Returns a Node
      */
-    public Node getValueNode() {
+    public Node getValue() {
         return valueNode;
+    }
+    
+    @Deprecated
+    public Node getValueNode() {
+        return getValue();
     }
 }
