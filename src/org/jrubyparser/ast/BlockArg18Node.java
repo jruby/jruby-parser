@@ -37,8 +37,19 @@ public class BlockArg18Node extends Node {
         if (super.isSame(node)) {
             BlockArg18Node blockArg18Node = (BlockArg18Node) node;
 
-            if (getArgs().isSame(blockArg18Node.getArgs()) && getBlockArg().isSame(blockArg18Node.getBlockArg())) {
-                return true;
+            if (getArgs() != null && blockArg18Node.getArgs() != null) {
+
+                if (getArgs().isSame(blockArg18Node.getArgs()) && getBlockArg().isSame(blockArg18Node.getBlockArg())) {
+                    return true;
+                }
+
+            }
+
+            if (getArgs() == null && blockArg18Node.getArgs() == null) {
+                if (getBlockArg().isSame(blockArg18Node.getBlockArg())) {
+                    return true;
+                }
+
             }
 
         }

@@ -29,10 +29,7 @@
 
 package org.jrubyparser.util.diff;
 
-import org.jrubyparser.ast.BlockNode;
-import org.jrubyparser.ast.NewlineNode;
-import org.jrubyparser.ast.Node;
-import org.jrubyparser.ast.NodeType;
+import org.jrubyparser.ast.*;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -77,7 +74,6 @@ public class SequenceMatcher
      */
     public SequenceMatcher(Node newNode, Node oldNode, IsJunk isJunk) {
         this.isJunk = isJunk;
-
         setSequences(newNode, oldNode);
         this.diffNodes  = new ArrayList<Change>();
 
@@ -308,12 +304,30 @@ public class SequenceMatcher
 
                         // We want to make sure that we aren't just finding an already matched up change.
 
-                        if (diffNodes.indexOf(change) != diffNodes.indexOf(newChange) && oldNode.isSame(newNode)) {
-                            if (diffNodes.contains(change)) {
-                                diffNodes.set(diffNodes.indexOf(change), new Change(newNode, calcComplexity(newNode), oldNode, calcComplexity(oldNode)));
-                                diffNodes.remove(newChange);
-                                findChanges(newNode, oldNode);
-                                checkDiffForMoves();
+                        if (diffNodes.indexOf(change) != diffNodes.indexOf(newChange)) {
+                            if (oldNode.isSame(newNode)) {
+                                if (diffNodes.contains(change)) {
+                                    diffNodes.set(diffNodes.indexOf(change), new Change(newNode, calcComplexity(newNode), oldNode, calcComplexity(oldNode)));
+                                    diffNodes.remove(newChange);
+                                    findChanges(newNode, oldNode);
+                                    checkDiffForMoves();
+                                }
+
+                            }
+
+                            // Since methods are such an essential unit in ruby code, we take extra care to match these back up
+                            // This should match cases where the name has remained the same, but the node has moved, or its
+                            // internal structure was altered, or both.
+
+                            if (oldNode.getNodeType() == NodeType.DEFNNODE && newNode.getNodeType() == NodeType.DEFNNODE) {
+                                if (((MethodDefNode) oldNode).isNameMatch(((MethodDefNode) newNode).getName())) {
+                                    if (diffNodes.contains(change)) {
+                                        diffNodes.set(diffNodes.indexOf(change), new Change(newNode, calcComplexity(newNode), oldNode, calcComplexity(oldNode)));
+                                        diffNodes.remove(newChange);
+                                        findChanges(newNode, oldNode);
+                                        checkDiffForMoves();
+                                    }
+                                }
                             }
                         }
                     }

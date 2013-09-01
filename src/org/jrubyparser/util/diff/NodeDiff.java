@@ -33,8 +33,10 @@ package org.jrubyparser.util.diff;
 import org.jrubyparser.ast.ILocalScope;
 import org.jrubyparser.ast.Node;
 import org.jrubyparser.ast.RootNode;
+import org.jrubyparser.rewriter.ReWriteVisitor;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -47,17 +49,21 @@ public class NodeDiff
     protected ArrayList<Change> diff = new ArrayList<Change>();
     protected ArrayList<DeepDiff> deepdiff = new ArrayList<DeepDiff>();
     protected SequenceMatcher SequenceMatch;
+    String oldDocument;
+    String newDocument;
     Node newNode;
     Node oldNode;
     IsJunk isJunk;
 
-    public NodeDiff(Node newNode, Node oldNode) {
-        this(newNode, oldNode, null);
+    public NodeDiff(Node newNode, String newDocument, Node oldNode, String oldDocument) {
+        this(newNode, newDocument, oldNode, oldDocument, null);
     }
 
-    public NodeDiff(Node newNode, Node oldNode, IsJunk isJunk) {
+    public NodeDiff(Node newNode, String newDocument, Node oldNode, String oldDocument, IsJunk isJunk) {
         this.newNode = newNode;
+        this.newDocument = newDocument;
         this.oldNode = oldNode;
+        this.oldDocument = oldDocument;
         this.isJunk = isJunk;
 
     }
@@ -103,9 +109,82 @@ public class NodeDiff
             return null;
         } else {
             SequenceMatcher smForSubDiff = new SequenceMatcher(newNode, oldNode);
-            subdiff = smForSubDiff.getDiffNodes();
+            subdiff = sortSubdiff(smForSubDiff.getDiffNodes());
             return subdiff;
         }
      }
+
+    /**
+     * We sort through subdiffs, trying to match up insertions with deletions.
+     * While the diff is weighted to avoid false positives, given that the
+     * subdiff has a much smaller number of nodes to be compared against, we
+     * can be a bit more liberal, though the possibility of false positives does
+     * exist, it is far less critical if one does occur.
+     *
+     * @param subdiff An ArrayList which is a diff of the nodes in a Change object.
+     * @return Returns an ArrayList this is the subdiff object, after sorting.
+     */
+    public ArrayList<Change> sortSubdiff(ArrayList<Change> subdiff) {
+        ArrayList<Change> diffClone = (ArrayList) subdiff.clone();
+        oldTest:
+        for (Change change : diffClone) {
+            if (change.getOldNode() == null) continue oldTest;
+            Node oldNode = change.getOldNode();
+
+            Iterator<Change> newn = diffClone.iterator();
+            newTest:
+            while (newn.hasNext()) {
+                Change newChange = newn.next();
+                if (newChange.getNewNode() == null) continue newTest;
+                Node newNode = newChange.getNewNode();
+
+                // We want to make sure that we aren't just finding an already matched up change.
+
+                if (subdiff.indexOf(change) != subdiff.indexOf(newChange) ) {
+
+                    String nstring = ReWriteVisitor.createCodeFromNode(newNode, newDocument);
+                    String ostring = ReWriteVisitor.createCodeFromNode(oldNode, oldDocument);
+
+                    int lfd = distance(nstring, ostring);
+                    double ratio = ((double) lfd) / (Math.max(nstring.length(), ostring.length()));
+
+                    if (ratio < 0.2) {
+                        if (subdiff.contains(change)) {
+                            SequenceMatcher sm = new SequenceMatcher(null, null, null);
+                            int ncomplex = sm.calcComplexity(newNode);
+                            int ocomplex = sm.calcComplexity(oldNode);
+
+                            subdiff.set(subdiff.indexOf(change), new Change(newNode, ncomplex, oldNode, ocomplex));
+                            subdiff.remove(newChange);
+                        }
+                    }
+                }
+            }
+
+
+        }
+        return subdiff;
+    }
+
+    public static int distance(String s1, String s2){
+        int edits[][]=new int[s1.length()+1][s2.length()+1];
+        for(int i=0;i<=s1.length();i++)
+            edits[i][0]=i;
+        for(int j=1;j<=s2.length();j++)
+            edits[0][j]=j;
+        for(int i=1;i<=s1.length();i++){
+            for(int j=1;j<=s2.length();j++){
+                int u=(s1.charAt(i-1)==s2.charAt(j-1)?0:1);
+                edits[i][j]=Math.min(
+                        edits[i-1][j]+1,
+                        Math.min(
+                                edits[i][j-1]+1,
+                                edits[i-1][j-1]+u
+                        )
+                );
+            }
+        }
+        return edits[s1.length()][s2.length()];
+    }
 
 }

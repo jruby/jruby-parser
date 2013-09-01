@@ -13,7 +13,7 @@
  * rights and limitations under the License.
  *
  * Copyright (C) 2009 Thomas E. Enebo <tom.enebo@gmail.com>
- * 
+ *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
  * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
@@ -44,11 +44,11 @@ public class AttrAssignNode extends Node implements INameNode, IArgumentNode {
         super(position);
 
         assert receiver != null : "receiverNode is not null";
-        // TODO: At least ParserSupport.attrset passes argsNode as null.  ImplicitNil is wrong magic for 
+        // TODO: At least ParserSupport.attrset passes argsNode as null.  ImplicitNil is wrong magic for
         // setupArgs since it will IRubyObject[] { nil }.  So we need to figure out a nice fast
         // null pattern for setupArgs.
         // assert argsNode != null : "receiverNode is not null";
-        
+
         this.receiver = adopt(receiver);
         this.name = name;
         this.arg = adopt(arg);
@@ -73,8 +73,16 @@ public class AttrAssignNode extends Node implements INameNode, IArgumentNode {
                 return false;
             }
 
-            if (!getArgs().isSame(attrAssignNode.getArgs())) {
-               return false;
+            if (getArgs() != null && attrAssignNode.getArgs() != null) {
+
+                if (!getArgs().isSame(attrAssignNode.getArgs())) {
+                   return false;
+                }
+
+            }
+
+            if ((getArgs() == null && attrAssignNode.getArgs() != null) || (getArgs() != null && attrAssignNode.getArgs() == null)) {
+                return false;
             }
 
             return true;
@@ -98,7 +106,7 @@ public class AttrAssignNode extends Node implements INameNode, IArgumentNode {
     public String getLexicalName() {
         return getName();
     }
-    
+
     /**
      * Gets the name.
      * name is the name of the method called
@@ -107,17 +115,17 @@ public class AttrAssignNode extends Node implements INameNode, IArgumentNode {
     public String getName() {
         return name;
     }
-    
+
     public void setName(String name) {
         this.name = name;
     }
 
     public boolean isNameMatch(String name) {
         String thisName = getName();
-        
+
         return thisName != null && thisName.equals(name);
     }
-    
+
     /**
      * Gets the receiverNode.
      * receiverNode is the object on which the method is being called
@@ -127,11 +135,11 @@ public class AttrAssignNode extends Node implements INameNode, IArgumentNode {
     public Node getReceiverNode() {
         return getReceiver();
     }
-    
+
     public Node getReceiver() {
         return receiver;
     }
-    
+
     /**
      * Gets the argsNode.
      * argsNode representing the method's arguments' value for this call.
@@ -141,24 +149,24 @@ public class AttrAssignNode extends Node implements INameNode, IArgumentNode {
     public Node getArgsNode() {
         return getArgs();
     }
-    
+
     public Node getArgs() {
         return arg;
     }
-    
-    
+
+
     /**
      * Set the argsNode
-     * 
+     *
      * @param argsNode set the arguments for this node.
      */
     @Deprecated
     public Node setArgsNode(Node argsNode) {
         setArgs(argsNode);
-        
+
         return this;
     }
-    
+
     public void setArgs(Node argsNode) {
         this.arg = adopt(argsNode);
     }
@@ -174,8 +182,8 @@ public class AttrAssignNode extends Node implements INameNode, IArgumentNode {
     public SourcePosition getNamePosition() {
         return getPosition().fromBeginning(getName().length());
     }
-    
+
     public SourcePosition getLexicalNamePosition() {
         return getNamePosition();
-    }    
+    }
 }

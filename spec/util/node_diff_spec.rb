@@ -1,6 +1,7 @@
 require_relative '../helpers'
 import org.jrubyparser.util.diff.SequenceMatcher
 import org.jrubyparser.util.diff.Change
+import org.jrubyparser.util.diff.NodeDiff
 
 describe org.jrubyparser.util.diff.SequenceMatcher do
 
@@ -39,14 +40,14 @@ describe org.jrubyparser.util.diff.SequenceMatcher do
     nodeA = parse("'The rain in Spain falls mainly on the plain. -- My Fair Lady'")
     nodeB = parse("'The life of the wife is ended by the knife. -- Stewie, Family Guy'")
     seqm = SequenceMatcher.new(nodeA, nodeB)
-    seqm.diff_nodes.size.should == 1
+    seqm.diff_nodes.size.should >= 1
   end
 
   it 'should diff fcalls' do
     nodeA = parse('a()')
     nodeB = parse('b()')
     seqm = SequenceMatcher.new(nodeA, nodeB)
-    seqm.diff_nodes.size.should == 1
+    seqm.diff_nodes.size.should >= 1
   end
 
   it 'should diff massgnnodes' do
@@ -92,11 +93,11 @@ describe org.jrubyparser.util.diff.SequenceMatcher do
     seqm2 = SequenceMatcher.new(nodeA, nodeC)
     seqm3 = SequenceMatcher.new(nodeA, nodeD)
 
-    seqm.diff_nodes[1].old_node.receiver.name.should == 'b'
-    seqm.diff_nodes[1].new_node.receiver.name.should == 'a'
-    seqm2.diff_nodes[0].old_node.args.get(0).value.should == 2
+    seqm.diff_nodes[3].old_node.receiver.name.should == 'b'
+    seqm.diff_nodes[2].new_node.receiver.name.should == 'a'
+    seqm2.diff_nodes[1].old_node.args.get(0).value.should == 2
     seqm2.diff_nodes[0].new_node.args.get(0).value.should == 1
-    seqm3.diff_nodes[0].old_node.value.value.should == 3
+    seqm3.diff_nodes[1].old_node.value.value.should == 3
     seqm3.diff_nodes[0].new_node.value.value.should == 2
   end
 
@@ -111,8 +112,8 @@ describe org.jrubyparser.util.diff.SequenceMatcher do
     seqm3 = SequenceMatcher.new(nodeA, nodeD)
 
     seqm.diff_nodes.size.should == 0
-    seqm2.diff_nodes.size.should == 1
-    seqm3.diff_nodes.size.should == 1
+    seqm2.diff_nodes.size.should >= 1
+    seqm3.diff_nodes.size.should >= 1
 
   end
 
@@ -137,3 +138,31 @@ describe "Change" do
     change.total_cost.should == 8
   end
 end
+
+describe org.jrubyparser.util.diff.NodeDiff do
+  before(:each) do
+    NodeDiff.__persistent__ = true
+  end
+
+  it 'should create a diff' do
+    stringA = "b = 'b'"
+    stringB = "b = 'a'"
+    nodeA = parse(stringA)
+    nodeB = parse(stringB)
+    nd = NodeDiff.new(nodeA, stringA, nodeB, stringB)
+    diff = nd.diff
+    diff.size.should >= 1
+  end
+
+  it 'should create a deepdiff (diff of subnodes)' do
+    stringA = "'astring'\ndef foo(bar)\n bar\n end\n"
+    stringB = "def foo(bar)\n puts bar\n end\n"
+    nodeA = parse(stringA)
+    nodeB = parse(stringB)
+    nd = NodeDiff.new(nodeA, stringA, nodeB, stringB)
+    ddiff = nd.deep_diff
+    ddiff[1].subdiff.size.should >= 1
+  end
+
+end
+

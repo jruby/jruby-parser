@@ -65,6 +65,27 @@ public abstract class MethodDefNode extends Node implements INameNode, ILocalSco
         if (super.isSame(node)) {
             MethodDefNode mnode = (MethodDefNode) node;
             if (this.isNameMatch(mnode.getName())) {
+
+                if (getBody() != null && mnode.getBody() != null) {
+                    if (!getBody().isSame(mnode.getBody())) {
+                        return false;
+                    }
+
+                }
+                if ((getBody() == null && mnode.getBody() != null) || (getBody() != null && mnode.getBody() == null)) {
+                    return false;
+                }
+
+                if (getArgs() != null && mnode.getArgs() != null) {
+                    if (!getArgs().isSame(mnode.getArgs())) {
+                        return false;
+                    }
+
+                }
+                if ((getArgs() == null && mnode.getArgs() != null) || (getArgs() != null && mnode.getArgs() == null)) {
+                    return false;
+                }
+
                 return true;
             }
         }

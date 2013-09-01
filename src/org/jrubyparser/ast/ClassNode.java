@@ -69,9 +69,14 @@ public class ClassNode extends Node implements IScopingNode, ILocalScope, IModul
 
             if (getCPath().isSame(classNode.getCPath()))
             {
-                if (getSuper().isSame(classNode.getSuper())) {
+                if (getSuper() != null && classNode.getSuper() != null) {
+                    if (getSuper().isSame(classNode.getSuper())) {
+                        return true;
+                    }
+                } else if (getSuper() == null && classNode.getSuper() == null) {
                     return true;
                 }
+
             }
 
         }
