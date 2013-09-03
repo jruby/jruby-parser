@@ -340,7 +340,7 @@ public class SequenceMatcher
      * something impossible for most text-based diff tools.
      */
     protected void checkDiffForMoves() {
-        ArrayList<Change> diffClone = (ArrayList) diffNodes.clone();
+        ArrayList<Change> diffClone = (ArrayList<Change>) diffNodes.clone();
 
         oldTest:
             for (Change change : diffClone) {
