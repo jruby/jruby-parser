@@ -31,7 +31,70 @@ package org.jrubyparser.util.diff;
 
 import org.jrubyparser.ast.Node;
 
+/**
+ * Implementations of the interface IsJunk and the
+ * <code>#checkJunk()</code> method can be passed to {@link NodeDiff}
+ * and {@link SequenceMatcher} as callbacks which will then be used
+ * to select Nodes to be skipped over during the diffing process.
+ * <p>
+ *
+ * More specifically, if an object implementing <code>IsJunk</code> was
+ * passed in as the last parameter to the constructor of
+ * <code>SequenceMatcher</code>, then during an early phase of each iteration
+ * of the diff, <code>SequenceMatcher#findChanges</code> will call
+ * <code>SequenceMatcher#checkForJunk</code> on each Node which, in turn,
+ * calls <code>#checkJunk()</code> for both Nodes. If
+ * <code>#checkJunk()</code> returns true, that node
+ * will be skipped.
+ * <p>
+ *
+ * Nodes of type <code>NewLineNode</code> and <code>BlockNode</code> are
+ * automatically skipped over by <code>SequenceMatcher</code>, so it is
+ * unnecessary to check for either of these.
+ * <p>
+ *
+ * Example:
+ * <pre>
+ * {@code
+ *
+ * // Skipping all nodes which are methods
+ * public class MyJunkChecker implements IsJunk {
+ *     public boolean checkJunk(Node node) {
+ *         if (node instanceof MethodDefNode) {
+ *             return true;
+ *         }
+ *         return false;
+ *     }
+ * }
+ * }
+ * </pre>
+ *
+ * @see NodeDiff
+ * @see SequenceMatcher
+ * @see SequenceMatcher#findChanges(org.jrubyparser.ast.Node, org.jrubyparser.ast.Node)
+ * @see SequenceMatcher#checkForJunk(org.jrubyparser.ast.Node)
+ *
+ */
 public interface IsJunk
 {
-    public boolean checkJunk(Node a);
+    /**
+     * Any node passed to an implementation of <code>#checkJunk()</code>
+     * which returns true will not be diffed. Any Node for which
+     * <code>#checkJunk()</code> returns true will skip that node and all
+     * of that node's children. For example, if checkJunk returns true
+     * on all instances of <code>MethodDefNode</code>, the diff will skip
+     * all methods entirely, contents included.
+     * <p>
+     *
+     * Nodes of type <code>NewLineNode</code> and <code>BlockNode</code>
+     * are automatically skipped, so it is not necessary to check for them
+     * here.
+     *
+     * @param node The Node being checked. If it returns true, this node will
+     *             not be diffed.
+     *
+     * @return  Returns true or false. Any node for which it returns true will
+     *          not be diffed.
+     */
+    public boolean checkJunk(Node node);
 }

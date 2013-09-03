@@ -11,8 +11,9 @@ import java.util.ArrayList;
  */
 
 /**
- * The DeepDiff class attaches the subnode-diff (the result of diffing the children of Nodes
- * which have already been diffed) to the Change object holding the nodes that the subnodes are contained within.
+ * The DeepDiff class attaches the subnode-diff (the result of diffing the
+ * children of Nodes which have already been diffed) to the Change object
+ * holding the nodes that the subnodes are contained within.
  */
 public class DeepDiff extends Change {
 
