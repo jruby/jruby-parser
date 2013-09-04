@@ -76,7 +76,17 @@ public abstract class Node implements ISourcePositionHolder {
         
         return child;
     }
-    
+
+    /**
+     *Checks node for 'sameness' for diffing.
+     *
+     * @param other The node to be compared to.
+     * @return Returns a boolean.
+     */
+    public boolean isSame(Node other) {
+        return getNodeType() == other.getNodeType();
+    }
+
     /**
      * Adopt the node in it's proper location amongst the children of this node.
      * Used internally by insertNode.  It is possible subclasses will know enough to use it
@@ -105,7 +115,7 @@ public abstract class Node implements ISourcePositionHolder {
         
         return node;
     }
-    
+
     public Node getParent() {
         return parent;
     }

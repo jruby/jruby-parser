@@ -44,6 +44,18 @@ public class VAliasNode extends Node {
         this.newName = newName;
     }
 
+
+    @Override
+    public boolean isSame(Node other) {
+        if (super.isSame(other)) {
+            VAliasNode vAliasNode = (VAliasNode) other;
+            if (getOldName().equals(vAliasNode.getOldName()) && getNewName().equals(vAliasNode.getNewName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public NodeType getNodeType() {
         return NodeType.VALIASNODE;
     }

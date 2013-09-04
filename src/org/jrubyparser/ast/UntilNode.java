@@ -68,6 +68,20 @@ public class UntilNode extends Node {
         return iVisitor.visitUntilNode(this);
     }
 
+     @Override
+    public boolean isSame(Node other) {
+        if (super.isSame(other)) {
+            UntilNode untilNode = (UntilNode) other;
+            if (getBody().isSame(untilNode.getBody()) && getCondition().isSame(untilNode.getCondition())) {
+                if (evaluateAtStart() == untilNode.evaluateAtStart()) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+
     /**
      * Gets the bodyNode.
      * @return Returns a Node

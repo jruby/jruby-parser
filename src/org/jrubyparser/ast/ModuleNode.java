@@ -54,6 +54,26 @@ public class ModuleNode extends Node implements IScopingNode, ILocalScope, IModu
         this.bodyNode = adopt(bodyNode);
     }
 
+
+    /**
+     * Checks node for 'sameness' for diffing.
+     *
+     * @param node to be compared to
+     * @return Returns a boolean
+     */
+    public boolean isSame(Node node) {
+        if (super.isSame(node)) {
+            ModuleNode mnode = (ModuleNode) node;
+
+            if (getCPath().isSame(mnode.getCPath())) {
+                return true;
+            }
+
+        }
+        return false;
+    }
+
+
     public NodeType getNodeType() {
         return NodeType.MODULENODE;
     }

@@ -45,6 +45,24 @@ public class ArgsPushNode extends Node {
         this.secondNode = adopt(secondNode);
     }
 
+
+    /**
+     * Checks node for 'sameness' for diffing.
+     *
+     * @param node to be compared to
+     * @return Returns a boolean
+     */
+    public boolean isSame(Node node) {
+        if (super.isSame(node)) {
+            ArgsPushNode mnode = (ArgsPushNode) node;
+            if (getFirstNode().isSame(mnode.getFirstNode()) && getSecondNode().isSame(mnode.getSecondNode())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
     public NodeType getNodeType() {
         return NodeType.ARGSPUSHNODE;
     }

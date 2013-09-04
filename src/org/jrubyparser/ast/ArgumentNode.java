@@ -54,6 +54,24 @@ public class ArgumentNode extends Node implements IParameter {
         this.location = location;
     }
 
+
+    /**
+     * Checks node for 'sameness' for diffing.
+     *
+     * @param node to be compared to
+     * @return Returns a boolean
+     */
+    public boolean isSame(Node node) {
+        if (super.isSame(node)) {
+            ArgumentNode argumentNode = (ArgumentNode) node;
+            if (this.isNameMatch(argumentNode.getName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
     public NodeType getNodeType() {
         return NodeType.ARGUMENTNODE;
     }

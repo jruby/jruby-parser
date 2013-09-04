@@ -20,6 +20,24 @@ public class LiteralNode extends Node {
         this.name = (String) token.getValue();
     }
 
+
+    /**
+     * Checks node for 'sameness' for diffing.
+     *
+     * @param node to be compared to
+     * @return Returns a boolean
+     */
+    public boolean isSame(Node node) {
+        if (super.isSame(node)) {
+            LiteralNode mnode = (LiteralNode) node;
+            if (getName().equals(mnode.getName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
     public String getName() {
         return name;
     }

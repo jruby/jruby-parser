@@ -52,6 +52,28 @@ public class OpAsgnNode extends Node {
         this.variableName = variableName;
     }
 
+
+    /**
+     * Checks node for 'sameness' for diffing.
+     *
+     * @param node to be compared to
+     * @return Returns a boolean
+     */
+    public boolean isSame(Node node) {
+        if (super.isSame(node)) {
+            OpAsgnNode mnode = (OpAsgnNode) node;
+
+            if (getReceiver().isSame(mnode.getReceiver()) && getValue().isSame(mnode.getValue())) {
+                if (getOperatorName().equals(mnode.getOperatorName()) && getVariableName().equals(mnode.getVariableName()) ) {
+                    return true;
+                }
+            }
+
+        }
+        return false;
+    }
+
+
     public NodeType getNodeType() {
         return NodeType.OPASGNNODE;
     }

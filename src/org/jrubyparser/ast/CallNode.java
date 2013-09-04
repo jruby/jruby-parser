@@ -59,6 +59,24 @@ public class CallNode extends Node implements INameNode, IArgumentNode, BlockAcc
         lexicalName = name;
     }
 
+
+    /**
+     * Checks node for 'sameness' for diffing.
+     *
+     * @param node to be compared to
+     * @return Returns a boolean
+     */
+    public boolean isSame(Node node) {
+        if (super.isSame(node)) {
+            CallNode callNode = (CallNode) node;
+            if (this.isNameMatch(callNode.getName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
     public NodeType getNodeType() {
         return NodeType.CALLNODE;
     }

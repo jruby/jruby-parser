@@ -48,6 +48,24 @@ public class ConstDeclNode extends AssignableNode implements INameNode {
         this.constNode = (INameNode) adopt((Node) constNode);
     }
 
+
+    /**
+     * Checks node for 'sameness' for diffing.
+     *
+     * @param node to be compared to
+     * @return Returns a boolean
+     */
+    public boolean isSame(Node node) {
+        if (super.isSame(node)) {
+            ConstDeclNode mnode = (ConstDeclNode) node;
+            if (this.isNameMatch(mnode.getName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
     public NodeType getNodeType() {
         return NodeType.CONSTDECLNODE;
     }

@@ -42,6 +42,26 @@ public class MatchNode extends Node {
         this.regexpNode = adopt(regexpNode);
     }
 
+
+    /**
+     * Checks node for 'sameness' for diffing.
+     *
+     * @param node to be compared to
+     * @return Returns a boolean
+     */
+    public boolean isSame(Node node) {
+        if (super.isSame(node)) {
+            MatchNode mnode = (MatchNode) node;
+
+           if (getRegexp().isSame(mnode.getRegexp())) {
+               return true;
+           }
+
+        }
+        return false;
+    }
+
+
     public NodeType getNodeType() {
         return NodeType.MATCHNODE;
     }

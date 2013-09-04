@@ -62,6 +62,31 @@ public class CaseNode extends Node {
         this.elseNode = elseNode;
     }
 
+
+    /**
+     * Checks node for 'sameness' for diffing.
+     *
+     * @param node to be compared to
+     * @return Returns a boolean
+     */
+    public boolean isSame(Node node) {
+        if (super.isSame(node)) {
+            CaseNode cnode = (CaseNode) node;
+
+            if ((getCase() != null && cnode.getCase() == null) || (getCase() == null && cnode.getCase() != null)) {
+                return false;
+            }
+            if (getCase() != null && cnode.getCase() != null) {
+                if (getCase().isSame(cnode.getCase())) {
+                    return true;
+                }
+            }
+
+        }
+        return false;
+    }
+
+
     public NodeType getNodeType() {
         return NodeType.CASENODE;
     }
@@ -76,7 +101,7 @@ public class CaseNode extends Node {
 
     /**
      * Gets the caseNode.
-	 * caseNode is the case expression 
+	 * caseNode is the case expression
      * @return caseNode
      */
     public Node getCase() {

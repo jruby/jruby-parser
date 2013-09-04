@@ -46,6 +46,24 @@ public class RegexpNode extends Node implements ILiteralNode {
         this.options = options;
     }
 
+    public boolean isSame(Node node) {
+        if (super.isSame(node)) {
+            RegexpNode regexpNode = (RegexpNode) node;
+           if (getValue() != null && regexpNode.getValue() != null) {
+               if (getValue().equals(regexpNode.getValue())) {
+                   if (getOptions() != null && regexpNode.getOptions() != null) {
+                      if (!getOptions().equals(regexpNode.getOptions())) {
+                         return false;
+                      }
+
+                   }
+                   return true;
+               }
+           }
+        }
+        return false;
+    }
+
     public NodeType getNodeType() {
         return NodeType.REGEXPNODE;
     }

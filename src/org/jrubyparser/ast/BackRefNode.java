@@ -49,6 +49,24 @@ public class BackRefNode extends Node implements IGlobalVariable {
         this.type = (char) type;
     }
 
+
+    /**
+     * Checks node for 'sameness' for diffing.
+     *
+     * @param node to be compared to
+     * @return Returns a boolean
+     */
+    public boolean isSame(Node node) {
+        if (super.isSame(node)) {
+            BackRefNode backRefNode = (BackRefNode) node;
+            if (getLexicalName().equals(backRefNode.getLexicalName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
     public NodeType getNodeType() {
         return NodeType.BACKREFNODE;
     }

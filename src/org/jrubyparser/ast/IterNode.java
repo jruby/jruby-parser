@@ -61,6 +61,31 @@ public class IterNode extends Node implements IBlockScope {
         this.scope = scope;
     }
 
+
+    /**
+     * Checks node for 'sameness' for diffing.
+     *
+     * @param node to be compared to
+     * @return Returns a boolean
+     */
+    public boolean isSame(Node node) {
+        if (super.isSame(node)) {
+            IterNode iterNode = (IterNode) node;
+
+            if ((getBody() != null && iterNode.getBody() == null) || (getBody() == null && iterNode.getBody() != null)) {
+                return false;
+            }
+
+            if ((getVar() != null && iterNode.getVar() == null) || (getVar() == null && iterNode.getVar() != null)) {
+                return false;
+            }
+
+            return true;
+        }
+        return false;
+    }
+
+
     public NodeType getNodeType() {
         return NodeType.ITERNODE;
     }

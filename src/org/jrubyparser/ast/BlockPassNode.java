@@ -48,6 +48,37 @@ public class BlockPassNode extends Node {
         this.bodyNode = adopt(bodyNode);
     }
 
+
+    /**
+     * Checks node for 'sameness' for diffing.
+     *
+     * @param node to be compared to
+     * @return Returns a boolean
+     */
+    public boolean isSame(Node node) {
+        if (super.isSame(node)) {
+            BlockPassNode blockPassNode = (BlockPassNode) node;
+
+            if (getBody().isSame(blockPassNode.getBody())) {
+                if (getArgs() != null && blockPassNode.getArgs() != null) {
+                    if (!getArgs().isSame(blockPassNode.getArgs())) {
+                        return false;
+                    }
+                }
+
+                if ((getArgs() == null && blockPassNode.getArgs() != null) || (blockPassNode.getArgs() == null && getArgs() != null)) {
+                   return false;
+                }
+
+                return true;
+            }
+
+
+        }
+        return false;
+    }
+
+
     public NodeType getNodeType() {
         return NodeType.BLOCKPASSNODE;
     }

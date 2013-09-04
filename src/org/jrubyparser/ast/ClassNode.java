@@ -56,6 +56,34 @@ public class ClassNode extends Node implements IScopingNode, ILocalScope, IModul
         this.superNode = adopt(superNode);
     }
 
+
+    /**
+     * Checks node for 'sameness' for diffing.
+     *
+     * @param node to be compared to
+     * @return Returns a boolean
+     */
+    public boolean isSame(Node node) {
+        if (super.isSame(node)) {
+            ClassNode classNode = (ClassNode) node;
+
+            if (getCPath().isSame(classNode.getCPath()))
+            {
+                if (getSuper() != null && classNode.getSuper() != null) {
+                    if (getSuper().isSame(classNode.getSuper())) {
+                        return true;
+                    }
+                } else if (getSuper() == null && classNode.getSuper() == null) {
+                    return true;
+                }
+
+            }
+
+        }
+        return false;
+    }
+
+
     public NodeType getNodeType() {
         return NodeType.CLASSNODE;
     }
