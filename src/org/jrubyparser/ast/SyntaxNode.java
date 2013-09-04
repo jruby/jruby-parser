@@ -46,6 +46,8 @@ public class SyntaxNode extends Node {
         this.content = content;
     }
 
+    //TODO : Should I have an #isSame() method?
+
     @Override
     public NodeType getNodeType() {
         return NodeType.SYNTAXNODE;

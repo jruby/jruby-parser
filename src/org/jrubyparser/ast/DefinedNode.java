@@ -45,6 +45,24 @@ public class DefinedNode extends Node {
         this.expressionNode = adopt(expressionNode);
     }
 
+
+    /**
+     * Checks node for 'sameness' for diffing.
+     *
+     * @param node to be compared to
+     * @return Returns a boolean
+     */
+    public boolean isSame(Node node) {
+        if (super.isSame(node)) {
+            DefinedNode mnode = (DefinedNode) node;
+            if ((getExpression() != null && mnode.getExpression() == null) || (getExpression() == null && mnode.getExpression() != null)) {
+                return false;
+            }
+        }
+        return false;
+    }
+
+
     public NodeType getNodeType() {
         return NodeType.DEFINEDNODE;
     }

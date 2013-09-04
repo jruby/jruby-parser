@@ -55,6 +55,29 @@ public class DotNode extends Node {
         this.isLiteral = isLiteral;
     }
 
+
+    /**
+     * Checks node for 'sameness' for diffing.
+     *
+     * @param node to be compared to
+     * @return Returns a boolean
+     */
+    public boolean isSame(Node node) {
+        if (super.isSame(node)) {
+            DotNode mnode = (DotNode) node;
+
+            if (getBegin().isSame(mnode.getBegin())) {
+                if (getEnd().isSame(mnode.getEnd())) {
+                    if (isExclusive() == mnode.isExclusive()) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+
     public NodeType getNodeType() {
         return NodeType.DOTNODE;
     }

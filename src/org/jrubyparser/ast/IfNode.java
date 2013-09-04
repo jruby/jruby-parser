@@ -49,6 +49,53 @@ public class IfNode extends Node {
         this.elseBody = adopt(elseBody);
     }
 
+
+    /**
+     * Checks node for 'sameness' for diffing.
+     *
+     * @param node to be compared to
+     * @return Returns a boolean
+     */
+    public boolean isSame(Node node) {
+        if (super.isSame(node)) {
+            IfNode mnode = (IfNode) node;
+
+            if (getCondition().isSame(mnode.getCondition())) {
+
+                if (getThenBody() != null) {
+                    if (mnode.getThenBody() != null) {
+                        if (!getThenBody().isSame(mnode.getThenBody())) {
+                            return false;
+                        }
+                    } else {
+                        return false;
+                    }
+                }
+                if (getThenBody() == null && mnode.getThenBody() != null) {
+                    return false;
+                }
+
+                if (getElseBody() != null) {
+                    if (mnode.getElseBody() != null) {
+                        if (!getElseBody().isSame(mnode.getElseBody())) {
+                            return false;
+                        }
+                    } else {
+                        return false;
+                    }
+                }
+                if (getElseBody() == null && mnode.getElseBody() != null) {
+                    return false;
+                }
+
+                return true;
+
+            }
+        }
+        return false;
+    }
+
+
     public NodeType getNodeType() {
         return NodeType.IFNODE;
     }

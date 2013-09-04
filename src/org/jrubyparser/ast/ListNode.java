@@ -45,7 +45,7 @@ public class ListNode extends Node {
     /**
      * Create a new ListNode.
      * 
-     * @param id type of listnode
+     * @param position type of listnode
      * @param firstNode first element of the list
      */
     public ListNode(SourcePosition position, Node firstNode) {
@@ -60,6 +60,31 @@ public class ListNode extends Node {
         
         list = new ArrayList<Node>(0);
     }
+
+
+    /**
+     * Checks node for 'sameness' for diffing.
+     *
+     * @param node to be compared to
+     * @return Returns a boolean
+     */
+    public boolean isSame(Node node) {
+        if (super.isSame(node)) {
+            ListNode listNode = (ListNode) node;
+            if (this.size() != listNode.size()) return false;
+
+            for (int i = 0; i <= size() - 1; i++) {
+                if (!get(i).isSame(listNode.get(i))) {
+                    return false;
+                }
+            }
+
+            return true;
+
+        }
+        return false;
+    }
+
 
     public NodeType getNodeType() {
         return NodeType.LISTNODE;

@@ -49,6 +49,25 @@ public class NotNode extends Node {
         this.conditionNode = adopt(conditionNode);
     }
 
+
+    /**
+     * Checks node for 'sameness' for diffing.
+     *
+     * @param node to be compared to
+     * @return Returns a boolean
+     */
+    public boolean isSame(Node node) {
+        if (super.isSame(node)) {
+            NotNode mnode = (NotNode) node;
+
+            if (getCondition().isSame(mnode.getCondition())) {
+               return true;
+            }
+        }
+        return false;
+    }
+
+
     public NodeType getNodeType() {
         return NodeType.NOTNODE;
     }

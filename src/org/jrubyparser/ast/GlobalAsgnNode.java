@@ -45,6 +45,24 @@ public class GlobalAsgnNode extends AssignableNode implements IGlobalVariable {
         this.name = name;
     }
 
+
+    /**
+     * Checks node for 'sameness' for diffing.
+     *
+     * @param node to be compared to
+     * @return Returns a boolean
+     */
+    public boolean isSame(Node node) {
+        if (super.isSame(node)) {
+            GlobalAsgnNode mnode = (GlobalAsgnNode) node;
+            if (this.isNameMatch(mnode.getName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
     public NodeType getNodeType() {
         return NodeType.GLOBALASGNNODE;
     }

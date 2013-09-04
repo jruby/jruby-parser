@@ -58,6 +58,35 @@ public class OpElementAsgnNode extends Node {
         this.name = operatorName;
     }
 
+
+    /**
+     * Checks node for 'sameness' for diffing.
+     *
+     * @param node to be compared to
+     * @return Returns a boolean
+     */
+    public boolean isSame(Node node) {
+        if (super.isSame(node)) {
+            OpElementAsgnNode mnode = (OpElementAsgnNode) node;
+
+            if (getReceiver().isSame(mnode.getReceiver()) && getValue().isSame(mnode.getValue())) {
+                if (getOperatorName().equals(mnode.getOperatorName())) {
+                    if (getArgs() != null && mnode.getArgs() != null) {
+                        if (!getArgs().isSame(mnode.getArgs())) {
+                           return false;
+                        }
+                    }
+                    if ((getArgs() == null && mnode.getArgs() != null) || (getArgs() != null && mnode.getArgs() == null)) {
+                        return false;
+                    }
+                   return true;
+                }
+            }
+        }
+        return false;
+    }
+
+
     public NodeType getNodeType() {
         return NodeType.OPELEMENTASGNNODE;
     }

@@ -44,6 +44,24 @@ public class BignumNode extends Node implements ILiteralNode {
         this.value = value;
     }
 
+
+    /**
+     * Checks node for 'sameness' for diffing.
+     *
+     * @param node to be compared to
+     * @return Returns a boolean
+     */
+    public boolean isSame(Node node) {
+        if (super.isSame(node)) {
+            BignumNode bignumNode = (BignumNode) node;
+            if (getValue().equals(bignumNode.getValue())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
     public NodeType getNodeType() {
         return NodeType.BIGNUMNODE;
     }

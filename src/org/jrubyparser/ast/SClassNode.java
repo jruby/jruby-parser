@@ -60,6 +60,28 @@ public class SClassNode extends Node implements ILocalScope, IModuleScope {
         this.bodyNode = adopt(bodyNode);
     }
 
+    @Override
+    public boolean isSame(Node other) {
+        if (super.isSame(other)) {
+           SClassNode sclnode = (SClassNode) other;
+           if (getReceiver().isSame(sclnode.getReceiver())) {
+
+               if (getBody() != null && sclnode.getBody() != null) {
+                   if (!getBody().isSame(sclnode.getBody())) {
+                       return false;
+                   }
+               }
+
+               if ((getBody() == null && sclnode.getBody() != null) || (getBody() != null && sclnode.getBody() == null)) {
+                   return false;
+               }
+
+               return true;
+           }
+        }
+        return false;
+    }
+
     public NodeType getNodeType() {
         return NodeType.SCLASSNODE;
     }

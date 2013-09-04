@@ -47,7 +47,25 @@ public class BlockArgNode extends NamedNode implements IParameter {
     public BlockArgNode(SourcePosition position, ArgumentNode argNode) {
         this(position, argNode.getIndex(), argNode.getName());
     }
-    
+
+
+    /**
+     * Checks node for 'sameness' for diffing.
+     *
+     * @param node to be compared to
+     * @return Returns a boolean
+     */
+    public boolean isSame(Node node) {
+        if (super.isSame(node)) {
+            BlockArgNode blockArgNode = (BlockArgNode) node;
+            if (getLexicalName().equals(blockArgNode.getLexicalName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
     public NodeType getNodeType() {
         return NodeType.BLOCKARGNODE;
     }
