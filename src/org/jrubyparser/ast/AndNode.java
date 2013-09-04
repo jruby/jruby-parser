@@ -13,7 +13,7 @@
  * rights and limitations under the License.
  *
  * Copyright (C) 2009 Thomas E. Enebo <tom.enebo@gmail.com>
- * 
+ *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
  * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
@@ -31,8 +31,8 @@ package org.jrubyparser.ast;
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 
-/** 
- * Represents a && (and) operator.
+/**
+ * Represents a &amp;&amp; (and) operator.
  */
 public class AndNode extends BinaryOperatorBaseNode {
     public AndNode(SourcePosition position, Node firstNode, Node secondNode) {

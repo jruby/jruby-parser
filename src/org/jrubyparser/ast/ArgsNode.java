@@ -13,7 +13,7 @@
  * rights and limitations under the License.
  *
  * Copyright (C) 2009 Thomas E. Enebo <tom.enebo@gmail.com>
- * 
+ *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
  * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
@@ -51,7 +51,7 @@ public class ArgsNode extends Node {
     private ListNode keywords; // 2.0+
     private KeywordRestArgNode keywordRest; // 2.0+
     private BlockArgNode block;
-    
+
     /**
      * @param position of the arguments
      * @param pre Required nodes at the beginning of the method definition
@@ -76,7 +76,7 @@ public class ArgsNode extends Node {
     public NodeType getNodeType() {
         return NodeType.ARGSNODE;
     }
-    
+
     /**
      * Accept for the visitor pattern.
      * @param iVisitor the visitor
@@ -107,7 +107,7 @@ public class ArgsNode extends Node {
 
     /**
      * Gets the optional Arguments.
-     * 
+     *
      * @return Returns a ListNode
      */
     public ListNode getOptional() {
@@ -127,7 +127,7 @@ public class ArgsNode extends Node {
 
     /**
      * Gets the rest node.
-     * 
+     *
      * @return Returns an ArgumentNode
      */
     public ArgumentNode getRest() {
@@ -135,75 +135,75 @@ public class ArgsNode extends Node {
     }
 
     /**
-     * Gets the explicit block argument of the parameter list (&block).
-     * 
+     * Gets the explicit block argument of the parameter list (&amp;block).
+     *
      * @return Returns a BlockArgNode
      */
     public BlockArgNode getBlock() {
         return block;
     }
- 
+
     /**
      * Return a list of all possible parameter names.  IDE's can use this to generate
      * indexes or use it for parameter hinting.
-     * 
-     * @param namesOnly do not prepend '*', '**', or '&' onto front of special parameters
+     *
+     * @param namesOnly do not prepend '*', '**', or '&amp;' onto front of special parameters
      */
     public List<String> getNormativeParameterNameList(boolean namesOnly) {
         List<String> parameters = new ArrayList<String>();
-        
+
         if (getPreCount() > 0) {
             for (Node preArg: getPre().childNodes()) {
                 if (preArg instanceof INameNode) parameters.add(((INameNode) preArg).getName());
             }
         }
-        
+
         if (getOptionalCount() > 0) {
             for (Node optArg: getOptional().childNodes()) {
                 if (optArg instanceof INameNode) parameters.add(((INameNode) optArg).getName());
             }
         }
-        
+
         if (getPostCount() > 0) {
             for (Node postArg: getPost().childNodes()) {
                 if (postArg instanceof INameNode) parameters.add(((INameNode) postArg).getName());
             }
         }
-        
+
         if (getRest() != null) parameters.add(namesOnly ? getRest().getName() : "*" + getRest().getName());
         if (getBlock() != null) parameters.add(namesOnly ? getBlock().getName() : "&" + getBlock().getName());
-        
+
         return parameters;
     }
-    
+
     /**
      * @return list of all parameters within this args node
      */
     public List<Node> getNormativeParameterList() {
         List<Node> parameters = new ArrayList<Node>();
-        
+
         if (getPreCount() > 0) {
             for (Node preArg: getPre().childNodes()) {
                 if (preArg instanceof INameNode) parameters.add(preArg);
             }
         }
-        
+
         if (getOptionalCount() > 0) {
             for (Node optArg: getOptional().childNodes()) {
                 if (optArg instanceof INameNode) parameters.add(optArg);
             }
         }
-        
+
         if (getPostCount() > 0) {
             for (Node postArg: getPost().childNodes()) {
                 if (postArg instanceof INameNode) parameters.add(postArg);
             }
         }
-        
+
         if (getRest() != null) parameters.add(getRest());
         if (getBlock() != null) parameters.add(getBlock());
-        
+
         return parameters;
     }
-    
+
 }
