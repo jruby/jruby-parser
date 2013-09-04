@@ -47,6 +47,44 @@ public class RescueBodyNode extends Node {
         this.optRescueNode = (RescueBodyNode) adopt(optRescueNode);
     }
 
+    public boolean isSame(Node node) {
+        if (super.isSame(node)) {
+            RescueBodyNode rescueBodyNode = (RescueBodyNode) node;
+            if (getBody() != null && rescueBodyNode.getBody() != null) {
+
+                if (!getBody().isSame(rescueBodyNode.getBody())) {
+                   return false;
+                }
+            }
+
+            if (getExceptions() != null && rescueBodyNode.getExceptions() != null) {
+
+                    if (!getExceptions().isSame(rescueBodyNode.getExceptions())) {
+                        return false;
+                    }
+            }
+
+            if ((getExceptions() == null && rescueBodyNode.getExceptions() != null) || (getExceptions() != null && rescueBodyNode.getExceptions() == null)) {
+                return false;
+            }
+
+             if (getOptRescue() != null && rescueBodyNode.getOptRescue() != null) {
+
+                    if (!getOptRescue().isSame(rescueBodyNode.getOptRescue())) {
+                        return false;
+                    }
+            }
+
+            if ((getOptRescue() == null && rescueBodyNode.getOptRescue() != null) || (getOptRescue() != null && rescueBodyNode.getOptRescue() == null)) {
+                return false;
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
     public NodeType getNodeType() {
         return NodeType.RESCUEBODYNODE;
     }

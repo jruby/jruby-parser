@@ -46,6 +46,46 @@ public class RescueNode extends Node {
         this.elseNode = adopt(elseNode);
     }
 
+    @Override
+    public boolean isSame(Node other) {
+        if (super.isSame(other)) {
+            RescueNode rnode = (RescueNode) other;
+
+            if (getBody() != null && rnode.getBody() != null) {
+                if (!getBody().isSame(rnode.getBody())) {
+                   return false;
+                }
+            }
+
+            if ((getBody() == null && rnode.getBody() != null) || (getBody() != null && rnode.getBody() == null)) {
+                return false;
+            }
+
+            if (getRescue() != null && rnode.getRescue() != null) {
+                if (!getRescue().isSame(rnode.getRescue())) {
+                    return false;
+                }
+            }
+
+            if ((getRescue() == null && rnode.getRescue() != null) || (getRescue() != null && rnode.getRescue() == null)) {
+                return false;
+            }
+
+            if (getElse() != null && rnode.getElse() != null) {
+                if (!getElse().isSame(rnode.getElse())) {
+                    return false;
+                }
+            }
+
+            if ((getElse() == null && rnode.getElse() != null) || (getElse() != null && rnode.getElse() == null)) {
+                return false;
+            }
+
+            return true;
+        }
+       return false;
+    }
+
     public NodeType getNodeType() {
         return NodeType.RESCUENODE;
     }

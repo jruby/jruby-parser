@@ -47,6 +47,45 @@ public class WhenNode extends Node {
         this.nextCase = adopt(nextCase);
     }
 
+    @Override
+    public boolean isSame(Node other) {
+        if (super.isSame(other)) {
+            WhenNode whenNode = (WhenNode) other;
+            if (getBody() != null && whenNode.getBody() != null) {
+                if (!getBody().isSame(whenNode.getBody())) {
+                    return false;
+                }
+            }
+
+            if ((getBody() == null && whenNode.getBody() != null) || (getBody() != null && whenNode.getBody() == null)) {
+                return false;
+            }
+
+            if (getExpression() != null && whenNode.getExpression() != null) {
+                if (!getExpression().isSame(whenNode.getExpression())) {
+                    return false;
+                }
+            }
+
+            if ((getExpression() == null && whenNode.getExpression() != null) || (getExpression() != null && whenNode.getExpression() == null)) {
+                return false;
+            }
+
+             if (getNextCase() != null && whenNode.getNextCase() != null) {
+                if (!getNextCase().isSame(whenNode.getNextCase())) {
+                    return false;
+                }
+            }
+
+            if ((getNextCase() == null && whenNode.getNextCase() != null) || (getNextCase() != null && whenNode.getNextCase() == null)) {
+                return false;
+            }
+
+            return true;
+        }
+        return false;
+    }
+
     public NodeType getNodeType() {
         return NodeType.WHENNODE;
     }

@@ -49,6 +49,24 @@ public class ClassVarAsgnNode extends AssignableNode implements IClassVariable {
         this.name = name;
     }
 
+
+    /**
+     * Checks node for 'sameness' for diffing.
+     *
+     * @param node to be compared to
+     * @return Returns a boolean
+     */
+    public boolean isSame(Node node) {
+        if (super.isSame(node)) {
+            ClassVarAsgnNode cnode = (ClassVarAsgnNode) node;
+            if (this.isNameMatch(cnode.getName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
     public NodeType getNodeType() {
         return NodeType.CLASSVARASGNNODE;
     }

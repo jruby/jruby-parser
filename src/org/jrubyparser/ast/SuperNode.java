@@ -49,6 +49,35 @@ public class SuperNode extends Node implements BlockAcceptingNode, IArgumentNode
         this.iterNode = adopt(iterNode);
     }
 
+    @Override
+    public boolean isSame(Node other) {
+         if (super.isSame(other)) {
+             SuperNode superNode = (SuperNode) other;
+             if (getArgs() != null && getIter() != null) {
+                 if (!getArgs().isSame(superNode.getArgs())) {
+                     return false;
+                 }
+             }
+
+             if ((getArgs() == null && superNode.getArgs() != null) || (getArgs() != null && superNode.getArgs() == null)) {
+                return false;
+             }
+
+             if (getIter() != null && superNode.getIter() != null) {
+                 if (!getIter().isSame(superNode.getIter())) {
+                     return false;
+                 }
+             }
+
+             if ((getIter() == null && superNode.getIter() != null) || (getIter() != null && superNode.getIter() == null)) {
+                 return false;
+             }
+
+             return true;
+         }
+        return false;
+    }
+
     public NodeType getNodeType() {
         return NodeType.SUPERNODE;
     }

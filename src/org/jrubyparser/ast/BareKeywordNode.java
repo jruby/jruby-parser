@@ -13,7 +13,25 @@ public abstract class BareKeywordNode extends Node implements INameNode {
      
         this.name = name;
     }
-    
+
+
+    /**
+     * Checks node for 'sameness' for diffing.
+     *
+     * @param node to be compared to
+     * @return Returns a boolean
+     */
+    public boolean isSame(Node node) {
+        if (super.isSame(node)) {
+            BareKeywordNode bareKeywordNode = (BareKeywordNode) node;
+            if (this.isNameMatch(bareKeywordNode.getName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
     public String getLexicalName() {
         return getName();
     }

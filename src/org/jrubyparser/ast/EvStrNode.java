@@ -49,6 +49,31 @@ public class EvStrNode extends Node {
         return NodeType.EVSTRNODE;
     }
 
+
+    /**
+     * Checks node for 'sameness' for diffing.
+     *
+     * @param node to be compared to
+     * @return Returns a boolean
+     */
+    public boolean isSame(Node node) {
+        if (super.isSame(node)) {
+            EvStrNode mnode = (EvStrNode) node;
+            if (getBody() != null && mnode.getBody() != null) {
+                if (!getBody().isSame(mnode.getBody())) {
+                    return false;
+                }
+            }
+            if ((getBody() == null && mnode.getBody() != null) || (getBody() != null && mnode.getBody() == null )) {
+                return false;
+            }
+
+            return true;
+        }
+        return false;
+    }
+
+
     /**
      * Accept for the visitor pattern.
      * @param iVisitor the visitor

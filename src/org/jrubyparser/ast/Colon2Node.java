@@ -42,6 +42,32 @@ public abstract class Colon2Node extends Colon3Node implements INameNode {
         this.leftNode = adopt(leftNode);
     }
 
+
+    /**
+     * Checks node for 'sameness' for diffing.
+     *
+     * @param node to be compared to
+     * @return Returns a boolean
+     */
+    public boolean isSame(Node node) {
+        if (super.isSame(node)) {
+            Colon2Node mnode = (Colon2Node) node;
+            if (this.isNameMatch(mnode.getName())) {
+                if (getLeftNode() != null && mnode.getLeftNode() != null) {
+                    if (!getLeftNode().isSame(mnode.getLeftNode())) {
+                        return false;
+                    }
+                    if ((getLeftNode() == null && mnode.getLeftNode() != null) || (getLeftNode() != null && mnode.getLeftNode() == null)) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+
+
     @Override
     public NodeType getNodeType() {
         return NodeType.COLON2NODE;

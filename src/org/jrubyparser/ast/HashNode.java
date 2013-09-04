@@ -43,6 +43,28 @@ public class HashNode extends Node {
         this.listNode = (ListNode) adopt(listNode);
     }
 
+
+    /**
+     * Checks node for 'sameness' for diffing.
+     *
+     * @param node to be compared to
+     * @return Returns a boolean
+     */
+    public boolean isSame(Node node) {
+        if (super.isSame(node)) {
+            HashNode mnode = (HashNode) node;
+
+            if (getListNode() != null && mnode.getListNode() != null) {
+                if (getListNode().isSame(mnode.getListNode())) {
+                    return true;
+                }
+
+            }
+        }
+        return false;
+    }
+
+
     public NodeType getNodeType() {
         return NodeType.HASHNODE;
     }

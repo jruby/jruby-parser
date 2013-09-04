@@ -54,6 +54,26 @@ public class FlipNode extends Node {
         this.location = location;
     }
 
+
+    /**
+     * Checks node for 'sameness' for diffing.
+     *
+     * @param node to be compared to
+     * @return Returns a boolean
+     */
+    public boolean isSame(Node node) {
+        if (super.isSame(node)) {
+            FlipNode mnode = (FlipNode) node;
+            if (getBegin().isSame(mnode.getBegin())) {
+                if (getEnd().isSame(mnode.getEnd())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+
     public NodeType getNodeType() {
         return NodeType.FLIPNODE;
     }

@@ -47,6 +47,24 @@ public abstract class BinaryOperatorBaseNode extends Node implements BinaryOpera
         this.secondNode = adopt(secondNode);
     }
 
+
+    /**
+     * Checks node for 'sameness' for diffing.
+     *
+     * @param node to be compared to
+     * @return Returns a boolean
+     */
+    public boolean isSame(Node node) {
+        if (super.isSame(node)) {
+            BinaryOperatorBaseNode mnode = (BinaryOperatorBaseNode) node;
+            if (this.getFirst() == mnode.getFirst() && this.getSecond() == mnode.getSecond()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
     public NodeType getNodeType() {
         return NodeType.ARGSCATNODE;
     }

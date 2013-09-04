@@ -53,6 +53,20 @@ public class UnaryCallNode extends Node implements INameNode {
         this.lexicalName = lexicalName;
     }
 
+    @Override
+    public boolean isSame(Node other) {
+        if (super.isSame(other)) {
+            UnaryCallNode uncnode = (UnaryCallNode) other;
+
+            if (isNameMatch(uncnode.getName()) && isLexicalNameMatch(uncnode.getLexicalName())) {
+                if (getReceiver().isSame(uncnode.getReceiver())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     public NodeType getNodeType() {
         return NodeType.UNARYCALLNODE;
     }

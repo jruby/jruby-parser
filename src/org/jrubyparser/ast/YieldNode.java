@@ -59,6 +59,24 @@ public class YieldNode extends Node implements IArgumentNode {
         this.expandedArguments = expandedArguments;
     }
 
+    @Override
+    public boolean isSame(Node other) {
+        if (super.isSame(other)) {
+            YieldNode ynode = (YieldNode) other;
+            if (getArgs() != null && ynode.getArgs() != null) {
+                if (getArgs().isSame(ynode.getArgs()) && getExpandArguments() == ynode.getExpandArguments()){
+                    return true;
+                }
+            }
+
+            if ((getArgs() == null && ynode.getArgs() != null) || (getArgs() != null && ynode.getArgs() == null)) {
+                return false;
+            }
+
+        }
+        return false;
+    }
+
     public NodeType getNodeType() {
         return NodeType.YIELDNODE;
     }

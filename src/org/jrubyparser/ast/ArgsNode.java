@@ -73,6 +73,35 @@ public class ArgsNode extends Node {
         this.block = (BlockArgNode) adopt(block);
     }
 
+
+    /**
+     * Checks node for 'sameness' for diffing.
+     *
+     * @param node to be compared to
+     * @return Returns a boolean
+     */
+    public boolean isSame(Node node) {
+        if (super.isSame(node)) {
+            ArgsNode mnode = (ArgsNode) node;
+
+            List<Node> params = getNormativeParameterList();
+            List<Node> mparams = mnode.getNormativeParameterList();
+
+            if (params.size() != mparams.size()) return false;
+
+            for (int i = 0; i <= params.size() - 1; i++) {
+                if (!params.get(i).isSame(mparams.get(i))) {
+                    return false;
+                }
+            }
+
+            return true;
+
+        }
+        return false;
+    }
+
+
     public NodeType getNodeType() {
         return NodeType.ARGSNODE;
     }

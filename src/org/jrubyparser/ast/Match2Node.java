@@ -45,6 +45,25 @@ public class Match2Node extends Node {
         this.valueNode = adopt(valueNode);
     }
 
+
+    /**
+     * Checks node for 'sameness' for diffing.
+     *
+     * @param node to be compared to
+     * @return Returns a boolean
+     */
+    public boolean isSame(Node node) {
+        if (super.isSame(node)) {
+            Match2Node mnode = (Match2Node) node;
+
+            if (getValue().isSame(mnode.getValue()) && getReceiver().isSame(mnode.getReceiver())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
     public NodeType getNodeType() {
         return NodeType.MATCH2NODE;
     }

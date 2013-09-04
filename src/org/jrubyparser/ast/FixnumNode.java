@@ -42,6 +42,24 @@ public class FixnumNode extends Node implements ILiteralNode {
         this.value = value;
     }
 
+
+    /**
+     * Checks node for 'sameness' for diffing.
+     *
+     * @param node to be compared to
+     * @return Returns a boolean
+     */
+    public boolean isSame(Node node) {
+        if (super.isSame(node)) {
+            FixnumNode mnode = (FixnumNode) node;
+           if (getValue() == mnode.getValue()) {
+               return true;
+           }
+        }
+        return false;
+    }
+
+
     public Object accept(NodeVisitor iVisitor) {
         return iVisitor.visitFixnumNode(this);
     }
