@@ -61,33 +61,19 @@ public class AttrAssignNode extends Node implements INameNode, IArgumentNode {
      * @param node to be compared to
      * @return Returns a boolean
      */
+    @Override
     public boolean isSame(Node node) {
-        if (super.isSame(node)) {
-            AttrAssignNode attrAssignNode = (AttrAssignNode) node;
+        if (!super.isSame(node)) return false;
 
-            if (!isNameMatch(attrAssignNode.getName())) {
-                return false;
-            }
+        AttrAssignNode other = (AttrAssignNode) node;
 
-            if (!getReceiver().isSame(attrAssignNode.getReceiver())) {
-                return false;
-            }
+        if (!isNameMatch(other.getName())) return false;
+        if (!getReceiver().isSame(other.getReceiver())) return false;
+        
+        if (getArgs() == null && other.getArgs() == null) return true;
+        if (getArgs() == null || other.getArgs() == null) return false;
 
-            if (getArgs() != null && attrAssignNode.getArgs() != null) {
-
-                if (!getArgs().isSame(attrAssignNode.getArgs())) {
-                   return false;
-                }
-
-            }
-
-            if ((getArgs() == null && attrAssignNode.getArgs() != null) || (getArgs() != null && attrAssignNode.getArgs() == null)) {
-                return false;
-            }
-
-            return true;
-        }
-        return false;
+        return getArgs().isSame(other.getArgs());
     }
 
 

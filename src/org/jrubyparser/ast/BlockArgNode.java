@@ -52,17 +52,12 @@ public class BlockArgNode extends NamedNode implements IParameter {
     /**
      * Checks node for 'sameness' for diffing.
      *
-     * @param node to be compared to
+     * @param other to be compared to
      * @return Returns a boolean
      */
-    public boolean isSame(Node node) {
-        if (super.isSame(node)) {
-            BlockArgNode blockArgNode = (BlockArgNode) node;
-            if (getLexicalName().equals(blockArgNode.getLexicalName())) {
-                return true;
-            }
-        }
-        return false;
+    @Override
+    public boolean isSame(Node other) {
+        return super.isSame(other) && getLexicalName().equals(((BlockArgNode) other).getLexicalName());
     }
 
 

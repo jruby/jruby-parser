@@ -49,22 +49,15 @@ public abstract class Colon2Node extends Colon3Node implements INameNode {
      * @param node to be compared to
      * @return Returns a boolean
      */
+    @Override
     public boolean isSame(Node node) {
-        if (super.isSame(node)) {
-            Colon2Node mnode = (Colon2Node) node;
-            if (this.isNameMatch(mnode.getName())) {
-                if (getLeftNode() != null && mnode.getLeftNode() != null) {
-                    if (!getLeftNode().isSame(mnode.getLeftNode())) {
-                        return false;
-                    }
-                    if ((getLeftNode() == null && mnode.getLeftNode() != null) || (getLeftNode() != null && mnode.getLeftNode() == null)) {
-                        return false;
-                    }
-                }
-                return true;
-            }
-        }
-        return false;
+        if (!super.isSame(node)) return false;
+        Colon2Node other = (Colon2Node) node;
+            
+        if (getLeftNode() == null && other.getLeftNode() == null) return isNameMatch(other.getName());
+        if (getLeftNode() == null || other.getLeftNode() == null) return false;
+
+        return getLeftNode().isSame(other.getLeftNode()) && isNameMatch(other.getName());
     }
 
 

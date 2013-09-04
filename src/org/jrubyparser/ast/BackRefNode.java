@@ -53,17 +53,12 @@ public class BackRefNode extends Node implements IGlobalVariable {
     /**
      * Checks node for 'sameness' for diffing.
      *
-     * @param node to be compared to
+     * @param other to be compared to
      * @return Returns a boolean
      */
-    public boolean isSame(Node node) {
-        if (super.isSame(node)) {
-            BackRefNode backRefNode = (BackRefNode) node;
-            if (getLexicalName().equals(backRefNode.getLexicalName())) {
-                return true;
-            }
-        }
-        return false;
+    @Override
+    public boolean isSame(Node other) {
+        return super.isSame(other) && getLexicalName().equals(((BackRefNode) other).getLexicalName());
     }
 
 

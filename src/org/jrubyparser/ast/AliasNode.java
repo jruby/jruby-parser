@@ -50,14 +50,13 @@ public class AliasNode extends Node {
      * @param node to be compared to
      * @return Returns a boolean
      */
+    @Override
     public boolean isSame(Node node) {
-        if (super.isSame(node)) {
-            AliasNode aliasNode = (AliasNode) node;
-            if (this.getOldNameString().equals(aliasNode.getOldNameString()) && this.getNewNameString().equals(aliasNode.getNewNameString())) {
-                return true;
-            }
-        }
-        return false;
+        if (!super.isSame(node)) return false;
+        
+        AliasNode aliasNode = (AliasNode) node;
+            
+        return getOldNameString().equals(aliasNode.getOldNameString()) && getNewNameString().equals(aliasNode.getNewNameString());
     }
 
 

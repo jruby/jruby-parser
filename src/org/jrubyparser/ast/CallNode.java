@@ -66,14 +66,9 @@ public class CallNode extends Node implements INameNode, IArgumentNode, BlockAcc
      * @param node to be compared to
      * @return Returns a boolean
      */
+    @Override
     public boolean isSame(Node node) {
-        if (super.isSame(node)) {
-            CallNode callNode = (CallNode) node;
-            if (this.isNameMatch(callNode.getName())) {
-                return true;
-            }
-        }
-        return false;
+        return super.isSame(node) && isNameMatch(((CallNode) node).getName());
     }
 
 

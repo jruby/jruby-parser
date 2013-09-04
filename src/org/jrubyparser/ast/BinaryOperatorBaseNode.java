@@ -54,14 +54,13 @@ public abstract class BinaryOperatorBaseNode extends Node implements BinaryOpera
      * @param node to be compared to
      * @return Returns a boolean
      */
+    @Override
     public boolean isSame(Node node) {
-        if (super.isSame(node)) {
-            BinaryOperatorBaseNode mnode = (BinaryOperatorBaseNode) node;
-            if (this.getFirst() == mnode.getFirst() && this.getSecond() == mnode.getSecond()) {
-                return true;
-            }
-        }
-        return false;
+        if (!super.isSame(node)) return false;
+
+        BinaryOperatorBaseNode other = (BinaryOperatorBaseNode) node;
+        
+        return getFirst() == other.getFirst() && getSecond() == other.getSecond();
     }
 
 

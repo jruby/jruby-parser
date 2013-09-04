@@ -49,19 +49,13 @@ public class ClassVarDeclNode extends AssignableNode implements IClassVariable {
     /**
      * Checks node for 'sameness' for diffing.
      *
-     * @param node to be compared to
+     * @param other to be compared to
      * @return Returns a boolean
      */
-    public boolean isSame(Node node) {
-        if (super.isSame(node)) {
-            ClassVarDeclNode mnode = (ClassVarDeclNode) node;
-            if (this.isNameMatch(mnode.getName())) {
-                return true;
-            }
-        }
-        return false;
+    @Override
+    public boolean isSame(Node other) {
+        return super.isSame(other) && isNameMatch(((ClassVarDeclNode) other).getName());
     }
-
 
     public NodeType getNodeType() {
         return NodeType.CLASSVARDECLNODE;

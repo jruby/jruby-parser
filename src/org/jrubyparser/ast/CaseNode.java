@@ -69,21 +69,16 @@ public class CaseNode extends Node {
      * @param node to be compared to
      * @return Returns a boolean
      */
+    @Override
     public boolean isSame(Node node) {
-        if (super.isSame(node)) {
-            CaseNode cnode = (CaseNode) node;
+        if (!super.isSame(node)) return false;
 
-            if ((getCase() != null && cnode.getCase() == null) || (getCase() == null && cnode.getCase() != null)) {
-                return false;
-            }
-            if (getCase() != null && cnode.getCase() != null) {
-                if (getCase().isSame(cnode.getCase())) {
-                    return true;
-                }
-            }
-
-        }
-        return false;
+        CaseNode other = (CaseNode) node;
+        
+        if (getCase() == null && other.getCase() == null) return true;
+        if (getCase() == null || other.getCase() == null) return false;
+        
+        return getCase().isSame(other.getCase());
     }
 
 

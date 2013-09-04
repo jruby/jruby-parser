@@ -50,14 +50,9 @@ public class Colon3Node extends Node implements INameNode {
      * @param node to be compared to
      * @return Returns a boolean
      */
+    @Override
     public boolean isSame(Node node) {
-        if (super.isSame(node)) {
-            Colon3Node mnode = (Colon3Node) node;
-            if (this.isNameMatch(mnode.getName())) {
-                return true;
-            }
-        }
-        return false;
+        return super.isSame(node) && isNameMatch(((Colon3Node) node).getName());
     }
 
 
