@@ -231,6 +231,7 @@ public class SequenceMatcher
      * @param oldNode The node in the old version.
      */
     protected void findChanges(Node newNode, Node oldNode) {
+        if (oldNode == null || newNode == null) return;
 
         Iterator<Node> oldChildren = oldNode.childNodes().iterator();
         List<Node> newChildren = newNode.childNodes();
