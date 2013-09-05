@@ -56,15 +56,9 @@ public class NotNode extends Node {
      * @param node to be compared to
      * @return Returns a boolean
      */
+    @Override
     public boolean isSame(Node node) {
-        if (super.isSame(node)) {
-            NotNode mnode = (NotNode) node;
-
-            if (getCondition().isSame(mnode.getCondition())) {
-               return true;
-            }
-        }
-        return false;
+        return super.isSame(node) && getCondition().isSame(((NotNode) node).getCondition());
     }
 
 

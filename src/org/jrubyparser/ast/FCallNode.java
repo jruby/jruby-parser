@@ -61,14 +61,9 @@ public class FCallNode extends Node implements INameNode, IArgumentNode, BlockAc
      * @param node to be compared to
      * @return Returns a boolean
      */
+    @Override
     public boolean isSame(Node node) {
-        if (super.isSame(node)) {
-            FCallNode fnode = (FCallNode) node;
-            if (this.isNameMatch(fnode.getName())) {
-                return true;
-            }
-        }
-        return false;
+        return super.isSame(node) && isNameMatch(((FCallNode) node).getName());
     }
 
 

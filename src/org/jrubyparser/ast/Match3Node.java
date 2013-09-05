@@ -52,15 +52,13 @@ public class Match3Node extends Node {
      * @param node to be compared to
      * @return Returns a boolean
      */
+    @Override
     public boolean isSame(Node node) {
-        if (super.isSame(node)) {
-            Match3Node mnode = (Match3Node) node;
+        if (!super.isSame(node)) return false;
+        
+        Match3Node other = (Match3Node) node;
 
-            if (getValue().isSame(mnode.getValue()) && getReceiver().isSame(mnode.getReceiver())) {
-                return true;
-            }
-        }
-        return false;
+        return getValue().isSame(other.getValue()) && getReceiver().isSame(other.getReceiver());
     }
 
 

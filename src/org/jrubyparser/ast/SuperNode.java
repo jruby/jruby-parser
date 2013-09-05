@@ -50,32 +50,25 @@ public class SuperNode extends Node implements BlockAcceptingNode, IArgumentNode
     }
 
     @Override
-    public boolean isSame(Node other) {
-         if (super.isSame(other)) {
-             SuperNode superNode = (SuperNode) other;
-             if (getArgs() != null && getIter() != null) {
-                 if (!getArgs().isSame(superNode.getArgs())) {
-                     return false;
-                 }
-             }
-
-             if ((getArgs() == null && superNode.getArgs() != null) || (getArgs() != null && superNode.getArgs() == null)) {
-                return false;
-             }
-
-             if (getIter() != null && superNode.getIter() != null) {
-                 if (!getIter().isSame(superNode.getIter())) {
-                     return false;
-                 }
-             }
-
-             if ((getIter() == null && superNode.getIter() != null) || (getIter() != null && superNode.getIter() == null)) {
-                 return false;
-             }
-
-             return true;
+    public boolean isSame(Node node) {
+         if (!super.isSame(node)) return false;
+         
+         SuperNode other = (SuperNode) node;
+         
+         if (getArgs() == null && other.getArgs() == null) {
+             if (getIter() == null && other.getIter() == null) return true;
+             if (getIter() == null || other.getIter() == null) return false;
+             
+             return getIter().isSame(other.getIter());
+         } else if (getArgs() == null || other.getArgs() == null) {
+             return false;
+         } else if (getIter() == null && other.getIter() == null) {
+             return getArgs().isSame(other.getArgs());
+         } else if (getIter() == null || other.getIter() == null) {
+             return false;
          }
-        return false;
+         
+         return getArgs().isSame(other.getArgs()) && getIter().isSame(other.getIter());
     }
 
     public NodeType getNodeType() {

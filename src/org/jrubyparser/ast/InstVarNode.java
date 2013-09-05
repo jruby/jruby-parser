@@ -52,14 +52,9 @@ public class InstVarNode extends Node implements IInstanceVariable {
      * @param node to be compared to
      * @return Returns a boolean
      */
+    @Override
     public boolean isSame(Node node) {
-        if (super.isSame(node)) {
-            InstVarNode mnode = (InstVarNode) node;
-            if (this.isNameMatch(mnode.getName())) {
-                return true;
-            }
-        }
-        return false;
+        return super.isSame(node) && isNameMatch(((InstVarNode) node).getName());
     }
 
 

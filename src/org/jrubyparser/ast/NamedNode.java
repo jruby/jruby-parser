@@ -23,14 +23,9 @@ public abstract class NamedNode extends Node implements INameNode {
      * @param node to be compared to
      * @return Returns a boolean
      */
+    @Override
     public boolean isSame(Node node) {
-        if (super.isSame(node)) {
-            NamedNode mnode = (NamedNode) node;
-            if (isNameMatch(mnode.getName())) {
-                return true;
-            }
-        }
-        return false;
+        return super.isSame(node) && isNameMatch(((NamedNode) node).getName());
     }
 
 

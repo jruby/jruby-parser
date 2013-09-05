@@ -44,13 +44,7 @@ public class SValueNode extends Node {
 
     @Override
     public boolean isSame(Node other) {
-        if (super.isSame(other)) {
-            SValueNode svnode = (SValueNode) other;
-            if (getValue().isSame(svnode.getValue())) {
-                return true;
-            }
-        }
-        return false;
+        return super.isSame(other) && getValue().isSame(((SValueNode) other).getValue());
     }
 
     public NodeType getNodeType() {

@@ -65,25 +65,19 @@ public class OpElementAsgnNode extends Node {
      * @param node to be compared to
      * @return Returns a boolean
      */
+    @Override
     public boolean isSame(Node node) {
-        if (super.isSame(node)) {
-            OpElementAsgnNode mnode = (OpElementAsgnNode) node;
+        if (!super.isSame(node)) return false;
+        OpElementAsgnNode other = (OpElementAsgnNode) node;
+        
+        boolean truth = getReceiver().isSame(other.getReceiver()) && getValue().isSame(other.getValue()) &&
+                getOperatorName().equals(other.getOperatorName());
 
-            if (getReceiver().isSame(mnode.getReceiver()) && getValue().isSame(mnode.getValue())) {
-                if (getOperatorName().equals(mnode.getOperatorName())) {
-                    if (getArgs() != null && mnode.getArgs() != null) {
-                        if (!getArgs().isSame(mnode.getArgs())) {
-                           return false;
-                        }
-                    }
-                    if ((getArgs() == null && mnode.getArgs() != null) || (getArgs() != null && mnode.getArgs() == null)) {
-                        return false;
-                    }
-                   return true;
-                }
-            }
-        }
-        return false;
+        if (getArgs() == null && other.getArgs() == null) return truth;
+        if (getArgs() == null && other.getArgs() == null) return false;
+        
+        return truth && getArgs().isSame(other.getArgs());
+
     }
 
 

@@ -58,14 +58,9 @@ public class InstAsgnNode extends AssignableNode implements IInstanceVariable {
      * @param node to be compared to
      * @return Returns a boolean
      */
+    @Override
     public boolean isSame(Node node) {
-        if (super.isSame(node)) {
-            InstAsgnNode mnode = (InstAsgnNode) node;
-            if (isNameMatch(mnode.getName())) {
-                return true;
-            }
-        }
-        return false;
+        return super.isSame(node) && isNameMatch(((InstAsgnNode) node).getName());
     }
 
 

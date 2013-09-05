@@ -44,13 +44,7 @@ public class UndefNode extends Node {
 
     @Override
     public boolean isSame(Node other) {
-        if (super.isSame(other)) {
-            UndefNode undefNode = (UndefNode) other;
-            if (getName().isSame(undefNode.getName())) {
-                return true;
-            }
-        }
-        return false;
+        return super.isSame(other) && getName().isSame(((UndefNode) other).getName());
     }
 
     public NodeType getNodeType() {

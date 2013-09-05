@@ -69,16 +69,12 @@ public class UntilNode extends Node {
     }
 
      @Override
-    public boolean isSame(Node other) {
-        if (super.isSame(other)) {
-            UntilNode untilNode = (UntilNode) other;
-            if (getBody().isSame(untilNode.getBody()) && getCondition().isSame(untilNode.getCondition())) {
-                if (evaluateAtStart() == untilNode.evaluateAtStart()) {
-                    return true;
-                }
-            }
-        }
-        return false;
+    public boolean isSame(Node node) {
+        if (!super.isSame(node)) return false;
+        UntilNode other = (UntilNode) node;
+        
+        return getBody().isSame(other.getBody()) && getCondition().isSame(other.getCondition()) &&
+                evaluateAtStart() == other.evaluateAtStart();
     }
 
 

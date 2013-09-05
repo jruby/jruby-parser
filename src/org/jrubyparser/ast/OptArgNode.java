@@ -42,16 +42,13 @@ public class OptArgNode extends Node implements INameNode {
         this.value = adopt(value);
     }
 
+    @Override
     public boolean isSame(Node node) {
-        if (super.isSame(node)) {
-            OptArgNode optArgNode = (OptArgNode) node;
+        if (super.isSame(node)) return false;
+        
+        OptArgNode other = (OptArgNode) node;
 
-            if (isNameMatch(optArgNode.getName()) && getValue().isSame(optArgNode.getValue())) {
-                return true;
-            }
-        }
-
-        return false;
+        return isNameMatch(other.getName()) && getValue().isSame(other.getValue());
     }
 
     public NodeType getNodeType() {

@@ -27,14 +27,9 @@ public class LiteralNode extends Node {
      * @param node to be compared to
      * @return Returns a boolean
      */
+    @Override
     public boolean isSame(Node node) {
-        if (super.isSame(node)) {
-            LiteralNode mnode = (LiteralNode) node;
-            if (getName().equals(mnode.getName())) {
-                return true;
-            }
-        }
-        return false;
+        return super.isSame(node) && getName().equals(((LiteralNode) node).getName());
     }
 
 

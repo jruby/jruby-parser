@@ -68,21 +68,24 @@ public class IterNode extends Node implements IBlockScope {
      * @param node to be compared to
      * @return Returns a boolean
      */
+    @Override
     public boolean isSame(Node node) {
-        if (super.isSame(node)) {
-            IterNode iterNode = (IterNode) node;
-
-            if ((getBody() != null && iterNode.getBody() == null) || (getBody() == null && iterNode.getBody() != null)) {
-                return false;
-            }
-
-            if ((getVar() != null && iterNode.getVar() == null) || (getVar() == null && iterNode.getVar() != null)) {
-                return false;
-            }
-
-            return true;
+        if (!super.isSame(node)) return false;
+        
+        IterNode other = (IterNode) node;
+        
+        if (getBody() == null && other.getBody() == null) {
+            if (getVar() == null && other.getVar() == null) return true;
+            if (getVar() == null || other.getVar() == null) return false;
+        } else if (getBody() == null || other.getBody() == null) {
+            return false;
+        } else if (getVar() == null && other.getVar() == null) {
+            return getBody().isSame(other.getBody());
+        } else if (getVar() == null || other.getVar() == null) {
+            return false;
         }
-        return false;
+
+        return getBody().isSame(other.getBody()) && getVar().isSame(other.getVar());
     }
 
 

@@ -66,16 +66,13 @@ public class WhileNode extends Node {
     }
 
     @Override
-    public boolean isSame(Node other) {
-        if (super.isSame(other)) {
-            WhileNode whileNode = (WhileNode) other;
-            if (getBody().isSame(whileNode.getBody()) && getCondition().isSame(whileNode.getCondition())) {
-                if (evaluateAtStart() == whileNode.evaluateAtStart()) {
-                    return true;
-                }
-            }
-        }
-        return false;
+    public boolean isSame(Node node) {
+        if (!super.isSame(node)) return false;
+
+        WhileNode other = (WhileNode) node;
+
+        return getBody().isSame(other.getBody()) && getCondition().isSame(other.getCondition()) && 
+                evaluateAtStart() == other.evaluateAtStart();
     }
 
     public NodeType getNodeType() {

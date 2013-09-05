@@ -50,18 +50,16 @@ public class HashNode extends Node {
      * @param node to be compared to
      * @return Returns a boolean
      */
+    @Override
     public boolean isSame(Node node) {
-        if (super.isSame(node)) {
-            HashNode mnode = (HashNode) node;
+        if (!super.isSame(node)) return false;
 
-            if (getListNode() != null && mnode.getListNode() != null) {
-                if (getListNode().isSame(mnode.getListNode())) {
-                    return true;
-                }
+        HashNode other = (HashNode) node;
 
-            }
-        }
-        return false;
+        if (getListNode() == null && other.getListNode() == null) return true;
+        if (getListNode() == null || other.getListNode() == null) return false;
+            
+        return getListNode().isSame(other.getListNode());
     }
 
 

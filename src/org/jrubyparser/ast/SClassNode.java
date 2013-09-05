@@ -61,25 +61,15 @@ public class SClassNode extends Node implements ILocalScope, IModuleScope {
     }
 
     @Override
-    public boolean isSame(Node other) {
-        if (super.isSame(other)) {
-           SClassNode sclnode = (SClassNode) other;
-           if (getReceiver().isSame(sclnode.getReceiver())) {
+    public boolean isSame(Node node) {
+        if (!super.isSame(node)) return false;
+        
+        SClassNode other = (SClassNode) node;
 
-               if (getBody() != null && sclnode.getBody() != null) {
-                   if (!getBody().isSame(sclnode.getBody())) {
-                       return false;
-                   }
-               }
-
-               if ((getBody() == null && sclnode.getBody() != null) || (getBody() != null && sclnode.getBody() == null)) {
-                   return false;
-               }
-
-               return true;
-           }
-        }
-        return false;
+        if (getBody() == null && other.getBody() == null) return true;
+        if (getBody() == null || other.getBody() == null) return false;
+        
+        return getReceiver().isSame(other.getReceiver());
     }
 
     public NodeType getNodeType() {

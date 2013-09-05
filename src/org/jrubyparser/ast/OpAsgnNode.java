@@ -59,18 +59,14 @@ public class OpAsgnNode extends Node {
      * @param node to be compared to
      * @return Returns a boolean
      */
+    @Override
     public boolean isSame(Node node) {
-        if (super.isSame(node)) {
-            OpAsgnNode mnode = (OpAsgnNode) node;
+        if (!super.isSame(node)) return false;
+        
+        OpAsgnNode other = (OpAsgnNode) node;
 
-            if (getReceiver().isSame(mnode.getReceiver()) && getValue().isSame(mnode.getValue())) {
-                if (getOperatorName().equals(mnode.getOperatorName()) && getVariableName().equals(mnode.getVariableName()) ) {
-                    return true;
-                }
-            }
-
-        }
-        return false;
+        return getReceiver().isSame(other.getReceiver()) && getValue().isSame(other.getValue()) &&
+                getOperatorName().equals(other.getOperatorName()) && getVariableName().equals(other.getVariableName());
     }
 
 
