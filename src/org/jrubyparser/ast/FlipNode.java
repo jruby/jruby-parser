@@ -61,16 +61,13 @@ public class FlipNode extends Node {
      * @param node to be compared to
      * @return Returns a boolean
      */
+    @Override
     public boolean isSame(Node node) {
-        if (super.isSame(node)) {
-            FlipNode mnode = (FlipNode) node;
-            if (getBegin().isSame(mnode.getBegin())) {
-                if (getEnd().isSame(mnode.getEnd())) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        if (!super.isSame(node)) return false;
+
+        FlipNode other = (FlipNode) node;
+        
+        return getBegin().isSame(other.getBegin()) && getEnd().isSame(other.getEnd());
     }
 
 

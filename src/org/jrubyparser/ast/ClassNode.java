@@ -63,24 +63,16 @@ public class ClassNode extends Node implements IScopingNode, ILocalScope, IModul
      * @param node to be compared to
      * @return Returns a boolean
      */
+    @Override
     public boolean isSame(Node node) {
-        if (super.isSame(node)) {
-            ClassNode classNode = (ClassNode) node;
+        if (!super.isSame(node)) return false;
+        
+        ClassNode other = (ClassNode) node;
 
-            if (getCPath().isSame(classNode.getCPath()))
-            {
-                if (getSuper() != null && classNode.getSuper() != null) {
-                    if (getSuper().isSame(classNode.getSuper())) {
-                        return true;
-                    }
-                } else if (getSuper() == null && classNode.getSuper() == null) {
-                    return true;
-                }
-
-            }
-
-        }
-        return false;
+        if (getSuper() == null && other.getSuper() == null) return getCPath().isSame(other.getCPath());
+        if (getSuper() == null || other.getSuper() == null) return false;
+        
+        return getSuper().isSame(other.getSuper()) && getCPath().isSame(other.getCPath());
     }
 
 

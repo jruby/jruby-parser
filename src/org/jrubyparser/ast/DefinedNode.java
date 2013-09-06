@@ -52,14 +52,16 @@ public class DefinedNode extends Node {
      * @param node to be compared to
      * @return Returns a boolean
      */
+    @Override
     public boolean isSame(Node node) {
-        if (super.isSame(node)) {
-            DefinedNode mnode = (DefinedNode) node;
-            if ((getExpression() != null && mnode.getExpression() == null) || (getExpression() == null && mnode.getExpression() != null)) {
-                return false;
-            }
-        }
-        return false;
+        if (!super.isSame(node)) return false;
+        
+        DefinedNode other = (DefinedNode) node;
+        
+        if (getExpression() == null && other.getExpression() == null) return true;
+        if (getExpression() == null || other.getExpression() == null) return false;
+
+        return getExpression().isSame(other.getExpression());
     }
 
 

@@ -49,14 +49,9 @@ public class FloatNode extends Node implements ILiteralNode {
      * @param node to be compared to
      * @return Returns a boolean
      */
+    @Override
     public boolean isSame(Node node) {
-        if (super.isSame(node)) {
-            FloatNode mnode = (FloatNode) node;
-            if (getValue() == mnode.getValue()) {
-                return true;
-            }
-        }
-        return false;
+        return super.isSame(node) && getValue() == ((FloatNode) node).getValue();
     }
 
 

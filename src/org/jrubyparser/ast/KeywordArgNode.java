@@ -26,14 +26,9 @@ public class KeywordArgNode extends Node {
      * @param node to be compared to
      * @return Returns a boolean
      */
+    @Override
     public boolean isSame(Node node) {
-        if (super.isSame(node)) {
-            KeywordArgNode mnode = (KeywordArgNode) node;
-            if (this.getAssignable().isSame(mnode.getAssignable())) {
-                return true;
-            }
-        }
-        return false;
+        return super.isSame(node) && getAssignable().isSame(((KeywordArgNode) node).getAssignable());
     }
 
 

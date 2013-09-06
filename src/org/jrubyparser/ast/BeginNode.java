@@ -52,16 +52,9 @@ public class BeginNode extends Node {
      * @param node to be compared to
      * @return Returns a boolean
      */
+    @Override
     public boolean isSame(Node node) {
-        if (super.isSame(node)) {
-            BeginNode beginNode = (BeginNode) node;
-
-            if (getBody().isSame(beginNode.getBody())) {
-                return true;
-            }
-
-        }
-        return false;
+        return super.isSame(node) && getBody().isSame(((BeginNode) node).getBody());
     }
 
 

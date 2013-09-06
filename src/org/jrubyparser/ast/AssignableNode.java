@@ -53,17 +53,15 @@ public abstract class AssignableNode extends Node {
      * @param node to be compared to
      * @return Returns a boolean
      */
+    @Override
     public boolean isSame(Node node) {
-        if (super.isSame(node)) {
-            AssignableNode assignableNode = (AssignableNode) node;
-            if (getValue() != null && assignableNode.getValue() != null) {
-                 if (this.getValue().isSame(assignableNode.getValue())) {
-                    return true;
-                }
-            }
-            return true;
-        }
-        return false;
+        if (!super.isSame(node)) return false;
+
+        AssignableNode other = (AssignableNode) node;
+        if (getValue() == null && other.getValue() == null) return true;
+        if (getValue() == null || other.getValue() == null) return false;
+        
+        return getValue().isSame(other.getValue());
     }
 
 

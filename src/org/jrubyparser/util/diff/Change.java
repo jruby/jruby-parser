@@ -55,19 +55,19 @@ public class Change {
         setOldCost(oldCost);
     }
 
-    public void setNewNode(Node newNode) {
+    public final void setNewNode(Node newNode) {
         this.newNode = newNode;
     }
 
-    public void setOldNode(Node oldNode) {
+    public final void setOldNode(Node oldNode) {
         this.oldNode = oldNode;
     }
 
-    public void setNewCost(int newCost) {
+    public final void setNewCost(int newCost) {
         this.newCost = newCost;
     }
 
-    public void setOldCost(int oldCost) {
+    public final void setOldCost(int oldCost) {
         this.oldCost = oldCost;
     }
 
@@ -102,9 +102,6 @@ public class Change {
         if (getNewNode() != null) {
             builder.append("\nNew Node: ").append(getNewNode()).append(" Complexity: ").append(getNewCost()).append(" Position: ").append(getNewNode().getPosition()).append("\n");
         }
-
-
-
 
         return builder.toString();
     }

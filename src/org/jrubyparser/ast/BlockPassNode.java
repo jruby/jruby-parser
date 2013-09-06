@@ -55,27 +55,16 @@ public class BlockPassNode extends Node {
      * @param node to be compared to
      * @return Returns a boolean
      */
+    @Override
     public boolean isSame(Node node) {
-        if (super.isSame(node)) {
-            BlockPassNode blockPassNode = (BlockPassNode) node;
+        if (!super.isSame(node)) return false;
 
-            if (getBody().isSame(blockPassNode.getBody())) {
-                if (getArgs() != null && blockPassNode.getArgs() != null) {
-                    if (!getArgs().isSame(blockPassNode.getArgs())) {
-                        return false;
-                    }
-                }
+        BlockPassNode other = (BlockPassNode) node;
 
-                if ((getArgs() == null && blockPassNode.getArgs() != null) || (blockPassNode.getArgs() == null && getArgs() != null)) {
-                   return false;
-                }
-
-                return true;
-            }
-
-
-        }
-        return false;
+        if (getArgs() == null && other.getArgs() == null) return getBody().isSame(other.getBody());
+        if (getArgs() == null || other.getArgs() == null) return false;
+            
+        return getArgs().isSame(other.getArgs()) && getBody().isSame(other.getBody());
     }
 
 

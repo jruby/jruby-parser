@@ -48,42 +48,45 @@ public class WhenNode extends Node {
     }
 
     @Override
-    public boolean isSame(Node other) {
-        if (super.isSame(other)) {
-            WhenNode whenNode = (WhenNode) other;
-            if (getBody() != null && whenNode.getBody() != null) {
-                if (!getBody().isSame(whenNode.getBody())) {
-                    return false;
-                }
-            }
+    public boolean isSame(Node node) {
+        if (!super.isSame(node)) return false;
 
-            if ((getBody() == null && whenNode.getBody() != null) || (getBody() != null && whenNode.getBody() == null)) {
+        WhenNode other = (WhenNode) node;
+        
+            if (getBody() == null && other.getBody() == null) {
+                if (getExpression() == null && other.getExpression() == null) {
+                    if (getNextCase() == null && other.getNextCase() == null) return true;
+                    if (getNextCase() == null || other.getNextCase() == null) return false;
+                    
+                    return getNextCase().isSame(other.getNextCase());
+                } else if (getExpression() == null || other.getExpression() == null) {
+                    return false;
+                } else if (getNextCase() == null && other.getNextCase() == null) {
+                    return getExpression().isSame(other.getExpression());
+                } else if (getNextCase() == null || other.getNextCase() == null) {
+                    return false;
+                } else {
+                    return getNextCase().isSame(other.getNextCase()) && getExpression().isSame(other.getExpression());
+                }
+            } else if (getBody() == null || other.getBody() == null) {
+                return false;
+            } else if (getExpression() == null && other.getExpression() == null) {
+                if (getNextCase() == null && other.getNextCase() == null) {
+                    return getExpression().isSame(other.getExpression());
+                } else if (getNextCase() == null || other.getNextCase() == null) {
+                    return false;
+                } else {
+                    return getNextCase().isSame(other.getNextCase()) && getBody().isSame(other.getBody());
+                }
+            } else if (getExpression() == null || other.getExpression() == null) {
+                return false;
+            } else if (getNextCase() == null && other.getNextCase() == null) {
+                return getExpression().isSame(other.getExpression()) && getBody().isSame(other.getBody());
+            } else if (getNextCase() == null || other.getNextCase() == null) {
                 return false;
             }
-
-            if (getExpression() != null && whenNode.getExpression() != null) {
-                if (!getExpression().isSame(whenNode.getExpression())) {
-                    return false;
-                }
-            }
-
-            if ((getExpression() == null && whenNode.getExpression() != null) || (getExpression() != null && whenNode.getExpression() == null)) {
-                return false;
-            }
-
-             if (getNextCase() != null && whenNode.getNextCase() != null) {
-                if (!getNextCase().isSame(whenNode.getNextCase())) {
-                    return false;
-                }
-            }
-
-            if ((getNextCase() == null && whenNode.getNextCase() != null) || (getNextCase() != null && whenNode.getNextCase() == null)) {
-                return false;
-            }
-
-            return true;
-        }
-        return false;
+            
+            return getNextCase().isSame(other.getNextCase()) && getExpression().isSame(other.getExpression()) && getBody().isSame(other.getBody());
     }
 
     public NodeType getNodeType() {

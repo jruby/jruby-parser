@@ -57,14 +57,9 @@ public class LocalAsgnNode extends AssignableNode implements ILocalVariable {
      * @param node to be compared to
      * @return Returns a boolean
      */
+    @Override
     public boolean isSame(Node node) {
-        if (super.isSame(node)) {
-            LocalAsgnNode mnode = (LocalAsgnNode) node;
-            if (isNameMatch(mnode.getName())) {
-                return true;
-            }
-        }
-        return false;
+        return super.isSame(node) && isNameMatch(((LocalAsgnNode) node).getName());
     }
 
 

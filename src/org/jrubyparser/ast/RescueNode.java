@@ -47,43 +47,44 @@ public class RescueNode extends Node {
     }
 
     @Override
-    public boolean isSame(Node other) {
-        if (super.isSame(other)) {
-            RescueNode rnode = (RescueNode) other;
+    public boolean isSame(Node node) {
+        if (!super.isSame(node)) return false;
+            RescueNode other = (RescueNode) node;
 
-            if (getBody() != null && rnode.getBody() != null) {
-                if (!getBody().isSame(rnode.getBody())) {
-                   return false;
-                }
-            }
-
-            if ((getBody() == null && rnode.getBody() != null) || (getBody() != null && rnode.getBody() == null)) {
-                return false;
-            }
-
-            if (getRescue() != null && rnode.getRescue() != null) {
-                if (!getRescue().isSame(rnode.getRescue())) {
+            if (getBody() == null && other.getBody() == null) {
+                if (getRescue() == null && other.getRescue() == null) {
+                    if (getElse() == null && other.getElse() == null) return true;
+                    if (getElse() == null || other.getElse() == null) return false;
+                    
+                    return getElse().isSame(other.getElse());
+                } else if (getRescue() == null || other.getRescue() == null) {
                     return false;
-                }
-            }
-
-            if ((getRescue() == null && rnode.getRescue() != null) || (getRescue() != null && rnode.getRescue() == null)) {
-                return false;
-            }
-
-            if (getElse() != null && rnode.getElse() != null) {
-                if (!getElse().isSame(rnode.getElse())) {
+                } else if (getElse() == null && other.getElse() == null) {
+                    return getRescue().isSame(other.getRescue());
+                } else if (getElse() == null || other.getElse() == null) {
                     return false;
+                } else {
+                    return getElse().isSame(other.getElse()) && getRescue().isSame(other.getRescue());
                 }
-            }
-
-            if ((getElse() == null && rnode.getElse() != null) || (getElse() != null && rnode.getElse() == null)) {
+            } else if (getBody() == null || other.getBody() == null) {
+                return false;
+            } else if (getRescue() == null && other.getRescue() == null) {
+                if (getElse() == null && other.getElse() == null) {
+                    return getRescue().isSame(other.getRescue());
+                } else if (getElse() == null || other.getElse() == null) {
+                    return false;
+                } else {
+                    return getElse().isSame(other.getElse()) && getBody().isSame(other.getBody());
+                }
+            } else if (getRescue() == null || other.getRescue() == null) {
+                return false;
+            } else if (getElse() == null && other.getElse() == null) {
+                return getRescue().isSame(other.getRescue()) && getBody().isSame(other.getBody());
+            } else if (getElse() == null || other.getElse() == null) {
                 return false;
             }
 
-            return true;
-        }
-       return false;
+            return getElse().isSame(other.getElse()) && getRescue().isSame(other.getRescue()) && getBody().isSame(other.getBody());
     }
 
     public NodeType getNodeType() {

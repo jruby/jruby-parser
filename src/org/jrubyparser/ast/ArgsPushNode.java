@@ -52,14 +52,13 @@ public class ArgsPushNode extends Node {
      * @param node to be compared to
      * @return Returns a boolean
      */
+    @Override
     public boolean isSame(Node node) {
-        if (super.isSame(node)) {
-            ArgsPushNode mnode = (ArgsPushNode) node;
-            if (getFirstNode().isSame(mnode.getFirstNode()) && getSecondNode().isSame(mnode.getSecondNode())) {
-                return true;
-            }
-        }
-        return false;
+        if (!super.isSame(node)) return false;
+        
+        ArgsPushNode other = (ArgsPushNode) node;
+        
+        return getFirstNode().isSame(other.getFirstNode()) && getSecondNode().isSame(other.getSecondNode());
     }
 
 

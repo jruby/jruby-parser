@@ -49,16 +49,9 @@ public class MatchNode extends Node {
      * @param node to be compared to
      * @return Returns a boolean
      */
+    @Override
     public boolean isSame(Node node) {
-        if (super.isSame(node)) {
-            MatchNode mnode = (MatchNode) node;
-
-           if (getRegexp().isSame(mnode.getRegexp())) {
-               return true;
-           }
-
-        }
-        return false;
+        return super.isSame(node) && getRegexp().isSame(((MatchNode) node).getRegexp());
     }
 
 

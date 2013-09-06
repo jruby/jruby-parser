@@ -56,21 +56,16 @@ public class EvStrNode extends Node {
      * @param node to be compared to
      * @return Returns a boolean
      */
+    @Override
     public boolean isSame(Node node) {
-        if (super.isSame(node)) {
-            EvStrNode mnode = (EvStrNode) node;
-            if (getBody() != null && mnode.getBody() != null) {
-                if (!getBody().isSame(mnode.getBody())) {
-                    return false;
-                }
-            }
-            if ((getBody() == null && mnode.getBody() != null) || (getBody() != null && mnode.getBody() == null )) {
-                return false;
-            }
+        if (!super.isSame(node)) return false;
 
-            return true;
-        }
-        return false;
+        EvStrNode other = (EvStrNode) node;
+        
+        if (getBody() == null && other.getBody() == null) return true;
+        if (getBody() == null || other.getBody() == null) return false;
+
+        return getBody().isSame(other.getBody());
     }
 
 

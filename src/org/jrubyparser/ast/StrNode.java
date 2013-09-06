@@ -50,14 +50,9 @@ public class StrNode extends Node implements ILiteralNode {
         value = value + tail.getValue();
     }
 
-    public boolean isSame(Node node) {
-        if (super.isSame(node)) {
-            StrNode snode = (StrNode) node;
-            if (this.getValue().equals(snode.getValue())) {
-                return true;
-            }
-        }
-        return false;
+    @Override
+    public boolean isSame(Node other) {
+        return super.isSame(other) && getValue().equals(((StrNode) other).getValue());
     }
 
     public NodeType getNodeType() {

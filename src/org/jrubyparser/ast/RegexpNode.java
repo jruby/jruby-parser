@@ -46,22 +46,23 @@ public class RegexpNode extends Node implements ILiteralNode {
         this.options = options;
     }
 
+    @Override
     public boolean isSame(Node node) {
-        if (super.isSame(node)) {
-            RegexpNode regexpNode = (RegexpNode) node;
-           if (getValue() != null && regexpNode.getValue() != null) {
-               if (getValue().equals(regexpNode.getValue())) {
-                   if (getOptions() != null && regexpNode.getOptions() != null) {
-                      if (!getOptions().equals(regexpNode.getOptions())) {
-                         return false;
-                      }
-
-                   }
-                   return true;
-               }
-           }
+        if (!super.isSame(node)) return false;
+            
+        RegexpNode other = (RegexpNode) node;
+        if (getValue() == null && other.getValue() == null) {
+            if (getOptions() == null && other.getOptions() == null) return true;
+            if (getOptions() == null || other.getOptions() == null) return false;
+        } else if (getValue() == null || other.getValue() == null) {
+            return false;
+        } else if (getOptions() == null && other.getOptions() == null) {
+            return getValue().equals(other.getValue());
+        } else if (getOptions() == null || other.getOptions() == null) {
+            return false;
         }
-        return false;
+
+        return getValue().equals(other.getValue()) && getOptions().equals(other.getOptions());
     }
 
     public NodeType getNodeType() {

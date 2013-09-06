@@ -49,16 +49,13 @@ public class NthRefNode extends Node implements IGlobalVariable {
      * @param node to be compared to
      * @return Returns a boolean
      */
+    @Override
     public boolean isSame(Node node) {
-        if (super.isSame(node)) {
-            NthRefNode mnode = (NthRefNode) node;
-            if (isNameMatch(mnode.getName())) {
-                if (getMatchNumber() == mnode.getMatchNumber()) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        if (!super.isSame(node)) return false;
+        
+        NthRefNode other = (NthRefNode) node;
+        
+        return isNameMatch(other.getName()) && getMatchNumber() == other.getMatchNumber();
     }
 
 

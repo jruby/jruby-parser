@@ -44,16 +44,14 @@ public class ReturnNode extends Node {
     }
 
     @Override
-    public boolean isSame(Node other) {
-        if (super.isSame(other)) {
-            ReturnNode returnNode = (ReturnNode) other;
-            if (getValue() != null && returnNode.getValue() != null) {
-                if (getValue().isSame(returnNode.getValue())) {
-                    return true;
-                }
-            }
-        }
-        return false;
+    public boolean isSame(Node node) {
+        if (!super.isSame(node)) return false;
+        ReturnNode other = (ReturnNode) node;
+
+        if (getValue() == null && other.getValue() == null) return true;
+        if (getValue() == null || other.getValue() == null) return false;
+
+        return getValue().isSame(other.getValue());
     }
 
     public NodeType getNodeType() {

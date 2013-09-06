@@ -56,45 +56,25 @@ public class IfNode extends Node {
      * @param node to be compared to
      * @return Returns a boolean
      */
+    @Override
     public boolean isSame(Node node) {
-        if (super.isSame(node)) {
-            IfNode mnode = (IfNode) node;
-
-            if (getCondition().isSame(mnode.getCondition())) {
-
-                if (getThenBody() != null) {
-                    if (mnode.getThenBody() != null) {
-                        if (!getThenBody().isSame(mnode.getThenBody())) {
-                            return false;
-                        }
-                    } else {
-                        return false;
-                    }
-                }
-                if (getThenBody() == null && mnode.getThenBody() != null) {
-                    return false;
-                }
-
-                if (getElseBody() != null) {
-                    if (mnode.getElseBody() != null) {
-                        if (!getElseBody().isSame(mnode.getElseBody())) {
-                            return false;
-                        }
-                    } else {
-                        return false;
-                    }
-                }
-                if (getElseBody() == null && mnode.getElseBody() != null) {
-                    return false;
-                }
-
-                return true;
-
-            }
+        if (!super.isSame(node)) return false;
+            
+        IfNode other = (IfNode) node;
+        
+        if (getThenBody() == null && other.getThenBody() == null) {
+            if (getElseBody() == null && other.getElseBody() == null) return getCondition().isSame(other.getCondition());
+            if (getElseBody() == null || other.getElseBody() == null) return false;
+        } 
+        if (getThenBody() == null || other.getThenBody() == null) return false;
+        if (getElseBody() == null && other.getElseBody() == null) {
+            return getThenBody().isSame(other.getThenBody()) && getCondition().isSame(other.getCondition());
         }
-        return false;
-    }
+        if (getElseBody() == null || other.getElseBody() == null) return false;
 
+        return getThenBody().isSame(other.getThenBody()) && 
+                getElseBody().isSame(other.getElseBody()) && getCondition().isSame(other.getCondition());
+    }
 
     public NodeType getNodeType() {
         return NodeType.IFNODE;

@@ -61,35 +61,25 @@ public abstract class MethodDefNode extends Node implements INameNode, ILocalSco
      * @param node to be compared to
      * @return Returns a boolean
      */
+        @Override
     public boolean isSame(Node node) {
-        if (super.isSame(node)) {
-            MethodDefNode mnode = (MethodDefNode) node;
-            if (this.isNameMatch(mnode.getName())) {
+        if (!super.isSame(node)) return false;
 
-                if (getBody() != null && mnode.getBody() != null) {
-                    if (!getBody().isSame(mnode.getBody())) {
-                        return false;
-                    }
+        MethodDefNode other = (MethodDefNode) node;
+        if (!isNameMatch(other.getName())) return false;
 
-                }
-                if ((getBody() == null && mnode.getBody() != null) || (getBody() != null && mnode.getBody() == null)) {
-                    return false;
-                }
-
-                if (getArgs() != null && mnode.getArgs() != null) {
-                    if (!getArgs().isSame(mnode.getArgs())) {
-                        return false;
-                    }
-
-                }
-                if ((getArgs() == null && mnode.getArgs() != null) || (getArgs() != null && mnode.getArgs() == null)) {
-                    return false;
-                }
-
-                return true;
-            }
+        if (getBody() == null && other.getBody() == null) {
+            if (getArgs() == null && other.getArgs() == null) return true;
+            if (getArgs() == null || other.getArgs() == null) return false;
+        } else if (getBody() == null || other.getBody() == null) {
+            return false;
+        } else if (getArgs() == null && other.getArgs() == null) {
+            return getBody().isSame(other.getBody());
+        } else if (getArgs() == null || other.getArgs() == null) {
+            return false;
         }
-        return false;
+
+        return getBody().isSame(other.getBody()) && getArgs().isSame(other.getArgs());
     }
 
 	/**

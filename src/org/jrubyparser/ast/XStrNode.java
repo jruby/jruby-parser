@@ -44,13 +44,7 @@ public class XStrNode extends Node implements ILiteralNode {
 
     @Override
     public boolean isSame(Node other) {
-        if (super.isSame(other)) {
-            XStrNode xstrNode = (XStrNode) other;
-            if (getValue().equals(xstrNode.getValue())) {
-                return true;
-            }
-        }
-        return false;
+        return super.isSame(other) && getValue().equals(((XStrNode) other).getValue());
     }
 
     public NodeType getNodeType() {

@@ -28,6 +28,7 @@
  ***** END LICENSE BLOCK *****/
 package org.jrubyparser.ast;
 
+import java.util.List;
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 
@@ -47,42 +48,23 @@ public class RescueBodyNode extends Node {
         this.optRescueNode = (RescueBodyNode) adopt(optRescueNode);
     }
 
+    @Override
     public boolean isSame(Node node) {
-        if (super.isSame(node)) {
-            RescueBodyNode rescueBodyNode = (RescueBodyNode) node;
-            if (getBody() != null && rescueBodyNode.getBody() != null) {
+        if (!super.isSame(node)) return false;
+            
+        RescueBodyNode other = (RescueBodyNode) node;
 
-                if (!getBody().isSame(rescueBodyNode.getBody())) {
-                   return false;
-                }
-            }
-
-            if (getExceptions() != null && rescueBodyNode.getExceptions() != null) {
-
-                    if (!getExceptions().isSame(rescueBodyNode.getExceptions())) {
-                        return false;
-                    }
-            }
-
-            if ((getExceptions() == null && rescueBodyNode.getExceptions() != null) || (getExceptions() != null && rescueBodyNode.getExceptions() == null)) {
-                return false;
-            }
-
-             if (getOptRescue() != null && rescueBodyNode.getOptRescue() != null) {
-
-                    if (!getOptRescue().isSame(rescueBodyNode.getOptRescue())) {
-                        return false;
-                    }
-            }
-
-            if ((getOptRescue() == null && rescueBodyNode.getOptRescue() != null) || (getOptRescue() != null && rescueBodyNode.getOptRescue() == null)) {
-                return false;
-            }
-
-            return true;
+        List<Node> kids = childNodes();
+        List<Node> otherKids = other.childNodes();
+        
+        if (kids.size() != otherKids.size()) return false;
+        
+        // Assume this is ok because the three nodes are always different types (each has different null value scenario).
+        for (int i = 0; i < kids.size(); i++) {
+            if (kids.get(i).isSame(otherKids.get(i))) return false;
         }
 
-        return false;
+        return true;
     }
 
     public NodeType getNodeType() {

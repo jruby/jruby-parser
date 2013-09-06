@@ -33,27 +33,16 @@ public class BlockArg18Node extends Node {
      * @param node to be compared to
      * @return Returns a boolean
      */
+    @Override
     public boolean isSame(Node node) {
-        if (super.isSame(node)) {
-            BlockArg18Node blockArg18Node = (BlockArg18Node) node;
+        if (!super.isSame(node)) return false;
+        
+        BlockArg18Node other = (BlockArg18Node) node;
 
-            if (getArgs() != null && blockArg18Node.getArgs() != null) {
+        if (getArgs() == null && other.getArgs() == null) return getBlockArg().isSame(other.getBlockArg());
+        if (getArgs() == null || other.getArgs() == null) return false;
 
-                if (getArgs().isSame(blockArg18Node.getArgs()) && getBlockArg().isSame(blockArg18Node.getBlockArg())) {
-                    return true;
-                }
-
-            }
-
-            if (getArgs() == null && blockArg18Node.getArgs() == null) {
-                if (getBlockArg().isSame(blockArg18Node.getBlockArg())) {
-                    return true;
-                }
-
-            }
-
-        }
-        return false;
+        return getArgs().isSame(other.getArgs()) && getBlockArg().isSame(other.getBlockArg());
     }
 
 

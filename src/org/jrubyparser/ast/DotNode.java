@@ -28,8 +28,6 @@
  ***** END LICENSE BLOCK *****/
 package org.jrubyparser.ast;
 
-import java.util.List;
-
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 
@@ -62,19 +60,13 @@ public class DotNode extends Node {
      * @param node to be compared to
      * @return Returns a boolean
      */
+    @Override
     public boolean isSame(Node node) {
-        if (super.isSame(node)) {
-            DotNode mnode = (DotNode) node;
+        if (!super.isSame(node)) return false;
 
-            if (getBegin().isSame(mnode.getBegin())) {
-                if (getEnd().isSame(mnode.getEnd())) {
-                    if (isExclusive() == mnode.isExclusive()) {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
+        DotNode other = (DotNode) node;
+
+        return getBegin().isSame(other.getBegin()) && getEnd().isSame(other.getEnd()) && isExclusive() == other.isExclusive();
     }
 
 

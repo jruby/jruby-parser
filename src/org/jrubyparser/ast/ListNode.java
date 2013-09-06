@@ -68,21 +68,18 @@ public class ListNode extends Node {
      * @param node to be compared to
      * @return Returns a boolean
      */
+    @Override
     public boolean isSame(Node node) {
-        if (super.isSame(node)) {
-            ListNode listNode = (ListNode) node;
-            if (this.size() != listNode.size()) return false;
+        if (!super.isSame(node)) return false;
+            
+        ListNode other = (ListNode) node;
+        if (size() != other.size()) return false;
 
-            for (int i = 0; i <= size() - 1; i++) {
-                if (!get(i).isSame(listNode.get(i))) {
-                    return false;
-                }
-            }
-
-            return true;
-
+        for (int i = 0; i <= size() - 1; i++) {
+            if (!get(i).isSame(other.get(i))) return false;
         }
-        return false;
+
+        return true;
     }
 
 

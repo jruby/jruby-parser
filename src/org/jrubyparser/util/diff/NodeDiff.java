@@ -36,7 +36,9 @@ import org.jrubyparser.ast.RootNode;
 import org.jrubyparser.rewriter.ReWriteVisitor;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * The <code>NodeDiff</code> class takes two <code>Node</code> objects, and
@@ -118,8 +120,8 @@ import java.util.Iterator;
  */
 public class NodeDiff
 {
-    protected ArrayList<Change> diff = new ArrayList<Change>();
-    protected ArrayList<DeepDiff> deepdiff = new ArrayList<DeepDiff>();
+    protected List<Change> diff = new ArrayList<Change>();
+    protected List<DeepDiff> deepdiff = new ArrayList<DeepDiff>();
     protected SequenceMatcher SequenceMatch;
     protected String oldDocument;
     protected String newDocument;
@@ -232,11 +234,9 @@ public class NodeDiff
      * @return Returns an ArrayList of {@link Change} objects representing the
      * diff.
      */
-    public ArrayList<Change> getDiff() {
-        if (diff.isEmpty()) {
-        SequenceMatcher sm = new SequenceMatcher(newNode, oldNode, isJunk);
-        diff = createDiff(sm);
-        }
+    public List<Change> getDiff() {
+        if (diff.isEmpty()) diff = createDiff(new SequenceMatcher(newNode, oldNode, isJunk));
+
         return diff;
     }
 
@@ -261,33 +261,30 @@ public class NodeDiff
      * @see Change
      * @see DeepDiff
      */
-    public ArrayList<DeepDiff> getDeepDiff() {
-
+    public List<DeepDiff> getDeepDiff() {
         if (deepdiff.isEmpty()) {
-
-            if (oldDocument == null || newDocument == null) {
-                // oldDocument and newDocument must be set to create a DeepDiff.
-                // They are necessary for the #distance() method that #sortSubdiff() uses.
-                throw new NullPointerException();
-            }
-
-        SequenceMatcher sm = new SequenceMatcher(newNode, oldNode, isJunk);
-        deepdiff = createDeepDiff(createDiff(sm));
+            // FIXME: This should be a more useful error
+            // oldDocument and newDocument must be set to create a DeepDiff.
+            // They are necessary for the #distance() method that #sortSubdiff() uses.
+            if (oldDocument == null || newDocument == null) throw new NullPointerException();
+                
+            deepdiff = createDeepDiff(createDiff(new SequenceMatcher(newNode, oldNode, isJunk)));
         }
+        
         return deepdiff;
     }
 
-    protected ArrayList<Change> createDiff(SequenceMatcher sequenceMatch) {
-        ArrayList<Change> roughDiff = sequenceMatch.getDiffNodes();
-        return roughDiff;
+    protected List<Change> createDiff(SequenceMatcher sequenceMatch) {
+        return sequenceMatch.getDiffNodes();
     }
 
-    protected ArrayList<DeepDiff> createDeepDiff(ArrayList<Change> roughDiff) {
-        ArrayList<DeepDiff> complexDiff = new ArrayList<DeepDiff>();
+    protected List<DeepDiff> createDeepDiff(List<Change> roughDiff) {
+        List<DeepDiff> complexDiff = new ArrayList<DeepDiff>();
+
         for (Change change: roughDiff) {
-           ArrayList<Change> subdiff = getSubdiff(change);
-           complexDiff.add(new DeepDiff(change, subdiff));
+           complexDiff.add(new DeepDiff(change, getSubdiff(change)));
         }
+        
         return complexDiff;
     }
 
@@ -304,22 +301,15 @@ public class NodeDiff
      * @param change The Change object being subdiffed.
      * @return Returns an ArrayList of Change objects. Essentially a diff.
      */
-     protected ArrayList<Change> getSubdiff(Change change) {
-
-        ArrayList<Change> subdiff = new ArrayList<Change>();
-
-        Node oldNode = change.getOldNode();
-        Node newNode = change.getNewNode();
+     protected List<Change> getSubdiff(Change change) {
+        Node oNode = change.getOldNode();
+        Node nNode = change.getNewNode();
 
         // Besides checking nulls, we save a lot of time here by only subdiffing a subset of possible nodes
 
-        if ((oldNode == null || newNode == null) || !(oldNode instanceof ILocalScope && !(oldNode instanceof RootNode))) {
-            return null;
-        } else {
-            SequenceMatcher smForSubDiff = new SequenceMatcher(newNode, oldNode);
-            subdiff = sortSubdiff(smForSubDiff.getDiffNodes());
-            return subdiff;
-        }
+        if ((oNode == null || nNode == null) || !(oNode instanceof ILocalScope && !(oNode instanceof RootNode))) return null;
+
+        return sortSubdiff(new SequenceMatcher(nNode, oNode).getDiffNodes());
      }
 
     /**
@@ -333,46 +323,41 @@ public class NodeDiff
      * object.
      * @return Returns an ArrayList this is the subdiff object, after sorting.
      */
-    protected ArrayList<Change> sortSubdiff(ArrayList<Change> subdiff) {
-        ArrayList<Change> diffClone = (ArrayList) subdiff.clone();
+    protected List<Change> sortSubdiff(List<Change> subdiff) {
+        List<Change> diffClone = new ArrayList<Change>(subdiff);
+        
         oldTest:
         for (Change change : diffClone) {
             if (change.getOldNode() == null) continue oldTest;
-            Node oldNode = change.getOldNode();
+            Node oNode = change.getOldNode();
 
             Iterator<Change> newn = diffClone.iterator();
             newTest:
             while (newn.hasNext()) {
                 Change newChange = newn.next();
                 if (newChange.getNewNode() == null) continue newTest;
-                Node newNode = newChange.getNewNode();
+                Node nNode = newChange.getNewNode();
 
                 // We want to make sure that we aren't just finding an already matched up change.
-
                 if (subdiff.indexOf(change) != subdiff.indexOf(newChange) ) {
-
-                    String nstring = ReWriteVisitor.createCodeFromNode(newNode, newDocument);
-                    String ostring = ReWriteVisitor.createCodeFromNode(oldNode, oldDocument);
+                    String nstring = ReWriteVisitor.createCodeFromNode(nNode, newDocument);
+                    String ostring = ReWriteVisitor.createCodeFromNode(oNode, oldDocument);
 
                     int lfd = distance(nstring, ostring);
                     double ratio = ((double) lfd) / (Math.max(nstring.length(), ostring.length()));
 
                     // This ratio may need to be tweaked.
-                    if (ratio < 0.2) {
-                        if (subdiff.contains(change)) {
-                            SequenceMatcher sm = new SequenceMatcher(null, null, null);
-                            int ncomplex = sm.calcComplexity(newNode);
-                            int ocomplex = sm.calcComplexity(oldNode);
+                    if (ratio < 0.2 && subdiff.contains(change)) {
+                        SequenceMatcher sm = new SequenceMatcher(null, null, null);
 
-                            subdiff.set(subdiff.indexOf(change), new Change(newNode, ncomplex, oldNode, ocomplex));
-                            subdiff.remove(newChange);
-                        }
+                        subdiff.set(subdiff.indexOf(change), 
+                                new Change(nNode, sm.calcComplexity(nNode), oNode, sm.calcComplexity(oNode)));
+                        subdiff.remove(newChange);
                     }
                 }
             }
-
-
         }
+        
         return subdiff;
     }
 
@@ -387,22 +372,23 @@ public class NodeDiff
      */
     private static int distance(String s1, String s2){
         int edits[][]=new int[s1.length()+1][s2.length()+1];
-        for(int i=0;i<=s1.length();i++)
-            edits[i][0]=i;
-        for(int j=1;j<=s2.length();j++)
-            edits[0][j]=j;
-        for(int i=1;i<=s1.length();i++){
-            for(int j=1;j<=s2.length();j++){
-                int u=(s1.charAt(i-1)==s2.charAt(j-1)?0:1);
-                edits[i][j]=Math.min(
-                        edits[i-1][j]+1,
-                        Math.min(
-                                edits[i][j-1]+1,
-                                edits[i-1][j-1]+u
-                        )
-                );
+        
+        for(int i=0; i <= s1.length(); i++) {
+            edits[i][0] = i;
+        }
+        
+        for(int j=1; j <= s2.length(); j++) {
+            edits[0][j] = j;
+        }
+        
+        for(int i=1; i <= s1.length(); i++) {
+            for(int j=1; j <= s2.length(); j++) {
+                int u = s1.charAt(i - 1) == s2.charAt(j - 1) ? 0 : 1;
+                edits[i][j] = Math.min(edits[i-1][j]+1,
+                        Math.min(edits[i][j-1]+1, edits[i-1][j-1]+u));
             }
         }
+        
         return edits[s1.length()][s2.length()];
     }
 

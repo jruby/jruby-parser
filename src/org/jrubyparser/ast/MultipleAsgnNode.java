@@ -64,26 +64,35 @@ public class MultipleAsgnNode extends AssignableNode {
      * @param node to be compared to
      * @return Returns a boolean
      */
+    @Override
     public boolean isSame(Node node) {
-        if (super.isSame(node)) {
-            MultipleAsgnNode multipleAsgnNode = (MultipleAsgnNode) node;
+        if (!super.isSame(node)) return false;
 
-            if (getPreCount() != multipleAsgnNode.getPreCount()) {
-                return false;
+        MultipleAsgnNode other = (MultipleAsgnNode) node;
+        
+        // Make sure counts are correct since a nodes childNodes will exclude adds of null.
+        // Weird scenario of no rest arg method where 2pre == 1pre, 1post without this.
+        if (getPreCount() != other.getPreCount() || getPostCount() != other.getPostCount()) return false;
+        if (getRest() == null && other.getRest() == null) {
+            List<Node> kids = childNodes();
+            List<Node> otherKids = childNodes();
+                
+            for (int i = 0; i < kids.size(); i++) {
+                if (!kids.get(i).isSame(otherKids.get(i))) return false;
             }
-
-            if ((getRest() != null && multipleAsgnNode.getRest() == null) || (getRest() == null && multipleAsgnNode.getRest() != null)) {
-                return false;
-            }
-
-            if (getPostCount() != multipleAsgnNode.getPostCount()) {
-                return false;
-            }
-
             return true;
-
         }
-        return false;
+        if (getRest() == null || other.getRest() == null) return false;
+        if (!getRest().isSame(other.getRest())) return false;
+
+        List<Node> kids = childNodes();
+        List<Node> otherKids = childNodes();
+                
+        for (int i = 0; i < kids.size(); i++) {
+            if (!kids.get(i).isSame(otherKids.get(i))) return false;
+        }
+        
+        return true;
     }
 
 

@@ -61,27 +61,16 @@ public class ForNode extends IterNode {
      * @param node to be compared to
      * @return Returns a boolean
      */
+    @Override
     public boolean isSame(Node node) {
-        if (super.isSame(node)) {
-            ForNode mnode = (ForNode) node;
-            if (getIter().isSame(mnode.getIter())) {
-                if (getBody().isSame(mnode.getBody())) {
+        if (!super.isSame(node)) return false;
 
-                    // This seems weird, but seems to create the least branches.
-                    if (getVar() != null && mnode.getVar() != null) {
-                       if (!getVar().isSame(mnode.getVar())) {
-                           return false;
-                       }
-                    }
-                    if ((getVar() == null && mnode.getVar() != null) || (getVar() != null && mnode.getVar() == null)) {
-                        return false;
-                    }
-
-                    return true;
-                }
-            }
-        }
-        return false;
+        ForNode other = (ForNode) node;
+        
+        if (getVar() == null && other.getVar() == null) return getIter().isSame(other.getIter()) && getBody().isSame(other.getBody());
+        if (getVar() == null || other.getVar() == null) return false;
+        
+        return getVar().isSame(other.getVar()) && getIter().isSame(other.getIter()) && getBody().isSame(other.getBody());
     }
 
 

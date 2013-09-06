@@ -80,25 +80,20 @@ public class ArgsNode extends Node {
      * @param node to be compared to
      * @return Returns a boolean
      */
+    @Override
     public boolean isSame(Node node) {
-        if (super.isSame(node)) {
-            ArgsNode mnode = (ArgsNode) node;
+        if (!super.isSame(node)) return false;
 
-            List<Node> params = getNormativeParameterList();
-            List<Node> mparams = mnode.getNormativeParameterList();
+        List<Node> params = getNormativeParameterList();
+        List<Node> otherParams = ((ArgsNode) node).getNormativeParameterList();
 
-            if (params.size() != mparams.size()) return false;
+        if (params.size() != otherParams.size()) return false;
 
-            for (int i = 0; i <= params.size() - 1; i++) {
-                if (!params.get(i).isSame(mparams.get(i))) {
-                    return false;
-                }
-            }
-
-            return true;
-
+        for (int i = 0; i <= params.size() - 1; i++) {
+            if (!params.get(i).isSame(otherParams.get(i))) return false;
         }
-        return false;
+
+        return true;
     }
 
 
