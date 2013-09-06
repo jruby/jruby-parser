@@ -13,7 +13,7 @@
  * rights and limitations under the License.
  *
  * Copyright (C) 2009 Thomas E. Enebo <tom.enebo@gmail.com>
- * 
+ *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
  * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
@@ -29,7 +29,7 @@
 package org.jrubyparser.ast;
 
 /**
- * Base class for DefnNode and DefsNode 
+ * Base class for DefnNode and DefsNode
  */
 import java.util.List;
 import org.jrubyparser.SourcePosition;
@@ -42,13 +42,13 @@ public abstract class MethodDefNode extends Node implements INameNode, ILocalSco
 	protected StaticScope scope;
 	protected Node bodyNode;
 
-	public MethodDefNode(SourcePosition position, MethodNameNode nameNode, ArgsNode argsNode, 
+	public MethodDefNode(SourcePosition position, MethodNameNode nameNode, ArgsNode argsNode,
 	        StaticScope scope, Node bodyNode) {
             super(position);
-            
+
             // TODO: Adding implicit nils caused multiple problems in compiler -- revist after landing
             //assert bodyNode != null : "bodyNode is not null";
-            
+
             this.nameNode = (MethodNameNode) adopt(nameNode);
             this.argsNode = (ArgsNode) adopt(argsNode);
             this.scope = scope;
@@ -71,6 +71,7 @@ public abstract class MethodDefNode extends Node implements INameNode, ILocalSco
         if (getBody() == null && other.getBody() == null) {
             if (getArgs() == null && other.getArgs() == null) return true;
             if (getArgs() == null || other.getArgs() == null) return false;
+            return getArgs().isSame(other.getArgs());
         } else if (getBody() == null || other.getBody() == null) {
             return false;
         } else if (getArgs() == null && other.getArgs() == null) {
@@ -89,7 +90,7 @@ public abstract class MethodDefNode extends Node implements INameNode, ILocalSco
 	public ArgsNode getArgs() {
 	    return argsNode;
 	}
-        
+
         @Deprecated
         public ArgsNode getArgsNode() {
             return getArgs();
@@ -97,7 +98,7 @@ public abstract class MethodDefNode extends Node implements INameNode, ILocalSco
 
 	/**
 	 * Get the static scoping information.
-	 * 
+	 *
 	 * @return the scoping info
 	 */
 	public StaticScope getScope() {
@@ -106,13 +107,13 @@ public abstract class MethodDefNode extends Node implements INameNode, ILocalSco
 
 	/**
 	 * Gets the body of this class.
-	 * 
+	 *
 	 * @return the contents
 	 */
 	public Node getBody() {
 	    return bodyNode;
 	}
-        
+
         @Deprecated
         public Node getBodyNode() {
             return getBody();
@@ -121,7 +122,7 @@ public abstract class MethodDefNode extends Node implements INameNode, ILocalSco
         public String getLexicalName() {
             return getName();
         }
-        
+
 	/**
 	 * Gets the name's node.
 	 * @return Returns an ArgumentNode
@@ -144,22 +145,22 @@ public abstract class MethodDefNode extends Node implements INameNode, ILocalSco
 
         public boolean isNameMatch(String name) {
             String thisName = getName();
-        
+
             return thisName != null && thisName.equals(name);
         }
-        
+
         public SourcePosition getNamePosition() {
             return getNameNode().getNamePosition();
         }
-        
+
         public SourcePosition getLexicalNamePosition() {
             return getNameNode().getNamePosition();
-        }        
-        
+        }
+
         /**
          * Given a name (presumably retrieve via getNormativeSignatureNameList()) is this parmeter used
          * in this method definition?
-         * 
+         *
          * @param name
          * @return if used or not.
          */
@@ -167,11 +168,11 @@ public abstract class MethodDefNode extends Node implements INameNode, ILocalSco
             // FIXME: Do I need to worry about used vars in parameter initialization?
             return VariableHelper.isParameterUsed(getBody(), name, true);
         }
-        
+
         public ILocalVariable getParameterNamed(String name) {
             return VariableHelper.getParameterName(getArgs(), name);
         }
-        
+
         /**
          * Note: This will give a string a representation which will always be consistent whether
          * you specify a method definition using parens or not.  It is meant for use of IDES for
@@ -179,22 +180,22 @@ public abstract class MethodDefNode extends Node implements INameNode, ILocalSco
          */
         public String getNormativeSignature() {
             StringBuilder signature = new StringBuilder();
-            
+
             signature.append(getName());
 
             List<String> args = getArgs().getNormativeParameterNameList(false);
             int length = args.size();
-        
+
             if (length > 0) {
                 signature.append('(').append(args.get(0));
 
                 for (int i = 1; i < length; i++) {
                     signature.append(',').append(args.get(i));
                 }
-            
+
                 signature.append(')');
             }
 
-            return signature.toString();       
+            return signature.toString();
         }
 }
