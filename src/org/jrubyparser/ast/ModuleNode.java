@@ -34,6 +34,7 @@ import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 import org.jrubyparser.StaticScope;
 import org.jrubyparser.util.ILocalVariableVisitor;
+import org.jrubyparser.util.MethodDefVisitor;
 
 /** 
  * Represents a module definition.
@@ -108,6 +109,15 @@ public class ModuleNode extends Node implements IScopingNode, ILocalScope, IModu
      */
     public Colon3Node getCPath() {
         return cpath;
+    }
+
+    /**
+     * Returns a list of all Method Nodes included in the module's ast.
+     *
+     * @return Returns a List of MethodDefNodes
+     */
+    public List<MethodDefNode> getMethodDefs() {
+        return MethodDefVisitor.findMethodsIn(this);
     }
 
     public List<ILocalVariable> getVariableReferencesNamed(String name) {

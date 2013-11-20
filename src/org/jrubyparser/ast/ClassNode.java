@@ -34,6 +34,7 @@ import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 import org.jrubyparser.StaticScope;
 import org.jrubyparser.util.ILocalVariableVisitor;
+import org.jrubyparser.util.MethodDefVisitor;
 
 /**
  * A class statement (name, superClass, body). Classes bodies also define their own scope. 
@@ -131,7 +132,16 @@ public class ClassNode extends Node implements IScopingNode, ILocalScope, IModul
     public Node getSuperNode() {
         return getSuper();
     }
-     
+
+    /**
+     * Returns a list of all Method Nodes included in the module's ast.
+     *
+     * @return Returns a List of MethodDefNodes
+     */
+    public List<MethodDefNode> getMethodDefs() {
+        return MethodDefVisitor.findMethodsIn(this);
+    }
+
     public List<ILocalVariable> getVariableReferencesNamed(String name) {
         return ILocalVariableVisitor.findOccurrencesIn(this, name);
     }

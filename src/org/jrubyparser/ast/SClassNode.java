@@ -34,6 +34,7 @@ import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 import org.jrubyparser.StaticScope;
 import org.jrubyparser.util.ILocalVariableVisitor;
+import org.jrubyparser.util.MethodDefVisitor;
 
 /** 
  * Singleton class definition.
@@ -126,8 +127,19 @@ public class SClassNode extends Node implements ILocalScope, IModuleScope {
     public void setReceiver(Node receiver) {
         this.receiverNode = adopt(receiver);
     }
-    
+
+    /**
+     * Returns a list of all Method Nodes included in the module's ast.
+     *
+     * @return Returns a List of MethodDefNodes
+     */
+    public List<MethodDefNode> getMethodDefs() {
+        return MethodDefVisitor.findMethodsIn(this);
+    }
+
+
     public List<ILocalVariable> getVariableReferencesNamed(String name) {
         return ILocalVariableVisitor.findOccurrencesIn(this, name);
     }    
 }
+
