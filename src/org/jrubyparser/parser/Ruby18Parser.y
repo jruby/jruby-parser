@@ -853,7 +853,7 @@ arg           : lhs '=' arg {
                   $$ = new NotNode(support.union($1, $2), support.getConditionNode($2));
               }
               | tTILDE arg {
-                  $$ = support.getOperatorCallNode($2, "~");
+                  $$ = support.getOperatorCallNode(support.union($1, $2), $2, "~");
               }
               | arg tLSHFT arg {
                   $$ = support.getOperatorCallNode($1, "<<", $3, support.getPosition(null));

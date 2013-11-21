@@ -364,7 +364,7 @@ stmt_or_begin   : stmt {
                 | kBEGIN {
                    support.yyerror("BEGIN is permitted only at toplevel");
                 } tLCURLY top_compstmt tRCURLY {
-                    $$ = new BeginNode(support.getPosition($1), $2);
+                   $$ = new BeginNode(support.union($1, $3), $2);
                 }
 
 stmt            : kALIAS fitem {
@@ -412,7 +412,7 @@ stmt            : kALIAS fitem {
                     if (support.isInDef() || support.isInSingle()) {
                         support.warn(ID.END_IN_METHOD, $1.getPosition(), "END in method; use at_exit");
                     }
-                    $$ = new PostExeNode($1.getPosition(), $3);
+                    $$ = new PostExeNode(support.union($1, $4), $3);
                 }
                 | command_asgn
                 | mlhs '=' command_call {
@@ -543,22 +543,23 @@ command        : operation command_args %prec tLOWEST {
                     $$ = support.new_super($2, $1); // .setPosFrom($2);
                 }
                 | kYIELD command_args {
-                    $$ = support.new_yield($1.getPosition(), $2);
+                    $$ = support.new_yield(support.union($1, $2), $2);
                 }
                 | kRETURN call_args {
-                    $$ = new ReturnNode(support.union($1, $2), support.ret_args($2, $1.getPosition()));
+                    $$ = new ReturnNode(support.union($1, $2), support.ret_args($2, $2.getPosition()));
                 }
                 | kBREAK call_args {
-                    $$ = new BreakNode(support.union($1, $2), support.ret_args($2, $1.getPosition()));
+                    $$ = new BreakNode(support.union($1, $2), support.ret_args($2, $2.getPosition()));
                 }
                 | kNEXT call_args {
-                    $$ = new NextNode(support.union($1, $2), support.ret_args($2, $1.getPosition()));
+                    $$ = new NextNode(support.union($1, $2), support.ret_args($2, $2.getPosition()));
                 }
 
 // MultipleAsgnNode:mlhs - [!null]
 mlhs            : mlhs_basic
                 | tLPAREN mlhs_inner rparen {
                     $$ = $2;
+                    $<Node>$.setPosition(support.union($1, $3));
                 }
 
 // MultipleAsgnNode:mlhs_entry - mlhs w or w/o parens [!null]
@@ -566,7 +567,8 @@ mlhs_inner      : mlhs_basic {
                     $$ = $1;
                 }
                 | tLPAREN mlhs_inner rparen {
-                    $$ = new MultipleAsgnNode($1.getPosition(), support.newArrayNode($1.getPosition(), $2), null, null);
+                    SourcePosition pos = support.union($1, $3);
+                    $$ = new MultipleAsgnNode(pos, support.newArrayNode(pos, $2), null, null);
                 }
 
 // MultipleAsgnNode:mlhs_basic - multiple left hand side (basic because used in multiple context) [!null]
@@ -604,6 +606,7 @@ mlhs_basic      : mlhs_head {
 mlhs_item       : mlhs_node
                 | tLPAREN mlhs_inner rparen {
                     $$ = $2;
+                    $<Node>$.setPosition(support.union($1, $3));
                 }
 
 // Set of mlhs terms at front of mlhs (a, *b, d, e = arr  # a is head)
@@ -645,7 +648,7 @@ mlhs_node       : user_variable {
                         support.yyerror("dynamic constant assignment");
                     }
 
-                    SourcePosition position = support.getPosition($1);
+                    SourcePosition position = support.union($1, $3);
 
                     $$ = new ConstDeclNode(position, null, support.new_colon2(position, $1, (String) $3.getValue()), null);
                 }
@@ -654,7 +657,7 @@ mlhs_node       : user_variable {
                         support.yyerror("dynamic constant assignment");
                     }
 
-                    SourcePosition position = $1.getPosition();
+                    SourcePosition position = support.union($1, $2);
 
                     $$ = new ConstDeclNode(position, null, support.new_colon3(position, (String) $2.getValue()), null);
                 }
@@ -685,7 +688,7 @@ lhs             : user_variable {
                         support.yyerror("dynamic constant assignment");
                     }
 
-                    SourcePosition position = support.getPosition($1);
+                    SourcePosition position = support.union($1, $3);
 
                     $$ = new ConstDeclNode(position, null, support.new_colon2(position, $1, (String) $3.getValue()), null);
                 }
@@ -694,7 +697,7 @@ lhs             : user_variable {
                         support.yyerror("dynamic constant assignment");
                     }
 
-                    SourcePosition position = $1.getPosition();
+                    SourcePosition position = support.union($1, $2);
 
                     $$ = new ConstDeclNode(position, null, support.new_colon3(position, (String) $2.getValue()), null);
                 }
@@ -928,10 +931,10 @@ arg             : lhs '=' arg {
                     $$ = support.getOperatorCallNode($1, "!~", $3, lexer.getPosition());
                 }
                 | tBANG arg {
-                    $$ = support.getOperatorCallNode(support.getConditionNode($2), "!");
+                    $$ = support.getOperatorCallNode(support.union($1, $2), support.getConditionNode($2), "!");
                 }
                 | tTILDE arg {
-                    $$ = support.getOperatorCallNode($2, "~");
+                    $$ = support.getOperatorCallNode(support.union($1, $2), $2, "~");
                 }
                 | arg tLSHFT arg {
                     $$ = support.getOperatorCallNode($1, "<<", $3, lexer.getPosition());
@@ -1113,14 +1116,13 @@ primary         : literal
                 } rparen {
                     support.warning(ID.GROUPED_EXPRESSION, $1.getPosition(), "(...) interpreted as grouped expression");
                     $$ = $2;
+                    $<Node>$.setPosition(support.union($1, $4));
                 }
                 | tLPAREN compstmt tRPAREN {
                     SourcePosition pos = support.union($1, $3);
-                    Node implicitNil = $2 == null ? new ImplicitNilNode(pos) : $2;
-                    // compstmt position includes both parens around it
-                    if (implicitNil != null) implicitNil.setPosition(pos);
-
-                    $$ = implicitNil;
+                    Node value = $2 == null ? new ImplicitNilNode(pos) : $2;
+                    $$ = value;
+                    $<ISourcePositionHolder>$.setPosition(pos);
                 }
                 | primary_value tCOLON2 tCONSTANT {
                     $$ = support.new_colon2(support.union($1, $3), $1, (String) $3.getValue());
@@ -1157,10 +1159,13 @@ primary         : literal
                 }
                 | kNOT tLPAREN2 expr rparen {
                     $$ = support.getOperatorCallNode($1, support.getConditionNode($3));
+                    $<ISourcePositionHolder>$.setPosition(support.union($1, $4));
                     $<CallNode>$.setName("!");
                 }
                 | kNOT tLPAREN2 rparen {
                     $$ = support.getOperatorCallNode($1, null);
+
+                    $<ISourcePositionHolder>$.setPosition(support.union($1, $3));
                     $<CallNode>$.setName("!");
                 }
                 | operation brace_block {
@@ -1478,7 +1483,7 @@ lambda          : /* none */  {
 
 f_larglist      : tLPAREN2 f_args opt_bv_decl tRPAREN {
                     $$ = $2;
-                    $<ISourcePositionHolder>$.setPosition(support.union($1, $3));
+                    $<ISourcePositionHolder>$.setPosition(support.union($1, $4));
                 }
                 | f_args opt_bv_decl {
                     $$ = $1;
@@ -2017,6 +2022,7 @@ f_arg_item      : f_norm_arg {
                 }
                 | tLPAREN f_margs rparen {
                     $$ = $2;
+                    $<Node>$.setPosition(support.union($1, $3));
                     /*            {
             ID tid = internal_id();
             arg_var(tid);
@@ -2147,6 +2153,7 @@ singleton       : var_ref {
                     }
                     support.checkExpression($3);
                     $$ = $3;
+                    $<Node>$.setPosition(support.union($1, $4));
                 }
 
 // [!null]

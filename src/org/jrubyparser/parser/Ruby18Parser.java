@@ -2218,7 +2218,7 @@ states[9] = new ParserState() {
 };
 states[210] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
-                  yyVal = support.getOperatorCallNode(((Node)yyVals[0+yyTop]), "~");
+                  yyVal = support.getOperatorCallNode(support.union(((Token)yyVals[-1+yyTop]), ((Node)yyVals[0+yyTop])), ((Node)yyVals[0+yyTop]), "~");
     return yyVal;
   }
 };

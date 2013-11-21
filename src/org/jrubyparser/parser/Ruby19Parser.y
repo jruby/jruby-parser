@@ -387,16 +387,17 @@ stmt            : kALIAS fitem {
                 | var_lhs tOP_ASGN command_call {
                     support.checkExpression($3);
 
+                    SourcePosition pos = support.union($1, $3);
                     String asgnOp = (String) $2.getValue();
                     if (asgnOp.equals("||")) {
                         $1.setValueNode($3);
-                        $$ = new OpAsgnOrNode(support.union($1, $3), support.gettable2($1), $1);
+                        $$ = new OpAsgnOrNode(pos, support.gettable2($1), $1);
                     } else if (asgnOp.equals("&&")) {
                         $1.setValueNode($3);
-                        $$ = new OpAsgnAndNode(support.union($1, $3), support.gettable2($1), $1);
+                        $$ = new OpAsgnAndNode(pos, support.gettable2($1), $1);
                     } else {
                         $1.setValueNode(support.getOperatorCallNode(support.gettable2($1), asgnOp, $3));
-                        $1.setPosition(support.union($1, $3));
+                        $1.setPosition(pos);
                         $$ = $1;
                     }
                 }
@@ -455,13 +456,13 @@ expr_value      : expr {
 command_call    : command
                 | block_command
                 | kRETURN call_args {
-                    $$ = new ReturnNode(support.union($1, $2), support.ret_args($2, support.getPosition($1)));
+                    $$ = new ReturnNode(support.union($1, $2), support.ret_args($2, $2.getPosition()));
                 }
                 | kBREAK call_args {
-                    $$ = new BreakNode(support.union($1, $2), support.ret_args($2, support.getPosition($1)));
+                    $$ = new BreakNode(support.union($1, $2), support.ret_args($2, $2.getPosition()));
                 }
                 | kNEXT call_args {
-                    $$ = new NextNode(support.union($1, $2), support.ret_args($2, support.getPosition($1)));
+                    $$ = new NextNode(support.union($1, $2), support.ret_args($2, $2.getPosition()));
                 }
 
 // Node:block_command - A call with a block (foo.bar {...}, foo::bar {...}, bar {...}) [!null]
@@ -1087,10 +1088,13 @@ primary         : literal
                 }
                 | kNOT tLPAREN2 expr rparen {
                     $$ = support.getOperatorCallNode($1, support.getConditionNode($3));
+                    $<CallNode>$.setPosition(support.union($1, $4));
                     $<CallNode>$.setName("!");
                 }
                 | kNOT tLPAREN2 rparen {
                     $$ = support.getOperatorCallNode($1, null);
+
+                    $<CallNode>$.setPosition(support.union($1, $3));
                     $<CallNode>$.setName("!");
                 }
                 | operation brace_block {
@@ -1384,7 +1388,7 @@ lambda          : /* none */  {
 
 f_larglist      : tLPAREN2 f_args opt_bv_decl rparen {
                     $$ = $2;
-                    $<ISourcePositionHolder>$.setPosition(support.union($1, $3));
+                    $<ISourcePositionHolder>$.setPosition(support.union($1, $4));
                 }
                 | f_args opt_bv_decl {
                     $$ = $1;

@@ -310,14 +310,6 @@ public class ParserSupport {
     }
     
     public SourcePosition union(ISourcePositionHolder first, ISourcePositionHolder second) {
-        while (first instanceof NewlineNode) {
-            first = ((NewlineNode) first).getNextNode();
-        }
-
-        while (second instanceof NewlineNode) {
-            second = ((NewlineNode) second).getNextNode();
-        }
-        
         if (second == null) return first.getPosition();
         if (first == null) return second.getPosition();
         
@@ -380,10 +372,10 @@ public class ParserSupport {
                 new ArrayNode(createEmptyArgsNodePosition(receiver.getPosition())));
     }
 
-    public Node getOperatorCallNode(Node firstNode, String operator) {
+    public Node getOperatorCallNode(SourcePosition position, Node firstNode, String operator) {
         checkExpression(firstNode);
 
-        return new CallNode(firstNode.getPosition(), firstNode, operator, null);
+        return new CallNode(position, firstNode, operator, null);
     }
     
     public Node getOperatorCallNode(Node firstNode, String operator, Node secondNode) {
