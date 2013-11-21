@@ -40,7 +40,7 @@ public class BeginNode extends Node {
     public BeginNode(SourcePosition position, Node bodyNode) {
         super(position);
 
-        assert bodyNode != null : "bodyNode is not null";
+//        assert bodyNode != null : "bodyNode is not null";
         
         this.bodyNode = adopt(bodyNode);
     }

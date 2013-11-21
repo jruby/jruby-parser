@@ -53,7 +53,6 @@ public class UntilNode extends Node {
         super(position);
         
         assert conditionNode != null : "conditionNode is not null";
-        assert bodyNode != null : "bodyNode is not null";
         
         this.conditionNode = adopt(conditionNode);
         this.bodyNode = adopt(bodyNode);

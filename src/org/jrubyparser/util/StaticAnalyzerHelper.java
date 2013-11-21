@@ -127,6 +127,9 @@ public class StaticAnalyzerHelper {
      * fashion.
      */
     public static Node[] flattenRHSValues(Node rhs) {
+        // FIXME: Identify what this is?
+        if (rhs == null) return new Node[0];
+        
         // 1.8-only logic
         if (rhs.getNodeType() == NodeType.TOARYNODE) rhs = ((ToAryNode) rhs).getValue();
         

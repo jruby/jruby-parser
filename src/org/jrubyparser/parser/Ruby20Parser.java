@@ -3540,7 +3540,7 @@ states[39] = new ParserState() {
 };
 states[301] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
-                    yyVal = support.new_fcall(((Token)yyVals[-1+yyTop]), ((IterNode)yyVals[0+yyTop]), null);
+                    yyVal = support.new_fcall(((Token)yyVals[-1+yyTop]), null, ((IterNode)yyVals[0+yyTop]));
     return yyVal;
   }
 };

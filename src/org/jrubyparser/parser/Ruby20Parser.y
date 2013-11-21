@@ -1169,7 +1169,7 @@ primary         : literal
                     $<CallNode>$.setName("!");
                 }
                 | operation brace_block {
-                    $$ = support.new_fcall($1, $2, null);
+                    $$ = support.new_fcall($1, null, $2);
                 }
                 | method_call
                 | method_call brace_block {
