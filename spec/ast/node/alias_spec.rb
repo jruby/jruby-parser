@@ -1,9 +1,9 @@
-require_relative '../helpers'
+require_relative '../../helpers'
 
-describe Parser do
+describe org.jrubyparser.ast.AliasNode do
   VERSIONS.each do |v|
     it "Should parse alias node of symbols" do
-      parse("alias :new_name :old_name", v).find_node(:alias).tap do |a|
+      rparse("alias :new_name :old_name", v).find_node(:alias).tap do |a|
         a.new_name_string.should == "new_name"
         a.old_name_string.should == "old_name"
         a.new_name.should have_position(0, 0, 6, 15)
@@ -12,7 +12,7 @@ describe Parser do
     end
 
     it "Should parse alias node of CONSTANTS" do
-      parse("alias NEW OLD", v).find_node(:alias).tap do |a|
+      rparse("alias NEW OLD", v).find_node(:alias).tap do |a|
         a.new_name_string.should == "NEW"
         a.old_name_string.should == "OLD"
         a.new_name.should have_position(0, 0, 6, 9)
