@@ -307,7 +307,7 @@ top_stmts     : none
                     $$ = support.newline_node($1, support.getPosition($1, true));
               }
               | top_stmts terms top_stmt {
-                    $$ = support.appendToBlock($1, support.newline_node($3, support.getPosition($3)));
+                    $$ = support.appendToBlock($1, support.newline_node($3, support.getPosition($3, true)));
               }
               | error top_stmt {
                     $$ = $2;
@@ -351,7 +351,7 @@ stmts           : none
                     $$ = support.newline_node($1, support.getPosition($1, true));
                 }
                 | stmts terms stmt_or_begin {
-                    $$ = support.appendToBlock($1, support.newline_node($3, support.getPosition($3)));
+                    $$ = support.appendToBlock($1, support.newline_node($3, support.getPosition($3, true)));
                 }
                 | error stmt {
                     $$ = $2;
@@ -2091,14 +2091,14 @@ f_block_opt     : tIDENTIFIER '=' primary_value {
                 }
 
 f_block_optarg  : f_block_opt {
-                    $$ = new BlockNode($1.getPosition()).add($1);
+                    $$ = new BlockNode(support.getPosition($1)).add($1);
                 }
                 | f_block_optarg ',' f_block_opt {
                     $$ = support.appendToBlock($1, $3);
                 }
 
 f_optarg        : f_opt {
-                    $$ = new BlockNode($1.getPosition()).add($1);
+                    $$ = new BlockNode(support.getPosition($1)).add($1);
                 }
                 | f_optarg ',' f_opt {
                     $$ = support.appendToBlock($1, $3);
