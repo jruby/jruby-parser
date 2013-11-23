@@ -127,8 +127,8 @@ public class StaticAnalyzerHelper {
      * fashion.
      */
     public static Node[] flattenRHSValues(Node rhs) {
-        // FIXME: Identify what this is?
-        if (rhs == null) return new Node[0];
+        // This seems to be a MHS which has no rhs (setValue() never sets a value -- possibly during editing).
+        if (rhs == null) return new Node[] {EMPTY, EMPTY, EMPTY};
         
         // 1.8-only logic
         if (rhs.getNodeType() == NodeType.TOARYNODE) rhs = ((ToAryNode) rhs).getValue();
