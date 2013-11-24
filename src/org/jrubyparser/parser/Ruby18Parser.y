@@ -893,10 +893,13 @@ aref_args     : none
                   $$ = support.arg_concat(support.getPosition($1), $1, $4);
               }
               | assocs trailer {
-                  $$ = support.newArrayNode(support.getPosition($1), new HashNode(support.getPosition(null), $1));
+                  SourcePosition pos = $1.getPosition();
+                  $$ = support.newArrayNode(pos, new HashNode(pos, $1));
               }
               | tSTAR arg opt_nl {
-		  $$ = new NewlineNode(support.getPosition($1), support.newSplatNode(support.getPosition($1), $2));
+                  SourcePosition pos = $1.getPosition();
+                  //FIXME: Should be a union between 1,2
+		  $$ = new NewlineNode(pos, support.newSplatNode(pos, $2));
               }
 
 paren_args    : tLPAREN2 none tRPAREN {
@@ -927,20 +930,22 @@ call_args     : command {
                   $$ = support.arg_blk_pass($<Node>$, $5);
               }
               | assocs opt_block_arg {
-                  $$ = support.newArrayNode(support.getPosition($1), new HashNode(support.getPosition(null), $1));
+                  SourcePosition pos = $1.getPosition();
+                  $$ = support.newArrayNode(pos, new HashNode(pos, $1));
                   $$ = support.arg_blk_pass((Node)$$, $2);
               }
               | assocs ',' tSTAR arg_value opt_block_arg {
-                  $$ = support.arg_concat(support.getPosition($1), support.newArrayNode(support.getPosition($1), new HashNode(support.getPosition(null), $1)), $4);
+                  SourcePosition pos = $1.getPosition();
+                  $$ = support.arg_concat(pos, support.newArrayNode(pos, new HashNode(pos, $1)), $4);
                   $$ = support.arg_blk_pass((Node)$$, $5);
               }
               | args ',' assocs opt_block_arg {
-                  $$ = $1.add(new HashNode(support.getPosition(null), $3));
+                  $$ = $1.add(new HashNode($3.getPosition(), $3));
                   $$ = support.arg_blk_pass((Node)$$, $4);
               }
               | args ',' assocs ',' tSTAR arg opt_block_arg {
                   support.checkExpression($6);
-		  $$ = support.arg_concat(support.getPosition($1), $1.add(new HashNode(support.getPosition(null), $3)), $6);
+		  $$ = support.arg_concat($1.getPosition(), $1.add(new HashNode($3.getPosition(), $3)), $6);
                   $$ = support.arg_blk_pass((Node)$$, $7);
               }
               | tSTAR arg_value opt_block_arg {
@@ -960,31 +965,33 @@ call_args2    : arg_value ',' args opt_block_arg {
                   $$ = support.arg_blk_pass((Node)$$, $5);
 	      }
 	      | arg_value ',' args ',' tSTAR arg_value opt_block_arg {
-                  $$ = support.arg_concat(support.getPosition($1), support.newArrayNode(support.getPosition($1), $1).addAll(new HashNode(support.getPosition(null), $3)), $6);
+                  $$ = support.arg_concat(support.getPosition($1), support.newArrayNode(support.getPosition($1), $1).addAll(new HashNode($3.getPosition(), $3)), $6);
                   $$ = support.arg_blk_pass((Node)$$, $7);
 	      }
 	      | assocs opt_block_arg {
-                  $$ = support.newArrayNode(support.getPosition($1), new HashNode(support.getPosition(null), $1));
+                  SourcePosition pos = $1.getPosition();
+                  $$ = support.newArrayNode(pos, new HashNode(pos, $1));
                   $$ = support.arg_blk_pass((Node)$$, $2);
 	      }
 	      | assocs ',' tSTAR arg_value opt_block_arg {
-                  $$ = support.arg_concat(support.getPosition($1), support.newArrayNode(support.getPosition($1), new HashNode(support.getPosition(null), $1)), $4);
+                  SourcePosition pos = $1.getPosition();
+                  $$ = support.arg_concat(pos, support.newArrayNode(pos, new HashNode(pos, $1)), $4);
                   $$ = support.arg_blk_pass((Node)$$, $5);
 	      }
 	      | arg_value ',' assocs opt_block_arg {
-                  $$ = support.newArrayNode(support.getPosition($1), $1).add(new HashNode(support.getPosition(null), $3));
+                  $$ = support.newArrayNode($1.getPosition(), $1).add(new HashNode($3.getPosition(), $3));
                   $$ = support.arg_blk_pass((Node)$$, $4);
 	      }
 	      | arg_value ',' args ',' assocs opt_block_arg {
-                  $$ = support.newArrayNode(support.getPosition($1), $1).addAll($3).add(new HashNode(support.getPosition(null), $5));
+                  $$ = support.newArrayNode($1.getPosition(), $1).addAll($3).add(new HashNode($5.getPosition(), $5));
                   $$ = support.arg_blk_pass((Node)$$, $6);
 	      }
 	      | arg_value ',' assocs ',' tSTAR arg_value opt_block_arg {
-                  $$ = support.arg_concat(support.getPosition($1), support.newArrayNode(support.getPosition($1), $1).add(new HashNode(support.getPosition(null), $3)), $6);
+                  $$ = support.arg_concat(support.getPosition($1), support.newArrayNode(support.getPosition($1), $1).add(new HashNode($3.getPosition(), $3)), $6);
                   $$ = support.arg_blk_pass((Node)$$, $7);
 	      }
 	      | arg_value ',' args ',' assocs ',' tSTAR arg_value opt_block_arg {
-                  $$ = support.arg_concat(support.getPosition($1), support.newArrayNode(support.getPosition($1), $1).addAll($3).add(new HashNode(support.getPosition(null), $5)), $8);
+                  $$ = support.arg_concat(support.getPosition($1), support.newArrayNode(support.getPosition($1), $1).addAll($3).add(new HashNode($5.getPosition(), $5)), $8);
                   $$ = support.arg_blk_pass((Node)$$, $9);
 	      }
 	      | tSTAR arg_value opt_block_arg {

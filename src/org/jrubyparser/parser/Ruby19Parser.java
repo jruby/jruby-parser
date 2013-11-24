@@ -2193,7 +2193,8 @@ states[308] = new ParserState() {
 };
 states[241] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
-                    yyVal = support.newArrayNode(support.getPosition(((ListNode)yyVals[-1+yyTop])), new HashNode(support.getPosition(null), ((ListNode)yyVals[-1+yyTop])));
+                    SourcePosition pos = ((ListNode)yyVals[-1+yyTop]).getPosition();
+                    yyVal = support.newArrayNode(pos, new HashNode(pos, ((ListNode)yyVals[-1+yyTop])));
                     yyVal = support.arg_blk_pass((Node)yyVal, ((BlockPassNode)yyVals[0+yyTop]));
     return yyVal;
   }
@@ -2289,7 +2290,7 @@ states[41] = new ParserState() {
 };
 states[242] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
-                    yyVal = support.arg_append(((Node)yyVals[-3+yyTop]), new HashNode(support.getPosition(null), ((ListNode)yyVals[-1+yyTop])));
+                    yyVal = support.arg_append(((Node)yyVals[-3+yyTop]), new HashNode(((ListNode)yyVals[-1+yyTop]).getPosition(), ((ListNode)yyVals[-1+yyTop])));
                     yyVal = support.arg_blk_pass((Node)yyVal, ((BlockPassNode)yyVals[0+yyTop]));
     return yyVal;
   }
@@ -4121,7 +4122,7 @@ states[31] = new ParserState() {
 };
 states[232] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
-                    yyVal = support.arg_append(((Node)yyVals[-3+yyTop]), new HashNode(support.getPosition(null), ((ListNode)yyVals[-1+yyTop])));
+                    yyVal = support.arg_append(((Node)yyVals[-3+yyTop]), new HashNode(((ListNode)yyVals[-1+yyTop]).getPosition(), ((ListNode)yyVals[-1+yyTop])));
     return yyVal;
   }
 };
@@ -4194,7 +4195,8 @@ states[32] = new ParserState() {
 };
 states[233] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
-                    yyVal = support.newArrayNode(support.getPosition(((ListNode)yyVals[-1+yyTop])), new HashNode(support.getPosition(null), ((ListNode)yyVals[-1+yyTop])));
+                    SourcePosition pos = ((ListNode)yyVals[-1+yyTop]).getPosition();
+                    yyVal = support.newArrayNode(pos, new HashNode(pos, ((ListNode)yyVals[-1+yyTop])));
     return yyVal;
   }
 };
@@ -4242,7 +4244,7 @@ states[267] = new ParserState() {
   }
 };
 }
-					// line 2017 "Ruby19Parser.y"
+					// line 2019 "Ruby19Parser.y"
 
     /** The parse method use an lexer stream and parse it to an AST node 
      * structure
@@ -4277,4 +4279,4 @@ states[267] = new ParserState() {
     // +++
     // Helper Methods
 }
-					// line 8066 "-"
+					// line 8068 "-"

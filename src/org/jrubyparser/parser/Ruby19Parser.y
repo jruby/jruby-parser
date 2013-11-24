@@ -918,10 +918,11 @@ aref_args       : none
                     $$ = $1;
                 }
                 | args ',' assocs trailer {
-                    $$ = support.arg_append($1, new HashNode(support.getPosition(null), $3));
+                    $$ = support.arg_append($1, new HashNode($3.getPosition(), $3));
                 }
                 | assocs trailer {
-                    $$ = support.newArrayNode(support.getPosition($1), new HashNode(support.getPosition(null), $1));
+                    SourcePosition pos = $1.getPosition();
+                    $$ = support.newArrayNode(pos, new HashNode(pos, $1));
                 }
 
 paren_args      : tLPAREN2 opt_call_args rparen {
@@ -946,11 +947,12 @@ call_args       : command {
                     $$ = support.arg_blk_pass($1, $2);
                 }
                 | assocs opt_block_arg {
-                    $$ = support.newArrayNode(support.getPosition($1), new HashNode(support.getPosition(null), $1));
+                    SourcePosition pos = $1.getPosition();
+                    $$ = support.newArrayNode(pos, new HashNode(pos, $1));
                     $$ = support.arg_blk_pass((Node)$$, $2);
                 }
                 | args ',' assocs opt_block_arg {
-                    $$ = support.arg_append($1, new HashNode(support.getPosition(null), $3));
+                    $$ = support.arg_append($1, new HashNode($3.getPosition(), $3));
                     $$ = support.arg_blk_pass((Node)$$, $4);
                 }
                 | block_arg {
