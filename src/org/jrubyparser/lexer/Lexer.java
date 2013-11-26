@@ -2111,8 +2111,8 @@ public class Lexer {
             yaccValue = new Token("<<", getPosition());
             return Tokens.tLSHFT;
         default:
-            yaccValue = new Token("<", getPosition());
             src.unread(c);
+            yaccValue = new Token("<", getPosition());
             return Tokens.tLT;
         }
     }
