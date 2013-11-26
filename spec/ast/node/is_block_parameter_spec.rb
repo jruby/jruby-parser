@@ -28,6 +28,14 @@ describe org.jrubyparser.ast.Node do
           caret_node.block_parameter?.should == false
         end
 
+        caret_parse("proc { |c; ^d| }", v).tap do |root, caret_node|
+          caret_node.block_parameter?.should == true
+        end
+
+        caret_parse("proc { |c; d, ^e| }", v).tap do |root, caret_node|
+          caret_node.block_parameter?.should == true
+        end
+
       end
     end
   end

@@ -51,6 +51,7 @@ public class ArgsNode extends Node {
     private ListNode keywords; // 2.0+
     private KeywordRestArgNode keywordRest; // 2.0+
     private BlockArgNode block;
+    private ListNode shadow; // 1.9+ (block-only)
 
     /**
      * @param position of the arguments
@@ -59,6 +60,7 @@ public class ArgsNode extends Node {
      * @param rest The rest argument (*args).
      * @param post Required nodes at the end of the method definition
      * @param block An optional block argument (&amp;arg).
+     * @param shadow Shadowed block variables (if a block)
      **/
     public ArgsNode(SourcePosition position, ListNode pre, ListNode optional, RestArgNode rest,
             ListNode post, ListNode keywords, KeywordRestArgNode keywordRest, BlockArgNode block) {
@@ -165,6 +167,14 @@ public class ArgsNode extends Node {
      */
     public BlockArgNode getBlock() {
         return block;
+    }
+    
+    public ListNode getShadow() {
+        return shadow;
+    }
+    
+    public void setShadow(ListNode shadow) {
+        this.shadow = (ListNode) adopt(shadow);
     }
 
     /**

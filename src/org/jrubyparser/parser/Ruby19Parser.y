@@ -228,11 +228,12 @@ public class Ruby19Parser implements RubyParser {
 %type <Node> fitem
    // ENEBO: begin all new types
 %type <Node> f_arg_item
-%type <Node> bv_decls opt_bv_decl lambda_body 
+%type <ListNode> bv_decls opt_bv_decl
+%type <Node> lambda_body 
 %type <LambdaNode> lambda
 %type <Node> mlhs_inner f_block_opt for_var
 %type <Node> opt_call_args f_marg f_margs 
-%type <Token> bvar
+%type <Node> bvar
    // ENEBO: end all new types
 
 %type <Token> rparen rbracket reswords f_bad_arg
@@ -1348,31 +1349,35 @@ opt_block_param : none {
                 }
 
 block_param_def : tPIPE opt_bv_decl tPIPE {
-                    $$ = support.new_args(support.getPosition(null), null, null, null, null, (BlockArgNode) null);
+                    $$ = support.new_args(support.union($1, $3), null, null, null, null, (BlockArgNode) null);
+                    $<ArgsNode>$.setShadow($2);
                 }
                 | tOROP {
-                    $$ = support.new_args(support.getPosition(null), null, null, null, null, (BlockArgNode) null);
+                    $$ = support.new_args($1.getPosition(), null, null, null, null, (BlockArgNode) null);
                 }
                 | tPIPE block_param opt_bv_decl tPIPE {
+                    $<Node>2.setPosition(support.union($1, $4));
+                    $<ArgsNode>2.setShadow($3);
                     $$ = $2;
                 }
 
 // shadowed block variables....
-opt_bv_decl     : none 
-                | ';' bv_decls {
+opt_bv_decl     : opt_nl {
                     $$ = null;
+                }
+                | opt_nl ';' bv_decls opt_nl {
+                    $$ = $3;
                 }
 
-// ENEBO: This is confusing...
 bv_decls        : bvar {
-                    $$ = null;
+                    $$ = new ArrayNode($1.getPosition(), $1);
                 }
                 | bv_decls ',' bvar {
-                    $$ = null;
+                    $$ = $1.add($3);
                 }
 
 bvar            : tIDENTIFIER {
-                    support.new_bv($1);
+                    $$ = support.new_bv($1);
                 }
                 | f_bad_arg {
                     $$ = null;

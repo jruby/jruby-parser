@@ -1675,7 +1675,7 @@ states[263] = new ParserState() {
 states[394] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
                     yyVal = ((ArgsNode)yyVals[-1+yyTop]);
-                    ((ISourcePositionHolder)yyVal).setPosition(support.union(((ArgsNode)yyVals[-1+yyTop]), ((Node)yyVals[0+yyTop])));
+                    ((ISourcePositionHolder)yyVal).setPosition(support.union(((ArgsNode)yyVals[-1+yyTop]), ((ListNode)yyVals[0+yyTop])));
     return yyVal;
   }
 };
@@ -4209,7 +4209,8 @@ states[120] = new ParserState() {
 };
 states[382] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
-                    yyVal = support.new_args(((Token)yyVals[-2+yyTop]).getPosition(), null, null, null, null, (ArgsTailHolder) null);
+                    yyVal = support.new_args(support.union(((Token)yyVals[-2+yyTop]), ((Token)yyVals[0+yyTop])), null, null, null, null, (BlockArgNode) null);
+                    ((ArgsNode)yyVal).setShadow(((ListNode)yyVals[-1+yyTop]));
     return yyVal;
   }
 };
@@ -4240,7 +4241,7 @@ states[121] = new ParserState() {
 };
 states[383] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
-                    yyVal = support.new_args(((Token)yyVals[0+yyTop]).getPosition(), null, null, null, null, (ArgsTailHolder) null);
+                    yyVal = support.new_args(((Token)yyVals[0+yyTop]).getPosition(), null, null, null, null, (BlockArgNode) null);
     return yyVal;
   }
 };
@@ -4280,6 +4281,8 @@ states[253] = new ParserState() {
 };
 states[384] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
+                    ((Node)yyVals[-2+yyTop]).setPosition(support.union(((Token)yyVals[-3+yyTop]), ((Token)yyVals[0+yyTop])));
+                    ((ArgsNode)yyVals[-2+yyTop]).setShadow(((ListNode)yyVals[-1+yyTop]));
                     yyVal = ((ArgsNode)yyVals[-2+yyTop]);
     return yyVal;
   }
@@ -4369,7 +4372,7 @@ states[255] = new ParserState() {
 };
 states[386] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
-                    yyVal = null;
+                    yyVal = ((ListNode)yyVals[-1+yyTop]);
     return yyVal;
   }
 };
@@ -4414,7 +4417,7 @@ states[256] = new ParserState() {
 };
 states[387] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
-                    yyVal = null;
+                    yyVal = new ArrayNode(((Node)yyVals[0+yyTop]).getPosition(), ((Node)yyVals[0+yyTop]));
     return yyVal;
   }
 };
@@ -4453,7 +4456,7 @@ states[257] = new ParserState() {
 };
 states[388] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
-                    yyVal = null;
+                    yyVal = ((ListNode)yyVals[-2+yyTop]).add(((Node)yyVals[0+yyTop]));
     return yyVal;
   }
 };
@@ -4493,7 +4496,7 @@ states[258] = new ParserState() {
 };
 states[389] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
-                    support.new_bv(((Token)yyVals[0+yyTop]));
+                    yyVal = support.new_bv(((Token)yyVals[0+yyTop]));
     return yyVal;
   }
 };
@@ -4636,7 +4639,7 @@ states[523] = new ParserState() {
   }
 };
 }
-					// line 2221 "Ruby20Parser.y"
+					// line 2224 "Ruby20Parser.y"
 
     /** The parse method use an lexer stream and parse it to an AST node 
      * structure
@@ -4668,4 +4671,4 @@ states[523] = new ParserState() {
         return support.getResult();
     }
 }
-					// line 8693 "-"
+					// line 8696 "-"
