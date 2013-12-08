@@ -86,6 +86,7 @@ import org.jrubyparser.ast.NotNode;
 import org.jrubyparser.ast.OpAsgnAndNode;
 import org.jrubyparser.ast.OpAsgnNode;
 import org.jrubyparser.ast.OpAsgnOrNode;
+import org.jrubyparser.ast.OptArgNode;
 import org.jrubyparser.ast.PostExeNode;
 import org.jrubyparser.ast.PreExeNode;
 import org.jrubyparser.ast.RedoNode;
@@ -1790,7 +1791,7 @@ f_opt          : tIDENTIFIER '=' arg_value {
                        support.yyerror("duplicate optional argument name");
                    }
 		   support.getCurrentScope().getLocalScope().addVariable(identifier);
-                   $$ = support.assignable($1, $3);
+                   $$ = new OptArgNode(support.union($1, $3), support.assignable($1, $3));
               }
 
 // ListNode:f_optarg - one or more optional arguments in a method definition [!null]

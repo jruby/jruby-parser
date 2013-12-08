@@ -342,6 +342,18 @@ public abstract class Node implements ISourcePositionHolder {
         
         return null;
     }
+
+    /**
+     * Return the closest local variable scope to this node (which may be itself) or return
+     * null if none can be found.
+     */
+    public ILocalScope getClosestILocalScope() {
+        for (Node p = this; p != null; p = p.getParent()) {
+            if (p instanceof ILocalScope) return (ILocalScope) p;
+        }
+        
+        return null;
+    }
     
     /**
      * Get closest parent Module/Class/SClass for this node

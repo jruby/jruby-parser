@@ -89,6 +89,7 @@ import org.jrubyparser.ast.NotNode;
 import org.jrubyparser.ast.OpAsgnAndNode;
 import org.jrubyparser.ast.OpAsgnNode;
 import org.jrubyparser.ast.OpAsgnOrNode;
+import org.jrubyparser.ast.OptArgNode;
 import org.jrubyparser.ast.PostExeNode;
 import org.jrubyparser.ast.PreExeNode;
 import org.jrubyparser.ast.RedoNode;
@@ -148,7 +149,7 @@ public class Ruby18Parser implements RubyParser {
         support.setWarnings(warnings);
         lexer.setWarnings(warnings);
     }
-					// line 152 "-"
+					// line 153 "-"
   // %token constants
   public static final int kCLASS = 257;
   public static final int kMODULE = 258;
@@ -3689,7 +3690,7 @@ states[464] = new ParserState() {
                        support.yyerror("duplicate optional argument name");
                    }
 		   support.getCurrentScope().getLocalScope().addVariable(identifier);
-                   yyVal = support.assignable(((Token)yyVals[-2+yyTop]), ((Node)yyVals[0+yyTop]));
+                   yyVal = new OptArgNode(support.union(((Token)yyVals[-2+yyTop]), ((Node)yyVals[0+yyTop])), support.assignable(((Token)yyVals[-2+yyTop]), ((Node)yyVals[0+yyTop])));
     return yyVal;
   }
 };
@@ -3958,7 +3959,7 @@ states[66] = new ParserState() {
   }
 };
 }
-					// line 1910 "Ruby18Parser.y"
+					// line 1911 "Ruby18Parser.y"
 
     /** The parse method use an lexer stream and parse it to an AST node 
      * structure
@@ -3994,4 +3995,4 @@ states[66] = new ParserState() {
     // +++
     // Helper Methods
 }
-					// line 7841 "-"
+					// line 7842 "-"

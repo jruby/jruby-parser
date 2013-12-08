@@ -27,6 +27,7 @@
  ***** END LICENSE BLOCK *****/
 package org.jrubyparser.ast;
 
+import java.util.List;
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 
@@ -34,7 +35,7 @@ import org.jrubyparser.SourcePosition;
  *
  * @author enebo
  */
-public class OptArgNode extends Node implements INameNode {
+public class OptArgNode extends Node implements IParameter {
     private Node value;
 
     public OptArgNode(SourcePosition position, Node value) {
@@ -92,5 +93,17 @@ public class OptArgNode extends Node implements INameNode {
     
     public SourcePosition getLexicalNamePosition() {
         return getNamePosition();
+    }
+
+    public ILocalVariable getDeclaration() {
+        return this;
+    }
+
+    public List<ILocalVariable> getOccurrences() {
+        return getDefinedScope().getVariableReferencesNamed(getName());
+    }
+
+    public IScope getDefinedScope() {
+        return getClosestIScope();
     }
 }

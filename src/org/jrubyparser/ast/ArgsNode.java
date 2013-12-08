@@ -188,19 +188,19 @@ public class ArgsNode extends Node {
 
         if (getPreCount() > 0) {
             for (Node preArg: getPre().childNodes()) {
-                if (preArg instanceof INameNode) parameters.add(((INameNode) preArg).getName());
+                if (preArg instanceof IParameter) parameters.add(((IParameter) preArg).getName());
             }
         }
 
         if (getOptionalCount() > 0) {
             for (Node optArg: getOptional().childNodes()) {
-                if (optArg instanceof INameNode) parameters.add(((INameNode) optArg).getName());
+                if (optArg instanceof IParameter) parameters.add(((IParameter) optArg).getName());
             }
         }
 
         if (getPostCount() > 0) {
             for (Node postArg: getPost().childNodes()) {
-                if (postArg instanceof INameNode) parameters.add(((INameNode) postArg).getName());
+                if (postArg instanceof IParameter) parameters.add(((IParameter) postArg).getName());
             }
         }
 
@@ -218,19 +218,19 @@ public class ArgsNode extends Node {
 
         if (getPreCount() > 0) {
             for (Node preArg: getPre().childNodes()) {
-                if (preArg instanceof INameNode) parameters.add(preArg);
+                if (preArg instanceof IParameter) parameters.add(preArg);
             }
         }
 
         if (getOptionalCount() > 0) {
             for (Node optArg: getOptional().childNodes()) {
-                if (optArg instanceof INameNode) parameters.add(optArg);
+                if (optArg instanceof IParameter) parameters.add(optArg);
             }
         }
 
         if (getPostCount() > 0) {
             for (Node postArg: getPost().childNodes()) {
-                if (postArg instanceof INameNode) parameters.add(postArg);
+                if (postArg instanceof IParameter) parameters.add(postArg);
             }
         }
 
