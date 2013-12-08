@@ -65,6 +65,17 @@ describe org.jrubyparser.ast.Node do
           caret_nodes.first.occurrences.to_a.should =~ caret_nodes
         end
       end
+
+      if v == 1.8
+        carets_parse("proc { |^a| proc { |^a| ^a } }", v).tap do |_, caret_nodes|
+          caret_nodes.last.occurrences.to_a.should =~ caret_nodes
+        end
+      else
+        carets_parse("proc { |a| proc { |^a| ^a } }", v).tap do |_, caret_nodes|
+          caret_nodes.last.occurrences.to_a.should =~ caret_nodes
+        end
+      end
+
       carets_parse("proc { |^a| ^a }", v).tap do |_, caret_nodes|
         caret_nodes.first.occurrences.to_a.should =~ caret_nodes
       end
