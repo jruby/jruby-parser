@@ -51,7 +51,7 @@ public class ListNode extends Node {
     public ListNode(SourcePosition position, Node firstNode) {
         this(position);
         
-        list = new ArrayList<Node>(4);
+        list = new ArrayList<Node>();
         list.add(adopt(firstNode));
     }
     
