@@ -46,14 +46,14 @@ public class MultipleAsgnNode extends AssignableNode {
     public MultipleAsgnNode(SourcePosition position, ListNode pre, Node rest) {
         this(position, pre, rest, null);
     }
-    
+
     // 1.9+ constructor
     public MultipleAsgnNode(SourcePosition position, ListNode pre, Node rest, ListNode post) {
         super(position);
         this.pre = (ListNode) adopt(pre);
         this.rest = adopt(rest);
         this.post = (ListNode) adopt(post);
-        
+
         assert pre != null || rest != null : "pre or rest must exist in a multipleasgn19node";
     }
 
@@ -69,14 +69,14 @@ public class MultipleAsgnNode extends AssignableNode {
         if (!super.isSame(node)) return false;
 
         MultipleAsgnNode other = (MultipleAsgnNode) node;
-        
+
         // Make sure counts are correct since a nodes childNodes will exclude adds of null.
         // Weird scenario of no rest arg method where 2pre == 1pre, 1post without this.
         if (getPreCount() != other.getPreCount() || getPostCount() != other.getPostCount()) return false;
         if (getRest() == null && other.getRest() == null) {
             List<Node> kids = childNodes();
-            List<Node> otherKids = childNodes();
-                
+            List<Node> otherKids = other.childNodes();
+
             for (int i = 0; i < kids.size(); i++) {
                 if (!kids.get(i).isSame(otherKids.get(i))) return false;
             }
@@ -86,12 +86,12 @@ public class MultipleAsgnNode extends AssignableNode {
         if (!getRest().isSame(other.getRest())) return false;
 
         List<Node> kids = childNodes();
-        List<Node> otherKids = childNodes();
-                
+        List<Node> otherKids = other.childNodes();
+
         for (int i = 0; i < kids.size(); i++) {
             if (!kids.get(i).isSame(otherKids.get(i))) return false;
         }
-        
+
         return true;
     }
 
@@ -103,7 +103,7 @@ public class MultipleAsgnNode extends AssignableNode {
     public Object accept(NodeVisitor iVisitor) {
         return iVisitor.visitMultipleAsgnNode(this);
     }
-    
+
     public Node getRest() {
         return rest;
     }
@@ -129,32 +129,32 @@ public class MultipleAsgnNode extends AssignableNode {
     public ListNode getPost() {
         return post;
     }
-    
+
     public int getRequiredCount() {
         return getPreCount() + getPostCount();
     }
-    
+
     /**
      * In cases where some or all the the LHS to RHS assignments are known then return a list of
-     * known mappings.  This will only work on a subset of simple static resolvable mappings.  
+     * known mappings.  This will only work on a subset of simple static resolvable mappings.
      * Something like:
      * <pre>
      *   a, *b, c = 1,2,3,4
      * </pre>
      * will work since all values can be computed simply ([a=1,b=[2,3],c=4]).  For the case of b
-     * an ArrayNode will get constructed with proper range offsets as a computed node.  This 
+     * an ArrayNode will get constructed with proper range offsets as a computed node.  This
      * example used FixnumNodes but the node type can be anything which can be statically resolved.
-     * 
+     *
      * However:
      * <pre>
      *   a, *b, c = random_call
      *   a, *b, c = *[1,2,3,4]
      * </pre>
-     * will not work since we cannot know what random_call will return.  The splat case could be 
-     * made to work since it is statically resolvable, but at this point we do not want to 
+     * will not work since we cannot know what random_call will return.  The splat case could be
+     * made to work since it is statically resolvable, but at this point we do not want to
      * replicate too much of Ruby's semantics.  So statically resolvable but compound static
      * resolution is not currently in scope for this method (although it might be added later).
-     * 
+     *
      * Note, this will return a partial list when part of the list is statically resolvable and
      * the unresolvable portions will have a null value to indicate they cannot be resolved:
      * <pre>
@@ -168,11 +168,11 @@ public class MultipleAsgnNode extends AssignableNode {
     public List<NodePair> calculateStaticAssignments() {
         return StaticAnalyzerHelper.calculateStaticAssignments(this, getValue());
     }
-    
+
     @Override
     public SourcePosition getLeftHandSidePosition() {
         SourcePosition leftPosition = null;
-        
+
         if (getPreCount() > 0) leftPosition = getPre().getPosition();
         if (leftPosition == null && getRest() != null) leftPosition = getRest().getPosition();
         // left position guaranteed non-nill based on constructor contract.
@@ -180,5 +180,5 @@ public class MultipleAsgnNode extends AssignableNode {
         if (getRest() != null && leftPosition != getRest().getPosition()) return leftPosition.union(getRest().getPosition());
 
         return leftPosition;
-    } 
+    }
 }
