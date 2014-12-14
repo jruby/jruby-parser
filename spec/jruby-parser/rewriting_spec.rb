@@ -57,6 +57,22 @@ describe JRubyParser do
       parse("alias foo bar").to_source.should == "alias foo bar"
     end
 
+    it "rewrites hash [#{v}]" do
+      parse("{:foo => :bar}", v).to_source.should == "{:foo => :bar}"
+    end
+
+    # FIXME: Lexical syntax needs to be reflected in AST for tlabel vs symbol
+    # if v != 1.8
+    #   it "rewrites hash [#{v}]" do
+    #     parse("{foo: :bar}", v).to_source.should == "{foo: :bar}"
+    #   end
+    # end
+
+    it "rewrites hash multple elements of hash [#{v}]" do
+      parse("{:foo => :bar, 1 => 2}", v).to_source.should == "{:foo => :bar, 1 => 2}"
+    end
+    
+
     if v != 1.8 
       it "rewrites stabby lambda [#{v}]" do
         str = "->(a) {puts a}"

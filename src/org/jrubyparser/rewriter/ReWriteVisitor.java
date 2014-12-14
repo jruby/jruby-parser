@@ -1517,7 +1517,7 @@ public class ReWriteVisitor implements NodeVisitor {
     }
 
     public Object visitSymbolNode(SymbolNode symbol) {
-        print(":" + symbol.getLexicalName());
+        print(symbol.getLexicalName());
         return null;
     }
     

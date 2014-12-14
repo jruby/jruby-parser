@@ -47,4 +47,9 @@ public class SymbolNode extends NamedNode implements ILiteralNode, INameNode {
     public Object accept(NodeVisitor iVisitor) {
         return iVisitor.visitSymbolNode(this);
     }
+
+    @Override
+    public String getLexicalName() {
+        return ":" + getName();
+    }
 }
