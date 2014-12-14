@@ -391,10 +391,13 @@ public class ReWriteVisitor implements NodeVisitor {
                 print(((ArgumentNode) n).getLexicalName());
             } else {
                 visitNode(n);
-                if (it.hasNext()) print(config.getFormatHelper().getListSeparator());
             }
 
-            if (!it.hasNext()) print(config.getFormatHelper().afterMethodArguments());
+            if (it.hasNext()) {
+                print(config.getFormatHelper().getListSeparator());
+            } else {
+        	print(config.getFormatHelper().afterMethodArguments());
+            }
         }
 
         return null;
@@ -1514,7 +1517,7 @@ public class ReWriteVisitor implements NodeVisitor {
     }
 
     public Object visitSymbolNode(SymbolNode symbol) {
-        print(symbol.getLexicalName());
+        print(":" + symbol.getLexicalName());
         return null;
     }
     
