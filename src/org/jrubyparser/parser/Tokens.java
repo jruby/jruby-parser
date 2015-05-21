@@ -162,6 +162,8 @@ public interface Tokens {
     int tSYMBOLS_BEG = Ruby20Parser.tSYMBOLS_BEG;
     int tQSYMBOLS_BEG = Ruby20Parser.tQSYMBOLS_BEG;
     int tDSTAR = Ruby20Parser.tDSTAR;
+    int tIMAGINARY = Ruby20Parser.tIMAGINARY;
+    int tRATIONAL = Ruby20Parser.tRATIONAL;
     
     String[] operators = {"+@", "-@", "**", "<=>", "==", "===", "!=", ">=", "<=", "&&",
                           "||", "=~", "!~", "..", "...", "[]", "[]=", "<<", ">>", "::"};

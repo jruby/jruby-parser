@@ -40,18 +40,22 @@ public class FCallNode extends Node implements INameNode, IArgumentNode, BlockAc
     protected String name;
     private boolean hasParens = false;
 
+    public FCallNode(SourcePosition position, String name) {
+        super(position);
+
+        this.name = name;
+    }
+
     public FCallNode(SourcePosition position, String name, Node argsNode) {
         this(position, name, argsNode, null);
     }
     
     public FCallNode(SourcePosition position, String name, Node argsNode, Node iterNode) {
-        super(position);
-
+        this(position, name);
         //        if (argsNode == null) argsNode = new ListNode(position);
         
         this.argsNode = adopt(argsNode);
         this.iterNode = adopt(iterNode);
-        this.name = name;
     }
 
 

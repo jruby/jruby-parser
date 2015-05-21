@@ -54,6 +54,7 @@ import org.jrubyparser.ast.DefsNode;
 import org.jrubyparser.ast.DotNode;
 import org.jrubyparser.ast.EnsureNode;
 import org.jrubyparser.ast.EvStrNode;
+import org.jrubyparser.ast.FCallNode;
 import org.jrubyparser.ast.FixnumNode;
 import org.jrubyparser.ast.FloatNode;
 import org.jrubyparser.ast.ForNode;
@@ -70,14 +71,15 @@ import org.jrubyparser.ast.MethodNameNode;
 import org.jrubyparser.ast.ModuleNode;
 import org.jrubyparser.ast.MultipleAsgnNode;
 import org.jrubyparser.ast.NextNode;
-import org.jrubyparser.ast.NilNode;
 import org.jrubyparser.ast.Node;
+import org.jrubyparser.ast.NumericNode;
 import org.jrubyparser.ast.OpAsgnAndNode;
 import org.jrubyparser.ast.OpAsgnNode;
 import org.jrubyparser.ast.OpAsgnOrNode;
 import org.jrubyparser.ast.OptArgNode;
 import org.jrubyparser.ast.PostExeNode;
 import org.jrubyparser.ast.PreExe19Node;
+import org.jrubyparser.ast.RationalNode;
 import org.jrubyparser.ast.RedoNode;
 import org.jrubyparser.ast.RegexpNode;
 import org.jrubyparser.ast.RescueBodyNode;
@@ -194,14 +196,16 @@ public class Ruby20Parser implements RubyParser {
 %token <Token> tSYMBEG tSTRING_BEG tXSTRING_BEG tREGEXP_BEG tWORDS_BEG tQWORDS_BEG
 %token <Token> tSTRING_DBEG tSTRING_DVAR tSTRING_END
 %token <Token> tLAMBDA tLAMBEG
-%token <Node> tNTH_REF tBACK_REF tSTRING_CONTENT tINTEGER
+%token <Node> tNTH_REF tBACK_REF tSTRING_CONTENT tINTEGER tIMAGINARY
+%token <RationalNode> tRATIONAL
 %token <FloatNode> tFLOAT  
 %token <RegexpNode>  tREGEXP_END
 %type <RestArgNode> f_rest_arg 
 %type <Node> singleton strings string string1 xstring regexp
 %type <Node> string_contents xstring_contents string_content method_call
 %type <Node> regexp_contents
-%type <Node> words qwords word literal numeric dsym cpath command_asgn command_call
+%type <Node> words qwords word literal dsym cpath command_asgn command_call
+%type <NumericNode> numeric simple_numeric 
 %type <Node> compstmt bodystmt stmts stmt expr arg primary command 
 %type <Node> stmt_or_begin
 %type <Node> expr_value primary_value opt_else cases if_tail exc_var
@@ -209,6 +213,7 @@ public class Ruby20Parser implements RubyParser {
 %type <Node> call_args opt_ensure paren_args superclass
 %type <Node> command_args var_ref opt_paren_args block_call block_command
 %type <Node> f_opt undef_list string_dvar backref
+%type <Node> mrhs_arg
 %type <ArgsNode> f_args f_arglist f_larglist block_param block_param_def opt_block_param 
 %type <Node> mrhs mlhs_item mlhs_node arg_value case_body exc_list aref_args
    // ENEBO: missing block_var == for_var, opt_block_var
@@ -246,8 +251,10 @@ public class Ruby20Parser implements RubyParser {
 %token <Token> tSYMBOLS_BEG
 %token <Token> tQSYMBOLS_BEG
 %token <Token> tDSTAR
-%token <Token> tSTRING_DEND
 %type <Token> kwrest_mark, f_kwrest
+%type <Token> f_label
+%type <FCallNode> fcall
+%token <String> tLABEL_END, tSTRING_DEND
 
 /*
  *    precedence table
@@ -462,11 +469,7 @@ stmt            : kALIAS fitem {
                 | lhs '=' mrhs {
                     $$ = support.node_assign($1, $3);
                 }
-                | mlhs '=' arg_value {
-                    $1.setValueNode($3);
-                    $$ = $1;
-                }
-                | mlhs '=' mrhs {
+                | mlhs '=' mrhs_arg {
                     $<AssignableNode>1.setValueNode($3);
                     $$ = $1;
                     $1.setPosition(support.getPosition($1));
@@ -521,12 +524,18 @@ cmd_brace_block : tLBRACE_ARG {
                     support.popCurrentScope();
                 }
 
-// Node:command - fcall/call/yield/super [!null]
-command        : operation command_args %prec tLOWEST {
-                    $$ = support.new_fcall($1, $2, null);
+fcall           : operation {
+                    $$ = support.new_fcall($1);
                 }
-                | operation command_args cmd_brace_block {
-                    $$ = support.new_fcall($1, $2, $3);
+
+// Node:command - fcall/call/yield/super [!null]
+command        : fcall command_args %prec tLOWEST {
+                    support.frobnicate_fcall_args($1, $2, null);
+                    $$ = $1;
+                }
+                | fcall command_args cmd_brace_block {
+                    support.frobnicate_fcall_args($1, $2, $3);
+                    $$ = $1;
                 }
                 | primary_value tDOT operation2 command_args %prec tLOWEST {
                     $$ = support.new_call($1, $3, $4, null);
@@ -874,11 +883,8 @@ arg             : lhs '=' arg {
                 | arg tPOW arg {
                     $$ = support.getOperatorCallNode($1, "**", $3, lexer.getPosition());
                 }
-                | tUMINUS_NUM tINTEGER tPOW arg {
-                    $$ = support.getUnaryCallNode(support.getOperatorCallNode($2, "**", $4, lexer.getPosition()), $1);
-                }
-                | tUMINUS_NUM tFLOAT tPOW arg {
-                    $$ = support.getUnaryCallNode(support.getOperatorCallNode($2, "**", $4, lexer.getPosition()), $1);
+                | tUMINUS_NUM simple_numeric tPOW arg {
+                    $$ = support.getOperatorCallNode($2, "**", $4, lexer.getPosition());
                 }
                 | tUPLUS arg {
                     $$ = support.getUnaryCallNode($2, $1);
@@ -1064,6 +1070,13 @@ args            : arg_value {
                     }
                 }
 
+mrhs_arg	: mrhs {
+                     $$ = $1;
+                }
+ 		| arg_value {
+                     $$ = $1;
+                }
+ 
 mrhs            : args ',' arg_value {
                     Node node = support.splat_array($1);
 
@@ -1169,8 +1182,9 @@ primary         : literal
                     $<ISourcePositionHolder>$.setPosition(support.union($1, $3));
                     $<CallNode>$.setName("!");
                 }
-                | operation brace_block {
-                    $$ = support.new_fcall($1, null, $2);
+                | fcall brace_block {
+                    support.frobnicate_fcall_args($1, null, $2);
+                    $$ = $1;                    
                 }
                 | method_call
                 | method_call brace_block {
@@ -1488,9 +1502,8 @@ f_larglist      : tLPAREN2 f_args opt_bv_decl tRPAREN {
                     $$ = $2;
                     $<ISourcePositionHolder>$.setPosition(support.union($1, $4));
                 }
-                | f_args opt_bv_decl {
+                | f_args {
                     $$ = $1;
-                    $<ISourcePositionHolder>$.setPosition(support.union($1, $2));
                 }
 
 lambda_body     : tLAMBEG compstmt tRCURLY {
@@ -1530,8 +1543,9 @@ block_call      : command do_block {
                 }
 
 // [!null]
-method_call     : operation paren_args {
-                    $$ = support.new_fcall($1, $2, null);
+method_call     : fcall paren_args {
+                    support.frobnicate_fcall_args($1, $2, null);
+                    $$ = $1;
                 }
                 | primary_value tDOT operation2 opt_paren_args {
                     $$ = support.new_call($1, $3, $4, null);
@@ -1617,7 +1631,9 @@ opt_ensure      : kENSURE compstmt {
                 }
                 | none
 
-literal         : numeric
+literal         : numeric {
+                    $$ = $1;
+                }
                 | symbol {
                     // FIXME: We may be intern'ing more than once.
                     $$ = new SymbolNode($1.getPosition(), ((String) $1.getValue()).intern());
@@ -1842,17 +1858,24 @@ dsym            : tSYMBEG xstring_contents tSTRING_END {
                      }
                 }
 
-numeric         : tINTEGER {
+numeric         : simple_numeric {
+                    $$ = $1;
+                }
+                | tUMINUS_NUM simple_numeric %prec tLOWEST {
+                    $$ = support.negateNumeric($2);
+                }
+
+simple_numeric  : tINTEGER {
                     $$ = $1;
                 }
                 | tFLOAT {
-                     $$ = $1;
+                    $$ = $1;
                 }
-                | tUMINUS_NUM tINTEGER %prec tLOWEST {
-                     $$ = support.negateInteger($2);
+                | tRATIONAL {
+                    $$ = $1;
                 }
-                | tUMINUS_NUM tFLOAT %prec tLOWEST {
-                     $$ = support.negateFloat($2);
+                | tIMAGINARY {
+                    $$ = $1;
                 }
 
 // [!null]
@@ -2048,9 +2071,17 @@ f_arg           : f_arg_item {
                     $$ = $1;
                 }
 
-f_kw            : tLABEL arg_value {
+f_label 	: tLABEL {
+                    $$ = $1;
+                }
+
+f_kw            : f_label arg_value { 
                     support.arg_var(support.formal_argument($1));
                     $$ = support.keyword_arg(support.union($1, $2), support.assignable($1, $2));
+                }
+                | f_label {
+                    // FIXME: null is a node type in main parser
+                    $$ = support.keyword_arg($1.getPosition(), support.assignable($1, null));
                 }
 
 f_block_kw      : tLABEL primary_value {
@@ -2083,7 +2114,7 @@ f_kwrest        : kwrest_mark tIDENTIFIER {
                     $$ = $2;
                 }
 
-f_opt           : tIDENTIFIER '=' arg_value {
+f_opt           : f_norm_arg '=' arg_value {
                     support.arg_var(support.formal_argument($1));
                     $$ = new OptArgNode(support.union($1, $3), support.assignable($1, $3));
                 }

@@ -291,7 +291,7 @@ public class NodeDiff
     /**
      * Sorts through a diff, checking for specific, important types of Nodes
      * like classes, methods, etc and performs subdiffs on those. It calls
-     * {@link #sortSubdiff(java.util.ArrayList)} for matching nodes from the
+     * {@link #sortSubdiff(java.util.List)} for matching nodes from the
      * original and current version, which uses a Levenshtein distance
      * measurement for this purpose. The subdiff, since it is comparing a much
      * smaller set of potential matches, can be more optimistic than the

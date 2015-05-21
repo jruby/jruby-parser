@@ -37,6 +37,7 @@ package org.jrubyparser.lexer;
 
 import java.io.IOException;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.regex.Matcher;
@@ -45,9 +46,13 @@ import java.util.regex.Pattern;
 import org.jrubyparser.ast.BackRefNode;
 import org.jrubyparser.ast.BignumNode;
 import org.jrubyparser.ast.CommentNode;
+import org.jrubyparser.ast.ComplexNode;
 import org.jrubyparser.ast.FixnumNode;
 import org.jrubyparser.ast.FloatNode;
+import org.jrubyparser.ast.Node;
 import org.jrubyparser.ast.NthRefNode;
+import org.jrubyparser.ast.NumericNode;
+import org.jrubyparser.ast.RationalNode;
 import org.jrubyparser.ast.StrNode;
 import org.jrubyparser.IRubyWarnings;
 import org.jrubyparser.IRubyWarnings.ID;
@@ -64,6 +69,10 @@ import org.jrubyparser.util.CStringBuilder;
  *  depending on compatibility flag.
  */
 public class Lexer {
+    public static final int SUFFIX_R = 1<<0;
+    public static final int SUFFIX_I = 1<<1;
+    public static final int SUFFIX_ALL = 3;
+
     private static String END_MARKER = "_END__";
     private static String BEGIN_DOC_MARKER = "begin";
     private static String END_DOC_MARKER = "end";
@@ -115,27 +124,96 @@ public class Lexer {
         map.put("__ENCODING__", Keyword.__ENCODING__);
     }
 
-    private int getFloatToken(String number) {
+    private int considerComplex(int token, int suffix) {
+        if ((suffix & SUFFIX_I) == 0) {
+            return token;
+        } else {
+            yaccValue = newComplexNode((NumericNode) yaccValue);
+            return Tokens.tIMAGINARY;
+        }
+    }
+
+    private int getFloatToken(String number, int suffix) {
+        if ((suffix & SUFFIX_R) != 0) {
+            BigDecimal bd = new BigDecimal(number);
+            BigDecimal denominator = BigDecimal.ONE.scaleByPowerOfTen(bd.scale());
+            BigDecimal numerator = bd.multiply(denominator);
+
+            try {
+                yaccValue = new RationalNode(getPosition(), numerator.longValueExact(), denominator.longValueExact());
+            } catch (ArithmeticException ae) {
+                // FIXME: Rational supports Bignum numerator and denominator
+                throw new SyntaxException(PID.RATIONAL_OUT_OF_RANGE, getPosition(), getCurrentLine(), "Rational (" + numerator + "/" + denominator + ") out of range.");
+            }
+            return considerComplex(Tokens.tRATIONAL, suffix);
+        }
+
         double d;
         try {
             d = Double.parseDouble(number);
         } catch (NumberFormatException e) {
-            warnings.warn(ID.FLOAT_OUT_OF_RANGE, getPosition(), "Float " + number + " out of range.", number);
+            warnings.warn(ID.FLOAT_OUT_OF_RANGE, getPosition(), "Float " + number + " out of range.");
 
             d = number.startsWith("-") ? Double.NEGATIVE_INFINITY : Double.POSITIVE_INFINITY;
         }
         yaccValue = new FloatNode(getPosition(), d);
-        return Tokens.tFLOAT;
+        return considerComplex(Tokens.tFLOAT, suffix);
     }
 
-    private Object newBignumNode(String value, int radix) {
+    private int getIntegerToken(String value, int radix, int suffix) {
+        Node literalValue;
+
+        if ((suffix & SUFFIX_R) != 0) {
+            literalValue = newRationalNode(value, radix);
+        } else {
+            try {
+                literalValue = newFixnumNode(value, radix);
+            } catch (NumberFormatException e) {
+                literalValue = newBignumNode(value, radix);
+            }
+        }
+
+        yaccValue = literalValue;
+        return considerComplex(Tokens.tINTEGER, suffix);
+    }
+
+    private NumericNode newBignumNode(String value, int radix) {
         return new BignumNode(getPosition(), new BigInteger(value, radix));
     }
 
-    private Object newFixnumNode(String value, int radix) throws NumberFormatException {
+    private NumericNode newFixnumNode(String value, int radix) throws NumberFormatException {
         return new FixnumNode(getPosition(), Long.parseLong(value, radix));
     }
-    
+
+    private RationalNode newRationalNode(String value, int radix) throws NumberFormatException {
+        return new RationalNode(getPosition(), Long.parseLong(value, radix), 1);
+    }
+
+    private ComplexNode newComplexNode(NumericNode number) {
+        return new ComplexNode(getPosition(), number);
+    }
+
+    private int numberLiteralSuffix(int mask) throws IOException {
+        int c = src.read();
+
+        if (c == 'i') return (mask & SUFFIX_I) != 0 ?  mask & SUFFIX_I : 0;
+
+        if (c == 'r') {
+            int result = 0;
+            if ((mask & SUFFIX_R) != 0) result |= (mask & SUFFIX_R);
+
+            if (src.peek('i') && (mask & SUFFIX_I) != 0) {
+                c = src.read();
+                result |= (mask & SUFFIX_I);
+            }
+
+            return result;
+        }
+        src.unread(c);
+
+        return 0;
+    }
+
     public enum Keyword {
         END ("end", Tokens.kEND, Tokens.kEND, LexState.EXPR_END),
         ELSE ("else", Tokens.kELSE, Tokens.kELSE, LexState.EXPR_BEG),
@@ -2482,8 +2560,7 @@ public class Lexer {
                         throw new SyntaxException(PID.TRAILING_UNDERSCORE_IN_NUMBER, getPosition(),
                                 getCurrentLine(), "Trailing '_' in number.");
                     }
-                    yaccValue = getInteger(tokenBuffer.toString(), 16);
-                    return Tokens.tINTEGER;
+                    return getIntegerToken(tokenBuffer.toString(), 16, numberLiteralSuffix(SUFFIX_ALL));
                 case 'b' :
                 case 'B' : // binary
                     c = src.read();
@@ -2509,8 +2586,7 @@ public class Lexer {
                         throw new SyntaxException(PID.TRAILING_UNDERSCORE_IN_NUMBER,
                                 getPosition(), getCurrentLine(), "Trailing '_' in number.");
                     }
-                    yaccValue = getInteger(tokenBuffer.toString(), 2);
-                    return Tokens.tINTEGER;
+                    return getIntegerToken(tokenBuffer.toString(), 2, numberLiteralSuffix(SUFFIX_ALL));
                 case 'd' :
                 case 'D' : // decimal
                     c = src.read();
@@ -2536,8 +2612,7 @@ public class Lexer {
                         throw new SyntaxException(PID.TRAILING_UNDERSCORE_IN_NUMBER,
                                 getPosition(), getCurrentLine(), "Trailing '_' in number.");
                     }
-                    yaccValue = getInteger(tokenBuffer.toString(), 10);
-                    return Tokens.tINTEGER;
+                    return getIntegerToken(tokenBuffer.toString(), 10, numberLiteralSuffix(SUFFIX_ALL));
                 case 'o':
                 case 'O':                    
                     c = src.read();
@@ -2563,8 +2638,7 @@ public class Lexer {
                                     getCurrentLine(), "Trailing '_' in number.");
                         }
 
-                        yaccValue = getInteger(tokenBuffer.toString(), 8);
-                        return Tokens.tINTEGER;
+                        return getIntegerToken(tokenBuffer.toString(), 8, numberLiteralSuffix(SUFFIX_ALL));
                     }
                 case '8' :
                 case '9' :
@@ -2607,7 +2681,7 @@ public class Lexer {
                                 getCurrentLine(), "Trailing '_' in number.");
                     } else if (seen_point || seen_e) {
                         src.unread(c);
-                        return getNumberToken(tokenBuffer.toString(), true, nondigit);
+                        return getNumberToken(tokenBuffer.toString(), seen_e, seen_point, nondigit);
                     } else {
                     	int c2;
                         if (!Character.isDigit(c2 = src.read())) {
@@ -2635,7 +2709,7 @@ public class Lexer {
                                 getPosition(), getCurrentLine(), "Trailing '_' in number.");
                     } else if (seen_e) {
                         src.unread(c);
-                        return getNumberToken(tokenBuffer.toString(), true, nondigit);
+                        return getNumberToken(tokenBuffer.toString(), seen_e, seen_point, nondigit);
                     } else {
                         tokenBuffer.append(c);
                         seen_e = true;
@@ -2658,22 +2732,23 @@ public class Lexer {
                     break;
                 default :
                     src.unread(c);
-                return getNumberToken(tokenBuffer.toString(), seen_e || seen_point, nondigit);
+                    return getNumberToken(tokenBuffer.toString(), seen_e, seen_point, nondigit);
             }
         }
     }
 
-    private int getNumberToken(String number, boolean isFloat, int nondigit) {
+    private int getNumberToken(String number, boolean seen_e, boolean seen_point, int nondigit) throws IOException {
+        boolean isFloat = seen_e || seen_point;
         if (nondigit != '\0') {
-            throw new SyntaxException(PID.TRAILING_UNDERSCORE_IN_NUMBER,
-                    getPosition(), getCurrentLine(), "Trailing '_' in number.");
+            throw new SyntaxException(PID.TRAILING_UNDERSCORE_IN_NUMBER, getPosition(),
+                    getCurrentLine(), "Trailing '_' in number.");
         } else if (isFloat) {
-            return getFloatToken(number);
+            int suffix = numberLiteralSuffix(seen_e ? SUFFIX_I : SUFFIX_ALL);
+            return getFloatToken(number, suffix);
         }
-        yaccValue = getInteger(number, 10);
-        return Tokens.tINTEGER;
+        return getIntegerToken(number, 10, numberLiteralSuffix(SUFFIX_ALL));
     }
-    
+
     // Note: parser_tokadd_utf8 variant just for regexp literal parsing.  This variant is to be
     // called when string_literal and regexp_literal.
     public void readUTFEscapeRegexpLiteral(CStringBuilder buffer) throws IOException {

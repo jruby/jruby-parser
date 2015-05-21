@@ -56,7 +56,6 @@ public class BlockStaticScope extends StaticScope {
     }
     
     /**
-     * @see org.jruby.parser.StaticScope#getAllNamesInScope()
      */
     public String[] getAllNamesInScope() {
         String[] variables = enclosingScope.getAllNamesInScope();

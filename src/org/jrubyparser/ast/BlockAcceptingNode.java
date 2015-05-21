@@ -32,7 +32,7 @@ package org.jrubyparser.ast;
  *  Any thing which implements this represents a Callable-like node which can have a block 
  *  associated with it as part of that call.  The calls which can be this are: CallNode, FCallNode,
  *  VCallNode, and SuperNode.  Blocks (the IterNode that this interface refers to can be either
- *  an IterNode ( {...} or do ... end ) or a BlockPassNode (&block).
+ *  an IterNode ( <pre>{...}</pre> or <pre>do ... end</pre> ) or a BlockPassNode (<pre>&amp;block</pre>).
  *  
  *  It is likely we can remove this interface once the parser explicitly passes all iters into
  *  the callable node during construction.

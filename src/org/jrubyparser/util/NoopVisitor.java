@@ -30,6 +30,7 @@ import org.jrubyparser.ast.ClassVarNode;
 import org.jrubyparser.ast.Colon2Node;
 import org.jrubyparser.ast.Colon3Node;
 import org.jrubyparser.ast.CommentNode;
+import org.jrubyparser.ast.ComplexNode;
 import org.jrubyparser.ast.ConstDeclNode;
 import org.jrubyparser.ast.ConstNode;
 import org.jrubyparser.ast.DAsgnNode;
@@ -86,6 +87,7 @@ import org.jrubyparser.ast.OptArgNode;
 import org.jrubyparser.ast.OrNode;
 import org.jrubyparser.ast.PostExeNode;
 import org.jrubyparser.ast.PreExeNode;
+import org.jrubyparser.ast.RationalNode;
 import org.jrubyparser.ast.RedoNode;
 import org.jrubyparser.ast.RegexpNode;
 import org.jrubyparser.ast.RescueBodyNode;
@@ -192,6 +194,10 @@ public class NoopVisitor implements NodeVisitor {
     }
 
     public Object visitBreakNode(BreakNode iVisited) {
+        return visit(iVisited);
+    }
+
+    public Object visitComplexNode(ComplexNode iVisited) {
         return visit(iVisited);
     }
 
@@ -448,6 +454,10 @@ public class NoopVisitor implements NodeVisitor {
     }
 
     public Object visitPostExeNode(PostExeNode iVisited) {
+        return visit(iVisited);
+    }
+
+    public Object visitRationalNode(RationalNode iVisited) {
         return visit(iVisited);
     }
 

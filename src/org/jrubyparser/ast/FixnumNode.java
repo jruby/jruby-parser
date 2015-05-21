@@ -34,7 +34,7 @@ import org.jrubyparser.SourcePosition;
 /** 
  * Represents an integer literal.
  */
-public class FixnumNode extends Node implements ILiteralNode {
+public class FixnumNode extends NumericNode implements ILiteralNode {
     private long value;
 
     public FixnumNode(SourcePosition position, long value) {

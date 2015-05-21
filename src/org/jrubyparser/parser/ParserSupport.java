@@ -59,6 +59,7 @@ import org.jrubyparser.ast.Colon2ImplicitNode;
 import org.jrubyparser.ast.Colon2MethodNode;
 import org.jrubyparser.ast.Colon2Node;
 import org.jrubyparser.ast.Colon3Node;
+import org.jrubyparser.ast.ComplexNode;
 import org.jrubyparser.ast.ConstDeclNode;
 import org.jrubyparser.ast.ConstNode;
 import org.jrubyparser.ast.DAsgnNode;
@@ -89,8 +90,10 @@ import org.jrubyparser.ast.NewlineNode;
 import org.jrubyparser.ast.NilNode;
 import org.jrubyparser.ast.Node;
 import org.jrubyparser.ast.NthRefNode;
+import org.jrubyparser.ast.NumericNode;
 import org.jrubyparser.ast.OpElementAsgnNode;
 import org.jrubyparser.ast.OrNode;
+import org.jrubyparser.ast.RationalNode;
 import org.jrubyparser.ast.RegexpNode;
 import org.jrubyparser.ast.RestArgNode;
 import org.jrubyparser.ast.RootNode;
@@ -883,7 +886,30 @@ public class ParserSupport {
     public Colon3Node new_colon3(SourcePosition position, String name) {
         return new Colon3Node(position, name);
     }
-    
+
+    public void frobnicate_fcall_args(FCallNode fcall, Node args, Node iter) {
+        if (args instanceof BlockPassNode) {
+            if (iter != null) {
+                throw new SyntaxException(PID.BLOCK_ARG_AND_BLOCK_GIVEN, iter.getPosition(),
+                        lexer.getCurrentLine(), "Both block arg and actual block given.");
+            }
+
+            BlockPassNode blockPass = (BlockPassNode) args;
+            args = blockPass.getArgs();
+            iter = blockPass;
+        }
+
+        fcall.setArgs(args);
+        fcall.setIter(iter);
+        if (iter != null || args != null) {
+            fcall.setPosition(fcall.getPosition().union(iter != null ? iter.getPosition() : args.getPosition()));
+        }
+    }
+
+    public Node new_fcall(Token operation) {
+        return new FCallNode(operation.getPosition(), (String) operation.getValue());
+    }
+
     public Node new_fcall(Token operation, Node args, Node iter) {
         SourcePosition position = union(operation, (iter != null ? iter : args));
 
@@ -1054,7 +1080,7 @@ public class ParserSupport {
         return new YieldNode(position, node, state);
     }
     
-    public Node negateInteger(Node integerNode) {
+    public NumericNode negateInteger(NumericNode integerNode) {
         if (integerNode instanceof FixnumNode) {
             FixnumNode fixnumNode = (FixnumNode) integerNode;
             
@@ -1068,13 +1094,30 @@ public class ParserSupport {
         
         return integerNode;
     }
-    
+
+    // FIXME: Update 1.8/1.9 grammar to use numericnode signature
+    public Node negateInteger(Node integerNode) {
+        return negateInteger((NumericNode) integerNode);
+    }
+
     public FloatNode negateFloat(FloatNode floatNode) {
         floatNode.setValue(-floatNode.getValue());
         
         return floatNode;
     }
-    
+
+    public ComplexNode negateComplexNode(ComplexNode complexNode) {
+        complexNode.setNumber(negateNumeric(complexNode.getNumber()));
+
+        return complexNode;
+    }
+
+    public RationalNode negateRational(RationalNode rationalNode) {
+        return new RationalNode(rationalNode.getPosition(),
+                -rationalNode.getNumerator(),
+                rationalNode.getDenominator());
+    }
+
     public SourcePosition createEmptyArgsNodePosition(SourcePosition pos) {
         return new SourcePosition(pos.getFile(), pos.getStartLine(), pos.getEndLine(), pos.getEndOffset() - 1, pos.getEndOffset() - 1);
     }
@@ -1353,5 +1396,22 @@ public class ParserSupport {
     
     public KeywordArgNode keyword_arg(SourcePosition position, AssignableNode assignable) {
         return new KeywordArgNode(position, assignable);
+    }
+
+    public NumericNode negateNumeric(NumericNode node) {
+        switch (node.getNodeType()) {
+            case FIXNUMNODE:
+            case BIGNUMNODE:
+                return negateInteger(node);
+            case COMPLEXNODE:
+                return negateComplexNode((ComplexNode) node);
+            case FLOATNODE:
+                return negateFloat((FloatNode) node);
+            case RATIONALNODE:
+                return negateRational((RationalNode) node);
+        }
+
+        yyerror("Invalid or unimplemented numeric to negate: " + node.toString());
+        return null;
     }
 }

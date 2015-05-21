@@ -36,7 +36,7 @@ import org.jrubyparser.SourcePosition;
 /** 
  * Represents a big integer literal.
  */
-public class BignumNode extends Node implements ILiteralNode {
+public class BignumNode extends NumericNode implements ILiteralNode {
     private BigInteger value;
 
     public BignumNode(SourcePosition position, BigInteger value) {

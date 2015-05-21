@@ -68,6 +68,7 @@ import org.jrubyparser.ast.ClassVarNode;
 import org.jrubyparser.ast.Colon2Node;
 import org.jrubyparser.ast.Colon3Node;
 import org.jrubyparser.ast.CommentNode;
+import org.jrubyparser.ast.ComplexNode;
 import org.jrubyparser.ast.ConstDeclNode;
 import org.jrubyparser.ast.ConstNode;
 import org.jrubyparser.ast.DAsgnNode;
@@ -125,6 +126,7 @@ import org.jrubyparser.ast.OptArgNode;
 import org.jrubyparser.ast.OrNode;
 import org.jrubyparser.ast.PostExeNode;
 import org.jrubyparser.ast.PreExeNode;
+import org.jrubyparser.ast.RationalNode;
 import org.jrubyparser.ast.RedoNode;
 import org.jrubyparser.ast.RegexpNode;
 import org.jrubyparser.ast.RescueBodyNode;
@@ -492,6 +494,12 @@ public class ReWriteVisitor implements NodeVisitor {
 
     public Object visitClassVarNode(ClassVarNode iVisited) {
         print(iVisited.getLexicalName());
+        return null;
+    }
+
+    public Object visitComplexNode(ComplexNode iVisited) {
+        iVisited.getNumber().accept(this);
+        print("i");
         return null;
     }
 
@@ -1251,6 +1259,14 @@ public class ReWriteVisitor implements NodeVisitor {
     public Object visitPreExeNode(PreExeNode iVisited) {
         // this node contains nothing but an empty list, so we don't have to
         // process anything
+        return null;
+    }
+
+    public Object visitRationalNode(RationalNode iVisited) {
+        print(iVisited.getNumerator());
+        print("/");
+        print(iVisited.getDenominator());
+
         return null;
     }
 
