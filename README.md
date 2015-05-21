@@ -64,7 +64,7 @@ Assume: [jay 1.0.2](https://github.com/jruby/jay) installed
 ```sh
 ./bin/generate_parser Ruby18Parser Ruby18
 ./bin/generate_parser Ruby19Parser Ruby19
-./bin/generate_parser Ruby18Parser Ruby20
+./bin/generate_parser Ruby20Parser Ruby20
 ```
 
 # Build and test using Rake
