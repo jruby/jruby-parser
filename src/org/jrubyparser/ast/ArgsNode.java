@@ -107,7 +107,7 @@ public class ArgsNode extends Node {
      * Accept for the visitor pattern.
      * @param iVisitor the visitor
      **/
-    public Object accept(NodeVisitor iVisitor) {
+    public <T> T accept(NodeVisitor<T> iVisitor) {
         return iVisitor.visitArgsNode(this);
     }
 
@@ -168,11 +168,11 @@ public class ArgsNode extends Node {
     public BlockArgNode getBlock() {
         return block;
     }
-    
+
     public ListNode getShadow() {
         return shadow;
     }
-    
+
     public void setShadow(ListNode shadow) {
         this.shadow = (ListNode) adopt(shadow);
     }

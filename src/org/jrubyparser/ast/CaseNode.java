@@ -13,7 +13,7 @@
  * rights and limitations under the License.
  *
  * Copyright (C) 2009 Thomas E. Enebo <tom.enebo@gmail.com>
- * 
+ *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
  * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
@@ -45,15 +45,15 @@ public class CaseNode extends Node {
 	 */
     private ListNode cases;
     private Node elseNode = null;
-    
+
     public CaseNode(SourcePosition position, Node caseNode, ListNode cases) {
         super(position);
-        
+
         assert cases != null : "caseBody is not null";
         // TODO: Rewriter and compiler assume case when empty expression.  In MRI this is just
         // a when.
 //        assert caseNode != null : "caseNode is not null";
-        
+
         this.caseNode = adopt(caseNode);
         this.cases = (ListNode) adopt(cases);
     }
@@ -74,10 +74,10 @@ public class CaseNode extends Node {
         if (!super.isSame(node)) return false;
 
         CaseNode other = (CaseNode) node;
-        
+
         if (getCase() == null && other.getCase() == null) return true;
         if (getCase() == null || other.getCase() == null) return false;
-        
+
         return getCase().isSame(other.getCase());
     }
 
@@ -90,7 +90,7 @@ public class CaseNode extends Node {
      * Accept for the visitor pattern.
      * @param iVisitor the visitor
      **/
-    public Object accept(NodeVisitor iVisitor) {
+    public <T> T accept(NodeVisitor<T> iVisitor) {
         return iVisitor.visitCaseNode(this);
     }
 
@@ -102,12 +102,12 @@ public class CaseNode extends Node {
     public Node getCase() {
         return caseNode;
     }
-    
+
     @Deprecated
     public Node getCaseNode() {
         return getCase();
     }
-    
+
     public ListNode getCases() {
         return cases;
     }
@@ -115,7 +115,7 @@ public class CaseNode extends Node {
     public Node getElse() {
         return elseNode;
     }
-    
+
     @Deprecated
     public Node getElseNode() {
         return getElse();
@@ -129,7 +129,7 @@ public class CaseNode extends Node {
     public Node getFirstWhen() {
         return cases;
     }
-    
+
     @Deprecated
     public Node getFirstWhenNode() {
         return getFirstWhen();

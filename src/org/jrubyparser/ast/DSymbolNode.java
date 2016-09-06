@@ -13,7 +13,7 @@
  * rights and limitations under the License.
  *
  * Copyright (C) 2009 Thomas E. Enebo <tom.enebo@gmail.com>
- * 
+ *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
  * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
@@ -37,17 +37,17 @@ import org.jrubyparser.SourcePosition;
 public class DSymbolNode extends ListNode {
     /**
      * For mutating from a DStr to a DSym (we just create a new one with same contents).
-     * 
+     *
      * @param node to be copied
      */
     public DSymbolNode(SourcePosition position, DStrNode node) {
         super(position);
-        
+
         assert node != null : "node is not null";
-        
+
         addAll(node);
     }
-    
+
     public DSymbolNode(SourcePosition position) {
         super(position);
     }
@@ -58,8 +58,8 @@ public class DSymbolNode extends ListNode {
     }
 
     @Override
-    public Object accept(NodeVisitor visitor) {
+    public <T> T accept(NodeVisitor<T> visitor) {
         return visitor.visitDSymbolNode(this);
     }
-    
+
 }

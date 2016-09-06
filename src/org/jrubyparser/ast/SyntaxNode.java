@@ -13,7 +13,7 @@
  * rights and limitations under the License.
  *
  * Copyright (C) 2013 The JRuby Team
- *  
+ *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
  * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
@@ -39,10 +39,10 @@ import org.jrubyparser.SourcePosition;
 public class SyntaxNode extends Node {
     // text for this region of syntax
     private String content;
-    
+
     public SyntaxNode(SourcePosition position, String content) {
         super(position);
-        
+
         this.content = content;
     }
 
@@ -52,9 +52,9 @@ public class SyntaxNode extends Node {
     public NodeType getNodeType() {
         return NodeType.SYNTAXNODE;
     }
-    
+
     @Override
-    public Object accept(NodeVisitor visitor) {
+    public <T> T accept(NodeVisitor<T> visitor) {
         return visitor.visitSyntaxNode(this);
     }
 

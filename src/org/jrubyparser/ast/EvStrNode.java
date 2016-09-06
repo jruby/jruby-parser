@@ -13,7 +13,7 @@
  * rights and limitations under the License.
  *
  * Copyright (C) 2009 Thomas E. Enebo <tom.enebo@gmail.com>
- * 
+ *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
  * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
@@ -33,7 +33,7 @@ import org.jrubyparser.SourcePosition;
 
 /** Represents an #{} expression in a string. This Node is always a subnode
  * of a DStrNode, DXStrNode or a DRegexpNode.
- * 
+ *
  * Before this Node is evaluated it contains the code as a String (value). After
  * the first evaluation this String is parsed into the evaluatedNode Node.
  */
@@ -61,7 +61,7 @@ public class EvStrNode extends Node {
         if (!super.isSame(node)) return false;
 
         EvStrNode other = (EvStrNode) node;
-        
+
         if (getBody() == null && other.getBody() == null) return true;
         if (getBody() == null || other.getBody() == null) return false;
 
@@ -73,7 +73,7 @@ public class EvStrNode extends Node {
      * Accept for the visitor pattern.
      * @param iVisitor the visitor
      **/
-    public Object accept(NodeVisitor iVisitor) {
+    public <T> T accept(NodeVisitor<T> iVisitor) {
         return iVisitor.visitEvStrNode(this);
     }
 

@@ -13,7 +13,7 @@
  * rights and limitations under the License.
  *
  * Copyright (C) 2009 Thomas E. Enebo <tom.enebo@gmail.com>
- * 
+ *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
  * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
@@ -53,9 +53,9 @@ public class AliasNode extends Node {
     @Override
     public boolean isSame(Node node) {
         if (!super.isSame(node)) return false;
-        
+
         AliasNode aliasNode = (AliasNode) node;
-            
+
         return getOldNameString().equals(aliasNode.getOldNameString()) && getNewNameString().equals(aliasNode.getNewNameString());
     }
 
@@ -63,12 +63,12 @@ public class AliasNode extends Node {
     public NodeType getNodeType() {
         return NodeType.ALIASNODE;
     }
-    
+
     /**
      * Accept for the visitor pattern.
      * @param iVisitor the visitor
      **/
-    public Object accept(NodeVisitor iVisitor) {
+    public <T> T accept(NodeVisitor<T> iVisitor) {
         return iVisitor.visitAliasNode(this);
     }
 
@@ -88,7 +88,7 @@ public class AliasNode extends Node {
         return oldName;
     }
 
-    public boolean oldNameMatches(String name) {        
+    public boolean oldNameMatches(String name) {
         if (oldName instanceof INameNode) return ((INameNode) oldName).isNameMatch(name);
         if (oldName instanceof StrNode) return ((StrNode) oldName).getValue().equals(name);
         if (oldName instanceof LiteralNode) return ((LiteralNode) oldName).getName().equals(name);

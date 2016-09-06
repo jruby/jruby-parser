@@ -13,7 +13,7 @@
  * rights and limitations under the License.
  *
  * Copyright (C) 2009 Thomas E. Enebo <tom.enebo@gmail.com>
- * 
+ *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
  * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
@@ -31,7 +31,7 @@ package org.jrubyparser.ast;
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 
-/** 
+/**
  * Represents a method call with self as an implicit receiver.
  */
 public class FCallNode extends Node implements INameNode, IArgumentNode, BlockAcceptingNode {
@@ -43,12 +43,12 @@ public class FCallNode extends Node implements INameNode, IArgumentNode, BlockAc
     public FCallNode(SourcePosition position, String name, Node argsNode) {
         this(position, name, argsNode, null);
     }
-    
+
     public FCallNode(SourcePosition position, String name, Node argsNode, Node iterNode) {
         super(position);
 
         //        if (argsNode == null) argsNode = new ListNode(position);
-        
+
         this.argsNode = adopt(argsNode);
         this.iterNode = adopt(iterNode);
         this.name = name;
@@ -70,23 +70,23 @@ public class FCallNode extends Node implements INameNode, IArgumentNode, BlockAc
     public NodeType getNodeType() {
         return NodeType.FCALLNODE;
     }
-    
+
     /**
      * Accept for the visitor pattern.
      * @param iVisitor the visitor
      **/
-    public Object accept(NodeVisitor iVisitor) {
+    public <T> T accept(NodeVisitor<T> iVisitor) {
         return iVisitor.visitFCallNode(this);
     }
 
     public boolean hasParens() {
         return hasParens;
     }
-    
+
     public void setHasParens(boolean hasParens) {
         this.hasParens = hasParens;
     }
-    
+
     /**
      * Get the node that represents a block or a block variable.
      */
@@ -94,17 +94,17 @@ public class FCallNode extends Node implements INameNode, IArgumentNode, BlockAc
     public Node getIterNode() {
         return getIter();
     }
-    
+
     public Node getIter() {
         return iterNode;
     }
-    
+
     public Node setIterNode(Node iterNode) {
         this.iterNode = adopt(iterNode);
-        
+
         return this;
     }
-    
+
     public void setIter(Node iter) {
         this.iterNode = adopt(iter);
     }
@@ -117,31 +117,31 @@ public class FCallNode extends Node implements INameNode, IArgumentNode, BlockAc
     public Node getArgsNode() {
         return getArgs();
     }
-    
+
     public Node getArgs() {
         return argsNode;
     }
-    
+
     /**
      * Set the argsNode.
-     * 
+     *
      * @param argsNode set the arguments for this node.
      */
     @Deprecated
     public Node setArgsNode(Node argsNode) {
         setArgs(argsNode);
-        
+
         return argsNode;
     }
-    
+
     public void setArgs(Node argsNode) {
         this.argsNode = adopt(argsNode);
     }
-    
+
     public String getLexicalName() {
         return getName();
     }
-    
+
     /**
      * Gets the name.
      * @return Returns a String
@@ -149,22 +149,22 @@ public class FCallNode extends Node implements INameNode, IArgumentNode, BlockAc
     public String getName() {
         return name;
     }
-    
+
     public void setName(String name) {
         this.name = name;
     }
 
     public boolean isNameMatch(String name) {
         String thisName = getName();
-        
+
         return thisName != null && thisName.equals(name);
     }
 
     public SourcePosition getNamePosition() {
         return getPosition().fromBeginning(getName().length());
     }
-    
+
     public SourcePosition getLexicalNamePosition() {
         return getNamePosition();
-    }    
+    }
 }

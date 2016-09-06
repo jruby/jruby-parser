@@ -13,7 +13,7 @@
  * rights and limitations under the License.
  *
  * Copyright (C) 2009 Thomas E. Enebo <tom.enebo@gmail.com>
- * 
+ *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
  * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
@@ -37,20 +37,20 @@ import org.jrubyparser.util.ILocalVariableVisitor;
 import org.jrubyparser.util.MethodDefVisitor;
 
 /**
- * A class statement (name, superClass, body). Classes bodies also define their own scope. 
+ * A class statement (name, superClass, body). Classes bodies also define their own scope.
  */
 public class ClassNode extends Node implements IScopingNode, ILocalScope, IModuleScope {
     private Colon3Node cpath;
     private StaticScope scope;
     private Node bodyNode;
     private Node superNode;
-    
+
     public ClassNode(SourcePosition position, Colon3Node cpath, StaticScope scope, Node bodyNode, Node superNode) {
         super(position);
-        
+
         assert cpath != null : "cpath is not null";
         assert scope != null : "scope is not null";
-        
+
         this.cpath = (Colon3Node) adopt(cpath);
         this.scope = scope;
         this.bodyNode = adopt(bodyNode);
@@ -67,12 +67,12 @@ public class ClassNode extends Node implements IScopingNode, ILocalScope, IModul
     @Override
     public boolean isSame(Node node) {
         if (!super.isSame(node)) return false;
-        
+
         ClassNode other = (ClassNode) node;
 
         if (getSuper() == null && other.getSuper() == null) return getCPath().isSame(other.getCPath());
         if (getSuper() == null || other.getSuper() == null) return false;
-        
+
         return getSuper().isSame(other.getSuper()) && getCPath().isSame(other.getCPath());
     }
 
@@ -85,27 +85,27 @@ public class ClassNode extends Node implements IScopingNode, ILocalScope, IModul
      * Accept for the visitor pattern.
      * @param iVisitor the visitor
      **/
-    public Object accept(NodeVisitor iVisitor) {
+    public <T> T accept(NodeVisitor<T> iVisitor) {
         return iVisitor.visitClassNode(this);
     }
-    
+
     /**
      * Gets the body of this class.
-     * 
+     *
      * @return the contents
      */
     public Node getBody() {
         return bodyNode;
     }
-    
+
     @Deprecated
     public Node getBodyNode() {
         return getBody();
     }
-    
+
     /**
      * Get the static scoping information.
-     * 
+     *
      * @return the scoping info
      */
     public StaticScope getScope() {
@@ -127,7 +127,7 @@ public class ClassNode extends Node implements IScopingNode, ILocalScope, IModul
     public Node getSuper() {
         return superNode;
     }
-    
+
     @Deprecated
     public Node getSuperNode() {
         return getSuper();

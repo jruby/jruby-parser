@@ -69,7 +69,7 @@ public class AttrAssignNode extends Node implements INameNode, IArgumentNode {
 
         if (!isNameMatch(other.getName())) return false;
         if (!getReceiver().isSame(other.getReceiver())) return false;
-        
+
         if (getArgs() == null && other.getArgs() == null) return true;
         if (getArgs() == null || other.getArgs() == null) return false;
 
@@ -85,7 +85,7 @@ public class AttrAssignNode extends Node implements INameNode, IArgumentNode {
      * Accept for the visitor pattern.
      * @param visitor the visitor
      **/
-    public Object accept(NodeVisitor visitor) {
+    public <T> T accept(NodeVisitor<T> visitor) {
         return visitor.visitAttrAssignNode(this);
     }
 

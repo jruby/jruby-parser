@@ -12,7 +12,7 @@
  * rights and limitations under the License.
  *
  * Copyright (C) 2009 Thomas E Enebo <tom.enebo@gmail.com>
- * 
+ *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
  * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
@@ -137,114 +137,222 @@ import org.jrubyparser.ast.YieldNode;
 import org.jrubyparser.ast.ZArrayNode;
 import org.jrubyparser.ast.ZSuperNode;
 
-public interface NodeVisitor {
-    public Object visitAliasNode(AliasNode iVisited);
-    public Object visitAndNode(AndNode iVisited);
-    public Object visitArgsNode(ArgsNode iVisited);
-    public Object visitArgsCatNode(ArgsCatNode iVisited);
-    public Object visitArgsPushNode(ArgsPushNode iVisited);
-    public Object visitArgumentNode(ArgumentNode iVisited);
-    public Object visitArrayNode(ArrayNode iVisited);
-    public Object visitAttrAssignNode(AttrAssignNode iVisited);
-    public Object visitBackRefNode(BackRefNode iVisited);
-    public Object visitBeginNode(BeginNode iVisited);
-    public Object visitBignumNode(BignumNode iVisited);
-    public Object visitBlockArgNode(BlockArgNode iVisited);
-    public Object visitBlockArg18Node(BlockArg18Node iVisited);
-    public Object visitBlockNode(BlockNode iVisited);
-    public Object visitBlockPassNode(BlockPassNode iVisited);
-    public Object visitBreakNode(BreakNode iVisited);
-    public Object visitConstDeclNode(ConstDeclNode iVisited);
-    public Object visitClassVarAsgnNode(ClassVarAsgnNode iVisited);
-    public Object visitClassVarDeclNode(ClassVarDeclNode iVisited);
-    public Object visitClassVarNode(ClassVarNode iVisited);
-    public Object visitCallNode(CallNode iVisited);
-    public Object visitCaseNode(CaseNode iVisited);
-    public Object visitClassNode(ClassNode iVisited);
-    public Object visitCommentNode(CommentNode iVisited);
-    public Object visitColon2Node(Colon2Node iVisited);
-    public Object visitColon3Node(Colon3Node iVisited);
-    public Object visitConstNode(ConstNode iVisited);
-    public Object visitDAsgnNode(DAsgnNode iVisited);
-    public Object visitDRegxNode(DRegexpNode iVisited);
-    public Object visitDStrNode(DStrNode iVisited);
-    public Object visitDSymbolNode(DSymbolNode iVisited);
-    public Object visitDVarNode(DVarNode iVisited);
-    public Object visitDXStrNode(DXStrNode iVisited);
-    public Object visitDefinedNode(DefinedNode iVisited);
-    public Object visitDefnNode(DefnNode iVisited);
-    public Object visitDefsNode(DefsNode iVisited);
-    public Object visitDotNode(DotNode iVisited);
-    public Object visitEncodingNode(EncodingNode iVisited);
-    public Object visitEnsureNode(EnsureNode iVisited);
-    public Object visitEvStrNode(EvStrNode iVisited);
-    public Object visitFCallNode(FCallNode iVisited);
-    public Object visitFalseNode(FalseNode iVisited);
-    public Object visitFixnumNode(FixnumNode iVisited);
-    public Object visitFlipNode(FlipNode iVisited);
-    public Object visitFloatNode(FloatNode iVisited);
-    public Object visitForNode(ForNode iVisited);
-    public Object visitGlobalAsgnNode(GlobalAsgnNode iVisited);
-    public Object visitGlobalVarNode(GlobalVarNode iVisited);
-    public Object visitHashNode(HashNode iVisited);
-    public Object visitInstAsgnNode(InstAsgnNode iVisited);
-    public Object visitInstVarNode(InstVarNode iVisited);
-    public Object visitIfNode(IfNode iVisited);
-    public Object visitImplicitNilNode(ImplicitNilNode visited);
-    public Object visitIterNode(IterNode iVisited);
-    public Object visitKeywordArgNode(KeywordArgNode iVisited);
-    public Object visitKeywordRestArgNode(KeywordRestArgNode iVisited);
-    public Object visitLambdaNode(LambdaNode visited);
-    public Object visitListNode(ListNode iVisited);
-    public Object visitLiteralNode(LiteralNode iVisited);
-    public Object visitLocalAsgnNode(LocalAsgnNode iVisited);
-    public Object visitLocalVarNode(LocalVarNode iVisited);
-    public Object visitMultipleAsgnNode(MultipleAsgnNode iVisited);
-    public Object visitMatch2Node(Match2Node iVisited);
-    public Object visitMatch3Node(Match3Node iVisited);
-    public Object visitMatchNode(MatchNode iVisited);
-    public Object visitMethodNameNode(MethodNameNode iVisited);
-    public Object visitModuleNode(ModuleNode iVisited);
-    public Object visitNewlineNode(NewlineNode iVisited);
-    public Object visitNextNode(NextNode iVisited);
-    public Object visitNilNode(NilNode iVisited);
-    public Object visitNotNode(NotNode iVisited);
-    public Object visitNthRefNode(NthRefNode iVisited);
-    public Object visitOpElementAsgnNode(OpElementAsgnNode iVisited);
-    public Object visitOpAsgnNode(OpAsgnNode iVisited);
-    public Object visitOpAsgnAndNode(OpAsgnAndNode iVisited);
-    public Object visitOpAsgnOrNode(OpAsgnOrNode iVisited);
-    public Object visitOptArgNode(OptArgNode iVisited);
-    public Object visitOrNode(OrNode iVisited);
-    public Object visitPreExeNode(PreExeNode iVisited);
-    public Object visitPostExeNode(PostExeNode iVisited);
-    public Object visitRedoNode(RedoNode iVisited);
-    public Object visitRegexpNode(RegexpNode iVisited);
-    public Object visitRescueBodyNode(RescueBodyNode iVisited);
-    public Object visitRescueNode(RescueNode iVisited);
-    public Object visitRestArgNode(RestArgNode iVisited);
-    public Object visitRetryNode(RetryNode iVisited);
-    public Object visitReturnNode(ReturnNode iVisited);
-    public Object visitRootNode(RootNode iVisited);
-    public Object visitSClassNode(SClassNode iVisited);
-    public Object visitSelfNode(SelfNode iVisited);
-    public Object visitSplatNode(SplatNode iVisited);
-    public Object visitStrNode(StrNode iVisited);
-    public Object visitSuperNode(SuperNode iVisited);
-    public Object visitSValueNode(SValueNode iVisited);
-    public Object visitSymbolNode(SymbolNode iVisited);
-    public Object visitSyntaxNode(SyntaxNode iVisited);
-    public Object visitToAryNode(ToAryNode iVisited);
-    public Object visitTrueNode(TrueNode iVisited);
-    public Object visitUndefNode(UndefNode iVisited);
-    public Object visitUnaryCallNode(UnaryCallNode iVisited);
-    public Object visitUntilNode(UntilNode iVisited);
-    public Object visitVAliasNode(VAliasNode iVisited);
-    public Object visitVCallNode(VCallNode iVisited);
-    public Object visitWhenNode(WhenNode iVisited);
-    public Object visitWhileNode(WhileNode iVisited);
-    public Object visitXStrNode(XStrNode iVisited);
-    public Object visitYieldNode(YieldNode iVisited);
-    public Object visitZArrayNode(ZArrayNode iVisited);
-    public Object visitZSuperNode(ZSuperNode iVisited);    
+public interface NodeVisitor<T> {
+  public T visitAliasNode(AliasNode iVisited);
+
+  public T visitAndNode(AndNode iVisited);
+
+  public T visitArgsNode(ArgsNode iVisited);
+
+  public T visitArgsCatNode(ArgsCatNode iVisited);
+
+  public T visitArgsPushNode(ArgsPushNode iVisited);
+
+  public T visitArgumentNode(ArgumentNode iVisited);
+
+  public T visitArrayNode(ArrayNode iVisited);
+
+  public T visitAttrAssignNode(AttrAssignNode iVisited);
+
+  public T visitBackRefNode(BackRefNode iVisited);
+
+  public T visitBeginNode(BeginNode iVisited);
+
+  public T visitBignumNode(BignumNode iVisited);
+
+  public T visitBlockArgNode(BlockArgNode iVisited);
+
+  public T visitBlockArg18Node(BlockArg18Node iVisited);
+
+  public T visitBlockNode(BlockNode iVisited);
+
+  public T visitBlockPassNode(BlockPassNode iVisited);
+
+  public T visitBreakNode(BreakNode iVisited);
+
+  public T visitConstDeclNode(ConstDeclNode iVisited);
+
+  public T visitClassVarAsgnNode(ClassVarAsgnNode iVisited);
+
+  public T visitClassVarDeclNode(ClassVarDeclNode iVisited);
+
+  public T visitClassVarNode(ClassVarNode iVisited);
+
+  public T visitCallNode(CallNode iVisited);
+
+  public T visitCaseNode(CaseNode iVisited);
+
+  public T visitClassNode(ClassNode iVisited);
+
+  public T visitCommentNode(CommentNode iVisited);
+
+  public T visitColon2Node(Colon2Node iVisited);
+
+  public T visitColon3Node(Colon3Node iVisited);
+
+  public T visitConstNode(ConstNode iVisited);
+
+  public T visitDAsgnNode(DAsgnNode iVisited);
+
+  public T visitDRegxNode(DRegexpNode iVisited);
+
+  public T visitDStrNode(DStrNode iVisited);
+
+  public T visitDSymbolNode(DSymbolNode iVisited);
+
+  public T visitDVarNode(DVarNode iVisited);
+
+  public T visitDXStrNode(DXStrNode iVisited);
+
+  public T visitDefinedNode(DefinedNode iVisited);
+
+  public T visitDefnNode(DefnNode iVisited);
+
+  public T visitDefsNode(DefsNode iVisited);
+
+  public T visitDotNode(DotNode iVisited);
+
+  public T visitEncodingNode(EncodingNode iVisited);
+
+  public T visitEnsureNode(EnsureNode iVisited);
+
+  public T visitEvStrNode(EvStrNode iVisited);
+
+  public T visitFCallNode(FCallNode iVisited);
+
+  public T visitFalseNode(FalseNode iVisited);
+
+  public T visitFixnumNode(FixnumNode iVisited);
+
+  public T visitFlipNode(FlipNode iVisited);
+
+  public T visitFloatNode(FloatNode iVisited);
+
+  public T visitForNode(ForNode iVisited);
+
+  public T visitGlobalAsgnNode(GlobalAsgnNode iVisited);
+
+  public T visitGlobalVarNode(GlobalVarNode iVisited);
+
+  public T visitHashNode(HashNode iVisited);
+
+  public T visitInstAsgnNode(InstAsgnNode iVisited);
+
+  public T visitInstVarNode(InstVarNode iVisited);
+
+  public T visitIfNode(IfNode iVisited);
+
+  public T visitImplicitNilNode(ImplicitNilNode visited);
+
+  public T visitIterNode(IterNode iVisited);
+
+  public T visitKeywordArgNode(KeywordArgNode iVisited);
+
+  public T visitKeywordRestArgNode(KeywordRestArgNode iVisited);
+
+  public T visitLambdaNode(LambdaNode visited);
+
+  public T visitListNode(ListNode iVisited);
+
+  public T visitLiteralNode(LiteralNode iVisited);
+
+  public T visitLocalAsgnNode(LocalAsgnNode iVisited);
+
+  public T visitLocalVarNode(LocalVarNode iVisited);
+
+  public T visitMultipleAsgnNode(MultipleAsgnNode iVisited);
+
+  public T visitMatch2Node(Match2Node iVisited);
+
+  public T visitMatch3Node(Match3Node iVisited);
+
+  public T visitMatchNode(MatchNode iVisited);
+
+  public T visitMethodNameNode(MethodNameNode iVisited);
+
+  public T visitModuleNode(ModuleNode iVisited);
+
+  public T visitNewlineNode(NewlineNode iVisited);
+
+  public T visitNextNode(NextNode iVisited);
+
+  public T visitNilNode(NilNode iVisited);
+
+  public T visitNotNode(NotNode iVisited);
+
+  public T visitNthRefNode(NthRefNode iVisited);
+
+  public T visitOpElementAsgnNode(OpElementAsgnNode iVisited);
+
+  public T visitOpAsgnNode(OpAsgnNode iVisited);
+
+  public T visitOpAsgnAndNode(OpAsgnAndNode iVisited);
+
+  public T visitOpAsgnOrNode(OpAsgnOrNode iVisited);
+
+  public T visitOptArgNode(OptArgNode iVisited);
+
+  public T visitOrNode(OrNode iVisited);
+
+  public T visitPreExeNode(PreExeNode iVisited);
+
+  public T visitPostExeNode(PostExeNode iVisited);
+
+  public T visitRedoNode(RedoNode iVisited);
+
+  public T visitRegexpNode(RegexpNode iVisited);
+
+  public T visitRescueBodyNode(RescueBodyNode iVisited);
+
+  public T visitRescueNode(RescueNode iVisited);
+
+  public T visitRestArgNode(RestArgNode iVisited);
+
+  public T visitRetryNode(RetryNode iVisited);
+
+  public T visitReturnNode(ReturnNode iVisited);
+
+  public T visitRootNode(RootNode iVisited);
+
+  public T visitSClassNode(SClassNode iVisited);
+
+  public T visitSelfNode(SelfNode iVisited);
+
+  public T visitSplatNode(SplatNode iVisited);
+
+  public T visitStrNode(StrNode iVisited);
+
+  public T visitSuperNode(SuperNode iVisited);
+
+  public T visitSValueNode(SValueNode iVisited);
+
+  public T visitSymbolNode(SymbolNode iVisited);
+
+  public T visitSyntaxNode(SyntaxNode iVisited);
+
+  public T visitToAryNode(ToAryNode iVisited);
+
+  public T visitTrueNode(TrueNode iVisited);
+
+  public T visitUndefNode(UndefNode iVisited);
+
+  public T visitUnaryCallNode(UnaryCallNode iVisited);
+
+  public T visitUntilNode(UntilNode iVisited);
+
+  public T visitVAliasNode(VAliasNode iVisited);
+
+  public T visitVCallNode(VCallNode iVisited);
+
+  public T visitWhenNode(WhenNode iVisited);
+
+  public T visitWhileNode(WhileNode iVisited);
+
+  public T visitXStrNode(XStrNode iVisited);
+
+  public T visitYieldNode(YieldNode iVisited);
+
+  public T visitZArrayNode(ZArrayNode iVisited);
+
+  public T visitZSuperNode(ZSuperNode iVisited);
 }

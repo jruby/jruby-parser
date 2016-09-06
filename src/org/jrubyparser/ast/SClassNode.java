@@ -13,7 +13,7 @@
  * rights and limitations under the License.
  *
  * Copyright (C) 2009 Thomas E. Enebo <tom.enebo@gmail.com>
- * 
+ *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
  * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
@@ -36,12 +36,12 @@ import org.jrubyparser.StaticScope;
 import org.jrubyparser.util.ILocalVariableVisitor;
 import org.jrubyparser.util.MethodDefVisitor;
 
-/** 
+/**
  * Singleton class definition.
- * 
+ *
  * <pre>
  * class &lt;&lt; anObject
- * 
+ *
  * end
  * </pre>
  */
@@ -52,10 +52,10 @@ public class SClassNode extends Node implements ILocalScope, IModuleScope {
 
     public SClassNode(SourcePosition position, Node recvNode, StaticScope scope, Node bodyNode) {
         super(position);
-        
+
         assert scope != null : "scope is not null";
         assert recvNode != null : "receiverNode is not null";
-        
+
         this.receiverNode = adopt(recvNode);
         this.scope = scope;
         this.bodyNode = adopt(bodyNode);
@@ -64,12 +64,12 @@ public class SClassNode extends Node implements ILocalScope, IModuleScope {
     @Override
     public boolean isSame(Node node) {
         if (!super.isSame(node)) return false;
-        
+
         SClassNode other = (SClassNode) node;
 
         if (getBody() == null && other.getBody() == null) return true;
         if (getBody() == null || other.getBody() == null) return false;
-        
+
         return getReceiver().isSame(other.getReceiver());
     }
 
@@ -81,30 +81,30 @@ public class SClassNode extends Node implements ILocalScope, IModuleScope {
      * Accept for the visitor pattern.
      * @param iVisitor the visitor
      **/
-    public Object accept(NodeVisitor iVisitor) {
+    public <T> T accept(NodeVisitor<T> iVisitor) {
         return iVisitor.visitSClassNode(this);
     }
 
     /**
      * Gets the body of this class.
-     * 
+     *
      * @return the contents
      */
     public Node getBody() {
         return bodyNode;
     }
-    
+
     @Deprecated
     public Node getBodyNode() {
         return getBody();
     }
-    
+
     public void setBody(Node body) {
         this.bodyNode = adopt(body);
     }
     /**
      * Gets the scope of this class
-     * 
+     *
      * @return the scope
      */
     public StaticScope getScope() {
@@ -118,12 +118,12 @@ public class SClassNode extends Node implements ILocalScope, IModuleScope {
     public Node getReceiver() {
         return receiverNode;
     }
-    
+
     @Deprecated
     public Node getReceiverNode() {
         return getReceiver();
     }
-    
+
     public void setReceiver(Node receiver) {
         this.receiverNode = adopt(receiver);
     }
@@ -140,6 +140,6 @@ public class SClassNode extends Node implements ILocalScope, IModuleScope {
 
     public List<ILocalVariable> getVariableReferencesNamed(String name) {
         return ILocalVariableVisitor.findOccurrencesIn(this, name);
-    }    
+    }
 }
 

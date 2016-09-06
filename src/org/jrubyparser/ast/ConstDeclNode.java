@@ -13,7 +13,7 @@
  * rights and limitations under the License.
  *
  * Copyright (C) 2009 Thomas E. Enebo <tom.enebo@gmail.com>
- * 
+ *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
  * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
@@ -43,8 +43,8 @@ public class ConstDeclNode extends AssignableNode implements INameNode {
     // TODO: Split this into two sub-classes so that name and constNode can be specified seperately.
     public ConstDeclNode(SourcePosition position, String name, INameNode constNode, Node valueNode) {
         super(position, valueNode);
-        
-        this.name = name;        
+
+        this.name = name;
         this.constNode = (INameNode) adopt((Node) constNode);
     }
 
@@ -69,10 +69,10 @@ public class ConstDeclNode extends AssignableNode implements INameNode {
      * Accept for the visitor pattern.
      * @param iVisitor the visitor
      **/
-    public Object accept(NodeVisitor iVisitor) {
+    public <T> T accept(NodeVisitor<T> iVisitor) {
         return iVisitor.visitConstDeclNode(this);
     }
-    
+
     public String getLexicalName() {
         return getName();
     }
@@ -85,17 +85,17 @@ public class ConstDeclNode extends AssignableNode implements INameNode {
     public String getName() {
     	return (name == null ? constNode.getName() : name);
     }
-    
+
     public void setName(String name) {
         this.name = name;
     }
-    
+
     public boolean isNameMatch(String name) {
         String thisName = getName();
-        
+
         return thisName != null && thisName.equals(name);
     }
-    
+
     /**
      * Get the path the name is associated with or null (in Foo::BAR it is Foo).
      * @return pathNode
@@ -107,7 +107,7 @@ public class ConstDeclNode extends AssignableNode implements INameNode {
     public SourcePosition getNamePosition() {
         return getPosition().fromBeginning(getName().length());
     }
-    
+
     public SourcePosition getLexicalNamePosition() {
         return getNamePosition();
     }

@@ -13,7 +13,7 @@
  * rights and limitations under the License.
  *
  * Copyright (C) 2009 Thomas E. Enebo <tom.enebo@gmail.com>
- * 
+ *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
  * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
@@ -42,7 +42,7 @@ public class RescueBodyNode extends Node {
 
     public RescueBodyNode(SourcePosition position, Node exceptionNodes, Node bodyNode, RescueBodyNode optRescueNode) {
         super(position);
-        
+
         this.exceptionNodes = adopt(exceptionNodes);
         this.bodyNode = adopt(bodyNode);
         this.optRescueNode = (RescueBodyNode) adopt(optRescueNode);
@@ -51,14 +51,14 @@ public class RescueBodyNode extends Node {
     @Override
     public boolean isSame(Node node) {
         if (!super.isSame(node)) return false;
-            
+
         RescueBodyNode other = (RescueBodyNode) node;
 
         List<Node> kids = childNodes();
         List<Node> otherKids = other.childNodes();
-        
+
         if (kids.size() != otherKids.size()) return false;
-        
+
         // Assume this is ok because the three nodes are always different types (each has different null value scenario).
         for (int i = 0; i < kids.size(); i++) {
             if (kids.get(i).isSame(otherKids.get(i))) return false;
@@ -75,7 +75,7 @@ public class RescueBodyNode extends Node {
      * Accept for the visitor pattern.
      * @param iVisitor the visitor
      **/
-    public Object accept(NodeVisitor iVisitor) {
+    public <T> T accept(NodeVisitor<T> iVisitor) {
         return iVisitor.visitRescueBodyNode(this);
     }
 
@@ -86,12 +86,12 @@ public class RescueBodyNode extends Node {
     public Node getBody() {
         return bodyNode;
     }
-    
+
     @Deprecated
     public Node getBodyNode() {
         return getBody();
     }
-    
+
     public void setBody(Node body) {
         this.bodyNode = adopt(body);
     }
@@ -107,11 +107,11 @@ public class RescueBodyNode extends Node {
     public RescueBodyNode getOptRescueNode() {
         return getOptRescue();
     }
-    
+
     public void setOptRescue(RescueBodyNode optRescue) {
         this.optRescueNode = (RescueBodyNode) adopt(optRescue);
     }
-    
+
     /**
      * Gets the exceptionNodes.
      * @return Returns a Node
@@ -119,12 +119,12 @@ public class RescueBodyNode extends Node {
     public Node getExceptions() {
         return exceptionNodes;
     }
-    
+
     @Deprecated
     public Node getExceptionNodes() {
         return getExceptions();
     }
-    
+
     public void setExceptions(Node exceptions) {
         this.exceptionNodes = adopt(exceptions);
     }

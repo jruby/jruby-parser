@@ -49,7 +49,7 @@ public class LambdaNode extends IterNode {
     }
 
     @Override
-    public Object accept(NodeVisitor visitor) {
+    public <T> T accept(NodeVisitor<T> visitor) {
         return visitor.visitLambdaNode(this);
     }
 }

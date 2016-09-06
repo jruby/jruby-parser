@@ -13,7 +13,7 @@
  * rights and limitations under the License.
  *
  * Copyright (C) 2009 Thomas E. Enebo <tom.enebo@gmail.com>
- * 
+ *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
  * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
@@ -36,7 +36,7 @@ import org.jrubyparser.SourcePosition;
  */
 public class ConstNode extends Node implements INameNode {
     private String name;
-    
+
     public ConstNode(SourcePosition position, String name) {
         super(position);
         this.name = name;
@@ -58,19 +58,19 @@ public class ConstNode extends Node implements INameNode {
     public NodeType getNodeType() {
         return NodeType.CONSTNODE;
     }
-    
+
     /**
      * Accept for the visitor pattern.
      * @param iVisitor the visitor
      **/
-    public Object accept(NodeVisitor iVisitor) {
+    public <T> T accept(NodeVisitor<T> iVisitor) {
         return iVisitor.visitConstNode(this);
     }
 
     public String getLexicalName() {
         return getName();
     }
-    
+
     /**
      * Gets the name.
      * @return Returns a String
@@ -78,21 +78,21 @@ public class ConstNode extends Node implements INameNode {
     public String getName() {
         return name;
     }
-    
+
     public void setName(String name) {
         this.name = name;
     }
-    
+
     public boolean isNameMatch(String name) {
         String thisName = getName();
-        
+
         return thisName != null && thisName.equals(name);
     }
 
     public SourcePosition getNamePosition() {
         return getPosition();
     }
-    
+
     public SourcePosition getLexicalNamePosition() {
         return getPosition();
     }

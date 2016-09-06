@@ -13,7 +13,7 @@
  * rights and limitations under the License.
  *
  * Copyright (C) 2009 Thomas E. Enebo <tom.enebo@gmail.com>
- * 
+ *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
  * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
@@ -37,7 +37,7 @@ public class Match2Node extends Node {
 
     public Match2Node(SourcePosition position, Node receiverNode, Node valueNode) {
         super(position);
-        
+
         assert receiverNode != null : "receiverNode is not null";
         assert valueNode != null : "valueNode is not null";
 
@@ -55,7 +55,7 @@ public class Match2Node extends Node {
     @Override
     public boolean isSame(Node node) {
         if (!super.isSame(node)) return false;
-        
+
         Match2Node other = (Match2Node) node;
 
         return getValue().isSame(other.getValue()) && getReceiver().isSame(other.getReceiver());
@@ -73,7 +73,7 @@ public class Match2Node extends Node {
     public Node getReceiver() {
         return receiverNode;
     }
-    
+
     @Deprecated
     public Node getReceiverNode() {
         return getReceiver();
@@ -87,7 +87,7 @@ public class Match2Node extends Node {
     public Node getValue() {
         return valueNode;
     }
-    
+
     @Deprecated
     public Node getValueNode() {
         return getValue();
@@ -97,7 +97,7 @@ public class Match2Node extends Node {
      * Accept for the visitor pattern.
      * @param iVisitor the visitor
      **/
-    public Object accept(NodeVisitor iVisitor) {
+    public <T> T accept(NodeVisitor<T> iVisitor) {
         return iVisitor.visitMatch2Node(this);
     }
 

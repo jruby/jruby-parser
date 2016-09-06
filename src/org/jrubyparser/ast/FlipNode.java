@@ -13,7 +13,7 @@
  * rights and limitations under the License.
  *
  * Copyright (C) 2009 Thomas E. Enebo <tom.enebo@gmail.com>
- * 
+ *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
  * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
@@ -41,13 +41,13 @@ public class FlipNode extends Node {
     // A scoped location of this variable (high 16 bits is how many scopes down and low 16 bits
     // is what index in the right scope to set the value.
     private int location;
-    
+
     public FlipNode(SourcePosition position, Node beginNode, Node endNode, boolean exclusive, int location) {
         super(position);
-        
+
         assert beginNode != null : "beginNode is not null";
         assert endNode != null : "endNode is not null";
-        
+
         this.beginNode = adopt(beginNode);
         this.endNode = adopt(endNode);
         this.exclusive = exclusive;
@@ -66,7 +66,7 @@ public class FlipNode extends Node {
         if (!super.isSame(node)) return false;
 
         FlipNode other = (FlipNode) node;
-        
+
         return getBegin().isSame(other.getBegin()) && getEnd().isSame(other.getEnd());
     }
 
@@ -79,7 +79,7 @@ public class FlipNode extends Node {
      * Accept for the visitor pattern.
      * @param iVisitor the visitor
      **/
-    public Object accept(NodeVisitor iVisitor) {
+    public <T> T accept(NodeVisitor<T> iVisitor) {
         return iVisitor.visitFlipNode(this);
     }
 
@@ -91,7 +91,7 @@ public class FlipNode extends Node {
     public Node getBegin() {
         return beginNode;
     }
-    
+
     @Deprecated
     public Node getBeginNode() {
         return getBegin();
@@ -105,7 +105,7 @@ public class FlipNode extends Node {
     public Node getEnd() {
         return endNode;
     }
-    
+
     @Deprecated
     public Node getEndNode() {
         return getEnd();
@@ -122,17 +122,17 @@ public class FlipNode extends Node {
 
     /**
      * How many scopes should we burrow down to until we need to set the block variable value.
-     * 
+     *
      * @return 0 for current scope, 1 for one down, ...
      */
     public int getDepth() {
         return location >> 16;
     }
-    
+
     /**
      * Gets the index within the scope construct that actually holds the eval'd value
      * of this local variable
-     * 
+     *
      * @return Returns an int offset into storage structure
      */
     public int getIndex() {

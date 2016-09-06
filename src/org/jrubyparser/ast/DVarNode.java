@@ -13,7 +13,7 @@
  * rights and limitations under the License.
  *
  * Copyright (C) 2009 Thomas E. Enebo <tom.enebo@gmail.com>
- * 
+ *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
  * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
@@ -50,34 +50,34 @@ public class DVarNode extends NamedNode implements ILocalVariable {
     public NodeType getNodeType() {
         return NodeType.DVARNODE;
     }
-    
+
     /**
      * Accept for the visitor pattern.
      * @param iVisitor the visitor
      **/
-    public Object accept(NodeVisitor iVisitor) {
+    public <T> T accept(NodeVisitor<T> iVisitor) {
         return iVisitor.visitDVarNode(this);
     }
-    
+
     /**
      * How many scopes should we burrow down to until we need to set the block variable value.
-     * 
+     *
      * @return 0 for current scope, 1 for one down, ...
      */
     public int getDepth() {
         return location >> 16;
     }
-    
+
     /**
      * Gets the index within the scope construct that actually holds the eval'd value
      * of this local variable
-     * 
+     *
      * @return Returns an int offset into storage structure
      */
     public int getIndex() {
         return location & 0xffff;
     }
-    
+
     @Override
     public boolean isBlockParameter() {
         return false;
@@ -85,26 +85,26 @@ public class DVarNode extends NamedNode implements ILocalVariable {
 
     public IScope getDefinedScope() {
         IScope scope = getClosestIScope();
-        
+
         for (int i = 0; i < getDepth(); i++) {
             scope = ((Node) scope).getClosestIScope();
-        }        
+        }
 
         return scope;
     }
-    
+
     public List<ILocalVariable> getOccurrences() {
         return getDefinedScope().getVariableReferencesNamed(getName());
     }
-    
+
     public ILocalVariable getDeclaration() {
         for (ILocalVariable variable: getOccurrences()) {
             if (variable instanceof IParameter) return variable;
             if (variable instanceof DAsgnNode) return variable;
         }
-        
+
         assert false: "Never found declaration for DVarNode";
-        
+
         return null; // Should not reach here
     }
 }

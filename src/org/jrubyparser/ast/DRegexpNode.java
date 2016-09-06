@@ -13,7 +13,7 @@
  * rights and limitations under the License.
  *
  * Copyright (C) 2009 Thomas E. Enebo <tom.enebo@gmail.com>
- * 
+ *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
  * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
@@ -33,13 +33,13 @@ import org.jrubyparser.RegexpOptions;
 import org.jrubyparser.SourcePosition;
 
 /**
- * A regexp which contains some expressions which will need to be evaluated everytime the regexp 
+ * A regexp which contains some expressions which will need to be evaluated everytime the regexp
  * is used for a match.
  */
 public class DRegexpNode extends ListNode implements ILiteralNode {
     private RegexpOptions options;
     private boolean is19;
-    
+
     public DRegexpNode(SourcePosition position, RegexpOptions options) {
         this(position, options, false);
     }
@@ -74,7 +74,7 @@ public class DRegexpNode extends ListNode implements ILiteralNode {
      * @param iVisitor the visitor
      **/
     @Override
-    public Object accept(NodeVisitor iVisitor) {
+    public <T> T accept(NodeVisitor<T> iVisitor) {
         return iVisitor.visitDRegxNode(this);
     }
 

@@ -13,7 +13,7 @@
  * rights and limitations under the License.
  *
  * Copyright (C) 2009 Thomas E. Enebo <tom.enebo@gmail.com>
- * 
+ *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
  * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
@@ -31,7 +31,7 @@ package org.jrubyparser.ast;
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 
-/** 
+/**
  * Represents an integer literal.
  */
 public class FixnumNode extends Node implements ILiteralNode {
@@ -55,7 +55,7 @@ public class FixnumNode extends Node implements ILiteralNode {
     }
 
 
-    public Object accept(NodeVisitor iVisitor) {
+    public <T> T accept(NodeVisitor<T> iVisitor) {
         return iVisitor.visitFixnumNode(this);
     }
 
@@ -70,7 +70,7 @@ public class FixnumNode extends Node implements ILiteralNode {
     public long getValue() {
         return value;
     }
-    
+
     public void setValue(long value) {
         this.value = value;
     }

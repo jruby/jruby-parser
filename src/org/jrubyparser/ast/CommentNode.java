@@ -13,7 +13,7 @@
  * rights and limitations under the License.
  *
  * Copyright (C) 2009 Thomas E. Enebo <tom.enebo@gmail.com>
- *  
+ *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
  * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
@@ -35,7 +35,7 @@ import org.jrubyparser.SourcePosition;
  * Representation of a comment.  Note that comments are not part of evaluation so you do
  * not get the ability to visit this node as part of evaluation.  In theory we could add
  * this if we envisioned some wacky annotation system, but we have no crazy ideas yet.
- *   
+ *
  */
 public class CommentNode extends SyntaxNode {
 
@@ -49,10 +49,10 @@ public class CommentNode extends SyntaxNode {
     }
 
     @Override
-    public Object accept(NodeVisitor visitor) {
+    public <T> T accept(NodeVisitor<T> visitor) {
         return visitor.visitCommentNode(this);
     }
-    
+
     @Override
     public String toString() {
         return "Comment: " + getContent();

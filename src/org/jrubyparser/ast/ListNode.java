@@ -13,7 +13,7 @@
  * rights and limitations under the License.
  *
  * Copyright (C) 2009 Thomas E. Enebo <tom.enebo@gmail.com>
- * 
+ *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
  * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
@@ -44,20 +44,20 @@ public class ListNode extends Node {
 
     /**
      * Create a new ListNode.
-     * 
+     *
      * @param position type of listnode
      * @param firstNode first element of the list
      */
     public ListNode(SourcePosition position, Node firstNode) {
         this(position);
-        
+
         list = new ArrayList<Node>();
         list.add(adopt(firstNode));
     }
-    
+
     public ListNode(SourcePosition position) {
         super(position);
-        
+
         list = new ArrayList<Node>(0);
     }
 
@@ -71,7 +71,7 @@ public class ListNode extends Node {
     @Override
     public boolean isSame(Node node) {
         if (!super.isSame(node)) return false;
-            
+
         ListNode other = (ListNode) node;
         if (size() != other.size()) return false;
 
@@ -86,10 +86,10 @@ public class ListNode extends Node {
     public NodeType getNodeType() {
         return NodeType.LISTNODE;
     }
-    
+
     public ListNode add(Node node) {
         list.add(adopt(node));
-        
+
         if (node == null) return this;
 
         if (getPosition() == null) {
@@ -100,24 +100,24 @@ public class ListNode extends Node {
 
         return this;
     }
-    
+
     public ListNode prepend(Node node) {
         // Ruby Grammar productions return plenty of nulls.
         if (node == null) return this;
-        
+
         list.add(0, adopt(node));
-        
+
         setPosition(getPosition().union(node.getPosition()));
         return this;
     }
-    
+
     public int size() {
         return list.size();
     }
-    
+
     /**
      * Add all elements in other list to this list node.
-     * 
+     *
      * @param other list which has elements
      * @return this instance for method chaining
      */
@@ -144,25 +144,25 @@ public class ListNode extends Node {
         }
         return null;
     }
-    
+
     /**
      * Add other element to this list
-     * 
+     *
      * @param other list which has elements
      * @return this instance for method chaining
      */
     public ListNode addAll(Node other) {
         return add(other);
     }
-    
+
     public Node getLast() {
     	return list.isEmpty() ? null : list.get(list.size() - 1);
     }
 
-    public Object accept(NodeVisitor visitor) {
+    public <T> T accept(NodeVisitor<T> visitor) {
         return visitor.visitListNode(this);
     }
-    
+
     public Node get(int idx) {
         return list.get(idx);
     }

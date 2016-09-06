@@ -13,7 +13,7 @@
  * rights and limitations under the License.
  *
  * Copyright (C) 2009 Thomas E. Enebo <tom.enebo@gmail.com>
- * 
+ *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
  * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
@@ -32,7 +32,7 @@ import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 import org.jrubyparser.RegexpOptions;
 
-/** 
+/**
  * Represents a simple regular expression literal.
  */
 public class RegexpNode extends Node implements ILiteralNode {
@@ -49,7 +49,7 @@ public class RegexpNode extends Node implements ILiteralNode {
     @Override
     public boolean isSame(Node node) {
         if (!super.isSame(node)) return false;
-            
+
         RegexpNode other = (RegexpNode) node;
         if (getValue() == null && other.getValue() == null) {
             if (getOptions() == null && other.getOptions() == null) return true;
@@ -69,7 +69,7 @@ public class RegexpNode extends Node implements ILiteralNode {
         return NodeType.REGEXPNODE;
     }
 
-    public Object accept(NodeVisitor iVisitor) {
+    public <T> T accept(NodeVisitor<T> iVisitor) {
         return iVisitor.visitRegexpNode(this);
     }
 

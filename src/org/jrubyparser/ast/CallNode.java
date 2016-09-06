@@ -13,7 +13,7 @@
  * rights and limitations under the License.
  *
  * Copyright (C) 2009 Thomas E. Enebo <tom.enebo@gmail.com>
- * 
+ *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
  * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
@@ -45,13 +45,13 @@ public class CallNode extends Node implements INameNode, IArgumentNode, BlockAcc
     public CallNode(SourcePosition position, Node receiverNode, String name, Node argsNode) {
         this(position, receiverNode, name, argsNode, null);
     }
-    
-    public CallNode(SourcePosition position, Node receiverNode, String name, Node argsNode, 
+
+    public CallNode(SourcePosition position, Node receiverNode, String name, Node argsNode,
             Node iterNode) {
         super(position);
-        
+
         assert receiverNode != null : "receiverNode is not null";
-        
+
         this.receiverNode = adopt(receiverNode);
         setArgs(argsNode);
         this.iterNode = adopt(iterNode);
@@ -75,30 +75,30 @@ public class CallNode extends Node implements INameNode, IArgumentNode, BlockAcc
     public NodeType getNodeType() {
         return NodeType.CALLNODE;
     }
-    
+
     /**
      * Accept for the visitor pattern.
      * @param iVisitor the visitor
      **/
-    public Object accept(NodeVisitor iVisitor) {
+    public <T> T accept(NodeVisitor<T> iVisitor) {
         return iVisitor.visitCallNode(this);
     }
-    
+
     @Deprecated
     public Node getIterNode() {
         return getIter();
     }
-    
+
     public Node getIter() {
         return iterNode;
     }
-    
+
     public Node setIterNode(Node iterNode) {
         setIter(iterNode);
-        
+
         return this;
     }
-    
+
     public void setIter(Node iter) {
         this.iterNode = adopt(iter);
     }
@@ -111,23 +111,23 @@ public class CallNode extends Node implements INameNode, IArgumentNode, BlockAcc
     public Node getArgsNode() {
         return getArgs();
     }
-    
+
     public Node getArgs() {
         return argsNode;
     }
-    
+
     /**
      * Set the argsNode.
-     * 
+     *
      * @param argsNode set the arguments for this node.
      */
     @Deprecated
     public Node setArgsNode(Node argsNode) {
         setArgs(argsNode);
-        
+
         return getArgs();
     }
-    
+
     public void setArgs(Node argsNode) {
         if (argsNode == null) {
 	    argsNode = new ListNode(getReceiver().getPosition());
@@ -142,7 +142,7 @@ public class CallNode extends Node implements INameNode, IArgumentNode, BlockAcc
     public void setHasParens(boolean hasParens) {
         this.hasParens = hasParens;
     }
-    
+
     public String getLexicalName() {
         return lexicalName;
     }
@@ -166,10 +166,10 @@ public class CallNode extends Node implements INameNode, IArgumentNode, BlockAcc
 
     public boolean isNameMatch(String name) {
         String thisName = getName();
-        
+
         return thisName != null && thisName.equals(name);
     }
-    
+
     /**
      * Gets the receiverNode.
 	 * receiverNode is the object on which the method is being called
@@ -179,22 +179,22 @@ public class CallNode extends Node implements INameNode, IArgumentNode, BlockAcc
     public Node getReceiverNode() {
         return getReceiver();
     }
-    
+
     public Node getReceiver() {
         return receiverNode;
     }
-    
+
     public void setReceiver(Node receiver) {
         this.receiverNode = adopt(receiver);
     }
 
     public SourcePosition getNamePosition() {
         SourcePosition pos = receiverNode.getPosition();
-        
+
         return new SourcePosition(pos.getFile(), pos.getStartLine(), pos.getEndLine(),
                 pos.getEndOffset(), pos.getEndOffset() + getName().length());
     }
-    
+
     public SourcePosition getLexicalNamePosition() {
         return getNamePosition();
     }
