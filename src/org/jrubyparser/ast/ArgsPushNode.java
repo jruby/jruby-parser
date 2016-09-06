@@ -13,7 +13,7 @@
  * rights and limitations under the License.
  *
  * Copyright (C) 2009 Thomas E. Enebo <tom.enebo@gmail.com>
- * 
+ *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
  * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
@@ -34,13 +34,13 @@ import org.jrubyparser.SourcePosition;
 public class ArgsPushNode extends Node {
     private Node firstNode;
     private Node secondNode;
-    
+
     public ArgsPushNode(SourcePosition position, Node firstNode, Node secondNode) {
         super(position);
-        
+
         assert firstNode != null : "ArgsPushNode.first == null";
         assert secondNode != null : "ArgsPushNode.second == null";
-        
+
         this.firstNode = adopt(firstNode);
         this.secondNode = adopt(secondNode);
     }
@@ -55,9 +55,9 @@ public class ArgsPushNode extends Node {
     @Override
     public boolean isSame(Node node) {
         if (!super.isSame(node)) return false;
-        
+
         ArgsPushNode other = (ArgsPushNode) node;
-        
+
         return getFirstNode().isSame(other.getFirstNode()) && getSecondNode().isSame(other.getSecondNode());
     }
 
@@ -66,15 +66,15 @@ public class ArgsPushNode extends Node {
         return NodeType.ARGSPUSHNODE;
     }
 
-    public Object accept(NodeVisitor visitor) {
+    public <T> T accept(NodeVisitor<T> visitor) {
         return visitor.visitArgsPushNode(this);
     }
-    
+
     public Node getFirstNode() {
         return firstNode;
     }
-    
+
     public Node getSecondNode() {
         return secondNode;
-    }    
+    }
 }

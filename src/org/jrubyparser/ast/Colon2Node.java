@@ -13,7 +13,7 @@
  * rights and limitations under the License.
  *
  * Copyright (C) 2009 Thomas E. Enebo <tom.enebo@gmail.com>
- * 
+ *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
  * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
@@ -31,7 +31,7 @@ package org.jrubyparser.ast;
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 
-/** 
+/**
  * Represents a '::' constant access or method call (Java::JavaClass).
  */
 public abstract class Colon2Node extends Colon3Node implements INameNode {
@@ -53,7 +53,7 @@ public abstract class Colon2Node extends Colon3Node implements INameNode {
     public boolean isSame(Node node) {
         if (!super.isSame(node)) return false;
         Colon2Node other = (Colon2Node) node;
-            
+
         if (getLeftNode() == null && other.getLeftNode() == null) return isNameMatch(other.getName());
         if (getLeftNode() == null || other.getLeftNode() == null) return false;
 
@@ -65,13 +65,13 @@ public abstract class Colon2Node extends Colon3Node implements INameNode {
     public NodeType getNodeType() {
         return NodeType.COLON2NODE;
     }
-    
+
     /**
      * Accept for the visitor pattern.
      * @param iVisitor the visitor
      **/
     @Override
-    public Object accept(NodeVisitor iVisitor) {
+    public <T> T accept(NodeVisitor<T> iVisitor) {
         return iVisitor.visitColon2Node(this);
     }
 

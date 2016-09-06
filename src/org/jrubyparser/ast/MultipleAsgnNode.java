@@ -100,7 +100,7 @@ public class MultipleAsgnNode extends AssignableNode {
         return NodeType.MULTIPLEASGNNODE;
     }
 
-    public Object accept(NodeVisitor iVisitor) {
+    public <T> T accept(NodeVisitor<T> iVisitor) {
         return iVisitor.visitMultipleAsgnNode(this);
     }
 

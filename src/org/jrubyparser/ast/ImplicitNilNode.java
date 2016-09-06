@@ -14,7 +14,7 @@ public class ImplicitNilNode extends Node {
     }
 
     @Override
-    public Object accept(NodeVisitor visitor) {
+    public <T> T accept(NodeVisitor<T> visitor) {
         return visitor.visitImplicitNilNode(this);
     }
 
@@ -22,5 +22,5 @@ public class ImplicitNilNode extends Node {
     public NodeType getNodeType() {
         return NodeType.IMPLICITNILNODE;
     }
-    
+
 }

@@ -13,7 +13,7 @@
  * rights and limitations under the License.
  *
  * Copyright (C) 2009 Thomas E. Enebo <tom.enebo@gmail.com>
- * 
+ *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
  * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
@@ -32,7 +32,7 @@ import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 
 //FIXME: I don't think this should be a namednode/inamenode but I need to audit how it is used.
-/** 
+/**
  * Represents a symbol (:symbol_name).
  */
 public class SymbolNode extends NamedNode implements ILiteralNode, INameNode {
@@ -44,7 +44,7 @@ public class SymbolNode extends NamedNode implements ILiteralNode, INameNode {
         return NodeType.SYMBOLNODE;
     }
 
-    public Object accept(NodeVisitor iVisitor) {
+    public <T> T accept(NodeVisitor<T> iVisitor) {
         return iVisitor.visitSymbolNode(this);
     }
 

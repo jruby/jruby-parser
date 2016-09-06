@@ -13,7 +13,7 @@
  * rights and limitations under the License.
  *
  * Copyright (C) 2009 Thomas E. Enebo <tom.enebo@gmail.com>
- * 
+ *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
  * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
@@ -31,12 +31,12 @@ package org.jrubyparser.ast;
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 
-/** 
+/**
  * Represents a float literal.
  */
 public class FloatNode extends NumericNode implements ILiteralNode {
     private double value;
-    
+
     public FloatNode(SourcePosition position, double value) {
         super(position);
         this.value = value;
@@ -59,7 +59,7 @@ public class FloatNode extends NumericNode implements ILiteralNode {
         return NodeType.FLOATNODE;
     }
 
-    public Object accept(NodeVisitor iVisitor) {
+    public <T> T accept(NodeVisitor<T> iVisitor) {
         return iVisitor.visitFloatNode(this);
     }
 
@@ -70,7 +70,7 @@ public class FloatNode extends NumericNode implements ILiteralNode {
     public double getValue() {
         return value;
     }
-    
+
     /**
      * Sets the value
      * @param value to set

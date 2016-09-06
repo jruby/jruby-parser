@@ -14,7 +14,7 @@
  *
  * Copyright (C) 2013 Chris Seaton <chris@chrisseaton.com>
  * Copyright (C) 2009 Thomas E. Enebo <tom.enebo@gmail.com>
- * 
+ *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
  * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
@@ -46,9 +46,9 @@ public class UnaryCallNode extends Node implements INameNode {
 
     public UnaryCallNode(SourcePosition position, Node receiverNode, String lexicalName) {
         super(position);
-        
+
         assert receiverNode != null : "receiverNode is not null";
-        
+
         this.receiverNode = adopt(receiverNode);
         this.lexicalName = lexicalName;
     }
@@ -59,19 +59,19 @@ public class UnaryCallNode extends Node implements INameNode {
 
         UnaryCallNode other = (UnaryCallNode) node;
 
-        return isNameMatch(other.getName()) && isLexicalNameMatch(other.getLexicalName()) && 
+        return isNameMatch(other.getName()) && isLexicalNameMatch(other.getLexicalName()) &&
                 getReceiver().isSame(other.getReceiver());
     }
 
     public NodeType getNodeType() {
         return NodeType.UNARYCALLNODE;
     }
-    
+
     /**
      * Accept for the visitor pattern.
      * @param iVisitor the visitor
      **/
-    public Object accept(NodeVisitor iVisitor) {
+    public <T> T accept(NodeVisitor<T> iVisitor) {
         return iVisitor.visitUnaryCallNode(this);
     }
 
@@ -82,7 +82,7 @@ public class UnaryCallNode extends Node implements INameNode {
     public void setHasParens(boolean hasParens) {
         this.hasParens = hasParens;
     }
-    
+
     /**
      * Gets the name as it lexically appears in the source code, undecorated by
      * the '@' sigil.
@@ -109,16 +109,16 @@ public class UnaryCallNode extends Node implements INameNode {
 
     public boolean isLexicalNameMatch(String name) {
         String thisName = getLexicalName();
-        
+
         return thisName != null && thisName.equals(name);
     }
 
     public boolean isNameMatch(String name) {
         String thisName = getName();
-        
+
         return thisName != null && thisName.equals(name);
     }
-    
+
     /**
      * Gets the receiverNode.
    * receiverNode is the object on which the method is being called
@@ -128,22 +128,22 @@ public class UnaryCallNode extends Node implements INameNode {
     public Node getReceiverNode() {
         return getReceiver();
     }
-    
+
     public Node getReceiver() {
         return receiverNode;
     }
-    
+
     public void setReceiver(Node receiver) {
         this.receiverNode = adopt(receiver);
     }
 
     public SourcePosition getNamePosition() {
         SourcePosition pos = receiverNode.getPosition();
-        
+
         return new SourcePosition(pos.getFile(), pos.getStartLine(), pos.getEndLine(),
                 pos.getEndOffset(), pos.getEndOffset() + getName().length());
     }
-    
+
     public SourcePosition getLexicalNamePosition() {
         return getNamePosition();
     }

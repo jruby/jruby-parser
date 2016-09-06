@@ -13,7 +13,7 @@
  * rights and limitations under the License.
  *
  * Copyright (C) 2009 Thomas E. Enebo <tom.enebo@gmail.com>
- * 
+ *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
  * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
@@ -31,7 +31,7 @@ package org.jrubyparser.ast;
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 
-/** 
+/**
  * Represents a range literal.
  */
 public class DotNode extends Node {
@@ -40,13 +40,13 @@ public class DotNode extends Node {
     private boolean exclusive;
     private boolean isLiteral;
 
-    public DotNode(SourcePosition position, Node beginNode, Node endNode, boolean exclusive, 
+    public DotNode(SourcePosition position, Node beginNode, Node endNode, boolean exclusive,
             boolean isLiteral) {
         super(position);
-        
+
         assert beginNode != null : "beginNode is not null";
         assert endNode != null : "endNode is not null";
-        
+
         this.beginNode = adopt(beginNode);
         this.endNode = adopt(endNode);
         this.exclusive = exclusive;
@@ -78,7 +78,7 @@ public class DotNode extends Node {
      * Accept for the visitor pattern.
      * @param iVisitor the visitor
      **/
-    public Object accept(NodeVisitor iVisitor) {
+    public <T> T accept(NodeVisitor<T> iVisitor) {
         return iVisitor.visitDotNode(this);
     }
 
@@ -94,7 +94,7 @@ public class DotNode extends Node {
     public Node getBeginNode() {
         return getBegin();
     }
-    
+
     /**
      * Gets the endNode.
      * @return Returns a Node
@@ -102,7 +102,7 @@ public class DotNode extends Node {
     public Node getEnd() {
         return endNode;
     }
-    
+
     @Deprecated
     public Node getEndNode() {
         return getEnd();
@@ -115,12 +115,12 @@ public class DotNode extends Node {
     public boolean isExclusive() {
         return exclusive;
     }
-    
+
     /**
      * Is this a literal node.  MRI has a literal node type and we currently don't.
      * We provide this attribute so we can detect that this should be a literal to
      * match MRI semantics of literal DOT nodes.
-     * 
+     *
      * @return true is literal
      */
     public boolean isLiteral() {

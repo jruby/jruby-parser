@@ -13,7 +13,7 @@
  * rights and limitations under the License.
  *
  * Copyright (C) 2009 Thomas E. Enebo <tom.enebo@gmail.com>
- * 
+ *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
  * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
@@ -31,14 +31,14 @@ package org.jrubyparser.ast;
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 
-/** 
+/**
  * Represents an until statement.
  */
 public class UntilNode extends Node {
     private Node conditionNode;
     private Node bodyNode;
     private boolean evaluateAtStart;
-    
+
     public boolean containsNonlocalFlow = false;
 
     public UntilNode(SourcePosition position, Node conditionNode, Node bodyNode) {
@@ -51,9 +51,9 @@ public class UntilNode extends Node {
 
     public UntilNode(SourcePosition position, Node conditionNode, Node bodyNode, boolean evaluateAtStart) {
         super(position);
-        
+
         assert conditionNode != null : "conditionNode is not null";
-        
+
         this.conditionNode = adopt(conditionNode);
         this.bodyNode = adopt(bodyNode);
         this.evaluateAtStart = evaluateAtStart;
@@ -63,7 +63,7 @@ public class UntilNode extends Node {
      * Accept for the visitor pattern.
      * @param iVisitor the visitor
      **/
-    public Object accept(NodeVisitor iVisitor) {
+    public <T> T accept(NodeVisitor<T> iVisitor) {
         return iVisitor.visitUntilNode(this);
     }
 
@@ -71,7 +71,7 @@ public class UntilNode extends Node {
     public boolean isSame(Node node) {
         if (!super.isSame(node)) return false;
         UntilNode other = (UntilNode) node;
-        
+
         return getBody().isSame(other.getBody()) && getCondition().isSame(other.getCondition()) &&
                 evaluateAtStart() == other.evaluateAtStart();
     }
@@ -84,12 +84,12 @@ public class UntilNode extends Node {
     public Node getBody() {
         return bodyNode;
     }
-    
+
     @Deprecated
     public Node getBodyNode() {
         return getBody();
     }
-    
+
     public void setBody(Node body) {
         this.bodyNode = adopt(body);
     }
@@ -101,12 +101,12 @@ public class UntilNode extends Node {
     public Node getCondition() {
         return conditionNode;
     }
-    
+
     @Deprecated
     public Node getConditionNode() {
         return getCondition();
     }
-    
+
     public void setConditionNode(Node condition) {
         this.conditionNode = adopt(condition);
     }
@@ -118,5 +118,5 @@ public class UntilNode extends Node {
     public boolean evaluateAtStart() {
         return evaluateAtStart;
     }
-    
+
 }

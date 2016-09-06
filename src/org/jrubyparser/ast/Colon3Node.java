@@ -13,7 +13,7 @@
  * rights and limitations under the License.
  *
  * Copyright (C) 2009 Thomas E. Enebo <tom.enebo@gmail.com>
- * 
+ *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
  * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
@@ -32,12 +32,12 @@ import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 
 /**
- * Global scope node (::FooBar).  This is used to gain access to the global scope (that of the 
+ * Global scope node (::FooBar).  This is used to gain access to the global scope (that of the
  * Object class) when referring to a constant or method.
  */
 public class Colon3Node extends Node implements INameNode {
     protected String name;
-    
+
     public Colon3Node(SourcePosition position, String name) {
         super(position);
         this.name = name;
@@ -59,19 +59,19 @@ public class Colon3Node extends Node implements INameNode {
     public NodeType getNodeType() {
         return NodeType.COLON3NODE;
     }
-    
+
     /**
      * Accept for the visitor pattern.
      * @param iVisitor the visitor
      **/
-    public Object accept(NodeVisitor iVisitor) {
+    public <T> T accept(NodeVisitor<T> iVisitor) {
         return iVisitor.visitColon3Node(this);
     }
 
     public String getLexicalName() {
         return getName();
     }
-    
+
     /**
      * Gets the name.
      * @return Returns a String
@@ -86,7 +86,7 @@ public class Colon3Node extends Node implements INameNode {
 
     public boolean isNameMatch(String name) {
         String thisName = getName();
-        
+
         return thisName != null && thisName.equals(name);
     }
 
@@ -95,7 +95,7 @@ public class Colon3Node extends Node implements INameNode {
     public SourcePosition getNamePosition() {
         return getPosition().fromEnd(getName().length());
     }
-    
+
     public SourcePosition getLexicalNamePosition() {
         return getNamePosition();
     }

@@ -13,7 +13,7 @@
  * rights and limitations under the License.
  *
  * Copyright (C) 2009 Thomas E. Enebo <tom.enebo@gmail.com>
- * 
+ *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
  * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
@@ -31,7 +31,7 @@ package org.jrubyparser.ast;
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 
-/** 
+/**
  * Represents an instance variable accessor.
  */
 public class InstVarNode extends Node implements IInstanceVariable {
@@ -39,9 +39,9 @@ public class InstVarNode extends Node implements IInstanceVariable {
 
     public InstVarNode(SourcePosition position, String name) {
         super(position);
-        
+
         if (name.startsWith("@")) name = name.substring(1);
- 
+
         this.name = name;
     }
 
@@ -61,15 +61,15 @@ public class InstVarNode extends Node implements IInstanceVariable {
     public NodeType getNodeType() {
         return NodeType.INSTVARNODE;
     }
-    
+
     /**
      * Accept for the visitor pattern.
      * @param iVisitor the visitor
      **/
-    public Object accept(NodeVisitor iVisitor) {
+    public <T> T accept(NodeVisitor<T> iVisitor) {
         return iVisitor.visitInstVarNode(this);
     }
-    
+
     public String getLexicalName() {
         return "@" + getName();
     }
@@ -81,21 +81,21 @@ public class InstVarNode extends Node implements IInstanceVariable {
     public String getName() {
         return name;
     }
-    
+
     public void setName(String name){
         this.name = name;
     }
 
     public boolean isNameMatch(String name) {
         String thisName = getName();
-        
+
         return thisName != null && thisName.equals(name);
-    }    
+    }
 
     public SourcePosition getNamePosition() {
         return getPosition().fromEnd(getName().length());
     }
-    
+
     public SourcePosition getLexicalNamePosition() {
         return getPosition();
     }

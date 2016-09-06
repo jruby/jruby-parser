@@ -13,7 +13,7 @@
  * rights and limitations under the License.
  *
  * Copyright (C) 2009 Thomas E. Enebo <tom.enebo@gmail.com>
- * 
+ *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
  * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
@@ -33,12 +33,12 @@ import org.jrubyparser.SourcePosition;
 
 public class SValueNode extends Node {
     private Node node;
-    
+
     public SValueNode(SourcePosition position, Node node) {
         super(position);
-        
+
         assert node != null : "node is not null";
-        
+
         this.node = adopt(node);
     }
 
@@ -51,10 +51,10 @@ public class SValueNode extends Node {
         return NodeType.SVALUENODE;
     }
 
-    public Object accept(NodeVisitor visitor) {
+    public <T> T accept(NodeVisitor<T> visitor) {
         return visitor.visitSValueNode(this);
     }
-    
+
     public Node getValue() {
         return node;
     }

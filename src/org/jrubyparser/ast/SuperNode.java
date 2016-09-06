@@ -13,7 +13,7 @@
  * rights and limitations under the License.
  *
  * Copyright (C) 2009 Thomas E. Enebo <tom.enebo@gmail.com>
- * 
+ *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
  * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
@@ -42,7 +42,7 @@ public class SuperNode extends Node implements BlockAcceptingNode, IArgumentNode
     public SuperNode(SourcePosition position, Node argsNode) {
         this(position, argsNode, null);
     }
-    
+
     public SuperNode(SourcePosition position, Node argsNode, Node iterNode) {
         super(position);
         this.argsNode = adopt(argsNode);
@@ -52,13 +52,13 @@ public class SuperNode extends Node implements BlockAcceptingNode, IArgumentNode
     @Override
     public boolean isSame(Node node) {
          if (!super.isSame(node)) return false;
-         
+
          SuperNode other = (SuperNode) node;
-         
+
          if (getArgs() == null && other.getArgs() == null) {
              if (getIter() == null && other.getIter() == null) return true;
              if (getIter() == null || other.getIter() == null) return false;
-             
+
              return getIter().isSame(other.getIter());
          } else if (getArgs() == null || other.getArgs() == null) {
              return false;
@@ -67,7 +67,7 @@ public class SuperNode extends Node implements BlockAcceptingNode, IArgumentNode
          } else if (getIter() == null || other.getIter() == null) {
              return false;
          }
-         
+
          return getArgs().isSame(other.getArgs()) && getIter().isSame(other.getIter());
     }
 
@@ -79,7 +79,7 @@ public class SuperNode extends Node implements BlockAcceptingNode, IArgumentNode
      * Accept for the visitor pattern.
      * @param iVisitor the visitor
      **/
-    public Object accept(NodeVisitor iVisitor) {
+    public <T> T accept(NodeVisitor<T> iVisitor) {
         return iVisitor.visitSuperNode(this);
     }
 
@@ -91,12 +91,12 @@ public class SuperNode extends Node implements BlockAcceptingNode, IArgumentNode
     public Node getArgsNode() {
         return argsNode;
     }
-    
+
     @Deprecated
     public Node getIterNode() {
         return getIter();
     }
-    
+
     public Node getIter() {
         return iterNode;
     }
@@ -104,14 +104,14 @@ public class SuperNode extends Node implements BlockAcceptingNode, IArgumentNode
     @Deprecated
     public Node setIterNode(Node iterNode) {
         setIter(iterNode);
-        
+
         return this;
     }
 
     public void setIter(Node iter) {
         this.iterNode = adopt(iter);
     }
-    
+
     public Node getArgs() {
         return argsNode;
     }

@@ -13,7 +13,7 @@
  * rights and limitations under the License.
  *
  * Copyright (C) 2009 Thomas E. Enebo <tom.enebo@gmail.com>
- * 
+ *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
  * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
@@ -32,9 +32,9 @@ import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 
 /** Represents an operator assignment to an element.
- * 
+ *
  * This could be for example:
- * 
+ *
  * <pre>
  * a[4] += 5
  * a[3] &&= true
@@ -48,10 +48,10 @@ public class OpElementAsgnNode extends Node {
 
     public OpElementAsgnNode(SourcePosition position, Node receiverNode, String operatorName, Node argsNode, Node valueNode) {
         super(position);
-        
+
         assert receiverNode != null : "receiverNode is not null";
         assert valueNode != null : "valueNode is not null";
-        
+
         this.receiverNode = adopt(receiverNode);
         this.argsNode = adopt(argsNode);
         this.valueNode = adopt(valueNode);
@@ -69,13 +69,13 @@ public class OpElementAsgnNode extends Node {
     public boolean isSame(Node node) {
         if (!super.isSame(node)) return false;
         OpElementAsgnNode other = (OpElementAsgnNode) node;
-        
+
         boolean truth = getReceiver().isSame(other.getReceiver()) && getValue().isSame(other.getValue()) &&
                 getOperatorName().equals(other.getOperatorName());
 
         if (getArgs() == null && other.getArgs() == null) return truth;
         if (getArgs() == null && other.getArgs() == null) return false;
-        
+
         return truth && getArgs().isSame(other.getArgs());
 
     }
@@ -84,12 +84,12 @@ public class OpElementAsgnNode extends Node {
     public NodeType getNodeType() {
         return NodeType.OPELEMENTASGNNODE;
     }
-    
+
     /**
      * Accept for the visitor pattern.
      * @param iVisitor the visitor
      **/
-    public Object accept(NodeVisitor iVisitor) {
+    public <T> T accept(NodeVisitor<T> iVisitor) {
         return iVisitor.visitOpElementAsgnNode(this);
     }
 
@@ -105,11 +105,11 @@ public class OpElementAsgnNode extends Node {
     public Node getArgs() {
         return argsNode;
     }
-    
+
     public void setArgs(Node args) {
         this.argsNode = adopt(args);
     }
-    
+
     /**
      * Gets the operatorName.
      * @return Returns a String
@@ -117,7 +117,7 @@ public class OpElementAsgnNode extends Node {
     public String getOperatorName() {
         return name;
     }
-    
+
     public void setOperatorName(String name) {
         this.name = name;
     }
@@ -130,11 +130,11 @@ public class OpElementAsgnNode extends Node {
     public Node getReceiverNode() {
         return getReceiver();
     }
-    
+
     public Node getReceiver() {
         return receiverNode;
     }
-    
+
     public void setReceiver(Node receiver) {
         this.receiverNode = adopt(receiver);
     }
@@ -147,11 +147,11 @@ public class OpElementAsgnNode extends Node {
     public Node getValueNode() {
         return valueNode;
     }
-    
+
     public Node getValue() {
         return valueNode;
     }
-    
+
     public void setValue(Node value) {
         this.valueNode = adopt(value);
     }

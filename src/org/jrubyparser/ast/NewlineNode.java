@@ -13,7 +13,7 @@
  * rights and limitations under the License.
  *
  * Copyright (C) 2009 Thomas E. Enebo <tom.enebo@gmail.com>
- * 
+ *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
  * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
@@ -39,7 +39,7 @@ import org.jrubyparser.SourcePosition;
  * line out of a physical line and a physical line if it is in a comment
  * or in a string does not necessarily correspond to a physical line.
  * This is normally a wrapper around another more significant node.
- * The parser generates such a node around each separate statement.  
+ * The parser generates such a node around each separate statement.
  */
 public class NewlineNode extends Node {
     private Node nextNode;
@@ -48,7 +48,7 @@ public class NewlineNode extends Node {
         super(position);
 
         assert nextNode != null : "nextNode is not null";
-        
+
         this.nextNode = adopt(nextNode);
     }
 
@@ -61,7 +61,7 @@ public class NewlineNode extends Node {
      * accepts the visitor
      * @param iVisitor the visitor to accept
      **/
-    public Object accept(NodeVisitor iVisitor) {
+    public <T> T accept(NodeVisitor<T> iVisitor) {
         return iVisitor.visitNewlineNode(this);
     }
 

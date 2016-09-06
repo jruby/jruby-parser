@@ -13,7 +13,7 @@
  * rights and limitations under the License.
  *
  * Copyright (C) 2009 Thomas E. Enebo <tom.enebo@gmail.com>
- * 
+ *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
  * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
@@ -37,15 +37,15 @@ import org.jrubyparser.util.ILocalVariableVisitor;
 import org.jrubyparser.util.VariableHelper;
 
 /**
- * Represents a block.  
+ * Represents a block.
  */
 public class IterNode extends Node implements IBlockScope {
     private Node varNode;
     private Node bodyNode;
-    
+
     // What static scoping relationship exists when it comes into being.
     private StaticScope scope;
-    
+
     public IterNode(SourcePosition position, Node varNode, StaticScope scope, Node bodyNode) {
         super(position);
         this.varNode = adopt(varNode);
@@ -71,9 +71,9 @@ public class IterNode extends Node implements IBlockScope {
     @Override
     public boolean isSame(Node node) {
         if (!super.isSame(node)) return false;
-        
+
         IterNode other = (IterNode) node;
-        
+
         if (getBody() == null && other.getBody() == null) {
             if (getVar() == null && other.getVar() == null) return true;
             if (getVar() == null || other.getVar() == null) return false;
@@ -97,10 +97,10 @@ public class IterNode extends Node implements IBlockScope {
      * Accept for the visitor pattern.
      * @param iVisitor the visitor
      **/
-    public Object accept(NodeVisitor iVisitor) {
+    public <T> T accept(NodeVisitor<T> iVisitor) {
         return iVisitor.visitIterNode(this);
     }
-    
+
     public StaticScope getScope() {
         return scope;
     }
@@ -112,7 +112,7 @@ public class IterNode extends Node implements IBlockScope {
     public Node getBody() {
         return bodyNode;
     }
-    
+
     @Deprecated
     public Node getBodyNode() {
         return getBody();
@@ -125,7 +125,7 @@ public class IterNode extends Node implements IBlockScope {
     public Node getVar() {
         return varNode;
     }
-    
+
     @Deprecated
     public Node getVarNode() {
         return getVar();
@@ -134,7 +134,7 @@ public class IterNode extends Node implements IBlockScope {
     /**
      * Given a name (presumably retrieve via getNormativeSignatureNameList()) is this parmeter used
      * in this method definition?
-     * 
+     *
      * @param name
      * @return if used or not.
      */
@@ -146,8 +146,8 @@ public class IterNode extends Node implements IBlockScope {
     public ILocalVariable getParameterNamed(String name) {
         return VariableHelper.getParameterName(getVar(), name);
     }
-    
+
     public List<ILocalVariable> getVariableReferencesNamed(String name) {
         return ILocalVariableVisitor.findOccurrencesIn(this, name);
-    }    
+    }
 }

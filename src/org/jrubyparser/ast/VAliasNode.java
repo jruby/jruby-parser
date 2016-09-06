@@ -13,7 +13,7 @@
  * rights and limitations under the License.
  *
  * Copyright (C) 2009 Thomas E. Enebo <tom.enebo@gmail.com>
- * 
+ *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
  * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
@@ -31,7 +31,7 @@ package org.jrubyparser.ast;
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 
-/** 
+/**
  * Represents an alias of a global variable.
  */
 public class VAliasNode extends Node {
@@ -48,7 +48,7 @@ public class VAliasNode extends Node {
     @Override
     public boolean isSame(Node node) {
         if (!super.isSame(node)) return false;
-        
+
         VAliasNode other = (VAliasNode) node;
 
         return getOldName().equals(other.getOldName()) && getNewName().equals(other.getNewName());
@@ -57,12 +57,12 @@ public class VAliasNode extends Node {
     public NodeType getNodeType() {
         return NodeType.VALIASNODE;
     }
-    
+
     /**
      * Accept for the visitor pattern.
      * @param iVisitor the visitor
      **/
-    public Object accept(NodeVisitor iVisitor) {
+    public <T> T accept(NodeVisitor<T> iVisitor) {
         return iVisitor.visitVAliasNode(this);
     }
 

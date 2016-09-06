@@ -13,7 +13,7 @@
  * rights and limitations under the License.
  *
  * Copyright (C) 2009 Thomas E. Enebo <tom.enebo@gmail.com>
- * 
+ *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
  * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
@@ -46,7 +46,7 @@ public class ArgumentNode extends Node implements IParameter {
 
         this.identifier = identifier;
     }
-    
+
     public ArgumentNode(SourcePosition position, String identifier, int location) {
         super(position);
 
@@ -69,8 +69,8 @@ public class ArgumentNode extends Node implements IParameter {
     public NodeType getNodeType() {
         return NodeType.ARGUMENTNODE;
     }
-    
-    public Object accept(NodeVisitor visitor) {
+
+    public <T> T accept(NodeVisitor<T> visitor) {
         return visitor.visitArgumentNode(this);
     }
 
@@ -92,15 +92,15 @@ public class ArgumentNode extends Node implements IParameter {
     public int getIndex() {
         return location & 0xffff;
     }
-    
+
     public String getLexicalName() {
         return getName();
     }
-    
+
     public String getName() {
         return identifier;
     }
-    
+
     public void setName(String name) {
         this.identifier = name;
     }
@@ -108,7 +108,7 @@ public class ArgumentNode extends Node implements IParameter {
     // Fixme: Can we assert name in constructor and remove null check?
     public boolean isNameMatch(String name) {
         String thisName = getName();
-        
+
         return thisName != null && thisName.equals(name);
     }
 
@@ -127,7 +127,7 @@ public class ArgumentNode extends Node implements IParameter {
     public SourcePosition getNamePosition() {
         return getPosition();
     }
-    
+
     public SourcePosition getLexicalNamePosition() {
         return getNamePosition();
     }

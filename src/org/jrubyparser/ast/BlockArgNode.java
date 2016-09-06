@@ -13,7 +13,7 @@
  * rights and limitations under the License.
  *
  * Copyright (C) 2009 Thomas E. Enebo <tom.enebo@gmail.com>
- * 
+ *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
  * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
@@ -64,7 +64,7 @@ public class BlockArgNode extends NamedNode implements IParameter {
     public NodeType getNodeType() {
         return NodeType.BLOCKARGNODE;
     }
-    
+
     @Override
     public String getLexicalName() {
         return "&" + getName();
@@ -74,7 +74,7 @@ public class BlockArgNode extends NamedNode implements IParameter {
      * Accept for the visitor pattern.
      * @param iVisitor the visitor
      **/
-    public Object accept(NodeVisitor iVisitor) {
+    public <T> T accept(NodeVisitor<T> iVisitor) {
         return iVisitor.visitBlockArgNode(this);
     }
 
@@ -85,22 +85,22 @@ public class BlockArgNode extends NamedNode implements IParameter {
     public int getCount() {
         return count;
     }
-    
+
     // 1.9+
     @Override
     public boolean isBlockParameter() {
         IterNode iter = getInnermostIter();
-        
+
         return iter != null && isDescendentOf(iter.getVar());
-    }    
+    }
 
     public IScope getDefinedScope() {
         return getClosestIScope(); // argument list elements always belong to closest scope
     }
-    
+
     public List<ILocalVariable> getOccurrences() {
         return getDefinedScope().getVariableReferencesNamed(getName());
-    }    
+    }
 
     public ILocalVariable getDeclaration() {
         return this;
@@ -110,9 +110,9 @@ public class BlockArgNode extends NamedNode implements IParameter {
     public SourcePosition getNamePosition() {
         return getPosition().fromEnd(getName().length());
     }
-    
+
     @Override
     public SourcePosition getLexicalNamePosition() {
         return getPosition();
-    }    
+    }
 }
