@@ -1,18 +1,19 @@
 /*
  ***** BEGIN LICENSE BLOCK *****
- * Version: CPL 1.0/GPL 2.0/LGPL 2.1
+ * Version: EPL 1.0/GPL 2.0/LGPL 2.1
  *
- * The contents of this file are subject to the Common Public
+ * The contents of this file are subject to the Eclipse Public
  * License Version 1.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of
- * the License at http://www.eclipse.org/legal/cpl-v10.html
+ * the License at http://www.eclipse.org/legal/epl-v10.html
  *
  * Software distributed under the License is distributed on an "AS
  * IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
  * implied. See the License for the specific language governing
  * rights and limitations under the License.
  *
- * Copyright (C) 2009 Thomas E. Enebo <tom.enebo@gmail.com>
+ * Copyright (C) 2004-2005 Thomas E Enebo <enebo@acm.org>
+ * Copyright (C) 2004 Stefan Matthias Aust <sma@3plus4.de>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
@@ -20,18 +21,19 @@
  * in which case the provisions of the GPL or the LGPL are applicable instead
  * of those above. If you wish to allow use of your version of this file only
  * under the terms of either the GPL or the LGPL, and not to allow others to
- * use your version of this file under the terms of the CPL, indicate your
+ * use your version of this file under the terms of the EPL, indicate your
  * decision by deleting the provisions above and replace them with the notice
  * and other provisions required by the GPL or the LGPL. If you do not delete
  * the provisions above, a recipient may use your version of this file under
- * the terms of any one of the CPL, the GPL or the LGPL.
+ * the terms of any one of the EPL, the GPL or the LGPL.
  ***** END LICENSE BLOCK *****/
 package org.jrubyparser.ast;
 
-import java.util.ArrayList;
+import org.jrubyparser.ast.visitor.NodeVisitor;
+import org.jrubyparser.lexer.yacc.ISourcePosition;
+
+import java.util.Arrays;
 import java.util.List;
-import org.jrubyparser.NodeVisitor;
-import org.jrubyparser.SourcePosition;
 
 /**
  * All Nodes which have a list representation inherit this.  This is also used
@@ -40,80 +42,78 @@ import org.jrubyparser.SourcePosition;
  * the editor projects who want position info saved.
  */
 public class ListNode extends Node {
-    private List<Node> list;
+    private static final Node[] EMPTY = new Node[0];
+    private static final int INITIAL_SIZE = 4;
+    private Node[] list;
+    private int size = 0;
 
     /**
      * Create a new ListNode.
      *
-     * @param position type of listnode
+     * @param position where list is
      * @param firstNode first element of the list
      */
-    public ListNode(SourcePosition position, Node firstNode) {
-        this(position);
+    public ListNode(ISourcePosition position, Node firstNode) {
+        super(position, firstNode != null && firstNode.containsVariableAssignment);
 
-        list = new ArrayList<Node>();
-        list.add(adopt(firstNode));
+        list = new Node[INITIAL_SIZE];
+        addInternal(firstNode);
     }
 
-    public ListNode(SourcePosition position) {
-        super(position);
+    public ListNode(ISourcePosition position) {
+        super(position, false);
 
-        list = new ArrayList<Node>(0);
+        list = EMPTY;
     }
-
-
-    /**
-     * Checks node for 'sameness' for diffing.
-     *
-     * @param node to be compared to
-     * @return Returns a boolean
-     */
-    @Override
-    public boolean isSame(Node node) {
-        if (!super.isSame(node)) return false;
-
-        ListNode other = (ListNode) node;
-        if (size() != other.size()) return false;
-
-        for (int i = 0; i <= size() - 1; i++) {
-            if (!get(i).isSame(other.get(i))) return false;
-        }
-
-        return true;
-    }
-
 
     public NodeType getNodeType() {
         return NodeType.LISTNODE;
     }
 
-    public ListNode add(Node node) {
-        list.add(adopt(node));
+    protected void growList(int mustBeDelta) {
+        int newSize = list.length * 2;
+        // Fairly arbitrary to scale 1.5 here but this means we are adding a lot so I think
+        // we can taper the multiplier
+        if (size + mustBeDelta >= newSize) newSize = (int) ((size + mustBeDelta) * 1.5);
 
-        if (node == null) return this;
-
-        if (getPosition() == null) {
-            setPosition(node.getPosition());
-        } else {
-            setPosition(getPosition().union(node.getPosition()));
-        }
-
-        return this;
+        Node[] newList = new Node[newSize];
+        System.arraycopy(list, 0, newList, 0, size);
+        list = newList;
     }
 
-    public ListNode prepend(Node node) {
+    protected void addInternal(Node node) {
+        if (size >= list.length) growList(1);
+
+        list[size++] = node;
+    }
+
+    protected void addAllInternal(ListNode other) {
+        if (size + other.size() >= list.length) growList(other.size);
+
+        System.arraycopy(other.list, 0, list, size, other.size);
+        size += other.size;
+    }
+
+    public ListNode add(Node node) {
         // Ruby Grammar productions return plenty of nulls.
-        if (node == null) return this;
+        if (node == null || node == NilImplicitNode.NIL) {
+            addInternal(NilImplicitNode.NIL);
 
-        list.add(0, adopt(node));
+            return this;
+        }
 
-        setPosition(getPosition().union(node.getPosition()));
+        if (node.containsVariableAssignment()) containsVariableAssignment = true;
+        addInternal(node);
+
+        if (getPosition() == null) setPosition(node.getPosition());
+
         return this;
     }
 
     public int size() {
-        return list.size();
+        return size;
     }
+
 
     /**
      * Add all elements in other list to this list node.
@@ -123,26 +123,20 @@ public class ListNode extends Node {
      */
     public ListNode addAll(ListNode other) {
         if (other != null && other.size() > 0) {
-            for (Node e: other.list) {
-                adopt(e);
-            }
-            list.addAll(other.list);
-            setPosition(getPosition().union(getLastNodePosition()));
+            if (other.containsVariableAssignment()) containsVariableAssignment = true;
+            addAllInternal(other);
+
+            if (getPosition() == null) setPosition(other.getPosition());
         }
         return this;
     }
 
-    /**
-     * @return the position of the last node in this list that has a valid position
-     * (i.e. is not a NilImplicitNode).
-     */
-    private SourcePosition getLastNodePosition() {
-        // sometimes the last node is a NilImplicitNode which has no valid position
-        for (int i = list.size() - 1; i >= 0; i--) {
-            Node last = list.get(i);
-            if (last != null) return last.getPosition();
+    public ListNode addAll(Node[] other, int index, int length) {
+        for (int i = 0; i < length; i++) {
+            addInternal(other[index + i]);
         }
-        return null;
+
+        return this;
     }
 
     /**
@@ -156,7 +150,22 @@ public class ListNode extends Node {
     }
 
     public Node getLast() {
-    	return list.isEmpty() ? null : list.get(list.size() - 1);
+    	return size == 0 ? null : list[size - 1];
+    }
+
+    public boolean isEmpty() {
+        return size == 0;
+    }
+
+    public Node[] children() {
+        Node[] properList = new Node[size];
+        System.arraycopy(list, 0, properList, 0, size);
+        return properList;
+    }
+
+    @Deprecated
+    public List<Node> childNodes() {
+        return Arrays.asList(children());
     }
 
     public <T> T accept(NodeVisitor<T> visitor) {
@@ -164,6 +173,6 @@ public class ListNode extends Node {
     }
 
     public Node get(int idx) {
-        return list.get(idx);
+        return list[idx];
     }
 }

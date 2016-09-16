@@ -1,18 +1,23 @@
 /*
  ***** BEGIN LICENSE BLOCK *****
- * Version: CPL 1.0/GPL 2.0/LGPL 2.1
+ * Version: EPL 1.0/GPL 2.0/LGPL 2.1
  *
- * The contents of this file are subject to the Common Public
+ * The contents of this file are subject to the Eclipse Public
  * License Version 1.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of
- * the License at http://www.eclipse.org/legal/cpl-v10.html
+ * the License at http://www.eclipse.org/legal/epl-v10.html
  *
  * Software distributed under the License is distributed on an "AS
  * IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
  * implied. See the License for the specific language governing
  * rights and limitations under the License.
  *
- * Copyright (C) 2009 Thomas E. Enebo <tom.enebo@gmail.com>
+ * Copyright (C) 2002 Benoit Cerrina <b.cerrina@wanadoo.fr>
+ * Copyright (C) 2002 Jan Arne Petersen <jpetersen@uni-bonn.de>
+ * Copyright (C) 2004 Charles O Nutter <headius@headius.com>
+ * Copyright (C) 2004 Thomas E Enebo <enebo@acm.org>
+ * Copyright (C) 2004 Anders Bengtsson <ndrsbngtssn@yahoo.se>
+ * Copyright (C) 2004 Stefan Matthias Aust <sma@3plus4.de>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
@@ -20,43 +25,31 @@
  * in which case the provisions of the GPL or the LGPL are applicable instead
  * of those above. If you wish to allow use of your version of this file only
  * under the terms of either the GPL or the LGPL, and not to allow others to
- * use your version of this file under the terms of the CPL, indicate your
+ * use your version of this file under the terms of the EPL, indicate your
  * decision by deleting the provisions above and replace them with the notice
  * and other provisions required by the GPL or the LGPL. If you do not delete
  * the provisions above, a recipient may use your version of this file under
- * the terms of any one of the CPL, the GPL or the LGPL.
+ * the terms of any one of the EPL, the GPL or the LGPL.
  ***** END LICENSE BLOCK *****/
 package org.jrubyparser.ast;
 
-import org.jrubyparser.NodeVisitor;
-import org.jrubyparser.SourcePosition;
+import org.jrubyparser.ast.types.INameNode;
+import org.jrubyparser.ast.visitor.NodeVisitor;
+import org.jrubyparser.lexer.yacc.ISourcePosition;
+
+import java.util.List;
 
 /**
  * Represents an assignment to a global variable.
  */
-public class GlobalAsgnNode extends AssignableNode implements IGlobalVariable {
+public class GlobalAsgnNode extends AssignableNode implements INameNode {
     private String name;
 
-    public GlobalAsgnNode(SourcePosition position, String name, Node valueNode) {
-        super(position, valueNode);
-
-        if (name.startsWith("$")) name = name.substring(1);
+    public GlobalAsgnNode(ISourcePosition position, String name, Node valueNode) {
+        super(position, valueNode, valueNode != null && valueNode.containsVariableAssignment());
 
         this.name = name;
     }
-
-
-    /**
-     * Checks node for 'sameness' for diffing.
-     *
-     * @param other to be compared to
-     * @return Returns a boolean
-     */
-    @Override
-    public boolean isSame(Node other) {
-        return super.isSame(other) && isNameMatch(((GlobalAsgnNode) other).getName());
-    }
-
 
     public NodeType getNodeType() {
         return NodeType.GLOBALASGNNODE;
@@ -70,11 +63,6 @@ public class GlobalAsgnNode extends AssignableNode implements IGlobalVariable {
     public <T> T accept(NodeVisitor<T> iVisitor) {
         return iVisitor.visitGlobalAsgnNode(this);
     }
-
-    public String getLexicalName() {
-        return "$" + getName();
-    }
-
     /**
      * Gets the name.
      * @return Returns a String
@@ -83,21 +71,12 @@ public class GlobalAsgnNode extends AssignableNode implements IGlobalVariable {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public List<Node> childNodes() {
+        return createList(getValueNode());
     }
 
-    public boolean isNameMatch(String name) {
-        String thisName = getName();
-
-        return thisName != null && thisName.equals(name);
-    }
-
-    public SourcePosition getNamePosition() {
-        return getLexicalNamePosition().fromEnd(getName().length());
-    }
-
-    public SourcePosition getLexicalNamePosition() {
-        return getPosition().fromBeginning(getLexicalName().length());
+    @Override
+    public boolean needsDefinitionCheck() {
+        return false;
     }
 }

@@ -1,18 +1,21 @@
 /*
  ***** BEGIN LICENSE BLOCK *****
- * Version: CPL 1.0/GPL 2.0/LGPL 2.1
+ * Version: EPL 1.0/GPL 2.0/LGPL 2.1
  *
- * The contents of this file are subject to the Common Public
+ * The contents of this file are subject to the Eclipse Public
  * License Version 1.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of
- * the License at http://www.eclipse.org/legal/cpl-v10.html
+ * the License at http://www.eclipse.org/legal/epl-v10.html
  *
  * Software distributed under the License is distributed on an "AS
  * IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
  * implied. See the License for the specific language governing
  * rights and limitations under the License.
  *
- * Copyright (C) 2009 Thomas E. Enebo <tom.enebo@gmail.com>
+ * Copyright (C) 2001-2002 Jan Arne Petersen <jpetersen@uni-bonn.de>
+ * Copyright (C) 2001-2002 Benoit Cerrina <b.cerrina@wanadoo.fr>
+ * Copyright (C) 2002-2004 Anders Bengtsson <ndrsbngtssn@yahoo.se>
+ * Copyright (C) 2004 Thomas E Enebo <enebo@acm.org>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
@@ -20,51 +23,36 @@
  * in which case the provisions of the GPL or the LGPL are applicable instead
  * of those above. If you wish to allow use of your version of this file only
  * under the terms of either the GPL or the LGPL, and not to allow others to
- * use your version of this file under the terms of the CPL, indicate your
+ * use your version of this file under the terms of the EPL, indicate your
  * decision by deleting the provisions above and replace them with the notice
  * and other provisions required by the GPL or the LGPL. If you do not delete
  * the provisions above, a recipient may use your version of this file under
- * the terms of any one of the CPL, the GPL or the LGPL.
+ * the terms of any one of the EPL, the GPL or the LGPL.
  ***** END LICENSE BLOCK *****/
 package org.jrubyparser.ast;
 
+import org.jrubyparser.ast.visitor.NodeVisitor;
+import org.jrubyparser.lexer.yacc.ISourcePosition;
+
 import java.util.List;
-import org.jrubyparser.NodeVisitor;
-import org.jrubyparser.SourcePosition;
 
 /**
  * Represents the contents of a rescue to be evaluated
  */
 public class RescueBodyNode extends Node {
-    private Node exceptionNodes;
-    private Node bodyNode;
-    private RescueBodyNode optRescueNode;
+    private final Node exceptionNodes;
+    private final Node bodyNode;
+    private final RescueBodyNode optRescueNode;
 
-    public RescueBodyNode(SourcePosition position, Node exceptionNodes, Node bodyNode, RescueBodyNode optRescueNode) {
-        super(position);
+    public RescueBodyNode(ISourcePosition position, Node exceptionNodes, Node bodyNode, RescueBodyNode optRescueNode) {
+        super(position, exceptionNodes != null && exceptionNodes.containsVariableAssignment() ||
+                bodyNode.containsVariableAssignment() || optRescueNode != null && optRescueNode.containsVariableAssignment());
 
-        this.exceptionNodes = adopt(exceptionNodes);
-        this.bodyNode = adopt(bodyNode);
-        this.optRescueNode = (RescueBodyNode) adopt(optRescueNode);
-    }
+       assert bodyNode != null : "bodyNode is not null";
 
-    @Override
-    public boolean isSame(Node node) {
-        if (!super.isSame(node)) return false;
-
-        RescueBodyNode other = (RescueBodyNode) node;
-
-        List<Node> kids = childNodes();
-        List<Node> otherKids = other.childNodes();
-
-        if (kids.size() != otherKids.size()) return false;
-
-        // Assume this is ok because the three nodes are always different types (each has different null value scenario).
-        for (int i = 0; i < kids.size(); i++) {
-            if (kids.get(i).isSame(otherKids.get(i))) return false;
-        }
-
-        return true;
+        this.exceptionNodes = exceptionNodes;
+        this.bodyNode = bodyNode;
+        this.optRescueNode = optRescueNode;
     }
 
     public NodeType getNodeType() {
@@ -83,49 +71,28 @@ public class RescueBodyNode extends Node {
      * Gets the bodyNode.
      * @return Returns a Node
      */
-    public Node getBody() {
-        return bodyNode;
-    }
-
-    @Deprecated
     public Node getBodyNode() {
-        return getBody();
-    }
-
-    public void setBody(Node body) {
-        this.bodyNode = adopt(body);
+        return bodyNode;
     }
 
     /**
      * Get the next rescue node (if any).
      */
-    public RescueBodyNode getOptRescue() {
-        return optRescueNode;
-    }
-
-    @Deprecated
     public RescueBodyNode getOptRescueNode() {
-        return getOptRescue();
-    }
-
-    public void setOptRescue(RescueBodyNode optRescue) {
-        this.optRescueNode = (RescueBodyNode) adopt(optRescue);
+        return optRescueNode;
     }
 
     /**
      * Gets the exceptionNodes.
      * @return Returns a Node
      */
-    public Node getExceptions() {
+    public Node getExceptionNodes() {
         return exceptionNodes;
     }
 
-    @Deprecated
-    public Node getExceptionNodes() {
-        return getExceptions();
-    }
+    public List<Node> childNodes() {
+    	if (optRescueNode != null) return Node.createList(exceptionNodes, bodyNode, optRescueNode);
 
-    public void setExceptions(Node exceptions) {
-        this.exceptionNodes = adopt(exceptions);
+    	return Node.createList(exceptionNodes, bodyNode);
     }
 }

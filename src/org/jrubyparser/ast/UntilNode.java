@@ -1,18 +1,21 @@
 /*
  ***** BEGIN LICENSE BLOCK *****
- * Version: CPL 1.0/GPL 2.0/LGPL 2.1
+ * Version: EPL 1.0/GPL 2.0/LGPL 2.1
  *
- * The contents of this file are subject to the Common Public
+ * The contents of this file are subject to the Eclipse Public
  * License Version 1.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of
- * the License at http://www.eclipse.org/legal/cpl-v10.html
+ * the License at http://www.eclipse.org/legal/epl-v10.html
  *
  * Software distributed under the License is distributed on an "AS
  * IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
  * implied. See the License for the specific language governing
  * rights and limitations under the License.
  *
- * Copyright (C) 2009 Thomas E. Enebo <tom.enebo@gmail.com>
+ * Copyright (C) 2001-2002 Jan Arne Petersen <jpetersen@uni-bonn.de>
+ * Copyright (C) 2001-2002 Benoit Cerrina <b.cerrina@wanadoo.fr>
+ * Copyright (C) 2002-2004 Anders Bengtsson <ndrsbngtssn@yahoo.se>
+ * Copyright (C) 2004 Thomas E Enebo <enebo@acm.org>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
@@ -20,28 +23,28 @@
  * in which case the provisions of the GPL or the LGPL are applicable instead
  * of those above. If you wish to allow use of your version of this file only
  * under the terms of either the GPL or the LGPL, and not to allow others to
- * use your version of this file under the terms of the CPL, indicate your
+ * use your version of this file under the terms of the EPL, indicate your
  * decision by deleting the provisions above and replace them with the notice
  * and other provisions required by the GPL or the LGPL. If you do not delete
  * the provisions above, a recipient may use your version of this file under
- * the terms of any one of the CPL, the GPL or the LGPL.
+ * the terms of any one of the EPL, the GPL or the LGPL.
  ***** END LICENSE BLOCK *****/
 package org.jrubyparser.ast;
 
-import org.jrubyparser.NodeVisitor;
-import org.jrubyparser.SourcePosition;
+import org.jrubyparser.ast.visitor.NodeVisitor;
+import org.jrubyparser.lexer.yacc.ISourcePosition;
+
+import java.util.List;
 
 /**
  * Represents an until statement.
  */
 public class UntilNode extends Node {
-    private Node conditionNode;
-    private Node bodyNode;
-    private boolean evaluateAtStart;
+    private final Node conditionNode;
+    private final Node bodyNode;
+    private final boolean evaluateAtStart;
 
-    public boolean containsNonlocalFlow = false;
-
-    public UntilNode(SourcePosition position, Node conditionNode, Node bodyNode) {
+    public UntilNode(ISourcePosition position, Node conditionNode, Node bodyNode) {
         this(position, conditionNode, bodyNode, true);
     }
 
@@ -49,13 +52,14 @@ public class UntilNode extends Node {
         return NodeType.UNTILNODE;
     }
 
-    public UntilNode(SourcePosition position, Node conditionNode, Node bodyNode, boolean evaluateAtStart) {
-        super(position);
+    public UntilNode(ISourcePosition position, Node conditionNode, Node bodyNode, boolean evaluateAtStart) {
+        super(position, conditionNode.containsVariableAssignment() || bodyNode.containsVariableAssignment());
 
         assert conditionNode != null : "conditionNode is not null";
+        assert bodyNode != null : "bodyNode is not null";
 
-        this.conditionNode = adopt(conditionNode);
-        this.bodyNode = adopt(bodyNode);
+        this.conditionNode = conditionNode;
+        this.bodyNode = bodyNode;
         this.evaluateAtStart = evaluateAtStart;
     }
 
@@ -67,48 +71,24 @@ public class UntilNode extends Node {
         return iVisitor.visitUntilNode(this);
     }
 
-     @Override
-    public boolean isSame(Node node) {
-        if (!super.isSame(node)) return false;
-        UntilNode other = (UntilNode) node;
-
-        return getBody().isSame(other.getBody()) && getCondition().isSame(other.getCondition()) &&
-                evaluateAtStart() == other.evaluateAtStart();
-    }
-
-
     /**
      * Gets the bodyNode.
      * @return Returns a Node
      */
-    public Node getBody() {
-        return bodyNode;
-    }
-
-    @Deprecated
     public Node getBodyNode() {
-        return getBody();
-    }
-
-    public void setBody(Node body) {
-        this.bodyNode = adopt(body);
+        return bodyNode;
     }
 
     /**
      * Gets the conditionNode.
      * @return Returns a Node
      */
-    public Node getCondition() {
+    public Node getConditionNode() {
         return conditionNode;
     }
 
-    @Deprecated
-    public Node getConditionNode() {
-        return getCondition();
-    }
-
-    public void setConditionNode(Node condition) {
-        this.conditionNode = adopt(condition);
+    public List<Node> childNodes() {
+        return Node.createList(conditionNode, bodyNode);
     }
 
     /**
@@ -118,5 +98,4 @@ public class UntilNode extends Node {
     public boolean evaluateAtStart() {
         return evaluateAtStart;
     }
-
 }

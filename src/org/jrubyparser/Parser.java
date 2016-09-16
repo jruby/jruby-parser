@@ -16,7 +16,7 @@
  * Copyright (C) 2002-2004 Jan Arne Petersen <jpetersen@uni-bonn.de>
  * Copyright (C) 2004 Thomas E Enebo <enebo@acm.org>
  * Copyright (C) 2004 Stefan Matthias Aust <sma@3plus4.de>
- * 
+ *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
  * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
@@ -31,82 +31,81 @@
  ***** END LICENSE BLOCK *****/
 package org.jrubyparser;
 
+import org.jrubyparser.ast.Node;
+import org.jrubyparser.common.IRubyWarnings;
+import org.jrubyparser.lexer.LexerSource;
+import org.jrubyparser.lexer.ReaderLexerSource;
+import org.jrubyparser.lexer.SyntaxException;
+import org.jrubyparser.lexer.yacc.ISourcePosition;
+import org.jrubyparser.parser.ParserConfiguration;
+import org.jrubyparser.parser.RubyParser;
+import org.jrubyparser.parser.RubyParserResult;
+
 import java.io.IOException;
 import java.io.Reader;
-import org.jrubyparser.IRubyWarnings.ID;
-import org.jrubyparser.ast.Node;
-import org.jrubyparser.lexer.LexerSource;
-import org.jrubyparser.lexer.SyntaxException;
-import org.jrubyparser.parser.ParserConfiguration;
-import org.jrubyparser.parser.ParserResult;
-import org.jrubyparser.parser.Ruby18Parser;
-import org.jrubyparser.parser.Ruby19Parser;
-import org.jrubyparser.parser.Ruby20Parser;
-import org.jrubyparser.parser.RubyParser;
 
 /**
  * Serves as a simple facade for all the parsing magic.
  */
 public class Parser {
-    private volatile long totalTime;
-    private volatile int totalBytes;
+  private volatile long totalTime;
+  private volatile int totalBytes;
 
-    public Parser() {}
+  public Parser() {
+  }
 
-    public long getTotalTime() {
-        return totalTime;
+  public long getTotalTime() {
+    return totalTime;
+  }
+
+  public int getTotalBytes() {
+    return totalBytes;
+  }
+
+  // TODO: Add rewriter parsing in here.
+
+  public Node parse(String file, Reader content, ParserConfiguration configuration)
+      throws SyntaxException {
+    long startTime = System.nanoTime();
+
+
+    LexerSource lexerSource = new ReaderLexerSource(file, content, 0);
+
+    RubyParser parser = new RubyParser(lexerSource, new NullWarnings());
+
+    Node ast = null;
+    try {
+      RubyParserResult result = parser.parse(configuration);
+
+      ast = result.getAST();
+    } catch (IOException e) {
+      // TODO: What should this raise something for IDEs?
     }
 
-    public int getTotalBytes() {
-        return totalBytes;
+    totalTime += System.nanoTime() - startTime;
+    totalBytes += lexerSource.getOffset();
+
+    return ast;
+  }
+
+  public static class NullWarnings implements IRubyWarnings {
+    @Override
+    public boolean isVerbose() {
+      return false;
     }
-
-    // TODO: Add rewriter parsing in here.
-    
-    public Node parse(String file, Reader content, ParserConfiguration configuration)
-            throws SyntaxException {
-        long startTime = System.nanoTime();
-
-        RubyParser parser;
-        if (configuration.getVersion() == CompatVersion.RUBY1_8) {
-            parser = new Ruby18Parser();            
-        } else if (configuration.getVersion() == CompatVersion.RUBY1_9) {
-            parser = new Ruby19Parser();
-        } else {
-            parser = new Ruby20Parser();
-        }
-
-        // TODO: Warning interface from configuration?
-        parser.setWarnings(new NullWarnings());
-        
-        LexerSource lexerSource = LexerSource.getSource(file, content, configuration);
-
-        Node ast = null;
-        try {
-            ParserResult result = parser.parse(configuration, lexerSource);
-            
-            // We want some amount of extra syntax-only elements properly added to the AST tree
-            if (configuration.getSyntax() != ParserConfiguration.SyntaxGathering.NONE) result.weaveInExtraSyntax();
-            
-            ast = result.getAST();
-        } catch(IOException e) {
-            // TODO: What should this raise something for IDEs?
-        }
-        
-        totalTime += System.nanoTime() - startTime;
-        totalBytes += lexerSource.getOffset();
-
-        return ast;
-    }
-
-    public static class NullWarnings implements IRubyWarnings {
-        public boolean isVerbose() { return false; }
-
-        public void warn(ID id, String message, Object... data) {}
-        public void warning(ID id, String message, Object... data) {}
-        public void warn(ID id, SourcePosition position, String message, Object... data) {}
-        public void warn(ID id, String fileName, int lineNumber, String message, Object... data) {}
-        public void warning(ID id, SourcePosition position, String message, Object... data) {}
-        public void warning(ID id, String fileName, int lineNumber, String message, Object...data) {}
-    }
+    @Override
+    public void warn(ID id, ISourcePosition position, String message) { }
+    @Override
+    public void warn(ID id, String fileName, int lineNumber, String message) { }
+    @Override
+    public void warn(ID id, String fileName, String message) { }
+    @Override
+    public void warn(ID id, String message) { }
+    @Override
+    public void warning(ID id, String message) { }
+    @Override
+    public void warning(ID id, ISourcePosition position, String message) { }
+    @Override
+    public void warning(ID id, String fileName, int lineNumber, String message) { }
+  }
 }

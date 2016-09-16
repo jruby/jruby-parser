@@ -77,11 +77,31 @@
 
   <dependencies>
     <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.8.2</version>
+    </dependency>
+    <dependency>
       <groupId>jay</groupId>
       <artifactId>yydebug</artifactId>
       <version>0.1</version>
       <scope>system</scope>
       <systemPath>${basedir}/lib/yydebug.jar</systemPath>
+    </dependency>
+    <dependency>
+      <groupId>org.jruby.extras</groupId>
+      <artifactId>bytelist</artifactId>
+      <version>1.0.13</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jruby.jcodings</groupId>
+      <artifactId>jcodings</artifactId>
+      <version>1.0.18</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jruby.joni</groupId>
+      <artifactId>joni</artifactId>
+      <version>2.1.11</version>
     </dependency>
   </dependencies>
 

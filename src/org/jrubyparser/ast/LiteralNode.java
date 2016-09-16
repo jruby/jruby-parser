@@ -1,7 +1,9 @@
 package org.jrubyparser.ast;
 
-import org.jrubyparser.NodeVisitor;
-import org.jrubyparser.lexer.Token;
+import org.jrubyparser.ast.visitor.NodeVisitor;
+import org.jrubyparser.lexer.yacc.ISourcePosition;
+
+import java.util.List;
 
 /**
  * This is not a node in the classic sense in that it has no defined or
@@ -11,27 +13,14 @@ import org.jrubyparser.lexer.Token;
  * are nodes and by having literals also be nodes means they have a common
  * subtype which is not Object.
  */
-public class LiteralNode extends Node {
+public class LiteralNode extends Node implements InvisibleNode {
     private String name;
 
-    public LiteralNode(Token token) {
-        super(token.getPosition());
+    public LiteralNode(ISourcePosition position, String name) {
+        super(position, false);
 
-        this.name = (String) token.getValue();
+        this.name = name;
     }
-
-
-    /**
-     * Checks node for 'sameness' for diffing.
-     *
-     * @param node to be compared to
-     * @return Returns a boolean
-     */
-    @Override
-    public boolean isSame(Node node) {
-        return super.isSame(node) && getName().equals(((LiteralNode) node).getName());
-    }
-
 
     public String getName() {
         return name;
@@ -43,6 +32,10 @@ public class LiteralNode extends Node {
      **/
     public <T> T accept(NodeVisitor<T> iVisitor) {
         return iVisitor.visitLiteralNode(this);
+    }
+
+    public List<Node> childNodes() {
+        return EMPTY_LIST;
     }
 
     @Override

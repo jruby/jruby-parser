@@ -1,18 +1,21 @@
 /*
  ***** BEGIN LICENSE BLOCK *****
- * Version: CPL 1.0/GPL 2.0/LGPL 2.1
+ * Version: EPL 1.0/GPL 2.0/LGPL 2.1
  *
- * The contents of this file are subject to the Common Public
+ * The contents of this file are subject to the Eclipse Public
  * License Version 1.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of
- * the License at http://www.eclipse.org/legal/cpl-v10.html
+ * the License at http://www.eclipse.org/legal/epl-v10.html
  *
  * Software distributed under the License is distributed on an "AS
  * IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
  * implied. See the License for the specific language governing
  * rights and limitations under the License.
  *
- * Copyright (C) 2009 Thomas E. Enebo <tom.enebo@gmail.com>
+ * Copyright (C) 2001-2002 Jan Arne Petersen <jpetersen@uni-bonn.de>
+ * Copyright (C) 2001-2002 Benoit Cerrina <b.cerrina@wanadoo.fr>
+ * Copyright (C) 2002 Anders Bengtsson <ndrsbngtssn@yahoo.se>
+ * Copyright (C) 2004 Thomas E Enebo <enebo@acm.org>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
@@ -20,16 +23,18 @@
  * in which case the provisions of the GPL or the LGPL are applicable instead
  * of those above. If you wish to allow use of your version of this file only
  * under the terms of either the GPL or the LGPL, and not to allow others to
- * use your version of this file under the terms of the CPL, indicate your
+ * use your version of this file under the terms of the EPL, indicate your
  * decision by deleting the provisions above and replace them with the notice
  * and other provisions required by the GPL or the LGPL. If you do not delete
  * the provisions above, a recipient may use your version of this file under
- * the terms of any one of the CPL, the GPL or the LGPL.
+ * the terms of any one of the EPL, the GPL or the LGPL.
  ***** END LICENSE BLOCK *****/
 package org.jrubyparser.ast;
 
-import org.jrubyparser.NodeVisitor;
-import org.jrubyparser.SourcePosition;
+import org.jrubyparser.ast.visitor.NodeVisitor;
+import org.jrubyparser.lexer.yacc.ISourcePosition;
+
+import java.util.List;
 
 /** Represents an alias statement (<code>alias newName oldName</code>).
  */
@@ -37,28 +42,11 @@ public class AliasNode extends Node {
     private Node oldName;
     private Node newName;
 
-    public AliasNode(SourcePosition position, Node newName, Node oldName) {
-        super(position);
-        this.oldName = adopt(oldName);
-        this.newName = adopt(newName);
+    public AliasNode(ISourcePosition position, Node newName, Node oldName) {
+        super(position, newName.containsVariableAssignment() || oldName.containsVariableAssignment());
+        this.oldName = oldName;
+        this.newName = newName;
     }
-
-
-    /**
-     * Checks node for 'sameness' for diffing.
-     *
-     * @param node to be compared to
-     * @return Returns a boolean
-     */
-    @Override
-    public boolean isSame(Node node) {
-        if (!super.isSame(node)) return false;
-
-        AliasNode aliasNode = (AliasNode) node;
-
-        return getOldNameString().equals(aliasNode.getOldNameString()) && getNewNameString().equals(aliasNode.getNewNameString());
-    }
-
 
     public NodeType getNodeType() {
         return NodeType.ALIASNODE;
@@ -88,36 +76,7 @@ public class AliasNode extends Node {
         return oldName;
     }
 
-    public boolean oldNameMatches(String name) {
-        if (oldName instanceof INameNode) return ((INameNode) oldName).isNameMatch(name);
-        if (oldName instanceof StrNode) return ((StrNode) oldName).getValue().equals(name);
-        if (oldName instanceof LiteralNode) return ((LiteralNode) oldName).getName().equals(name);
-
-        return false;
+    public List<Node> childNodes() {
+        return Node.createList(newName, oldName);
     }
-
-    /**
-    * Returns the actual string name of the old method from the alias statement,
-    * rather than the node representing it.
-    */
-    public String getOldNameString() {
-        if (oldName instanceof INameNode) return ((INameNode) oldName).getName();
-        if (oldName instanceof StrNode) return ((StrNode) oldName).getValue();
-        if (oldName instanceof LiteralNode) return ((LiteralNode) oldName).getName();
-
-        return "";
-    }
-
-    /**
-     * Returns the actual string name that the method is being aliased to from the alias statement,
-     * rather than the node representing it.
-     */
-    public String getNewNameString() {
-        if (newName instanceof INameNode) return ((INameNode) newName).getName();
-        if (newName instanceof StrNode) return ((StrNode) newName).getValue();
-        if (newName instanceof LiteralNode) return ((LiteralNode) newName).getName();
-
-        return "";
-    }
-
 }

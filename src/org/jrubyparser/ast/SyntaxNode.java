@@ -28,8 +28,11 @@
  ***** END LICENSE BLOCK *****/
 package org.jrubyparser.ast;
 
-import org.jrubyparser.NodeVisitor;
-import org.jrubyparser.SourcePosition;
+import org.jrubyparser.ast.visitor.NodeVisitor;
+import org.jrubyparser.lexer.yacc.ISourcePosition;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  * This represents extra syntax which has no value to a runtime but is necessary to preserve
@@ -40,8 +43,8 @@ public class SyntaxNode extends Node {
     // text for this region of syntax
     private String content;
 
-    public SyntaxNode(SourcePosition position, String content) {
-        super(position);
+    public SyntaxNode(ISourcePosition position, String content) {
+        super(position, false);
 
         this.content = content;
     }
@@ -49,13 +52,18 @@ public class SyntaxNode extends Node {
     //TODO : Should I have an #isSame() method?
 
     @Override
-    public NodeType getNodeType() {
-        return NodeType.SYNTAXNODE;
+    public <T> T accept(NodeVisitor<T> visitor) {
+        return visitor.visitSyntaxNode(this);
     }
 
     @Override
-    public <T> T accept(NodeVisitor<T> visitor) {
-        return visitor.visitSyntaxNode(this);
+    public List<Node> childNodes() {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public NodeType getNodeType() {
+        return NodeType.SYNTAXNODE;
     }
 
     public String getContent() {

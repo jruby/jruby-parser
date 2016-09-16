@@ -1,18 +1,23 @@
 /*
  ***** BEGIN LICENSE BLOCK *****
- * Version: CPL 1.0/GPL 2.0/LGPL 2.1
+ * Version: EPL 1.0/GPL 2.0/LGPL 2.1
  *
- * The contents of this file are subject to the Common Public
+ * The contents of this file are subject to the Eclipse Public
  * License Version 1.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of
- * the License at http://www.eclipse.org/legal/cpl-v10.html
+ * the License at http://www.eclipse.org/legal/epl-v10.html
  *
  * Software distributed under the License is distributed on an "AS
  * IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
  * implied. See the License for the specific language governing
  * rights and limitations under the License.
  *
- * Copyright (C) 2009 Thomas E. Enebo <tom.enebo@gmail.com>
+ * Copyright (C) 2001 Chad Fowler <chadfowler@chadfowler.com>
+ * Copyright (C) 2001-2002 Benoit Cerrina <b.cerrina@wanadoo.fr>
+ * Copyright (C) 2001-2002 Jan Arne Petersen <jpetersen@uni-bonn.de>
+ * Copyright (C) 2002 Anders Bengtsson <ndrsbngtssn@yahoo.se>
+ * Copyright (C) 2004 Thomas E Enebo <enebo@acm.org>
+ * Copyright (C) 2007 Mirko Stocker <me@misto.ch>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
@@ -20,224 +25,262 @@
  * in which case the provisions of the GPL or the LGPL are applicable instead
  * of those above. If you wish to allow use of your version of this file only
  * under the terms of either the GPL or the LGPL, and not to allow others to
- * use your version of this file under the terms of the CPL, indicate your
+ * use your version of this file under the terms of the EPL, indicate your
  * decision by deleting the provisions above and replace them with the notice
  * and other provisions required by the GPL or the LGPL. If you do not delete
  * the provisions above, a recipient may use your version of this file under
- * the terms of any one of the CPL, the GPL or the LGPL.
+ * the terms of any one of the EPL, the GPL or the LGPL.
  ***** END LICENSE BLOCK *****/
+
 package org.jrubyparser.ast;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.jrubyparser.ast.visitor.NodeVisitor;
+import org.jrubyparser.lexer.yacc.ISourcePosition;
 
-import org.jrubyparser.NodeVisitor;
-import org.jrubyparser.SourcePosition;
+import java.util.List;
 
 /**
  * Represents the argument declarations of a method.  The fields:
- * foo(p1, ..., pn, o1 = v1, ..., on = v2, *r, q1, ..., qn)
+ * foo(p1, ..., pn, o1 = v1, ..., on = v2, *r, q1, ..., qn, k1:, ..., kn:, **K, &b)
  *
  * p1...pn = pre arguments
  * o1...on = optional arguments
  * r       = rest argument
  * q1...qn = post arguments (only in 1.9)
+ * k1...kn = keyword arguments
+ * K       = keyword rest argument
+ * b       = block arg
  */
 public class ArgsNode extends Node {
-    private ListNode pre;
-    private ListNode optional;
-    private ListNode post; // 1.9+
-    protected ArgumentNode rest;
-    private ListNode keywords; // 2.0+
-    private KeywordRestArgNode keywordRest; // 2.0+
-    private BlockArgNode block;
-    private ListNode shadow; // 1.9+ (block-only)
+    private Node[] args;
+    private short optIndex;
+    private short postIndex;
+    private short keywordsIndex;
 
+    protected final ArgumentNode restArgNode;
+    private final KeywordRestArgNode keyRest;
+    private final BlockArgNode blockArgNode;
+    private ListNode blockLocalVariables = null;
+
+    private static final Node[] NO_ARGS = new Node[] {};
     /**
-     * @param position of the arguments
-     * @param pre Required nodes at the beginning of the method definition
-     * @param optional Node describing the optional arguments
-     * @param rest The rest argument (*args).
-     * @param post Required nodes at the end of the method definition
-     * @param block An optional block argument (&amp;arg).
-     * @param shadow Shadowed block variables (if a block)
-     **/
-    public ArgsNode(SourcePosition position, ListNode pre, ListNode optional, RestArgNode rest,
-            ListNode post, ListNode keywords, KeywordRestArgNode keywordRest, BlockArgNode block) {
-        super(position);
-
-        this.pre = (ListNode) adopt(pre);
-        this.optional = (ListNode) adopt(optional);
-        this.post = (ListNode) adopt(post);
-        this.rest = (ArgumentNode) adopt(rest);
-        this.keywords = keywords;
-        this.keywordRest = keywordRest;
-        this.block = (BlockArgNode) adopt(block);
-    }
-
-
-    /**
-     * Checks node for 'sameness' for diffing.
-     *
-     * @param node to be compared to
-     * @return Returns a boolean
+     * Construct a new ArgsNode with no keyword arguments.
      */
-    @Override
-    public boolean isSame(Node node) {
-        if (!super.isSame(node)) return false;
-
-        List<Node> params = getNormativeParameterList();
-        List<Node> otherParams = ((ArgsNode) node).getNormativeParameterList();
-
-        if (params.size() != otherParams.size()) return false;
-
-        for (int i = 0; i <= params.size() - 1; i++) {
-            if (!params.get(i).isSame(otherParams.get(i))) return false;
-        }
-
-        return true;
+    public ArgsNode(ISourcePosition position, ListNode pre, ListNode optionalArguments,
+                    RestArgNode rest, ListNode post, BlockArgNode blockArgNode) {
+        this(position, pre, optionalArguments, rest, post, null, null, blockArgNode);
     }
 
+    /**
+     * Construct a new ArgsNode with keyword arguments.
+     */
+    public ArgsNode(ISourcePosition position, ListNode pre, ListNode optionalArguments,
+            RestArgNode rest, ListNode post, ListNode keywords, KeywordRestArgNode keyRest, BlockArgNode blockArgNode) {
+        super(position, pre != null && pre.containsVariableAssignment() ||
+                        optionalArguments != null && optionalArguments.containsVariableAssignment() ||
+                        rest != null && rest.containsVariableAssignment() ||
+                        post != null && post.containsVariableAssignment() ||
+                        keywords != null && keywords.containsVariableAssignment() ||
+                        keyRest != null && keyRest.containsVariableAssignment() ||
+                        blockArgNode != null && blockArgNode.containsVariableAssignment());
 
+        int preSize = pre != null ? pre.size() : 0;
+        int optSize = optionalArguments != null ? optionalArguments.size() : 0;
+        int postSize = post != null ? post.size() : 0;
+        int keywordsSize = keywords != null ? keywords.size() : 0;
+        int size = preSize + optSize + postSize + keywordsSize;
+
+        args = size > 0 ? new Node[size] : NO_ARGS;
+        optIndex = (short) (preSize != 0 ? preSize : 0);
+        postIndex = (short) (optSize != 0 ? optIndex + optSize : optIndex);
+        keywordsIndex = (short) (postSize != 0 ? postIndex + postSize : postIndex);
+
+        if (preSize > 0) System.arraycopy(pre.children(), 0,  args, 0, preSize);
+        if (optSize > 0) System.arraycopy(optionalArguments.children(), 0, args, optIndex, optSize);
+        if (postSize > 0) System.arraycopy(post.children(), 0, args, postIndex, postSize);
+        if (keywordsSize > 0) System.arraycopy(keywords.children(), 0, args, keywordsIndex, keywordsSize);
+
+        this.restArgNode = rest;
+        this.blockArgNode = blockArgNode;
+        this.keyRest = keyRest;
+    }
+
+    public Node[] getArgs() {
+        return args;
+    }
+
+    public int getOptArgIndex() {
+        return optIndex;
+    }
+
+    public int getPostIndex() {
+        return postIndex;
+    }
+
+    public int getKeywordsIndex() {
+        return keywordsIndex;
+    }
+
+    @Override
     public NodeType getNodeType() {
         return NodeType.ARGSNODE;
+    }
+
+    public boolean hasKwargs() {
+        boolean keywords = getKeywordCount() > 0;
+        return keywords || keyRest != null;
+    }
+
+    public int countKeywords() {
+        if (hasKwargs()) {
+            boolean keywords = args.length - keywordsIndex > 0;
+            if (keywords) {
+                // Rest keyword argument
+                return 0;
+            }
+            return args.length - keywordsIndex;
+        } else {
+            return 0;
+        }
+    }
+
+    public boolean hasRestArg() {
+        return restArgNode != null;
     }
 
     /**
      * Accept for the visitor pattern.
      * @param iVisitor the visitor
      **/
+    @Override
     public <T> T accept(NodeVisitor<T> iVisitor) {
         return iVisitor.visitArgsNode(this);
-    }
-
-    public int getPreCount() {
-        return pre == null ? 0 : pre.size();
-    }
-
-    public int getOptionalCount() {
-        return optional == null ? 0 : optional.size();
-    }
-
-    public int getPostCount() {
-        return post == null ? 0 : post.size();
-    }
-
-    public int getRequiredCount() {
-        return getPreCount() + getPostCount();
-    }
-
-    public int getMaxArgumentsCount() {
-        return getRequiredCount() + getOptionalCount();
-    }
-
-    /**
-     * Gets the optional Arguments.
-     *
-     * @return Returns a ListNode
-     */
-    public ListNode getOptional() {
-        return optional;
-    }
-
-    public ListNode getPost() {
-        return post;
     }
 
     /**
      * Gets the required arguments at the beginning of the argument definition
      */
     public ListNode getPre() {
-        return pre;
+        return new ListNode(getPosition()).addAll(args, 0, getPreCount());
+    }
+
+    public int getRequiredArgsCount() {
+        return getPreCount() + getPostCount();
+    }
+
+    public int getOptionalArgsCount() {
+        return postIndex - optIndex;
+    }
+
+    public ListNode getPost() {
+        return new ListNode(getPosition()).addAll(args, postIndex, getPostCount());
+    }
+
+    public int getMaxArgumentsCount() {
+        return hasRestArg() ? -1 : getRequiredArgsCount() + getOptionalArgsCount();
     }
 
     /**
-     * Gets the rest node.
-     *
+     * Gets the optArgs.
+     * @return Returns a ListNode
+     */
+    public ListNode getOptArgs() {
+        return new ListNode(getPosition()).addAll(args, optIndex, getOptionalArgsCount());
+    }
+
+    /**
+     * Gets the restArgNode.
      * @return Returns an ArgumentNode
      */
-    public ArgumentNode getRest() {
-        return rest;
+    public ArgumentNode getRestArgNode() {
+        return restArgNode;
     }
 
     /**
-     * Gets the explicit block argument of the parameter list (&amp;block).
+     * Gets the explicit block argument of the parameter list (&block).
      *
      * @return Returns a BlockArgNode
      */
     public BlockArgNode getBlock() {
-        return block;
+        return blockArgNode;
     }
 
-    public ListNode getShadow() {
-        return shadow;
+    public int getPostCount() {
+        return keywordsIndex - postIndex;
     }
 
-    public void setShadow(ListNode shadow) {
-        this.shadow = (ListNode) adopt(shadow);
+    public int getPreCount() {
+        return optIndex;
+    }
+
+    public ListNode getKeywords() {
+        return new ListNode(getPosition()).addAll(args, keywordsIndex, getKeywordCount());
+    }
+
+    public KeywordRestArgNode getKeyRest() {
+        return keyRest;
+    }
+
+    public boolean hasKeyRest() {
+        return keyRest != null;
+    }
+
+    // FIXME: This is a hot mess and I think we will still have some extra nulls inserted
+    @Override
+    public List<Node> childNodes() {
+        ListNode post = getPost();
+        ListNode keywords = getKeywords();
+        ListNode pre = getPre();
+        ListNode optArgs = getOptArgs();
+
+
+        if (post != null) {
+            if (keywords != null) {
+                if (keyRest != null) return Node.createList(pre, optArgs, restArgNode, post, keywords, keyRest, blockArgNode);
+
+                return Node.createList(pre, optArgs, restArgNode, post, keywords, blockArgNode);
+            }
+
+            return Node.createList(pre, optArgs, restArgNode, post, blockArgNode);
+        }
+
+        if (keywords != null) {
+            if (keyRest != null) return Node.createList(pre, optArgs, restArgNode, keywords, keyRest, blockArgNode);
+
+            return Node.createList(pre, optArgs, restArgNode, keywords, blockArgNode);
+        }
+
+        return Node.createList(pre, optArgs, restArgNode, blockArgNode);
+    }
+
+    public int getKeywordCount() {
+        return args.length - keywordsIndex;
     }
 
     /**
-     * Return a list of all possible parameter names.  IDE's can use this to generate
-     * indexes or use it for parameter hinting.
-     *
-     * @param namesOnly do not prepend '*', '**', or '&amp;' onto front of special parameters
+     * How many of the keywords listed happen to be required keyword args.  Note: total kwargs - req kwarg = opt kwargs.
      */
-    public List<String> getNormativeParameterNameList(boolean namesOnly) {
-        List<String> parameters = new ArrayList<String>();
+    public int getRequiredKeywordCount() {
+        if (getKeywordCount() < 1) return 0;
 
-        if (getPreCount() > 0) {
-            for (Node preArg: getPre().childNodes()) {
-                if (preArg instanceof IParameter) parameters.add(((IParameter) preArg).getName());
+        int count = 0;
+        for (int i = 0; i < getKeywordCount(); i++) {
+            for (Node asgnNode : args[keywordsIndex + i].childNodes()) {
+                if (isRequiredKeywordArgumentValueNode(asgnNode)) count++;
             }
         }
-
-        if (getOptionalCount() > 0) {
-            for (Node optArg: getOptional().childNodes()) {
-                if (optArg instanceof IParameter) parameters.add(((IParameter) optArg).getName());
-            }
-        }
-
-        if (getPostCount() > 0) {
-            for (Node postArg: getPost().childNodes()) {
-                if (postArg instanceof IParameter) parameters.add(((IParameter) postArg).getName());
-            }
-        }
-
-        if (getRest() != null) parameters.add(namesOnly ? getRest().getName() : "*" + getRest().getName());
-        if (getBlock() != null) parameters.add(namesOnly ? getBlock().getName() : "&" + getBlock().getName());
-
-        return parameters;
+        return count;
     }
 
-    /**
-     * @return list of all parameters within this args node
-     */
-    public List<Node> getNormativeParameterList() {
-        List<Node> parameters = new ArrayList<Node>();
-
-        if (getPreCount() > 0) {
-            for (Node preArg: getPre().childNodes()) {
-                if (preArg instanceof IParameter) parameters.add(preArg);
-            }
-        }
-
-        if (getOptionalCount() > 0) {
-            for (Node optArg: getOptional().childNodes()) {
-                if (optArg instanceof IParameter) parameters.add(optArg);
-            }
-        }
-
-        if (getPostCount() > 0) {
-            for (Node postArg: getPost().childNodes()) {
-                if (postArg instanceof IParameter) parameters.add(postArg);
-            }
-        }
-
-        if (getRest() != null) parameters.add(getRest());
-        if (getBlock() != null) parameters.add(getBlock());
-
-        return parameters;
+    private static boolean isRequiredKeywordArgumentValueNode(Node asgnNode) {
+        return asgnNode.childNodes().get(0) instanceof RequiredKeywordArgumentValueNode;
     }
 
+    public ListNode getBlockLocalVariables() {
+        return blockLocalVariables;
+    }
+
+    public void setBlockLocalVariables(ListNode blockLocalVariables) {
+        this.blockLocalVariables = blockLocalVariables;
+    }
 }

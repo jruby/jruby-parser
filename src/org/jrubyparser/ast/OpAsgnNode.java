@@ -1,18 +1,21 @@
 /*
  ***** BEGIN LICENSE BLOCK *****
- * Version: CPL 1.0/GPL 2.0/LGPL 2.1
+ * Version: EPL 1.0/GPL 2.0/LGPL 2.1
  *
- * The contents of this file are subject to the Common Public
+ * The contents of this file are subject to the Eclipse Public
  * License Version 1.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of
- * the License at http://www.eclipse.org/legal/cpl-v10.html
+ * the License at http://www.eclipse.org/legal/epl-v10.html
  *
  * Software distributed under the License is distributed on an "AS
  * IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
  * implied. See the License for the specific language governing
  * rights and limitations under the License.
  *
- * Copyright (C) 2009 Thomas E. Enebo <tom.enebo@gmail.com>
+ * Copyright (C) 2002 Jan Arne Petersen <jpetersen@uni-bonn.de>
+ * Copyright (C) 2002 Benoit Cerrina <b.cerrina@wanadoo.fr>
+ * Copyright (C) 2002-2004 Anders Bengtsson <ndrsbngtssn@yahoo.se>
+ * Copyright (C) 2004 Thomas E Enebo <enebo@acm.org>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
@@ -20,55 +23,43 @@
  * in which case the provisions of the GPL or the LGPL are applicable instead
  * of those above. If you wish to allow use of your version of this file only
  * under the terms of either the GPL or the LGPL, and not to allow others to
- * use your version of this file under the terms of the CPL, indicate your
+ * use your version of this file under the terms of the EPL, indicate your
  * decision by deleting the provisions above and replace them with the notice
  * and other provisions required by the GPL or the LGPL. If you do not delete
  * the provisions above, a recipient may use your version of this file under
- * the terms of any one of the CPL, the GPL or the LGPL.
+ * the terms of any one of the EPL, the GPL or the LGPL.
  ***** END LICENSE BLOCK *****/
 package org.jrubyparser.ast;
 
-import org.jrubyparser.NodeVisitor;
-import org.jrubyparser.SourcePosition;
+import org.jrubyparser.ast.visitor.NodeVisitor;
+import org.jrubyparser.lexer.yacc.ISourcePosition;
+
+import java.util.List;
 
 /**
  *
  */
 public class OpAsgnNode extends Node {
-    private Node receiverNode;
-    private Node valueNode;
-    private String operatorName;
-    private String variableName;
+    private final Node receiverNode;
+    private final Node valueNode;
+    private final String variableName;
+    private final String operatorName;
+    private final String variableNameAsgn;
+    private final boolean isLazy;
 
-    public OpAsgnNode(SourcePosition position, Node receiverNode, Node valueNode, String variableName, String operatorName) {
-        super(position);
+    public OpAsgnNode(ISourcePosition position, Node receiverNode, Node valueNode, String variableName, String operatorName, boolean isLazy) {
+        super(position, receiverNode.containsVariableAssignment());
 
         assert receiverNode != null : "receiverNode is not null";
         assert valueNode != null : "valueNode is not null";
 
-        this.receiverNode = adopt(receiverNode);
-        this.valueNode = adopt(valueNode);
-        this.operatorName = operatorName;
+        this.receiverNode = receiverNode;
+        this.valueNode = valueNode;
         this.variableName = variableName;
+        this.operatorName = operatorName;
+        this.variableNameAsgn = (variableName + "=").intern();
+        this.isLazy = isLazy;
     }
-
-
-    /**
-     * Checks node for 'sameness' for diffing.
-     *
-     * @param node to be compared to
-     * @return Returns a boolean
-     */
-    @Override
-    public boolean isSame(Node node) {
-        if (!super.isSame(node)) return false;
-
-        OpAsgnNode other = (OpAsgnNode) node;
-
-        return getReceiver().isSame(other.getReceiver()) && getValue().isSame(other.getValue()) &&
-                getOperatorName().equals(other.getOperatorName()) && getVariableName().equals(other.getVariableName());
-    }
-
 
     public NodeType getNodeType() {
         return NodeType.OPASGNNODE;
@@ -91,6 +82,22 @@ public class OpAsgnNode extends Node {
     }
 
     /**
+     * Gets the receiverNode.
+     * @return Returns a Node
+     */
+    public Node getReceiverNode() {
+        return receiverNode;
+    }
+
+    /**
+     * Gets the valueNode.
+     * @return Returns a Node
+     */
+    public Node getValueNode() {
+        return valueNode;
+    }
+
+    /**
      * Gets the varibaleName.
      * @return Returns a String
      */
@@ -98,37 +105,20 @@ public class OpAsgnNode extends Node {
         return variableName;
     }
 
-    /**
-     * Gets the receiverNode.
-     * @return Returns a Node
-     */
-    public Node getReceiver() {
-        return receiverNode;
+    public String getVariableNameAsgn() {
+        return variableNameAsgn;
     }
 
-    @Deprecated
-    public Node getReceiverNode() {
-        return getReceiver();
+    public List<Node> childNodes() {
+        return Node.createList(receiverNode, valueNode);
     }
 
-    public void setReceiver(Node receiver) {
-        this.receiverNode = adopt(receiver);
+    public boolean isLazy() {
+        return isLazy;
     }
 
-    /**
-     * Gets the valueNode.
-     * @return Returns a Node
-     */
-    public Node getValue() {
-        return valueNode;
-    }
-
-    @Deprecated
-    public Node getValueNode() {
-        return getValue();
-    }
-
-    public void setValue(Node value) {
-        this.valueNode = adopt(value);
+    @Override
+    public boolean needsDefinitionCheck() {
+        return false;
     }
 }

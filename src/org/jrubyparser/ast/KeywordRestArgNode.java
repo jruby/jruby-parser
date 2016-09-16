@@ -1,13 +1,13 @@
 package org.jrubyparser.ast;
 
-import org.jrubyparser.NodeVisitor;
-import org.jrubyparser.SourcePosition;
+import org.jrubyparser.ast.visitor.NodeVisitor;
+import org.jrubyparser.lexer.yacc.ISourcePosition;
 
 /**
  *
  */
 public class KeywordRestArgNode extends ArgumentNode {
-    public KeywordRestArgNode(SourcePosition position, String name, int index) {
+    public KeywordRestArgNode(ISourcePosition position, String name, int index) {
         super(position, name, index);
     }
 
