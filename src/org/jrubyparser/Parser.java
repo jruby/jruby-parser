@@ -33,10 +33,9 @@ package org.jrubyparser;
 
 import org.jrubyparser.ast.Node;
 import org.jrubyparser.common.IRubyWarnings;
-import org.jrubyparser.lexer.LexerSource;
-import org.jrubyparser.lexer.ReaderLexerSource;
-import org.jrubyparser.lexer.SyntaxException;
+import org.jrubyparser.lexer.ByteListLexerSource;
 import org.jrubyparser.lexer.yacc.ISourcePosition;
+import org.jrubyparser.lexer.yacc.SyntaxException;
 import org.jrubyparser.parser.ParserConfiguration;
 import org.jrubyparser.parser.RubyParser;
 import org.jrubyparser.parser.RubyParserResult;
@@ -68,8 +67,12 @@ public class Parser {
       throws SyntaxException {
     long startTime = System.nanoTime();
 
-
-    LexerSource lexerSource = new ReaderLexerSource(file, content, 0);
+    ByteListLexerSource lexerSource;
+    try {
+       lexerSource = ByteListLexerSource.getLexerSource(file, 0, content);
+    } catch (IOException e) {
+      throw new RuntimeException("Unable to read reader");
+    }
 
     RubyParser parser = new RubyParser(lexerSource, new NullWarnings());
 
