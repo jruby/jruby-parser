@@ -34,9 +34,15 @@ public class ByteListLexerSource extends LexerSource {
     ByteList byteList = new ByteList(80);
 
     BufferedReader bufferedReader = new BufferedReader(reader);
-    String s;
-    while ((s = bufferedReader.readLine()) != null) {
+    String s = bufferedReader.readLine();
+    while (true) {
       byteList.append(s.getBytes());
+      s = bufferedReader.readLine();
+      if (s == null) {
+        break;
+      } else {
+        byteList.append("\n".getBytes());
+      }
     }
     return new ByteListLexerSource(sourceName, 0, byteList);
   }
