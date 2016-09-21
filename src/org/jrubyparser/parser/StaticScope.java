@@ -39,6 +39,7 @@ import org.jrubyparser.lexer.yacc.ISourcePosition;
 
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * StaticScope represents lexical scoping of variables and module/class constants.
@@ -240,7 +241,7 @@ public class StaticScope implements Serializable {
 
     private int findVariableName(String name) {
         for (int i = 0; i < variableNames.length; i++) {
-            if (name.equals(variableNames[i])) return i;
+            if (Objects.equals(name, variableNames[i])) return i;
         }
         return -1;
     }
