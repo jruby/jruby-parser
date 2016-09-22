@@ -245,6 +245,33 @@ module HaveBlock
   end
 end
 
+class HaveKeywordsMatcher
+  def initialize(**args)
+    @expected_args = args
+  end
+
+  def matches?(args_node)
+    @actual_args = args_node.keywords.child_nodes.each_with_object({}) do |node, args|
+      value_node = node.assignable.value_node
+      args[node.assignable.name.to_sym] = value_node.class
+    end
+    @expected_args == @actual_args
+  end
+
+  def failure_message
+    %[expected #{@actual_args.inspect} to have #{@expected_args.inspect}.]
+  end
+
+  def failure_message_when_negated
+    %[expected #{@actual_args.inspect} to not have #{@expected_args.inspect}.]
+  end
+end
+
+module HaveKeywords
+  def have_keywords(**args)
+    HaveKeywordsMatcher.new(**args)
+  end
+end
 #module Spec::Example::ExampleMethods
 class Object
   include HavePosition
@@ -255,4 +282,5 @@ class Object
   include HaveParameters
   include HaveStaticAssignments
   include HaveBlock
+  include HaveKeywords
 end
