@@ -1,61 +1,58 @@
 require_relative '../../helpers'
 
 describe org.jrubyparser.ast.CallNode do
-  VERSIONS.each do |v|
-    it "parses a 0-arg object.method call without parens [#{v}]" do
-      rparse("Array.new", v).find_node(:call).tap do |call|
-        call.should have_name_and_position("new", 0, 0, 0, 9)
-        call.receiver_node.should have_name_and_position("Array", 0, 0, 0, 5)
-        call.args_node.size.should == 0
-      end
+  it "parses a 0-arg object.method call without parens " do
+    rparse("Array.new").find_node(:call).tap do |call|
+      expect(call).to have_name 'new'
+      expect(call.receiver_node).to have_name('Array')
+      expect(call.args_node).to be_nil
     end
+  end
 
-    it "parses a 0-arg object.method call with parens [#{v}]" do
-      rparse("Array.new()", v).find_node(:call).tap do |call|
-        call.should have_name_and_position("new", 0, 0, 0, 11)
-        call.receiver_node.should have_name_and_position("Array", 0, 0, 0, 5)
-        call.args_node.size.should == 0
-      end
+  it "parses a 0-arg object.method call with parens " do
+    rparse("Array.new()").find_node(:call).tap do |call|
+      expect(call).to have_name 'new'
+      expect(call.receiver_node).to have_name('Array')
+      expect(call.args_node).to be_nil
     end
+  end
 
-    it "parses a 1-arg object.method call without parens [#{v}]" do
-      rparse("Array.new 1", v).find_node(:call).tap do |call|
-        call.should have_name_and_position("new", 0, 0, 0, 11)
-        call.receiver_node.should have_name_and_position("Array", 0, 0, 0, 5)
-        call.args_node.size.should == 1
-      end
+  it "parses a 1-arg object.method call without parens" do
+    rparse("Array.new 1").find_node(:call).tap do |call|
+      expect(call).to have_name 'new'
+      expect(call.receiver_node).to have_name('Array')
+      expect(call.args_node.size).to eq 1
     end
+  end
 
-    it "parses a 1-arg object.method call with parens [#{v}]" do
-      rparse("Array.new(1)", v).find_node(:call).tap do |call|
-        call.should have_name_and_position("new", 0, 0, 0, 12)
-        call.receiver_node.should have_name_and_position("Array", 0, 0, 0, 5)
-        call.args_node.size.should == 1
-      end
+  it "parses a 1-arg object.method call with parens" do
+    rparse("Array.new(1)").find_node(:call).tap do |call|
+      expect(call).to have_name 'new'
+      expect(call.receiver_node).to have_name('Array')
+      expect(call.args_node.size).to eq 1
     end
-    
-    it "parses a 1-arg infix method [#{v}]" do
-      rparse("4 + 5", v).find_node(:call).tap do |call|
-        call.should have_name_and_position("+", 0, 0, 0, 5)
-        call.receiver_node.should have_position(0, 0, 0, 1)
-        call.args_node.size.should == 1
-      end
-    end
+  end
 
-    it "parses a 1-arg object.method call with infix operator as arg [#{v}]" do
-      rparse("Array.new 4 + 5", v).find_node(:call).tap do |call|
-        call.should have_name_and_position("new", 0, 0, 0, 15)
-        call.receiver_node.should have_name_and_position("Array", 0, 0, 0, 5)
-        call.args_node.size.should == 1
-      end
+  it "parses a 1-arg infix method" do
+    rparse("4 + 5").find_node(:call).tap do |call|
+      expect(call).to have_name '+'
+      expect(call.receiver_node.value).to eq 4
+      expect(call.args_node.size).to eq 1
     end
+  end
 
-    if v != 1.8  # In 1.8 this is a NotNode (see not_spec.rb)
-      it "parses unary ! call with parenthesis [#{v}]" do
-        rparse("!(x < 5)", v).find_node(:call).tap do |call|
-          call.should have_name_and_position("!", 0, 0, 0, 8)
-        end
-      end
+  it "parses a 1-arg object.method call with infix operator as arg" do
+    rparse("Array.new 4 + 5").find_node(:call).tap do |call|
+      expect(call).to have_name 'new'
+      expect(call.receiver_node).to have_name('Array')
+      expect(call.args_node.size).to eq 1
+    end
+  end
+
+  it "parses unary ! call with parenthesis" do
+    rparse("!(x < 5)").find_node(:call).tap do |call|
+      expect(call).to have_name '!'
+      expect(call.receiver_node.name).to eq '<'
     end
   end
 end

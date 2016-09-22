@@ -2,7 +2,7 @@ require 'java'
 
 class org::jrubyparser::ast::Node
   include Enumerable
-  
+
   ##
   # Find nth child element of this node
   #
@@ -29,7 +29,7 @@ class org::jrubyparser::ast::Node
   # === parameters
   # * _name_ is the name of the class you want to find
   # === examples
-  # 
+  #
   # root.find(:fcall) # Find first child node of type fcall (depth-first)
   #
   def find_type(name, &block)
@@ -37,19 +37,21 @@ class org::jrubyparser::ast::Node
     return self if name == short_name && (!block_given? || yield(self))
 
     child_nodes.each do |child|
-      value = child.find_type(name, &block)
+      if child.respond_to? :find_type
+        value = child.find_type(name, &block)
+      end
 
       return value if value
     end
     nil
   end
   alias find_node find_type
-  
+
   def each(&block)
     yield self
-    child_nodes.each { |child| child.each(&block) }
+    child_nodes && child_nodes.each { |child| child && child.each(&block) }
   end
-  
+
   ##
   # Convert this node back to human-readable source code.
   #

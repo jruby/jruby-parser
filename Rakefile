@@ -1,21 +1,23 @@
 if !defined? RUBY_ENGINE || RUBY_ENGINE != "jruby"
-  puts "Rake must be run from JRuby for Ant integration"
+  puts 'jruby is required to run tests'
   exit 1
 end
 
 require 'rspec/core/rake_task'
-require 'ant'
 require 'bundler'
 Bundler::GemHelper.install_tasks
 
-task :default => [:jar, :frobnicate, :spec]
+task :default => [:package, :frobnicate, :spec]
+
+task :package do
+  `mvn package`
+end
 
 task :frobnicate do
   root = File.dirname(__FILE__)
-  cp File.join(root, 'dist', 'JRubyParser.jar'), File.join(root, 'lib', 'jruby-parser.jar')
+  jar = Dir.glob(File.join(root, 'target', 'jrubyparser-*-SNAPSHOT.jar')).first
+  cp jar, File.join(root, 'lib', 'jruby-parser.jar')
 end
-
-ant_import # load all ant targets as rake tasks
 
 desc "Run specs"
 RSpec::Core::RakeTask.new do |r|

@@ -1,13 +1,6 @@
 require 'java'
 
-import org.jrubyparser.SourcePosition
 import org.jrubyparser.ast.Node
-
-class SourcePosition
-  def to_a
-    [start_line, end_line, start_offset, end_offset]
-  end
-end
 
 ###########
 
@@ -19,21 +12,21 @@ class AstPositionMatcher
   def position
     @actual.__send__(@method).to_a
   end
- 
+
   def matches?(actual)
     @actual = actual
     position == @position
   end
- 
+
   def failure_message
     return %[expected #{position.inspect} to have position #{@position.inspect}]
   end
- 
-  def negative_failure_message
+
+  def failure_message_when_negated
     return %[expected #{position.inspect} to not have position #{@position.inspect}]
   end
 end
- 
+
 module HavePosition
   def have_position(*args)
     AstPositionMatcher.new(:position, *args)
@@ -50,21 +43,21 @@ class AstNameMatcher
   def initialize(name)
     @name = name
   end
- 
+
   def matches?(actual)
     @actual = actual
     actual.name == @name
   end
- 
+
   def failure_message
     return %[expected #{@actual.inspect} to have name #{@name.inspect}]
   end
- 
-  def negative_failure_message
+
+  def failure_message_when_negated
     return %[expected #{@actual.inspect} to not have name #{@name.inspect}]
   end
 end
- 
+
 module HaveName
   def have_name(name)
     AstNameMatcher.new(name)
@@ -75,17 +68,17 @@ class AstNameAndPositionMatcher
   def initialize(name, *args)
     @name, @position = name, args
   end
- 
+
   def matches?(actual)
     @actual = actual
     actual.name == @name && actual.position.to_a == @position
   end
- 
+
   def failure_message
     return %[expected #{@actual.name.inspect}, #{@actual.position.to_a.inspect} to have name and position #{@name.inspect}, #{@position.inspect}]
   end
- 
-  def negative_failure_message
+
+  def failure_message_when_negated
     return %[expected #{@actual.name.inspect}, #{@actual.position.to_a.inspect} to not have and position #{@name.inspect}, #{@position.inspect}]
   end
 end
@@ -102,7 +95,7 @@ class ArgCountsMatcher
   end
 
   def matches?(args)
-    @actual = [args.pre_count, args.optional_count, args.rest != nil, args.block != nil]
+    @actual = [args.pre_count, args.optional_args_count, args.rest_arg_node != nil, args.block != nil]
     @args == @actual
   end
 
@@ -110,7 +103,7 @@ class ArgCountsMatcher
     return %[expected #{@actual.inspect} to have name #{@args.inspect}]
   end
 
-  def negative_failure_message
+  def failure_message_when_negated
     return %[expected #{@actual.inspect} to not have name #{@args.inspect}]
   end
 end
@@ -132,8 +125,8 @@ class HaveParametersMatcher
   end
 
   def matches?(args)
-    @actual_with = args.get_normative_parameter_name_list(false).to_a
-    @actual_without = args.get_normative_parameter_name_list(true).to_a
+    @actual_with = args.normative_parameter_names(false)
+    @actual_without = args.normative_parameter_names(true)
     @with_decorations == @actual_with && @without_decorations == @actual_without
   end
 
@@ -149,7 +142,7 @@ class HaveParametersMatcher
     error
   end
 
-  def negative_failure_message
+  def failure_message_when_negated
     error = ""
     if @with_decorations != @actual_with
       error << %[expected #{@actual_with.inspect} to not have #{@with_decorations.inspect}.]
@@ -180,17 +173,17 @@ class HaveStaticAssignmentsMatcher
     @actual_list = args.calculateStaticAssignments.to_a
     @failures_var_names = []
     @failures_var_values = []
-    
+
     @list.each_with_index do |arr, i|
       node_pair = @actual_list[i]
       expected_var, expected_value = arr[0].to_s, arr[1]
       actual_var, actual_value = node_pair.first.name, value_for(node_pair.second)
-      
+
       @failures_var_names << [expected_var, actual_var] if expected_var != actual_var
       @failures_var_values << [expected_value, actual_value] if expected_value != actual_value
-      
+
     end
-    
+
     @failures_var_names.size == 0 && @failures_var_values.size == 0
   end
 
@@ -214,7 +207,7 @@ class HaveStaticAssignmentsMatcher
     end
   end
 
-  def negative_failure_message
+  def failure_message_when_negated
     names = @failures_var_names.inject("names: ") do |s, e|
       s << "#{e[0]} !!= #{e[1]}"
     end
@@ -231,6 +224,27 @@ module HaveStaticAssignments
   end
 end
 
+class HaveBlockMatcher
+  def matches?(actual)
+    block = actual.iter_node
+    block && block.is_a?(org.jrubyparser.ast.IterNode)
+  end
+
+  def failure_message
+    'expected call to have block'
+  end
+
+  def failure_message_when_negated
+    'expected call to not have block'
+  end
+end
+
+module HaveBlock
+  def have_block
+    HaveBlockMatcher.new
+  end
+end
+
 #module Spec::Example::ExampleMethods
 class Object
   include HavePosition
@@ -240,4 +254,5 @@ class Object
   include HaveArgCounts
   include HaveParameters
   include HaveStaticAssignments
+  include HaveBlock
 end
