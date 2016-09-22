@@ -135,9 +135,11 @@ describe Parser do
   it 'parses a method with keyword arguments' do
     parse("def foo(a:, b: 1, c: true)\n end\n").find_node(:defn).tap do |defn|
       expect(defn).to have_name 'foo'
-      expect(defn.args_node).to have_keywords a: org.jrubyparser.ast.RequiredKeywordArgumentValueNode,
-                                              b: org.jrubyparser.ast.FixnumNode,
-                                              c: org.jrubyparser.ast.TrueNode
+      ast = org.jrubyparser.ast
+      req = ast.RequiredKeywordArgumentValueNode
+      num = ast.FixnumNode
+      true_node = ast.TrueNode
+      expect(defn.args_node).to have_keywords a: req, b: num, c: true_node
     end
   end
 end
