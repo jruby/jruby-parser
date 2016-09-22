@@ -106,7 +106,6 @@
   </dependencies>
 
   <build>
-    <sourceDirectory>src</sourceDirectory>
     <defaultGoal>package</defaultGoal>
     <extensions>
       <extension>
