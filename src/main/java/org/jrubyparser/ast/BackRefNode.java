@@ -75,6 +75,10 @@ public class BackRefNode extends Node {
         return type;
     }
 
+    public String getLexicalName() {
+      return "$" + getType();
+    }
+
     public List<Node> childNodes() {
         return EMPTY_LIST;
     }
