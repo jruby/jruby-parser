@@ -60,6 +60,10 @@ public class ClassVarNode extends Node implements INameNode, SideEffectFree {
         return iVisitor.visitClassVarNode(this);
     }
 
+    public String getLexicalName() {
+      return getName();
+    }
+
     /**
      * Gets the name.
      * @return Returns a String
