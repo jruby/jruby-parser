@@ -109,6 +109,10 @@ public class CallNode extends Node implements INameNode, IArgumentNode, BlockAcc
         return argsNode;
     }
 
+    public String getLexicalName() {
+      return getName();
+    }
+
     /**
      * Gets the name.
 	 * name is the name of the method called
