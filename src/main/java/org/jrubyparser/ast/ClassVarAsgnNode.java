@@ -65,6 +65,10 @@ public class ClassVarAsgnNode extends AssignableNode implements INameNode {
         return iVisitor.visitClassVarAsgnNode(this);
     }
 
+    public String getLexicalName() {
+      return getName();
+    }
+
     /**
      * Gets the name.
      * @return Returns a String
