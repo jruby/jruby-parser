@@ -10,7 +10,7 @@ Bundler::GemHelper.install_tasks
 task :default => [:package, :frobnicate, :spec]
 
 task :package do
-  `mvn package`
+  `mvn clean package`
 end
 
 task :frobnicate do
