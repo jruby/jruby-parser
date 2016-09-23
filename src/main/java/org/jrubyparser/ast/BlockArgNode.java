@@ -58,6 +58,10 @@ public class BlockArgNode extends Node implements INameNode {
         return NodeType.BLOCKARGNODE;
     }
 
+    public String getLexicalName() {
+      return "&" + getName();
+    }
+
     /**
      * Accept for the visitor pattern.
      * @param iVisitor the visitor
