@@ -70,6 +70,10 @@ public class AttrAssignNode extends Node implements INameNode, IArgumentNode {
         return visitor.visitAttrAssignNode(this);
     }
 
+    public String getLexicalName() {
+      return getName();
+    }
+
     /**
      * Gets the name.
      * name is the name of the method called
