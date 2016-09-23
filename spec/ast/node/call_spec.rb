@@ -58,7 +58,7 @@ describe org.jrubyparser.ast.CallNode do
 
   describe '#lexical_name' do
     it 'returns the lexical name of the call' do
-      parse('Array.new 4 + 5').find_node(:call) do |call|
+      parse('Array.new 4 + 5').find_node(:call).tap do |call|
         expect(call.lexical_name).to eq 'new'
       end
     end
