@@ -83,6 +83,10 @@ public class ArgumentNode extends Node implements INameNode {
         return location & 0xffff;
     }
 
+    public String getLexicalName() {
+      return getName();
+    }
+
     public String getName() {
         return identifier;
     }
