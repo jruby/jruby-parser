@@ -67,6 +67,10 @@ public class LocalAsgnNode extends AssignableNode implements INameNode, IScopedN
         return iVisitor.visitLocalAsgnNode(this);
     }
 
+    public String getLexicalName() {
+      return getName();
+    }
+
     /**
      * Name of the local assignment.
      **/
