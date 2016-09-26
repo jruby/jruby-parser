@@ -85,6 +85,10 @@ public class LocalVarNode extends Node implements INameNode, IScopedNode, SideEf
         return location & 0xffff;
     }
 
+    public String getLexicalName() {
+      return getName();
+    }
+
     /**
      * What is the name of this variable
      *
