@@ -63,6 +63,11 @@ public class GlobalAsgnNode extends AssignableNode implements INameNode {
     public <T> T accept(NodeVisitor<T> iVisitor) {
         return iVisitor.visitGlobalAsgnNode(this);
     }
+
+    public String getLexicalName() {
+      return getName();
+    }
+
     /**
      * Gets the name.
      * @return Returns a String
