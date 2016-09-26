@@ -65,6 +65,10 @@ public class Colon3Node extends Node implements INameNode {
         return iVisitor.visitColon3Node(this);
     }
 
+    public String getLexicalName() {
+      return getName();
+    }
+
     /**
      * Gets the name.
      * @return Returns a String
