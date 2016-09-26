@@ -10,7 +10,8 @@ describe org.jrubyparser.ast.FCallNode do
   it "parses a 0-arg method call with parens" do
     rparse("puts()").find_node(:fcall).tap do |call|
       expect(call).to have_name 'puts'
-      expect(call.args_node).to be_nil
+      expect(call.args_node).to be_instance_of(org.jrubyparser.ast.EmptyArgsNode)
+      expect(call.args_node.child_nodes).to eq []
     end
   end
 

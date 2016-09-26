@@ -5,7 +5,8 @@ describe org.jrubyparser.ast.CallNode do
     rparse("Array.new").find_node(:call).tap do |call|
       expect(call).to have_name 'new'
       expect(call.receiver_node).to have_name('Array')
-      expect(call.args_node).to be_nil
+      expect(call.args_node).to be_instance_of(org.jrubyparser.ast.EmptyArgsNode)
+      expect(call.args_node.child_nodes).to eq []
     end
   end
 
@@ -13,7 +14,8 @@ describe org.jrubyparser.ast.CallNode do
     rparse("Array.new()").find_node(:call).tap do |call|
       expect(call).to have_name 'new'
       expect(call.receiver_node).to have_name('Array')
-      expect(call.args_node).to be_nil
+      expect(call.args_node).to be_instance_of(org.jrubyparser.ast.EmptyArgsNode)
+      expect(call.args_node.child_nodes).to eq []
     end
   end
 

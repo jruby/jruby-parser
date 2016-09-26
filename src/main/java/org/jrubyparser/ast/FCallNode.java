@@ -52,7 +52,11 @@ public class FCallNode extends Node implements INameNode, IArgumentNode, BlockAc
     public FCallNode(ISourcePosition position, String name, Node argsNode, Node iterNode) {
         super(position, argsNode != null && argsNode.containsVariableAssignment() || iterNode != null && iterNode.containsVariableAssignment());
         this.name = name;
-        this.argsNode = argsNode;
+        if (argsNode != null) {
+            this.argsNode = argsNode;
+        } else {
+            this.argsNode = new EmptyArgsNode();
+        }
         this.iterNode = iterNode;
     }
 
@@ -94,8 +98,9 @@ public class FCallNode extends Node implements INameNode, IArgumentNode, BlockAc
      * args are associated with fcall so we need a setter.
      */
     public Node setArgsNode(Node argsNode) {
-        this.argsNode = argsNode;
-
+        if (argsNode != null) {
+          this.argsNode = argsNode;
+        }
         return argsNode;
     }
 
