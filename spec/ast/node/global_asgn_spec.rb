@@ -8,4 +8,12 @@ describe org::jrubyparser::ast::GlobalAsgnNode do
       end
     end
   end
+
+  describe '#name' do
+    it "returns the name of the global variable that's being assigned" do
+      parse('$foo = 123').find_node(:globalasgn).tap do |gvar|
+        expect(gvar.name).to eq '$foo'
+      end
+    end
+  end
 end
