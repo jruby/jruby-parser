@@ -99,6 +99,10 @@ public class FCallNode extends Node implements INameNode, IArgumentNode, BlockAc
         return argsNode;
     }
 
+    public String getLexicalName() {
+      return getName();
+    }
+
     /**
      * Gets the name.
      * @return Returns a String

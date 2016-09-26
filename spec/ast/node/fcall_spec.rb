@@ -71,4 +71,12 @@ describe org.jrubyparser.ast.FCallNode do
       expect(call.find_node(:argument).name).to eq 'a'
     end
   end
+
+  describe '#lexical_name' do
+    it 'returns the lexical name of the fcall' do
+      parse("foo 123, 456").find_node(:fcall).tap do |call|
+        expect(call.lexical_name).to eq 'foo'
+      end
+    end
+  end
 end
