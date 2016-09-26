@@ -61,6 +61,10 @@ public class InstVarNode extends Node implements INameNode, SideEffectFree {
         return iVisitor.visitInstVarNode(this);
     }
 
+    public String getLexicalName() {
+      return getName();
+    }
+
     /**
      * Gets the name.
      * @return Returns a String
