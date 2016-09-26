@@ -66,6 +66,10 @@ public class DAsgnNode extends AssignableNode implements INameNode, IScopedNode 
         return iVisitor.visitDAsgnNode(this);
     }
 
+    public String getLexicalName() {
+      return getName();
+    }
+
     /**
      * Gets the name.
      * @return Returns a String
