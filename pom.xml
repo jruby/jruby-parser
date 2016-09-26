@@ -80,6 +80,7 @@
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>4.8.2</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>jay</groupId>
@@ -91,7 +92,7 @@
     <dependency>
       <groupId>org.jruby.extras</groupId>
       <artifactId>bytelist</artifactId>
-      <version>1.0.13</version>
+      <version>1.0.14</version>
     </dependency>
     <dependency>
       <groupId>org.jruby.jcodings</groupId>
