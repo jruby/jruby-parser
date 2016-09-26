@@ -64,6 +64,10 @@ public class ConstDeclNode extends AssignableNode implements INameNode {
         return iVisitor.visitConstDeclNode(this);
     }
 
+    public String getLexicalName() {
+      return getName();
+    }
+
     /**
      * Gets the name (this is the rightmost element of lhs (in Foo::BAR it is BAR).
 	 * name is the constant Name, it normally starts with a Capital
