@@ -66,6 +66,10 @@ public class InstAsgnNode extends AssignableNode implements INameNode {
         return iVisitor.visitInstAsgnNode(this);
     }
 
+    public String getLexicalName() {
+      return getName();
+    }
+
     /**
      * Gets the name.
      * @return Returns a String
