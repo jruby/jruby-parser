@@ -60,6 +60,10 @@ public class ConstNode extends Node implements INameNode {
         return iVisitor.visitConstNode(this);
     }
 
+    public String getLexicalName() {
+      return getName();
+    }
+
     /**
      * Gets the name.
      * @return Returns a String
