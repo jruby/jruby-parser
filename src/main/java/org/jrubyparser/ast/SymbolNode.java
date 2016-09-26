@@ -90,6 +90,10 @@ public class SymbolNode extends Node implements ILiteralNode, INameNode, SideEff
         return iVisitor.visitSymbolNode(this);
     }
 
+    public String getLexicalName() {
+      return ":" + getName();
+    }
+
     /**
      * Gets the name.
      * @return Returns a String
