@@ -29,7 +29,7 @@ class AstPositionMatcher
     return %[expected #{position.inspect} to have position #{@position.inspect}]
   end
  
-  def negative_failure_message
+  def failure_message_when_negated
     return %[expected #{position.inspect} to not have position #{@position.inspect}]
   end
 end
@@ -60,7 +60,7 @@ class AstNameMatcher
     return %[expected #{@actual.inspect} to have name #{@name.inspect}]
   end
  
-  def negative_failure_message
+  def failure_message_when_negated
     return %[expected #{@actual.inspect} to not have name #{@name.inspect}]
   end
 end
@@ -85,7 +85,7 @@ class AstNameAndPositionMatcher
     return %[expected #{@actual.name.inspect}, #{@actual.position.to_a.inspect} to have name and position #{@name.inspect}, #{@position.inspect}]
   end
  
-  def negative_failure_message
+  def failure_message_when_negated
     return %[expected #{@actual.name.inspect}, #{@actual.position.to_a.inspect} to not have and position #{@name.inspect}, #{@position.inspect}]
   end
 end
@@ -110,7 +110,7 @@ class ArgCountsMatcher
     return %[expected #{@actual.inspect} to have name #{@args.inspect}]
   end
 
-  def negative_failure_message
+  def failure_message_when_negated
     return %[expected #{@actual.inspect} to not have name #{@args.inspect}]
   end
 end
@@ -149,7 +149,7 @@ class HaveParametersMatcher
     error
   end
 
-  def negative_failure_message
+  def failure_message_when_negated
     error = ""
     if @with_decorations != @actual_with
       error << %[expected #{@actual_with.inspect} to not have #{@with_decorations.inspect}.]
@@ -214,7 +214,7 @@ class HaveStaticAssignmentsMatcher
     end
   end
 
-  def negative_failure_message
+  def failure_message_when_negated
     names = @failures_var_names.inject("names: ") do |s, e|
       s << "#{e[0]} !!= #{e[1]}"
     end
