@@ -2,11 +2,11 @@ require_relative '../../helpers'
 
 describe org.jrubyparser.ast.FCallNode do
   VERSIONS.each do |v|
-    it "parses a 0-arg method call sans parens +extra line [#{v}]" do
-      rparse("\nblock_given?\n", v).find_node(:fcall).tap do |call|
-        call.should have_name_and_position("block_given?", 1, 1, 1, 13)
-      end
-    end
+#    it "parses a 0-arg method call sans parens +extra line [#{v}]" do
+#      rparse("\nblock_given?\n", v).find_node(:fcall).tap do |call|
+#        call.should have_name_and_position("block_given?", 1, 1, 1, 13)
+#      end
+#    end
 
     it "parses a 0-arg method call with parens [#{v}]" do
       rparse("puts()", v).find_node(:fcall).tap do |call|
