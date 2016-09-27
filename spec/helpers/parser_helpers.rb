@@ -84,7 +84,7 @@ class Object
     raise ArgumentError.new("Caret '^' missing: #{code}") unless caret_index
 
     root = parse code.sub(caret, ''), version, scope
-    [root, root.node_at(caret_index)]
+    [root, root.get_node_at(caret_index)]
   end
 
   ##
@@ -93,7 +93,7 @@ class Object
   def carets_parse(code, version=1.8, caret='^', scope=nil)
     deloused_code, caret_indices = remove_carets(code, caret)
     root = parse deloused_code, version, scope
-    [root, caret_indices.map { |e| root.node_at(e)}]
+    [root, caret_indices.map { |e| root.get_node_at(e)}]
   end
 
   # Pretty naive impl :)
