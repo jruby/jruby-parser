@@ -43,19 +43,19 @@ public class RestArgNode extends ArgumentNode implements IParameter {
 
         this.index = index;
     }
-    
+
     // 1.9 only - lvar assign logic returns an Argument node
     public RestArgNode(SourcePosition position, ArgumentNode argNode) {
         this(position, argNode.getName(), argNode.getIndex());
     }
-    
+
     @Override
     public NodeType getNodeType() {
         return NodeType.RESTARG;
     }
 
     @Override
-    public Object accept(NodeVisitor iVisitor) {
+    public <T> T accept(NodeVisitor<T> iVisitor) {
         return iVisitor.visitRestArgNode(this);
     }
 
@@ -63,7 +63,7 @@ public class RestArgNode extends ArgumentNode implements IParameter {
     public int getIndex() {
         return index;
     }
-    
+
     @Override
     public SourcePosition getNamePosition() {
         return getPosition().fromEnd(getName().length());

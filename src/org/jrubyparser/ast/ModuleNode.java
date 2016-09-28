@@ -13,7 +13,7 @@
  * rights and limitations under the License.
  *
  * Copyright (C) 2009 Thomas E. Enebo <tom.enebo@gmail.com>
- * 
+ *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
  * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
@@ -36,7 +36,7 @@ import org.jrubyparser.StaticScope;
 import org.jrubyparser.util.ILocalVariableVisitor;
 import org.jrubyparser.util.MethodDefVisitor;
 
-/** 
+/**
  * Represents a module definition.
  */
 public class ModuleNode extends Node implements IScopingNode, ILocalScope, IModuleScope {
@@ -76,27 +76,27 @@ public class ModuleNode extends Node implements IScopingNode, ILocalScope, IModu
      * Accept for the visitor pattern.
      * @param iVisitor the visitor
      **/
-    public Object accept(NodeVisitor iVisitor) {
+    public <T> T accept(NodeVisitor<T> iVisitor) {
         return iVisitor.visitModuleNode(this);
     }
 
     /**
      * Gets the body of this class.
-     * 
+     *
      * @return the contents
      */
     public Node getBody() {
         return bodyNode;
     }
-    
+
     @Deprecated
     public Node getBodyNode() {
         return getBody();
     }
-    
+
     /**
      * Get the static scoping information.
-     * 
+     *
      * @return the scoping info
      */
     public StaticScope getScope() {

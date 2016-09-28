@@ -50,13 +50,13 @@ public class ArgAuxillaryNode extends Node {
     public int getOffset() {
         return offset;
     }
-    
+
     public String getName() {
         return name;
     }
 
     @Override
-    public Object accept(NodeVisitor visitor) {
+    public <T> T accept(NodeVisitor<T> visitor) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

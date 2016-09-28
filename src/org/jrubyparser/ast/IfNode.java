@@ -13,7 +13,7 @@
  * rights and limitations under the License.
  *
  * Copyright (C) 2009 Thomas E. Enebo <tom.enebo@gmail.com>
- * 
+ *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
  * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
@@ -41,9 +41,9 @@ public class IfNode extends Node {
 
     public IfNode(SourcePosition position, Node condition, Node thenBody, Node elseBody) {
         super(position);
-        
+
         assert condition != null : "condition is not null";
-        
+
         this.condition = adopt(condition);
         this.thenBody = adopt(thenBody);
         this.elseBody = adopt(elseBody);
@@ -59,20 +59,20 @@ public class IfNode extends Node {
     @Override
     public boolean isSame(Node node) {
         if (!super.isSame(node)) return false;
-            
+
         IfNode other = (IfNode) node;
-        
+
         if (getThenBody() == null && other.getThenBody() == null) {
             if (getElseBody() == null && other.getElseBody() == null) return getCondition().isSame(other.getCondition());
             if (getElseBody() == null || other.getElseBody() == null) return false;
-        } 
+        }
         if (getThenBody() == null || other.getThenBody() == null) return false;
         if (getElseBody() == null && other.getElseBody() == null) {
             return getThenBody().isSame(other.getThenBody()) && getCondition().isSame(other.getCondition());
         }
         if (getElseBody() == null || other.getElseBody() == null) return false;
 
-        return getThenBody().isSame(other.getThenBody()) && 
+        return getThenBody().isSame(other.getThenBody()) &&
                 getElseBody().isSame(other.getElseBody()) && getCondition().isSame(other.getCondition());
     }
 
@@ -84,7 +84,7 @@ public class IfNode extends Node {
      * Accept for the visitor pattern.
      * @param iVisitor the visitor
      **/
-    public Object accept(NodeVisitor iVisitor) {
+    public <T> T accept(NodeVisitor<T> iVisitor) {
         return iVisitor.visitIfNode(this);
     }
 

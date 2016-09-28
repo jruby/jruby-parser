@@ -38,7 +38,7 @@ public class BlockArg18Node extends Node {
     @Override
     public boolean isSame(Node node) {
         if (!super.isSame(node)) return false;
-        
+
         BlockArg18Node other = (BlockArg18Node) node;
 
         if (getArgs() == null && other.getArgs() == null) return getBlockArg().isSame(other.getBlockArg());
@@ -58,7 +58,7 @@ public class BlockArg18Node extends Node {
     }
 
     @Override
-    public Object accept(NodeVisitor visitor) {
+    public <T> T accept(NodeVisitor<T> visitor) {
         return visitor.visitBlockArg18Node(this);
     }
 

@@ -13,7 +13,7 @@
  * rights and limitations under the License.
  *
  * Copyright (C) 2009 Thomas E. Enebo <tom.enebo@gmail.com>
- * 
+ *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
  * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
@@ -39,9 +39,9 @@ public class ClassVarNode extends Node implements IClassVariable {
 
     public ClassVarNode(SourcePosition position, String name) {
         super(position);
-        
+
         if (name.startsWith("@@")) name = name.substring(2);
-        
+
         this.name = name;
     }
 
@@ -66,14 +66,14 @@ public class ClassVarNode extends Node implements IClassVariable {
      * Accept for the visitor pattern.
      * @param iVisitor the visitor
      **/
-    public Object accept(NodeVisitor iVisitor) {
+    public <T> T accept(NodeVisitor<T> iVisitor) {
         return iVisitor.visitClassVarNode(this);
     }
 
     public String getLexicalName() {
         return "@@" + getName();
     }
-    
+
     /**
      * Gets the name.
      * @return Returns a String
@@ -88,14 +88,14 @@ public class ClassVarNode extends Node implements IClassVariable {
 
     public boolean isNameMatch(String name) {
         String thisName = getName();
-        
+
         return thisName != null && thisName.equals(name);
     }
-    
+
     public SourcePosition getNamePosition() {
         return getPosition().fromEnd(getName().length());
     }
-    
+
     public SourcePosition getLexicalNamePosition() {
         return getPosition();
     }

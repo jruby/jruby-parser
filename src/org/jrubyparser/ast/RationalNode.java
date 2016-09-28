@@ -19,7 +19,7 @@ public class RationalNode extends NumericNode {
     }
 
     @Override
-    public Object accept(NodeVisitor visitor) {
+    public <T> T accept(NodeVisitor<T> visitor) {
         return visitor.visitRationalNode(this);
     }
 

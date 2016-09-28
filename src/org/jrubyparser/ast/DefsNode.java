@@ -13,7 +13,7 @@
  * rights and limitations under the License.
  *
  * Copyright (C) 2009 Thomas E. Enebo <tom.enebo@gmail.com>
- * 
+ *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
  * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
@@ -35,18 +35,18 @@ import org.jrubyparser.SourcePosition;
 import org.jrubyparser.StaticScope;
 import org.jrubyparser.util.ILocalVariableVisitor;
 
-/** 
+/**
  * Represents a singleton method definition.
  */
 public class DefsNode extends MethodDefNode {
     private Node receiverNode;
-    
-    public DefsNode(SourcePosition position, Node receiverNode, MethodNameNode nameNode, ArgsNode argsNode, 
+
+    public DefsNode(SourcePosition position, Node receiverNode, MethodNameNode nameNode, ArgsNode argsNode,
             StaticScope scope, Node bodyNode) {
         super(position, nameNode, argsNode, scope, bodyNode);
-        
+
         assert receiverNode != null : "receiverNode is not null";
-        
+
         this.receiverNode = adopt(receiverNode);
     }
 
@@ -58,7 +58,7 @@ public class DefsNode extends MethodDefNode {
      * Accept for the visitor pattern.
      * @param iVisitor the visitor
      **/
-    public Object accept(NodeVisitor iVisitor) {
+    public <T> T accept(NodeVisitor<T> iVisitor) {
         return iVisitor.visitDefsNode(this);
     }
 
@@ -69,7 +69,7 @@ public class DefsNode extends MethodDefNode {
     public Node getReceiver() {
         return receiverNode;
     }
-    
+
     @Deprecated
     public Node getReceiverNode() {
         return getReceiver();

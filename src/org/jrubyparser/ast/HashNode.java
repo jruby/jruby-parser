@@ -13,7 +13,7 @@
  * rights and limitations under the License.
  *
  * Copyright (C) 2009 Thomas E. Enebo <tom.enebo@gmail.com>
- * 
+ *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
  * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
@@ -32,12 +32,12 @@ import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 
 /**
- * A Literal Hash that can represent either a {a=&amp;b, c=&amp;d} type expression or the list 
+ * A Literal Hash that can represent either a {a=&amp;b, c=&amp;d} type expression or the list
  * of default values in a method call.
  */
 public class HashNode extends Node {
     private ListNode listNode;
-    
+
     public HashNode(SourcePosition position, ListNode listNode) {
         super(position);
         this.listNode = (ListNode) adopt(listNode);
@@ -58,7 +58,7 @@ public class HashNode extends Node {
 
         if (getListNode() == null && other.getListNode() == null) return true;
         if (getListNode() == null || other.getListNode() == null) return false;
-            
+
         return getListNode().isSame(other.getListNode());
     }
 
@@ -71,7 +71,7 @@ public class HashNode extends Node {
      * Accept for the visitor pattern.
      * @param iVisitor the visitor
      **/
-    public Object accept(NodeVisitor iVisitor) {
+    public <T> T accept(NodeVisitor<T> iVisitor) {
         return iVisitor.visitHashNode(this);
     }
 

@@ -13,7 +13,7 @@
  * rights and limitations under the License.
  *
  * Copyright (C) 2009 Thomas E. Enebo <tom.enebo@gmail.com>
- * 
+ *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
  * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
@@ -63,7 +63,7 @@ public class BlockPassNode extends Node {
 
         if (getArgs() == null && other.getArgs() == null) return getBody().isSame(other.getBody());
         if (getArgs() == null || other.getArgs() == null) return false;
-            
+
         return getArgs().isSame(other.getArgs()) && getBody().isSame(other.getBody());
     }
 
@@ -76,7 +76,7 @@ public class BlockPassNode extends Node {
      * Accept for the visitor pattern.
      * @param iVisitor the visitor
      **/
-    public Object accept(NodeVisitor iVisitor) {
+    public <T> T accept(NodeVisitor<T> iVisitor) {
         return iVisitor.visitBlockPassNode(this);
     }
 
@@ -88,7 +88,7 @@ public class BlockPassNode extends Node {
     public Node getBodyNode() {
         return getBody();
     }
-    
+
     public Node getBody() {
         return bodyNode;
     }
@@ -101,7 +101,7 @@ public class BlockPassNode extends Node {
     public Node getArgsNode() {
         return getArgs();
     }
-    
+
     public Node getArgs() {
         return argsNode;
     }
@@ -114,7 +114,7 @@ public class BlockPassNode extends Node {
     public void setArgsNode(Node argsNode) {
         setArgs(argsNode);
     }
-    
+
     public void setArgs(Node argsNode) {
         this.argsNode = adopt(argsNode);
     }

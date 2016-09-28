@@ -46,7 +46,7 @@ public class OptArgNode extends Node implements IParameter {
     @Override
     public boolean isSame(Node node) {
         if (super.isSame(node)) return false;
-        
+
         OptArgNode other = (OptArgNode) node;
 
         return isNameMatch(other.getName()) && getValue().isSame(other.getValue());
@@ -59,19 +59,19 @@ public class OptArgNode extends Node implements IParameter {
     public Node getValue() {
         return value;
     }
-    
+
     @Override
-    public Object accept(NodeVisitor visitor) {
+    public <T> T accept(NodeVisitor<T> visitor) {
         return visitor.visitOptArgNode(this);
     }
-    
+
     public String getLexicalName() {
         return getName();
     }
 
     public String getName() {
         if (value instanceof INameNode) return ((INameNode) value).getName();
-        
+
         return null;
     }
 
@@ -81,16 +81,16 @@ public class OptArgNode extends Node implements IParameter {
 
     public boolean isNameMatch(String name) {
         String thisName = getName();
-        
+
         return thisName != null && thisName.equals(name);
     }
-    
+
     public SourcePosition getNamePosition() {
         if (value instanceof INameNode) return ((INameNode) value).getNamePosition();
-        
+
         return getPosition();
     }
-    
+
     public SourcePosition getLexicalNamePosition() {
         return getNamePosition();
     }

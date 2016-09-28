@@ -13,7 +13,7 @@
  * rights and limitations under the License.
  *
  * Copyright (C) 2009 Thomas E. Enebo <tom.enebo@gmail.com>
- * 
+ *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
  * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
@@ -38,7 +38,7 @@ public class RescueNode extends Node {
     private Node bodyNode;
     private RescueBodyNode rescueNode;
     private Node elseNode;
-    
+
     public RescueNode(SourcePosition position, Node bodyNode, RescueBodyNode rescueNode, Node elseNode) {
         super(position);
         this.bodyNode = adopt(bodyNode);
@@ -55,7 +55,7 @@ public class RescueNode extends Node {
                 if (getRescue() == null && other.getRescue() == null) {
                     if (getElse() == null && other.getElse() == null) return true;
                     if (getElse() == null || other.getElse() == null) return false;
-                    
+
                     return getElse().isSame(other.getElse());
                 } else if (getRescue() == null || other.getRescue() == null) {
                     return false;
@@ -95,7 +95,7 @@ public class RescueNode extends Node {
      * Accept for the visitor pattern.
      * @param iVisitor the visitor
      **/
-    public Object accept(NodeVisitor iVisitor) {
+    public <T> T accept(NodeVisitor<T> iVisitor) {
         return iVisitor.visitRescueNode(this);
     }
 
@@ -106,12 +106,12 @@ public class RescueNode extends Node {
     public Node getBody() {
         return bodyNode;
     }
-    
+
     @Deprecated
     public Node getBodyException() {
         return getBody();
     }
-    
+
     public void setBody(Node body) {
         this.bodyNode = adopt(body);
     }
@@ -123,12 +123,12 @@ public class RescueNode extends Node {
     public Node getElse() {
         return elseNode;
     }
-    
+
     @Deprecated
     public Node getElseNode() {
         return getElse();
     }
-    
+
     public void setElse(Node elseNode) {
         this.elseNode = adopt(elseNode);
     }
@@ -140,12 +140,12 @@ public class RescueNode extends Node {
     public RescueBodyNode getRescue() {
         return rescueNode;
     }
-    
+
     @Deprecated
     public RescueBodyNode getRescueNode() {
         return getRescue();
     }
-    
+
     public void setRescue(RescueBodyNode rescue) {
         this.rescueNode = (RescueBodyNode) adopt(rescue);
     }

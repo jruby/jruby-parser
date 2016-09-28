@@ -48,7 +48,7 @@ public class DefnNode extends MethodDefNode {
         return NodeType.DEFNNODE;
     }
 
-    public Object accept(NodeVisitor iVisitor) {
+    public <T> T accept(NodeVisitor<T> iVisitor) {
         return iVisitor.visitDefnNode(this);
     }
 

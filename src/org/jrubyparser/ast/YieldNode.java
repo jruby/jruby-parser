@@ -13,7 +13,7 @@
  * rights and limitations under the License.
  *
  * Copyright (C) 2009 Thomas E. Enebo <tom.enebo@gmail.com>
- * 
+ *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
  * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
@@ -32,7 +32,7 @@ import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 
 // FIXME: Make into same ListNode<arg1, ..., argn> format as calls
-/** 
+/**
  * Represents a yield statement.
  */
 public class YieldNode extends Node implements IArgumentNode {
@@ -51,10 +51,10 @@ public class YieldNode extends Node implements IArgumentNode {
      */
     public YieldNode(SourcePosition position, Node argsNode, boolean expandedArguments) {
         super(position);
-        
+
         // block.yield depends on null to represent empty and nil to represent nil - [nil] vs []
         //assert argsNode != null : "argsNode is not null";
-        
+
         this.argsNode = adopt(argsNode);
         this.expandedArguments = expandedArguments;
     }
@@ -85,7 +85,7 @@ public class YieldNode extends Node implements IArgumentNode {
      * Accept for the visitor pattern.
      * @param iVisitor the visitor
      **/
-    public Object accept(NodeVisitor iVisitor) {
+    public <T> T accept(NodeVisitor<T> iVisitor) {
         return iVisitor.visitYieldNode(this);
     }
 
@@ -97,11 +97,11 @@ public class YieldNode extends Node implements IArgumentNode {
     public Node getArgsNode() {
         return getArgs();
     }
-    
+
     public Node getArgs() {
         return argsNode;
     }
-    
+
     public void setArgs(Node args) {
         this.argsNode = adopt(args);
     }

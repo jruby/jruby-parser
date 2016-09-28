@@ -13,7 +13,7 @@
  * rights and limitations under the License.
  *
  * Copyright (C) 2009 Thomas E. Enebo <tom.enebo@gmail.com>
- * 
+ *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
  * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
@@ -39,9 +39,9 @@ public class GlobalAsgnNode extends AssignableNode implements IGlobalVariable {
 
     public GlobalAsgnNode(SourcePosition position, String name, Node valueNode) {
         super(position, valueNode);
-        
+
         if (name.startsWith("$")) name = name.substring(1);
-        
+
         this.name = name;
     }
 
@@ -61,20 +61,20 @@ public class GlobalAsgnNode extends AssignableNode implements IGlobalVariable {
     public NodeType getNodeType() {
         return NodeType.GLOBALASGNNODE;
     }
-    
+
     /**
      * RubyMethod used by visitors.
-     * accepts the visitor 
+     * accepts the visitor
      * @param iVisitor the visitor to accept
      **/
-    public Object accept(NodeVisitor iVisitor) {
+    public <T> T accept(NodeVisitor<T> iVisitor) {
         return iVisitor.visitGlobalAsgnNode(this);
     }
-    
+
     public String getLexicalName() {
         return "$" + getName();
     }
-    
+
     /**
      * Gets the name.
      * @return Returns a String
@@ -82,21 +82,21 @@ public class GlobalAsgnNode extends AssignableNode implements IGlobalVariable {
     public String getName() {
         return name;
     }
-    
+
     public void setName(String name) {
         this.name = name;
     }
 
     public boolean isNameMatch(String name) {
         String thisName = getName();
-        
+
         return thisName != null && thisName.equals(name);
     }
-    
+
     public SourcePosition getNamePosition() {
         return getLexicalNamePosition().fromEnd(getName().length());
     }
-    
+
     public SourcePosition getLexicalNamePosition() {
         return getPosition().fromBeginning(getLexicalName().length());
     }

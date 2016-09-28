@@ -13,7 +13,7 @@
  * rights and limitations under the License.
  *
  * Copyright (C) 2009 Thomas E. Enebo <tom.enebo@gmail.com>
- * 
+ *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
  * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
@@ -31,7 +31,7 @@ package org.jrubyparser.ast;
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
 
-/** 
+/**
  * Begin/End block.  A Begin ... End block without rescue.
  */
 public class BeginNode extends Node {
@@ -41,7 +41,7 @@ public class BeginNode extends Node {
         super(position);
 
 //        assert bodyNode != null : "bodyNode is not null";
-        
+
         this.bodyNode = adopt(bodyNode);
     }
 
@@ -66,7 +66,7 @@ public class BeginNode extends Node {
      * Accept for the visitor pattern.
      * @param iVisitor the visitor
      **/
-    public Object accept(NodeVisitor iVisitor) {
+    public <T> T accept(NodeVisitor<T> iVisitor) {
         return iVisitor.visitBeginNode(this);
     }
 
@@ -78,11 +78,11 @@ public class BeginNode extends Node {
     public Node getBodyNode() {
         return getBody();
     }
-    
+
     public Node getBody() {
         return bodyNode;
     }
-    
+
     public void setBody(Node body) {
         this.bodyNode = adopt(body);
     }

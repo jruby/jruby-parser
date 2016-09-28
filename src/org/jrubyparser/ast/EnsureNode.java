@@ -13,7 +13,7 @@
  * rights and limitations under the License.
  *
  * Copyright (C) 2009 Thomas E. Enebo <tom.enebo@gmail.com>
- * 
+ *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
  * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
@@ -40,9 +40,9 @@ public class EnsureNode extends Node {
 
     public EnsureNode(SourcePosition position, Node bodyNode, Node ensureNode) {
         super(position);
-        
+
         assert bodyNode != null : "bodyNode is not null";
-        
+
         this.bodyNode = adopt(bodyNode);
         this.ensureNode = adopt(ensureNode);
     }
@@ -55,7 +55,7 @@ public class EnsureNode extends Node {
      * Accept for the visitor pattern.
      * @param iVisitor the visitor
      **/
-    public Object accept(NodeVisitor iVisitor) {
+    public <T> T accept(NodeVisitor<T> iVisitor) {
         return iVisitor.visitEnsureNode(this);
     }
 
@@ -66,7 +66,7 @@ public class EnsureNode extends Node {
     public Node getBody() {
         return bodyNode;
     }
-    
+
     @Deprecated
     public Node getBodyNode() {
         return getBody();
@@ -79,7 +79,7 @@ public class EnsureNode extends Node {
     public Node getEnsure() {
         return ensureNode;
     }
-    
+
     @Deprecated
     public Node getEnsureNode() {
         return getEnsure();

@@ -13,7 +13,7 @@
  * rights and limitations under the License.
  *
  * Copyright (C) 2009 Thomas E. Enebo <tom.enebo@gmail.com>
- * 
+ *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
  * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
@@ -52,12 +52,12 @@ public class WhenNode extends Node {
         if (!super.isSame(node)) return false;
 
         WhenNode other = (WhenNode) node;
-        
+
             if (getBody() == null && other.getBody() == null) {
                 if (getExpression() == null && other.getExpression() == null) {
                     if (getNextCase() == null && other.getNextCase() == null) return true;
                     if (getNextCase() == null || other.getNextCase() == null) return false;
-                    
+
                     return getNextCase().isSame(other.getNextCase());
                 } else if (getExpression() == null || other.getExpression() == null) {
                     return false;
@@ -85,7 +85,7 @@ public class WhenNode extends Node {
             } else if (getNextCase() == null || other.getNextCase() == null) {
                 return false;
             }
-            
+
             return getNextCase().isSame(other.getNextCase()) && getExpression().isSame(other.getExpression()) && getBody().isSame(other.getBody());
     }
 
@@ -97,7 +97,7 @@ public class WhenNode extends Node {
      * Accept for the visitor pattern.
      * @param iVisitor the visitor
      **/
-    public Object accept(NodeVisitor iVisitor) {
+    public <T> T accept(NodeVisitor<T> iVisitor) {
         return iVisitor.visitWhenNode(this);
     }
 
@@ -108,16 +108,16 @@ public class WhenNode extends Node {
     public Node getBody() {
         return bodyNode;
     }
-    
+
     @Deprecated
     public Node getBodyNode() {
         return getBody();
     }
-    
+
     public void setBody(Node body) {
         this.bodyNode = adopt(body);
     }
-    
+
     /**
      * Gets the next case node (if any).
      */
@@ -131,12 +131,12 @@ public class WhenNode extends Node {
     public Node getExpression() {
         return expressionNodes;
     }
-    
+
     @Deprecated
     public Node getExpressionNode() {
         return getExpression();
     }
-    
+
     public void setExpression(Node expression) {
         this. expressionNodes = adopt(expression);
     }

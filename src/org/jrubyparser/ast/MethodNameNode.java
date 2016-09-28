@@ -10,12 +10,12 @@ public class MethodNameNode extends NamedNode {
     public MethodNameNode(SourcePosition position, String name) {
         super(position, name);
     }
-    
+
     public NodeType getNodeType() {
         return NodeType.METHODNAMENODE;
     }
-    
-    public Object accept(NodeVisitor visitor) {
+
+    public <T> T accept(NodeVisitor<T> visitor) {
         return visitor.visitMethodNameNode(this);
     }
 }

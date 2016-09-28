@@ -13,7 +13,7 @@ import org.jrubyparser.SourcePosition;
  */
 public class KeywordArgNode extends Node {
     private AssignableNode assignable;
-    
+
     public KeywordArgNode(SourcePosition position, AssignableNode assignable) {
         super(position);
         this.assignable = assignable;
@@ -33,7 +33,7 @@ public class KeywordArgNode extends Node {
 
 
     @Override
-    public Object accept(NodeVisitor visitor) {
+    public <T> T accept(NodeVisitor<T> visitor) {
         return visitor.visitKeywordArgNode(this);
     }
 
@@ -45,5 +45,5 @@ public class KeywordArgNode extends Node {
     public AssignableNode getAssignable() {
         return assignable;
     }
-    
+
 }

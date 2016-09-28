@@ -43,7 +43,7 @@ public class AndNode extends BinaryOperatorBaseNode {
         return NodeType.ANDNODE;
     }
 
-    public Object accept(NodeVisitor iVisitor) {
+    public <T> T accept(NodeVisitor<T> iVisitor) {
         return iVisitor.visitAndNode(this);
     }
 }

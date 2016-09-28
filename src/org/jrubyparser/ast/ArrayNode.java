@@ -13,7 +13,7 @@
  * rights and limitations under the License.
  *
  * Copyright (C) 2009 Thomas E. Enebo <tom.enebo@gmail.com>
- * 
+ *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
  * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
@@ -34,10 +34,10 @@ import org.jrubyparser.SourcePosition;
 /**
  * Represents an array. This could be an array literal, quoted words or some args stuff.
  */
-public class ArrayNode extends ListNode implements ILiteralNode {    
+public class ArrayNode extends ListNode implements ILiteralNode {
     public ArrayNode(SourcePosition position, Node firstNode) {
         super(position, firstNode);
-        
+
         assert firstNode != null : "ArrayNode.first == null";
     }
 
@@ -55,7 +55,7 @@ public class ArrayNode extends ListNode implements ILiteralNode {
      * @param iVisitor the visitor
      **/
     @Override
-    public Object accept(NodeVisitor iVisitor) {
+    public <T> T accept(NodeVisitor<T> iVisitor) {
         return iVisitor.visitArrayNode(this);
     }
 }
