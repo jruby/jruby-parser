@@ -188,6 +188,8 @@ public interface NodeVisitor<T> {
 
   public T visitCommentNode(CommentNode iVisited);
 
+  public T visitComplexNode(ComplexNode complexNode);
+
   public T visitColon2Node(Colon2Node iVisited);
 
   public T visitColon3Node(Colon3Node iVisited);
@@ -299,6 +301,8 @@ public interface NodeVisitor<T> {
   public T visitPreExeNode(PreExeNode iVisited);
 
   public T visitPostExeNode(PostExeNode iVisited);
+
+  public T visitRationalNode(RationalNode rationalNode);
 
   public T visitRedoNode(RedoNode iVisited);
 
