@@ -2148,6 +2148,10 @@ public class Lexer {
                     result = Tokens.tLPAREN_ARG;
                 }
             }
+
+            if (isTwoZero && token == Tokens.tLAMBDA) {
+                result = Tokens.tLPAREN2;
+            }
         }
 
         parenNest++;
