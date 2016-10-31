@@ -111,6 +111,7 @@ import org.jrubyparser.ast.PreExeNode;
 import org.jrubyparser.ast.RationalNode;
 import org.jrubyparser.ast.RedoNode;
 import org.jrubyparser.ast.RegexpNode;
+import org.jrubyparser.ast.RequiredKeywordArgumentValueNode;
 import org.jrubyparser.ast.RescueBodyNode;
 import org.jrubyparser.ast.RescueNode;
 import org.jrubyparser.ast.RestArgNode;
@@ -307,6 +308,8 @@ public interface NodeVisitor<T> {
   public T visitRedoNode(RedoNode iVisited);
 
   public T visitRegexpNode(RegexpNode iVisited);
+
+  public T visitRequiredKeywordArgumentValueNode(RequiredKeywordArgumentValueNode requiredKeywordArgumentValueNode);
 
   public T visitRescueBodyNode(RescueBodyNode iVisited);
 
