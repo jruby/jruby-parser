@@ -90,6 +90,7 @@ import org.jrubyparser.ast.PreExeNode;
 import org.jrubyparser.ast.RationalNode;
 import org.jrubyparser.ast.RedoNode;
 import org.jrubyparser.ast.RegexpNode;
+import org.jrubyparser.ast.RequiredKeywordArgumentValueNode;
 import org.jrubyparser.ast.RescueBodyNode;
 import org.jrubyparser.ast.RescueNode;
 import org.jrubyparser.ast.RestArgNode;
@@ -122,17 +123,17 @@ import org.jrubyparser.ast.ZSuperNode;
  * A base class visitor where visiting nodes will do nothing (no-op) by default.
  */
 public class NoopVisitor implements NodeVisitor {
-    
+
     protected Object visit(Node parent) {
         if (parent == null) return null;
-        
+
         for (Node node: parent.childNodes()) {
             node.accept(this);
         }
-        
+
         return null;
     }
-    
+
     public Object visitAliasNode(AliasNode iVisited) {
         return visit(iVisited);
     }
@@ -156,10 +157,10 @@ public class NoopVisitor implements NodeVisitor {
     public Object visitArrayNode(ArrayNode iVisited) {
         return visit(iVisited);
     }
-    
+
     public Object visitArgumentNode(ArgumentNode iVisited) {
         return visit(iVisited);
-    }    
+    }
 
     public Object visitAttrAssignNode(AttrAssignNode iVisited) {
         return visit(iVisited);
@@ -236,7 +237,7 @@ public class NoopVisitor implements NodeVisitor {
     public Object visitColon3Node(Colon3Node iVisited) {
         return visit(iVisited);
     }
-    
+
     public Object visitCommentNode(CommentNode iVisited) {
         return visit(iVisited);
     }
@@ -332,11 +333,11 @@ public class NoopVisitor implements NodeVisitor {
     public Object visitHashNode(HashNode iVisited) {
         return visit(iVisited);
     }
-    
+
     public Object visitImplicitNilNode(ImplicitNilNode visited) {
         return visit(visited);
     }
-    
+
     public Object visitInstAsgnNode(InstAsgnNode iVisited) {
         return visit(iVisited);
     }
@@ -352,7 +353,7 @@ public class NoopVisitor implements NodeVisitor {
     public Object visitIterNode(IterNode iVisited) {
         return visit(iVisited);
     }
-    
+
     public Object visitKeywordArgNode(KeywordArgNode iVisited) {
         return visit(iVisited);
     }
@@ -360,15 +361,15 @@ public class NoopVisitor implements NodeVisitor {
     public Object visitKeywordRestArgNode(KeywordRestArgNode iVisited) {
         return visit(iVisited);
     }
-    
+
     public Object visitLambdaNode(LambdaNode visited) {
         return visit(visited);
     }
-    
+
     public Object visitListNode(ListNode iVisited) {
         return visit(iVisited);
     }
-    
+
     public Object visitLiteralNode(LiteralNode iVisited) {
         return visit(iVisited);
     }
@@ -400,11 +401,11 @@ public class NoopVisitor implements NodeVisitor {
     public Object visitModuleNode(ModuleNode iVisited) {
         return visit(iVisited);
     }
-    
+
     public Object visitMethodNameNode(MethodNameNode iVisited) {
         return visit(iVisited);
     }
-    
+
     public Object visitNewlineNode(NewlineNode iVisited) {
         return visit(iVisited);
     }
@@ -428,7 +429,7 @@ public class NoopVisitor implements NodeVisitor {
     public Object visitOpElementAsgnNode(OpElementAsgnNode iVisited) {
         return visit(iVisited);
     }
-    
+
     public Object visitOptArgNode(OptArgNode iVisited) {
         return visit(iVisited);
     }
@@ -466,6 +467,10 @@ public class NoopVisitor implements NodeVisitor {
     }
 
     public Object visitRegexpNode(RegexpNode iVisited) {
+        return visit(iVisited);
+    }
+
+    public Object visitRequiredKeywordArgumentValueNode(RequiredKeywordArgumentValueNode iVisited) {
         return visit(iVisited);
     }
 
@@ -520,7 +525,7 @@ public class NoopVisitor implements NodeVisitor {
     public Object visitSymbolNode(SymbolNode iVisited) {
         return visit(iVisited);
     }
-    
+
     public Object visitSyntaxNode(SyntaxNode iVisited) {
         return visit(iVisited);
     }
@@ -536,7 +541,7 @@ public class NoopVisitor implements NodeVisitor {
     public Object visitUnaryCallNode(UnaryCallNode iVisited) {
         return visit(iVisited);
     }
-    
+
     public Object visitUndefNode(UndefNode iVisited) {
         return visit(iVisited);
     }
