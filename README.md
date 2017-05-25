@@ -39,7 +39,7 @@ public class ParseSomething {
 In the above code, `CompatVersion` is an enum which can be `RUBY1_8`,`RUBY1_9`, or `RUBY2_0`. ParserConfiguration takes
 several options, including linenumber, version, and optionally a static scope and can be configured with additional information about syntax gathering if necessary. 
 
-##Ruby
+## Ruby
 
 jruby-parser.gem is a gem which bundles JRubyParser.jar and also provides a thin Ruby layer around the Java API to follow Ruby programming idioms better.  Here is a simple example of parsing and rewriting using jruby-parser.rb:
 
