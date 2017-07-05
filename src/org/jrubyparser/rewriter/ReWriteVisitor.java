@@ -129,6 +129,7 @@ import org.jrubyparser.ast.PreExeNode;
 import org.jrubyparser.ast.RationalNode;
 import org.jrubyparser.ast.RedoNode;
 import org.jrubyparser.ast.RegexpNode;
+import org.jrubyparser.ast.RequiredKeywordArgumentValueNode;
 import org.jrubyparser.ast.RescueBodyNode;
 import org.jrubyparser.ast.RescueNode;
 import org.jrubyparser.ast.RestArgNode;
@@ -414,7 +415,7 @@ public class ReWriteVisitor implements NodeVisitor {
         print("]");
         return null;
     }
-    
+
     public Object visitArgumentNode(ArgumentNode iVisited) {
         return null;
     }
@@ -640,7 +641,7 @@ public class ReWriteVisitor implements NodeVisitor {
         print(iVisited.getLexicalName());
         return null;
     }
-    
+
     public Object visitCommentNode(CommentNode iVisited) {
         print(iVisited.getContent());
         return null;
@@ -1033,7 +1034,7 @@ public class ReWriteVisitor implements NodeVisitor {
     public Object visitImplicitNilNode(ImplicitNilNode visited) {
         return null;
     }
-    
+
     public Object visitIterNode(IterNode iVisited) {
         if (isOnSingleLine(iVisited)) {
             print(config.getFormatHelper().beforeIterBrackets());
@@ -1053,12 +1054,12 @@ public class ReWriteVisitor implements NodeVisitor {
         }
         return null;
     }
-    
+
     public Object visitLambdaNode(LambdaNode visited) {
         print("->(");
         visitArgsNode(visited.getArgs());
         print(")");
-        
+
         if (isOnSingleLine(visited)) {
             print(config.getFormatHelper().beforeIterBrackets());
             print("{");
@@ -1071,12 +1072,12 @@ public class ReWriteVisitor implements NodeVisitor {
             print(" do ");
             visitNodeInIndentation(visited.getBody());
             printNewlineAndIndentation();
-            print("end");            
+            print("end");
         }
 
         return null;
     }
-    
+
     public Object visitListNode(ListNode iVisited) {
         return null;
     }
@@ -1231,10 +1232,10 @@ public class ReWriteVisitor implements NodeVisitor {
         printOpAsgnNode(iVisited.getSecond(), "||=");
         return null;
     }
-    
+
     public Object visitOptArgNode(OptArgNode iVisited) {
         return null;
-    }    
+    }
 
     public Object visitOrNode(OrNode iVisited) {
         enterCall();
@@ -1307,6 +1308,10 @@ public class ReWriteVisitor implements NodeVisitor {
         return (Node) n.childNodes().get(0);
     }
 
+    public Object visitRequiredKeywordArgumentValueNode(RequiredKeywordArgumentValueNode iVisted) {
+        return null;
+    }
+
     public Object visitRescueBodyNode(RescueBodyNode iVisited) {
         if (iVisited.getBody() != null && config.getLastPosition().getStartLine() == getEndLine(iVisited.getBody())) {
             print(" rescue ");
@@ -1358,7 +1363,7 @@ public class ReWriteVisitor implements NodeVisitor {
     public Object visitRescueNode(RescueNode iVisited) {
         visitNode(iVisited.getBody());
         config.getIndentor().outdent();
-        
+
         Node body = iVisited.getRescue().getBody();
 
         if (body != null && getStartLine(iVisited) != getEndLine(body)) printNewlineAndIndentation();
@@ -1388,7 +1393,7 @@ public class ReWriteVisitor implements NodeVisitor {
     public Object visitKeywordRestArgNode(KeywordRestArgNode iVisited) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+
     public Object visitRetryNode(RetryNode iVisited) {
         print("retry");
         return null;
@@ -1516,7 +1521,7 @@ public class ReWriteVisitor implements NodeVisitor {
     }
 
     private boolean needsSuperNodeParentheses(SuperNode n) {
-        return n.getArgs().childNodes().isEmpty() && 
+        return n.getArgs().childNodes().isEmpty() &&
                 config.getSource().charAt(getEndOffset(n)) == '(';
     }
 
@@ -1536,7 +1541,7 @@ public class ReWriteVisitor implements NodeVisitor {
         print(symbol.getLexicalName());
         return null;
     }
-    
+
     public Object visitSyntaxNode(SyntaxNode iVisited) {
         print(iVisited.getContent());
         return null;
