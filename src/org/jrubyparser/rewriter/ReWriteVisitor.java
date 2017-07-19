@@ -138,6 +138,7 @@ import org.jrubyparser.ast.ReturnNode;
 import org.jrubyparser.ast.RootNode;
 import org.jrubyparser.ast.SClassNode;
 import org.jrubyparser.ast.SValueNode;
+import org.jrubyparser.ast.SafeOpAsgnNode;
 import org.jrubyparser.ast.SelfNode;
 import org.jrubyparser.ast.SplatNode;
 import org.jrubyparser.ast.StrNode;
@@ -1765,6 +1766,13 @@ public class ReWriteVisitor implements NodeVisitor {
 
     public Object visitLiteralNode(LiteralNode iVisited) {
         print(iVisited.getName());
+        return null;
+    }
+    
+     public Object visitSafeOpAsgnNode(SafeOpAsgnNode op) {
+        visitNode(op.getReceiver());
+        print("&.").print(op.getVariableName()).print(' ').print(op.getOperatorName()).print("=").print(config.getFormatHelper().afterAssignment());
+        visitNode(op.getValue());
         return null;
     }
 }

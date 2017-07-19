@@ -75,6 +75,7 @@ import org.jrubyparser.ast.Node;
 import org.jrubyparser.ast.NumericNode;
 import org.jrubyparser.ast.OpAsgnAndNode;
 import org.jrubyparser.ast.OpAsgnNode;
+import org.jrubyparser.ast.SafeOpAsgnNode;
 import org.jrubyparser.ast.OpAsgnOrNode;
 import org.jrubyparser.ast.OptArgNode;
 import org.jrubyparser.ast.PostExeNode;
@@ -115,15 +116,15 @@ import org.jrubyparser.lexer.SyntaxException;
 import org.jrubyparser.lexer.SyntaxException.PID;
 import org.jrubyparser.lexer.Token;
 
-public class Ruby20Parser implements RubyParser {
+public class Ruby23Parser implements RubyParser {
     protected ParserSupport19 support;
     protected Lexer lexer;
 
-    public Ruby20Parser() {
+    public Ruby23Parser() {
         this(new ParserSupport19());
     }
 
-    public Ruby20Parser(ParserSupport19 support) {
+    public Ruby23Parser(ParserSupport19 support) {
         this.support = support;
         lexer = new Lexer(false);
         lexer.setParserSupport(support);
@@ -160,7 +161,7 @@ public class Ruby20Parser implements RubyParser {
 %token <Token> tLEQ           /* <= */
 %token <Token> tANDOP tOROP   /* && and || */
 %token <Token> tMATCH tNMATCH /* =~ and !~ */
-%token <Token>  tDOT           /* Is just '.' in ruby and not a token */
+%token <Token> tDOT           /* Is just '.' in ruby and not a token */
 %token <Token> tDOT2 tDOT3    /* .. and ... */
 %token <Token> tAREF tASET    /* [] and []= */
 %token <Token> tLSHFT tRSHFT  /* << and >> */
@@ -200,7 +201,9 @@ public class Ruby20Parser implements RubyParser {
 %token <FloatNode> tFLOAT 
 %token <RegexpNode>  tREGEXP_END
 %token <Node> tIMAGINARY
-%token <RationalNode> tRATIONAL 
+%token <RationalNode> tRATIONAL
+%token <Node> tSTRING
+
 %type <RestArgNode> f_rest_arg 
 %type <Node> singleton strings string string1 xstring regexp
 %type <Node> string_contents xstring_contents string_content method_call
@@ -245,7 +248,11 @@ public class Ruby20Parser implements RubyParser {
 %type <Node> opt_call_args f_marg f_margs
 %type <Node> bvar
 %type <Token> user_variable, keyword_variable
+%type <Token> call_op
+%token <Token> tLONELY       /* &. */
    // ENEBO: end all new types
+
+
 
 %type <Token> rparen rbracket reswords f_bad_arg
 %type <Node> top_compstmt top_stmts top_stmt
@@ -450,11 +457,21 @@ stmt            : kALIAS fitem {
   // FIXME: arg_concat logic missing for opt_call_args
                     $$ = support.new_opElementAsgnNode(support.union($1, $6), $1, (String) $5.getValue(), $3, $6);
                 }
-                | primary_value tDOT tIDENTIFIER tOP_ASGN command_call {
-                    $$ = new OpAsgnNode(support.getPosition($1), $1, $5, (String) $3.getValue(), (String) $4.getValue());
+                | primary_value call_op tIDENTIFIER tOP_ASGN command_call {
+                    String callOp = (String) $2.getValue();
+                    if (callOp.equals("&.")) {
+                      $$ = new SafeOpAsgnNode(support.getPosition($1), $1, $5, (String) $3.getValue(), (String) $4.getValue());
+                    } else {
+                      $$ = new OpAsgnNode(support.getPosition($1), $1, $5, (String) $3.getValue(), (String) $4.getValue());
+                    }
                 }
-                | primary_value tDOT tCONSTANT tOP_ASGN command_call {
-                    $$ = new OpAsgnNode(support.getPosition($1), $1, $5, (String) $3.getValue(), (String) $4.getValue());
+                | primary_value call_op tCONSTANT tOP_ASGN command_call {
+                    String callOp = (String) $2.getValue();
+                    if (callOp.equals("&.")) {
+                      $$ = new SafeOpAsgnNode(support.getPosition($1), $1, $5, (String) $3.getValue(), (String) $4.getValue());
+                    } else {
+                      $$ = new OpAsgnNode(support.getPosition($1), $1, $5, (String) $3.getValue(), (String) $4.getValue());
+                    }
                 }
                 | primary_value tCOLON2 tCONSTANT tOP_ASGN command_call {
                     support.yyerror("can't make alias for the number variables");
@@ -538,10 +555,10 @@ command        : fcall command_args %prec tLOWEST {
                     support.frobnicate_fcall_args($1, $2, $3);
                     $$ = $1;
                 }
-                | primary_value tDOT operation2 command_args %prec tLOWEST {
+                | primary_value call_op operation2 command_args %prec tLOWEST {
                     $$ = support.new_call($1, $3, $4, null);
                 }
-                | primary_value tDOT operation2 command_args cmd_brace_block {
+                | primary_value call_op operation2 command_args cmd_brace_block {
                     $$ = support.new_call($1, $3, $4, $5); 
                 }
                 | primary_value tCOLON2 operation2 command_args %prec tLOWEST {
@@ -645,13 +662,13 @@ mlhs_node       : user_variable {
                 | primary_value '[' opt_call_args rbracket {
                     $$ = support.aryset($1, $3);
                 }
-                | primary_value tDOT tIDENTIFIER {
+                | primary_value call_op tIDENTIFIER {
                     $$ = support.attrset($1, (String) $3.getValue());
                 }
                 | primary_value tCOLON2 tIDENTIFIER {
                     $$ = support.attrset($1, (String) $3.getValue());
                 }
-                | primary_value tDOT tCONSTANT {
+                | primary_value call_op tCONSTANT {
                     $$ = support.attrset($1, (String) $3.getValue());
                 }
                 | primary_value tCOLON2 tCONSTANT {
@@ -685,13 +702,13 @@ lhs             : user_variable {
                 | primary_value '[' opt_call_args rbracket {
                     $$ = support.aryset($1, $3);
                 }
-                | primary_value tDOT tIDENTIFIER {
+                | primary_value call_op tIDENTIFIER {
                     $$ = support.attrset($1, (String) $3.getValue());
                 }
                 | primary_value tCOLON2 tIDENTIFIER {
                     $$ = support.attrset($1, (String) $3.getValue());
                 }
-                | primary_value tDOT tCONSTANT {
+                | primary_value call_op tCONSTANT {
                     $$ = support.attrset($1, (String) $3.getValue());
                 }
                 | primary_value tCOLON2 tCONSTANT {
@@ -834,11 +851,21 @@ arg             : lhs '=' arg {
   // FIXME: arg_concat missing for opt_call_args
                     $$ = support.new_opElementAsgnNode(support.union($1, $6), $1, (String) $5.getValue(), $3, $6);
                 }
-                | primary_value tDOT tIDENTIFIER tOP_ASGN arg {
-                    $$ = new OpAsgnNode(support.getPosition($1), $1, $5, (String) $3.getValue(), (String) $4.getValue());
+                | primary_value call_op tIDENTIFIER tOP_ASGN arg {
+                    String callOp = (String) $2.getValue();
+                    if (callOp.equals("&.")) {
+                      $$ = new SafeOpAsgnNode(support.getPosition($1), $1, $5, (String) $3.getValue(), (String) $4.getValue());
+                    } else {
+                      $$ = new OpAsgnNode(support.getPosition($1), $1, $5, (String) $3.getValue(), (String) $4.getValue());
+                    }
                 }
-                | primary_value tDOT tCONSTANT tOP_ASGN arg {
-                    $$ = new OpAsgnNode(support.getPosition($1), $1, $5, (String) $3.getValue(), (String) $4.getValue());
+                | primary_value call_op tCONSTANT tOP_ASGN arg {
+                    String callOp = (String) $2.getValue();
+                    if (callOp.equals("&.")) {
+                      $$ = new SafeOpAsgnNode(support.getPosition($1), $1, $5, (String) $3.getValue(), (String) $4.getValue());
+                    } else {
+                      $$ = new OpAsgnNode(support.getPosition($1), $1, $5, (String) $3.getValue(), (String) $4.getValue());
+                    }
                 }
                 | primary_value tCOLON2 tIDENTIFIER tOP_ASGN arg {
                     $$ = new OpAsgnNode(support.getPosition($1), $1, $5, (String) $3.getValue(), (String) $4.getValue());
@@ -1548,7 +1575,7 @@ method_call     : fcall paren_args {
                     support.frobnicate_fcall_args($1, $2, null);
                     $$ = $1;
                 }
-                | primary_value tDOT operation2 opt_paren_args {
+                | primary_value call_op operation2 opt_paren_args {
                     $$ = support.new_call($1, $3, $4, null);
                 }
                 | primary_value tCOLON2 operation2 paren_args {
@@ -1557,7 +1584,7 @@ method_call     : fcall paren_args {
                 | primary_value tCOLON2 operation3 {
                     $$ = support.new_call($1, $3, null, null);
                 }
-                | primary_value tDOT paren_args {
+                | primary_value call_op paren_args {
                     $$ = support.new_call($1, new Token("call", $1.getPosition()), $3, null);
                 }
                 | primary_value tCOLON2 paren_args {
@@ -1657,6 +1684,9 @@ strings         : string {
 // [!null]
 string          : tCHAR {
                     $$ = new StrNode($<Token>0.getPosition(), (String) $1.getValue());
+                }
+                | tSTRING {
+                    $$ = $1;
                 }
                 | string1 {
                     $$ = $1;
@@ -2220,6 +2250,10 @@ assoc           : arg_value tASSOC arg_value {
                     SourcePosition pos = $1.getPosition();
                     $$ = support.newArrayNode(pos, new SymbolNode(pos, (String) $1.getValue())).add($2);
                 }
+                | tSTRING_BEG string_contents tLABEL_END arg_value {
+                      SourcePosition pos = $1.getPosition();
+                      $$ = support.newArrayNode(pos, new SymbolNode(pos, ((StrNode) $2).getValue())).add($4);
+                    }
                 | tDSTAR arg_value {
                     $$ = support.newArrayNode($1.getPosition(), $2).add(null);
                 }
@@ -2228,6 +2262,8 @@ operation       : tIDENTIFIER | tCONSTANT | tFID
 operation2      : tIDENTIFIER | tCONSTANT | tFID | op
 operation3      : tIDENTIFIER | tFID | op
 dot_or_colon    : tDOT | tCOLON2
+call_op         : tDOT 
+                | tLONELY 
 opt_terms       : /* none */ | terms
 opt_nl          : /* none */ | '\n'
 rparen          : opt_nl tRPAREN {

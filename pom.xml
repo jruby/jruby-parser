@@ -5,7 +5,7 @@
   <groupId>org.jruby</groupId>
   <artifactId>jrubyparser</artifactId>
   <packaging>jar</packaging>
-  <version>0.5.4</version>
+  <version>0.5.5</version>
   <name>JRuby Parser</name>
   <description>
     A library to expose exact char-for-char position information of Ruby syntax.
@@ -108,7 +108,8 @@
           </execution>
         </executions>
       </plugin>
-      <plugin>
+     <!-- 
+ <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
         <executions>
@@ -120,6 +121,7 @@
           </execution>
         </executions>
       </plugin>
+ -->
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>

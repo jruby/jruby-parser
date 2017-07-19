@@ -34,13 +34,13 @@ import org.jrubyparser.SourcePosition;
 /**
  *
  */
-public class OpAsgnNode extends Node {
+public class SafeOpAsgnNode extends Node {
     private Node receiverNode;
     private Node valueNode;
     private String operatorName;
     private String variableName;
 
-    public OpAsgnNode(SourcePosition position, Node receiverNode, Node valueNode, String variableName, String operatorName) {
+    public SafeOpAsgnNode(SourcePosition position, Node receiverNode, Node valueNode, String variableName, String operatorName) {
         super(position);
 
         assert receiverNode != null : "receiverNode is not null";
@@ -63,7 +63,7 @@ public class OpAsgnNode extends Node {
     public boolean isSame(Node node) {
         if (!super.isSame(node)) return false;
 
-        OpAsgnNode other = (OpAsgnNode) node;
+        SafeOpAsgnNode other = (SafeOpAsgnNode) node;
 
         return getReceiver().isSame(other.getReceiver()) && getValue().isSame(other.getValue()) &&
                 getOperatorName().equals(other.getOperatorName()) && getVariableName().equals(other.getVariableName());
@@ -79,7 +79,7 @@ public class OpAsgnNode extends Node {
      * @param iVisitor the visitor
      **/
     public <T> T accept(NodeVisitor<T> iVisitor) {
-        return iVisitor.visitOpAsgnNode(this);
+        return iVisitor.visitSafeOpAsgnNode(this);
     }
 
     /**

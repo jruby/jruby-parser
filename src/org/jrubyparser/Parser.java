@@ -31,6 +31,7 @@
  ***** END LICENSE BLOCK *****/
 package org.jrubyparser;
 
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import org.jrubyparser.IRubyWarnings.ID;
@@ -42,6 +43,7 @@ import org.jrubyparser.parser.ParserResult;
 import org.jrubyparser.parser.Ruby18Parser;
 import org.jrubyparser.parser.Ruby19Parser;
 import org.jrubyparser.parser.Ruby20Parser;
+import org.jrubyparser.parser.Ruby23Parser;
 import org.jrubyparser.parser.RubyParser;
 
 /**
@@ -72,8 +74,10 @@ public class Parser {
             parser = new Ruby18Parser();            
         } else if (configuration.getVersion() == CompatVersion.RUBY1_9) {
             parser = new Ruby19Parser();
-        } else {
+        } else if (configuration.getVersion() == CompatVersion.RUBY2_0) {
             parser = new Ruby20Parser();
+        } else {
+            parser = new Ruby23Parser();
         }
 
         // TODO: Warning interface from configuration?
@@ -109,4 +113,16 @@ public class Parser {
         public void warning(ID id, SourcePosition position, String message, Object... data) {}
         public void warning(ID id, String fileName, int lineNumber, String message, Object...data) {}
     }
+    
+    public static void main(String[] argv) throws Exception {
+        ParserConfiguration config = new ParserConfiguration(0, CompatVersion.RUBY2_3);
+        //StringReader reader = new StringReader("@@FabType = $sv.env==\"mtqa4\"? \"f7\":\"f1/8\"");
+        //StringReader reader = new StringReader("h = 343.odd? ? 2: 2");
+        //new Parser().parse("(string)", reader, config);
+        //StringReader reader = new StringReader("?.");
+        FileReader reader = new FileReader("test.rb");
+        new Parser().parse("/Users/daniel/Work/Globalfoundries/qatests_framework/ruby/testcases/siview/Test450_CSScripts.rb", reader, config);
+    }
+    
+    
 }

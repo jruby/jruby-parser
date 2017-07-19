@@ -164,7 +164,10 @@ public interface Tokens {
     int tDSTAR = Ruby20Parser.tDSTAR;
     int tIMAGINARY = Ruby20Parser.tIMAGINARY;
     int tRATIONAL = Ruby20Parser.tRATIONAL;
+    int tLABEL_END = Ruby23Parser.tLABEL_END;
+    int tLONELY = Ruby23Parser.tLONELY;    
+    int tSTRING = Ruby23Parser.tSTRING;
     
     String[] operators = {"+@", "-@", "**", "<=>", "==", "===", "!=", ">=", "<=", "&&",
-                          "||", "=~", "!~", "..", "...", "[]", "[]=", "<<", ">>", "::"};
+                          "||", "=~", "!~", "..", "...", "[]", "[]=", "<<", ">>", "::" };
 }
