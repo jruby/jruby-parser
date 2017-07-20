@@ -91,6 +91,8 @@ public abstract class Node implements ISourcePositionHolder {
      * Adopt the node in it's proper location amongst the children of this node.
      * Used internally by insertNode.  It is possible subclasses will know enough to use it
      * so it is marked protected.
+     * @param node to be adopted
+     * @return the node being adopted
      */
     protected Node adoptUsingNodesPosition(Node node) {
         int i = 0;
@@ -131,6 +133,9 @@ public abstract class Node implements ISourcePositionHolder {
 
     /**
      * Is this node the same or a descendent of the supplied testParent node?
+     *
+     * @param testParent node to see if this is within it
+     * @return true if it is contained within the parent
      */
     public boolean isDescendentOf(Node testParent) {
         for (Node current = this; current != null; current = current.getParent()) {
@@ -195,6 +200,7 @@ public abstract class Node implements ISourcePositionHolder {
 
     /**
      * Is this AST node considered a leaf node?
+     * @return true if it is a leaf
      */
     public boolean isLeaf() {
         return childNodes().isEmpty();
@@ -209,7 +215,7 @@ public abstract class Node implements ISourcePositionHolder {
      * Put entire list of nodes into their proper positions based on the SourcePosition specified
      * by each node in the list.  This list must be in sorted order to work.
      *
-     * @param nodes
+     * @param nodes to insert into this node
      */
     public void insertAll(List<? extends Node> nodes) {
         if (nodes == null || nodes.isEmpty()) return;
@@ -251,6 +257,7 @@ public abstract class Node implements ISourcePositionHolder {
     /**
      * Is the testNode before, inside, or after this node?
      *
+     * @param testNode to be compared with
      * @return -1 if before, 0 is inside, or 1 if after
      */
     public int comparePositionWith(Node testNode) {
@@ -263,6 +270,8 @@ public abstract class Node implements ISourcePositionHolder {
     /**
      * Look for all comment nodes immediately preceeding this one.  Additional pure-syntax nodes
      * will not break up contiguous comments (e.g. extra whitespace or an errant ';').
+     *
+     * @return the comments before this node
      */
     public List<CommentNode> getPreviousComments() {
         List<CommentNode> comments = new ArrayList<CommentNode>();
@@ -299,6 +308,8 @@ public abstract class Node implements ISourcePositionHolder {
 
     /**
      * Get the comment which happens to appear on the same line as this node immediately after it.
+     * 
+     * @return Get the inline comment at this node or null if no such comment.
      */
     public CommentNode getInlineComment() {
         List<Node> siblings = getParent().childNodes();
@@ -316,7 +327,9 @@ public abstract class Node implements ISourcePositionHolder {
 
     /**
      * Find the leaf node (which is not invisible) at the specified offset).
+     *
      * @param offset in characters into the source unit
+     * @return return the leafmost node
      */
     public Node getNodeAt(int offset) {
         // offset < 0 is for method chaining of methods which will return -1 if an index or node is not found (baby optimization)
@@ -344,8 +357,10 @@ public abstract class Node implements ISourcePositionHolder {
     }
 
     /**
-     * Return the closest local variable scope to this node (which may be itself) or return
+     * Fins the closest local variable scope to this node (which may be itself) or return
      * null if none can be found.
+     *
+     * @return closest node or null
      */
     public ILocalScope getClosestILocalScope() {
         for (Node p = this; p != null; p = p.getParent()) {
@@ -357,6 +372,8 @@ public abstract class Node implements ISourcePositionHolder {
 
     /**
      * Get closest parent Module/Class/SClass for this node
+     *
+     * @return the closes module node
      */
     public IModuleScope getClosestModule() {
         IScope p = getClosestIScope();
@@ -371,6 +388,8 @@ public abstract class Node implements ISourcePositionHolder {
     /**
      * Return closest iter node unless this is contained within a non-block scope and then return
      * null instead.
+     *
+     * @return the closest node for iter (closure)
      */
     public IterNode getInnermostIter() {
         for (Node p = this; p != null; p = p.getParent()) {
@@ -394,7 +413,8 @@ public abstract class Node implements ISourcePositionHolder {
 
     /**
      * Get the most immediate ParameterScope.
-     * @return
+     *
+     * @return the closest IScope
      */
     public IScope getClosestIScope() {
         for (Node current = this.getParent(); current != null; current = current.getParent()) {
@@ -408,6 +428,8 @@ public abstract class Node implements ISourcePositionHolder {
 
     /**
      * Is this node specifying a parameter in a block statement?
+     *
+     * @return true if nore is a block parameter.
      */
     public boolean isBlockParameter() {
         IterNode iter = getInnermostIter();
@@ -417,6 +439,8 @@ public abstract class Node implements ISourcePositionHolder {
 
     /**
      * Is this node specifying a parameter in a method definition?
+     *
+     * @return true if nore is a method parameter.
      */
     public boolean isMethodParameter() {
         MethodDefNode def = getMethodFor();

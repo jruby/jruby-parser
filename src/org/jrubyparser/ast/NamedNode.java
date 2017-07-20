@@ -51,7 +51,8 @@ public abstract class NamedNode extends Node implements INameNode {
     
     /**
      * Does the supplied name match this one?
-     * @param testName
+     * @param testName name to match
+     * @return true if the same name
      */
     public boolean isNameMatch(String testName) {
         return name.equals(testName);

@@ -88,7 +88,7 @@ public class LocalAsgnNode extends AssignableNode implements ILocalVariable {
 
     /**
      * Change the name of this local assignment (for refactoring)
-     * @param name
+     * @param name the name to set
      */
     public void setName(String name) {
         this.name = name;

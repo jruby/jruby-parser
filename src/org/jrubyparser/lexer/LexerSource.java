@@ -99,6 +99,8 @@ public abstract class LexerSource {
     /**
      * Where is the reader within the source {filename,row}
      * 
+     * @param startPosition to calc position from
+     * @param inclusive include start position into new position
      * @return the current position
      */
     public SourcePosition getPosition(SourcePosition startPosition, boolean inclusive) {
@@ -132,6 +134,7 @@ public abstract class LexerSource {
      * 
      * @param name the name of the source (e.g a filename: foo.rb)
      * @param content the data of the source
+     * @param configuration the configuration
      * @return the new source
      */
     public static LexerSource getSource(String name, Reader content,

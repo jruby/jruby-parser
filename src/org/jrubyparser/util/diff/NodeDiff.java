@@ -255,7 +255,7 @@ public class NodeDiff
      * @return Returns an ArrayList of {@link DeepDiff} objects representing
      * the diff and subdiff.
      *
-     * @throws NullPointerException
+     * @throws NullPointerException if it is null
      *
      * @see #getSubdiff(Change)
      * @see Change

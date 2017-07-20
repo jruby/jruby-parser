@@ -58,7 +58,8 @@ public class SourcePosition implements Serializable {
      * Creates a new source position.
      * 
      * @param file location of the source (must not be null)
-     * @param endLine what line within the source
+     * @param startLine what line the position starts within the source
+     * @param endLine what line the position ends within the source
      */
 	public SourcePosition(String file, int startLine, int endLine) {
 		if (file == null) { //otherwise equals() and getInstance() will fail
@@ -75,7 +76,10 @@ public class SourcePosition implements Serializable {
      * Creates a new source position.
      * 
      * @param file location of the source (must not be null)
-     * @param line what line within the source
+     * @param startLine what line the position starts within the source
+     * @param endLine what line the position ends within the source
+     * @param startOffset which character offset the source begins at
+     * @param endOffset which character offset the source ends at
      */
 	public SourcePosition(String file, int startLine, int endLine, int startOffset, int endOffset) {
 		if (file == null) { //otherwise equals() and getInstance() will fail
@@ -154,6 +158,8 @@ public class SourcePosition implements Serializable {
      * Is this a place-holder element for things like a zero-arg listnode?  These elements get
      * added to the AST for that jruby-parser's rewriting can add arguments after the tree
      * is constructed.
+     *
+     * @return this source location is 0 bytes wide
      */
     public boolean isEmpty() {
         return startOffset == endOffset;
@@ -175,7 +181,9 @@ public class SourcePosition implements Serializable {
      * Not used in interpreter 
      * Creates a new position the encloses both parameter positions.
      * 
-     * @param the positions providing the boundaries for the new position.
+     * @param firstPos The first position
+     * @param secondPos The first position
+     * @return position which is union of params
      */
     public static SourcePosition combinePosition(SourcePosition firstPos, SourcePosition secondPos){
         String fileName = firstPos.getFile();
@@ -203,6 +211,8 @@ public class SourcePosition implements Serializable {
      * Make a new SourcePosition instance which will be the index starting at the end of this one of
      * 0 length.  This is so that empty arg lists know where to start when you use the rewriter
      * to add arguments to an empty arg list.
+     *
+     * @return the empty position
      */
     public SourcePosition makeEmptyPositionAfterThis() {
         return new SourcePosition(file, startLine, endLine, endOffset, endOffset);

@@ -45,6 +45,7 @@ public class ArgsTailHolder implements ISourcePositionHolder {
     
     /**
      * Does this holder support either keyword argument types
+     * @return true if there are keyword args
      */
     public boolean hasKeywordArgs() {
         return keywordArgs != null || keywordRestArg != null;

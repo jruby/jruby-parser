@@ -304,8 +304,9 @@ public class ParserSupport {
     /**
      *  Wraps node with NEWLINE node.
      *
-     *@param node
-     *@return a NewlineNode or null if node is null.
+     * @param node to be wrapped
+     * @param position to be used
+     * @return a NewlineNode or null if node is null.
      */
     public Node newline_node(Node node, SourcePosition position) {
         if (node == null) return null;
@@ -457,9 +458,9 @@ public class ParserSupport {
         return new ArgsPushNode(position, node1, node2);
     }
     
-	/**
-	 * @fixme position
-	 **/
+	/*
+	 * Fixme: position
+	 */
     public Node node_assign(Node lhs, Node rhs) {
         if (lhs == null) return null;
 
@@ -770,6 +771,7 @@ public class ParserSupport {
      * them to re-insert them back into our new CaseNode the way we want.  The grammar is being
      * difficult and until I go back into the depths of that this is where things are.
      *
+     * @param position the position
      * @param expression of the case node (e.g. case foo)
      * @param firstWhenNode first when (which could also be the else)
      * @return a new case node
@@ -1208,6 +1210,7 @@ public class ParserSupport {
     
      /**
       * generate parsing error
+      * @param message to be used in error
       */
      public void yyerror(String message) {
          throw new SyntaxException(PID.GRAMMAR_ERROR, lexer.getPosition(), message);
@@ -1217,6 +1220,7 @@ public class ParserSupport {
       * generate parsing error
       * @param message text to be displayed.
       * @param expected list of acceptable tokens, if available.
+      * @param found what was actually found
       */
      public void yyerror(String message, String[] expected, String found) {
          String text = message + ", unexpected " + found + "\n";
@@ -1321,6 +1325,8 @@ public class ParserSupport {
       * If node is a splat and it is splatting a literal array then return the literal array.
       * Otherwise return null.  This allows grammar to not splat into a Ruby Array if splatting
       * a literal array.
+      * @param node to be splatted
+      * @return the value of the splat or null if not a splatable thing
       */
      public Node splat_array(Node node) {
          if (node instanceof SplatNode) node = ((SplatNode) node).getValue();
@@ -1386,6 +1392,8 @@ public class ParserSupport {
     /**
      * Since we can recieve positions at times we know can be null we
      * need an extra safety net here.
+     * @param pos the position
+     * @return the position
      */
     public SourcePosition getPosition2(ISourcePositionHolder pos) {
         return pos == null ? lexer.getPosition(null, false) : pos.getPosition();

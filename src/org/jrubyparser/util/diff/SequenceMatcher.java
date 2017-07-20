@@ -368,6 +368,7 @@ public class SequenceMatcher
      * Returns an integer representing how many levels of nesting of children
      * the node has.
      *
+     * @param node to calculate complexity on
      * @return Returns an int
      */
     public int calcComplexity(Node node) {

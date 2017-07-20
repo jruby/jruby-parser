@@ -1471,6 +1471,7 @@ public class Ruby20Parser implements RubyParser {
       @param yyLex scanner.
       @param ayydebug debug message writer implementing <tt>yyDebug</tt>, or <tt>null</tt>.
       @return result of the last reduction, if any.
+      @throws IOException if crap happens
     */
   public Object yyparse (Lexer yyLex, Object ayydebug)
 				throws java.io.IOException {
@@ -1498,6 +1499,7 @@ public class Ruby20Parser implements RubyParser {
       Maintains a dynamic state and value stack.
       @param yyLex scanner.
       @return result of the last reduction, if any.
+      @throws IOException if crap happens
     */
   public Object yyparse (Lexer yyLex) throws java.io.IOException {
     if (yyMax <= 0) yyMax = 256;			// initial size

@@ -37,6 +37,7 @@ public abstract class StrTerm {
      * Report whether this string should be substituting things like \n into newlines (double
      * quoting rules).
      * E.g. are we dealing with a "" string or a '' string (or their alternate representations)
+     * @return true if substitution is happening
      */
     public abstract boolean isSubstituting();
 
@@ -65,8 +66,11 @@ public abstract class StrTerm {
      * later on. Necessary for incremental lexing where we may restart
      * lexing parts of a string (since they can be split up due to
      * Ruby embedding like "Evaluated by Ruby: #{foo}".
+     * @return mutable state
      */
     public abstract Object getMutableState();
-    /** Support for incremental lexing: set current state of the term. See {@link #getMutableState} */
+    /** Support for incremental lexing: set current state of the term. See {@link #getMutableState} 
+     * @param o the object to set
+     */
     public abstract void setMutableState(Object o);
 }

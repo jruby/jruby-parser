@@ -98,6 +98,7 @@ public class RescueBodyNode extends Node {
 
     /**
      * Get the next rescue node (if any).
+     * @return the rescue body
      */
     public RescueBodyNode getOptRescue() {
         return optRescueNode;

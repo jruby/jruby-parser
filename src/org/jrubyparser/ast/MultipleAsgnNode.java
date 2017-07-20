@@ -114,6 +114,7 @@ public class MultipleAsgnNode extends AssignableNode {
 
     /**
      * Get total count of all pre arguments ({pre},*rest,post).
+     * @return the number of pre arguments
      */
     public int getPreCount() {
         return pre == null ? 0 : pre.size();
@@ -121,6 +122,7 @@ public class MultipleAsgnNode extends AssignableNode {
 
     /**
      * Get total count of all post arguments (pre,*rest,{post}).
+     * @return the number of post arguments
      */
     public int getPostCount() {
         return post == null ? 0 : post.size();

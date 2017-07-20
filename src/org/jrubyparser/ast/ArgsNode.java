@@ -59,8 +59,9 @@ public class ArgsNode extends Node {
      * @param optional Node describing the optional arguments
      * @param rest The rest argument (*args).
      * @param post Required nodes at the end of the method definition
+     * @param keywords list of keywords
+     * @param keywordRest **rest node
      * @param block An optional block argument (&amp;arg).
-     * @param shadow Shadowed block variables (if a block)
      **/
     public ArgsNode(SourcePosition position, ListNode pre, ListNode optional, RestArgNode rest,
             ListNode post, ListNode keywords, KeywordRestArgNode keywordRest, BlockArgNode block) {
@@ -106,6 +107,7 @@ public class ArgsNode extends Node {
     /**
      * Accept for the visitor pattern.
      * @param iVisitor the visitor
+     * @return result of visiting this node
      **/
     public <T> T accept(NodeVisitor<T> iVisitor) {
         return iVisitor.visitArgsNode(this);
@@ -146,6 +148,8 @@ public class ArgsNode extends Node {
 
     /**
      * Gets the required arguments at the beginning of the argument definition
+     *
+     * @return the list of pre nodes
      */
     public ListNode getPre() {
         return pre;
@@ -182,6 +186,7 @@ public class ArgsNode extends Node {
      * indexes or use it for parameter hinting.
      *
      * @param namesOnly do not prepend '*', '**', or '&amp;' onto front of special parameters
+     * @return list of all parameter names.
      */
     public List<String> getNormativeParameterNameList(boolean namesOnly) {
         List<String> parameters = new ArrayList<String>();

@@ -38,6 +38,7 @@ public class DSymbolNode extends ListNode {
     /**
      * For mutating from a DStr to a DSym (we just create a new one with same contents).
      *
+     * @param position the position
      * @param node to be copied
      */
     public DSymbolNode(SourcePosition position, DStrNode node) {

@@ -135,7 +135,7 @@ public class IterNode extends Node implements IBlockScope {
      * Given a name (presumably retrieve via getNormativeSignatureNameList()) is this parmeter used
      * in this method definition?
      *
-     * @param name
+     * @param name to be checked
      * @return if used or not.
      */
     public boolean isParameterUsed(String name) {

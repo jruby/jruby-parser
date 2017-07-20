@@ -120,6 +120,7 @@ public class WhenNode extends Node {
 
     /**
      * Gets the next case node (if any).
+     * @return the next case node
      */
     public Node getNextCase() {
         return nextCase;
@@ -127,6 +128,7 @@ public class WhenNode extends Node {
 
     /**
      * Get the expressionNode(s).
+     * @return the expression
      */
     public Node getExpression() {
         return expressionNodes;

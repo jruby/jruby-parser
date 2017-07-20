@@ -93,6 +93,7 @@ public class FCallNode extends Node implements INameNode, IArgumentNode, BlockAc
 
     /**
      * Get the node that represents a block or a block variable.
+     * @return the iter node
      */
     @Deprecated
     public Node getIterNode() {
@@ -130,6 +131,7 @@ public class FCallNode extends Node implements INameNode, IArgumentNode, BlockAc
      * Set the argsNode.
      *
      * @param argsNode set the arguments for this node.
+     * @return the args node
      */
     @Deprecated
     public Node setArgsNode(Node argsNode) {

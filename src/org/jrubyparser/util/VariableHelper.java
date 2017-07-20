@@ -56,6 +56,10 @@ public class VariableHelper {
 
     /**
      * Can we find a parameter named by name in the arguments node (presumably from an iter or methoddef)?
+     *
+     * @param argsNode to get name from
+     * @param name to look for
+     * @return the node representing name or null
      */
     public static ILocalVariable getParameterName(Node argsNode, String name) {
         return getParameterNameInner(argsNode, name);

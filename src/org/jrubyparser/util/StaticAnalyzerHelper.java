@@ -125,6 +125,9 @@ public class StaticAnalyzerHelper {
      * for simplicity).  This method really just flattens the tree into pre, rest, and post.
      * Now in actuality these three values will not neccesarily fit into the lhs in the same
      * fashion.
+     *
+     * @param rhs the right hand side node
+     * @return a list of flattened nodes
      */
     public static Node[] flattenRHSValues(Node rhs) {
         // This seems to be a MHS which has no rhs (setValue() never sets a value -- possibly during editing).

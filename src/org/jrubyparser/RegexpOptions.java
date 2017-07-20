@@ -47,6 +47,8 @@ public class RegexpOptions implements Cloneable {
      * Whether the kcode associated with this regexp is implicit (aka
      * default) or is specified explicitly (via 'nesu' syntax postscript or
      * flags to Regexp.new.
+     * 
+     * @return  whether uses the kcode default (e.g. not explicit).
      */
     public boolean isKcodeDefault() {
         return kcodeDefault;

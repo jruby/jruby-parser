@@ -169,10 +169,10 @@ public abstract class StaticScope implements Serializable {
     /**
      * Make a DASgn or LocalAsgn node based on scope logic
      * 
-     * @param position
-     * @param name
-     * @param value
-     * @return
+     * @param position where assign happens
+     * @param name lhs of assign
+     * @param value rhs of assign
+     * @return node representing this assignment
      */
     public AssignableNode assign(SourcePosition position, String name, Node value) {
         return assign(position, name, value, this, 0);

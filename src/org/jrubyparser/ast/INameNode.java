@@ -32,26 +32,36 @@ import org.jrubyparser.SourcePosition;
 public interface INameNode extends INameMatchable {
     /**
      * Get the plain name without sigils.
+     *
+     * @return the name
      */
     public String getName();
     
     /**
      * Get the name including any leading sigils.
+     *
+     * @return the lexical name
      */
     public String getLexicalName();
     
     /**
      * Set the name (name should not include sigils).
+     * 
+     * @param newName the new name
      */
     public void setName(String newName);
     
     /**
      * The position of just the name part of the node.
+     *
+     * @return the names positions
      */
     public SourcePosition getNamePosition();
     
     /**
      * The position of the name + any sigils that come with it.
+     *
+     * @return the lexical names positions
      */
     public SourcePosition getLexicalNamePosition();
 }

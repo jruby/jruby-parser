@@ -38,6 +38,7 @@ public class ClassVarAsgnNode extends AssignableNode implements IClassVariable {
     private String name;
 
     /**
+     * @param position the position
      * @param name id of the class variable to assign to
      * @param valueNode  Node used to compute the new value when the assignment is evaled
      */

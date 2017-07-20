@@ -29,6 +29,10 @@ public class IInstanceVariableVisitor extends NoopVisitor {
     /**
      * This helper method uses Node instead of IModuleScope so that you can do more localized
      * searching (e.g. all instance variables in a method).
+     *
+     * @param root to search from
+     * @param name is name to look for
+     * @return the list of all occurrences or an empty list
      */
     public static List<IInstanceVariable> findOccurrencesIn(Node root, String name) {
         IInstanceVariableVisitor visitor = new IInstanceVariableVisitor(root, name);

@@ -13,17 +13,23 @@ public interface ILocalVariable extends INameNode {
     /**
      * Which Variable Scope does this variable belong to?  Note that RootNode is a special ILocalScope
      * for the implicit scope created at top-level.
+     *
+     * @return the defined scope
      */
     public IScope getDefinedScope();
     
     /**
      * Retrieve the node which is responsible for declaring this one.  This can be a variable
      * or a parameter.
+     * 
+     * @return the declaration variable
      */
     public ILocalVariable getDeclaration();
     
     /**
-     * Find all occurences of this variable including itself.
+     * Find all occurrences of this variable including itself.
+     *
+     * @return the list of all occurrences.
      */
     public List<ILocalVariable> getOccurrences();
 }

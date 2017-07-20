@@ -39,6 +39,7 @@ import org.jrubyparser.SourcePosition;
 public class StarNode extends Node {
     /**
      * Constructor for StarNode.
+     * @param position the position
      */
     public StarNode(SourcePosition position) {
         super(position);

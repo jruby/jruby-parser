@@ -145,6 +145,7 @@ public class AttrAssignNode extends Node implements INameNode, IArgumentNode {
      * Set the argsNode
      *
      * @param argsNode set the arguments for this node.
+     * @return itself
      */
     @Deprecated
     public Node setArgsNode(Node argsNode) {

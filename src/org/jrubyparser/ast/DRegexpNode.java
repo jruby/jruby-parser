@@ -80,6 +80,7 @@ public class DRegexpNode extends ListNode implements ILiteralNode {
 
     /**
      * Gets the options.
+     * @return the options
      */
     public RegexpOptions getOptions() {
         return options;

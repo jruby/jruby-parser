@@ -120,6 +120,7 @@ public class CallNode extends Node implements INameNode, IArgumentNode, BlockAcc
      * Set the argsNode.
      *
      * @param argsNode set the arguments for this node.
+     * @return the current argsNode
      */
     @Deprecated
     public Node setArgsNode(Node argsNode) {

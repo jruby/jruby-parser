@@ -40,6 +40,7 @@ public class InstAsgnNode extends AssignableNode implements IInstanceVariable {
     private String name;
 
     /**
+     * @param position the position
      * @param name the name of the instance variable
      * @param valueNode the value of the variable
      **/

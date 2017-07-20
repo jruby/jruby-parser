@@ -28,9 +28,8 @@ public class ReaderLexerSource extends LexerSource {
      * Create our food-source for the lexer
      * 
      * @param sourceName is the file we are reading
-     * @param reader is what represents the contents of file sourceName
+     * @param in is what represents the contents of file sourceName
      * @param line starting line number for source (used by eval)
-     * @param extraPositionInformation will gives us extra information that an IDE may want
      */
     public ReaderLexerSource(String sourceName, Reader in, int line) {
         super(sourceName, line);
@@ -42,6 +41,7 @@ public class ReaderLexerSource extends LexerSource {
      * Read next character from this source
      * 
      * @return next character to viewed by the source
+     * @throws IOException if crap happens
      */
     public int read() throws IOException {
         int c;
@@ -65,7 +65,7 @@ public class ReaderLexerSource extends LexerSource {
      * Pushes char back onto this source.  Note, this also
      * allows us to push whatever is passes back into the source.
      * 
-     * @param  to be put back onto the source
+     * @param c to be put back onto the source
      */
     public void unread(int c) {
         if (c == Lexer.EOF) return;
@@ -81,9 +81,10 @@ public class ReaderLexerSource extends LexerSource {
     
     /**
      * Is the next character equal to 'to'
+     *
      * @param to character to compare against
      * @return true if the same
-     * @throws IOException
+     * @throws IOException if crap happens
      */
     public boolean peek(int to) throws IOException {
         // keep value of twoAgo around so we can restore after we unread
@@ -156,6 +157,7 @@ public class ReaderLexerSource extends LexerSource {
      * 
      * @param name the name of the source (e.g a filename: foo.rb)
      * @param content the data of the source
+     * @param configuration the config for this parse/lex
      * @return the new source
      */
     public static LexerSource getSource(String name, Reader content,

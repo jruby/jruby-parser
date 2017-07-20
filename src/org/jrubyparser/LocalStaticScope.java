@@ -58,7 +58,7 @@ public class LocalStaticScope extends StaticScope {
     }
 
     /**
-     * @see org.jruby.parser.StaticScope#getAllNamesInScope()
+     * @see org.jrubyparser.StaticScope#getAllNamesInScope()
      */
     public String[] getAllNamesInScope() {
         return getVariables();

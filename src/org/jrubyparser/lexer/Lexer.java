@@ -552,6 +552,7 @@ public class Lexer {
      * How the parser advances to the next token.
      * 
      * @return true if not at end of file (EOF).
+     * @throws IOException if crap happens
      */
     public boolean advance() throws IOException {
         return (token = yylex()) != EOF;
@@ -620,7 +621,7 @@ public class Lexer {
      * yylex().  Ruby does it this way as well (i.e. a little parsing
      * logic in the lexer).
      * 
-     * @param parserSupport
+     * @param parserSupport set support so lexer can use it
      */
     public void setParserSupport(ParserSupport parserSupport) {
         this.parserSupport = parserSupport;
@@ -1054,6 +1055,7 @@ public class Lexer {
      * 
      * @param c last character read from lexer source
      * @return newline or eof value 
+     * @throws IOException if crap happens
      */
     protected int readComment(int c) throws IOException {
         return collectComments() ? readCommentLong(c) : src.skipUntil('\n');

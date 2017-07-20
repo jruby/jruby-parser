@@ -161,7 +161,7 @@ public abstract class MethodDefNode extends Node implements INameNode, ILocalSco
          * Given a name (presumably retrieve via getNormativeSignatureNameList()) is this parmeter used
          * in this method definition?
          *
-         * @param name
+         * @param name to be checked
          * @return if used or not.
          */
         public boolean isParameterUsed(String name) {
@@ -177,6 +177,8 @@ public abstract class MethodDefNode extends Node implements INameNode, ILocalSco
          * Note: This will give a string a representation which will always be consistent whether
          * you specify a method definition using parens or not.  It is meant for use of IDES for
          * indexing of hinting on completion.
+         *
+         * @return the signature as a String
          */
         public String getNormativeSignature() {
             StringBuilder signature = new StringBuilder();
