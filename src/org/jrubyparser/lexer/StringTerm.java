@@ -92,8 +92,14 @@ public class StringTerm extends StrTerm {
                 return Tokens.tREGEXP_END;
             }
             
-            lexer.setValue(new Token("\"", lexer.getPosition()));
-            return Tokens.tSTRING_END;
+            c = src.read();
+             if (c == ':' && lexer.getLexState() == Lexer.LexState.EXPR_BEG) {
+               lexer.setValue(new Token("\":", lexer.getPosition()));
+               return Tokens.tLABEL_END;
+             }
+             src.unread(c);
+             lexer.setValue(new Token("\"", lexer.getPosition()));
+             return Tokens.tSTRING_END;
         }
         
         if (spaceSeen) {

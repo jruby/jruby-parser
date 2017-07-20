@@ -10,9 +10,10 @@ PARSER = Parser.new
 VERSIONS_MAP = {
   1.8 => CompatVersion::RUBY1_8,  
   1.9 => CompatVersion::RUBY1_9,  
-  2.0 => CompatVersion::RUBY2_0 
+  2.0 => CompatVersion::RUBY2_0,
+  2.3 => CompatVersion::RUBY2_3,
 }
-VERSIONS = [1.8, 1.9, 2.0]
+VERSIONS = [1.8, 1.9, 2.0, 2.3]
 
 SYNTAX_MAP = {
   nil => ParserConfiguration::SyntaxGathering::NONE,

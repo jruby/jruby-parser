@@ -1149,8 +1149,11 @@ public class Lexer {
             case Tokens.tCVAR: System.err.print("tCVAR,"); break;
             case Tokens.tINTEGER: System.err.print("tINTEGER,"); break;
             case Tokens.tFLOAT: System.err.print("tFLOAT,"); break;
+            case Tokens.tRATIONAL: System.err.print("tRATIONAL,"); break;
+            case Tokens.tIMAGINARY: System.err.print("tIMAGINARY,"); break;
             case Tokens.tSTRING_CONTENT: System.err.print("tSTRING_CONTENT[" + ((StrNode) value()).getValue().toString() + "],"); break;
             case Tokens.tSTRING_BEG: System.err.print("tSTRING_BEG,"); break;
+            case Tokens.tLABEL_END: System.err.print("tLABEL_END,"); break;
             case Tokens.tSTRING_END: System.err.print("tSTRING_END,"); break;
             case Tokens.tSTRING_DBEG: System.err.print("STRING_DBEG,"); break;
             case Tokens.tSTRING_DVAR: System.err.print("tSTRING_DVAR,"); break;
@@ -1176,6 +1179,7 @@ public class Lexer {
             case Tokens.tMATCH: System.err.print("tMATCH,"); break;
             case Tokens.tNMATCH: System.err.print("tNMATCH,"); break;
             case Tokens.tDOT: System.err.print("tDOT,"); break;
+            case Tokens.tANDDOT: System.err.print("tANDDOT,"); break;
             case Tokens.tDOT2: System.err.print("tDOT2,"); break;
             case Tokens.tDOT3: System.err.print("tDOT3,"); break;
             case Tokens.tAREF: System.err.print("tAREF,"); break;
@@ -1259,7 +1263,7 @@ public class Lexer {
         if (lex_strterm != null) {
             try {
                 int tok = lex_strterm.parseString(this, src);
-                if (tok == Tokens.tSTRING_END || tok == Tokens.tREGEXP_END) {
+                if (tok == Tokens.tSTRING_END || tok == Tokens.tREGEXP_END || tok == Tokens.tLABEL_END) {
                     lex_strterm = null;
                     setState(LexState.EXPR_END);
 
@@ -1606,6 +1610,10 @@ public class Lexer {
             yaccValue = new Token("&", getPosition());
             setState(LexState.EXPR_BEG);
             return Tokens.tOP_ASGN;
+        case '.':
+            setState(LexState.EXPR_BEG);
+            yaccValue = new Token("&.", getPosition());
+            return Tokens.tANDDOT;    
         }
         src.unread(c);
         
@@ -2387,9 +2395,11 @@ public class Lexer {
         if (isOneEight) {
             c &= 0xff;
             yaccValue = new FixnumNode(getPosition(), c);
+            
         } else {
             String oneCharBL = "" + (char) c;
             yaccValue = new StrNode(getPosition(), oneCharBL);
+            return Tokens.tSTRING;
         }
         // TODO: This should be something else like a tCHAR
         return Tokens.tINTEGER;

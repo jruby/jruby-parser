@@ -127,6 +127,7 @@ import org.jrubyparser.ast.DSymbolNode;
 import org.jrubyparser.ast.EncodingNode;
 import org.jrubyparser.ast.KeywordArgNode;
 import org.jrubyparser.ast.KeywordRestArgNode;
+import org.jrubyparser.ast.OpAsgnNode;
 import org.jrubyparser.ast.OpElementAsgnAndNode;
 import org.jrubyparser.ast.OpElementAsgnOrNode;
 import org.jrubyparser.ast.UndefNode;
@@ -827,6 +828,14 @@ public class ParserSupport {
         }
         
         return new OpElementAsgnNode(position, receiverNode, operatorName, argsNode, valueNode);
+    }
+    
+    public Node newOpAsgn(SourcePosition position, Node receiverNode, String callType, Node valueNode, String variableName, String operatorName) {
+        return new OpAsgnNode(position, receiverNode, valueNode, variableName, operatorName, isLazy(callType));
+    }
+    
+    public boolean isLazy(String callType) {
+        return "&.".equals(callType);
     }
     
     public Node new_attrassign(SourcePosition position, Node receiver, String name, Node args) {

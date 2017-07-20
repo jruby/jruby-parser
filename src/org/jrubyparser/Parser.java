@@ -31,8 +31,10 @@
  ***** END LICENSE BLOCK *****/
 package org.jrubyparser;
 
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.io.StringReader;
 import org.jrubyparser.IRubyWarnings.ID;
 import org.jrubyparser.ast.Node;
 import org.jrubyparser.lexer.LexerSource;
@@ -42,6 +44,7 @@ import org.jrubyparser.parser.ParserResult;
 import org.jrubyparser.parser.Ruby18Parser;
 import org.jrubyparser.parser.Ruby19Parser;
 import org.jrubyparser.parser.Ruby20Parser;
+import org.jrubyparser.parser.Ruby23Parser;
 import org.jrubyparser.parser.RubyParser;
 
 /**
@@ -72,8 +75,10 @@ public class Parser {
             parser = new Ruby18Parser();            
         } else if (configuration.getVersion() == CompatVersion.RUBY1_9) {
             parser = new Ruby19Parser();
-        } else {
+        } else if (configuration.getVersion() == CompatVersion.RUBY2_0) {
             parser = new Ruby20Parser();
+        } else {
+            parser = new Ruby23Parser();
         }
 
         // TODO: Warning interface from configuration?
