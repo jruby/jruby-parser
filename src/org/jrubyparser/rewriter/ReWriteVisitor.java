@@ -138,7 +138,6 @@ import org.jrubyparser.ast.ReturnNode;
 import org.jrubyparser.ast.RootNode;
 import org.jrubyparser.ast.SClassNode;
 import org.jrubyparser.ast.SValueNode;
-import org.jrubyparser.ast.SafeOpAsgnNode;
 import org.jrubyparser.ast.SelfNode;
 import org.jrubyparser.ast.SplatNode;
 import org.jrubyparser.ast.StrNode;
@@ -340,6 +339,7 @@ public class ReWriteVisitor implements NodeVisitor {
         }
     }
 
+    @Override
     public Object visitAliasNode(AliasNode iVisited) {
         print("alias ");
         visitNode(iVisited.getNewName());
@@ -358,6 +358,7 @@ public class ReWriteVisitor implements NodeVisitor {
                 && config.getSource().substring(pos.getStartOffset(), pos.getEndOffset()).indexOf(searched) > -1;
     }
 
+    @Override
     public Object visitAndNode(AndNode iVisited) {
         enterCall();
         visitNode(iVisited.getFirst());
@@ -386,6 +387,7 @@ public class ReWriteVisitor implements NodeVisitor {
         return arguments;
     }
 
+    @Override
     public Object visitArgsNode(ArgsNode iVisited) {
 
         for (Iterator<Node> it = collectAllArguments(iVisited).iterator(); it.hasNext(); ) {
@@ -407,6 +409,7 @@ public class ReWriteVisitor implements NodeVisitor {
         return null;
     }
 
+    @Override
     public Object visitArgsCatNode(ArgsCatNode iVisited) {
         print("[");
         visitAndPrintWithSeparator(iVisited.getFirst().childNodes().iterator());
@@ -417,10 +420,12 @@ public class ReWriteVisitor implements NodeVisitor {
         return null;
     }
 
+    @Override
     public Object visitArgumentNode(ArgumentNode iVisited) {
         return null;
     }
 
+    @Override
     public Object visitArrayNode(ArrayNode iVisited) {
         print('[');
         enterCall();
@@ -430,12 +435,14 @@ public class ReWriteVisitor implements NodeVisitor {
         return null;
     }
 
+    @Override
     public Object visitBackRefNode(BackRefNode iVisited) {
         print('$');
         print(iVisited.getType());
         return null;
     }
 
+    @Override
     public Object visitBeginNode(BeginNode iVisited) {
         print("begin");
         visitNodeInIndentation(iVisited.getBody());
@@ -444,22 +451,26 @@ public class ReWriteVisitor implements NodeVisitor {
         return null;
     }
 
+    @Override
     public Object visitBignumNode(BignumNode iVisited) {
         print(iVisited.getValue());
         return null;
     }
 
+    @Override
     public Object visitBlockArgNode(BlockArgNode iVisited) {
         print(iVisited.getLexicalName());
         return null;
     }
 
+    @Override
     public Object visitBlockArg18Node(BlockArg18Node iVisited) {
         print('&');
         visitNode(iVisited.getBlockArg());
         return null;
     }
 
+    @Override
     public Object visitBlockNode(BlockNode iVisited) {
         visitIter(iVisited.childNodes().iterator());
         return null;
@@ -469,36 +480,43 @@ public class ReWriteVisitor implements NodeVisitor {
         return n instanceof LocalVarNode ? ((LocalVarNode) n).getIndex() : -1;
     }
 
+    @Override
     public Object visitBlockPassNode(BlockPassNode iVisited) {
         visitNode(iVisited.getBody());
         return null;
     }
 
+    @Override
     public Object visitBreakNode(BreakNode iVisited) {
         print("break");
         return null;
     }
 
+    @Override
     public Object visitConstDeclNode(ConstDeclNode iVisited) {
         printAsgnNode(iVisited);
         return null;
     }
 
+    @Override
     public Object visitClassVarAsgnNode(ClassVarAsgnNode iVisited) {
         printAsgnNode(iVisited);
         return null;
     }
 
+    @Override
     public Object visitClassVarDeclNode(ClassVarDeclNode iVisited) {
         printAsgnNode(iVisited);
         return null;
     }
 
+    @Override
     public Object visitClassVarNode(ClassVarNode iVisited) {
         print(iVisited.getLexicalName());
         return null;
     }
 
+    @Override
     public Object visitComplexNode(ComplexNode iVisited) {
         iVisited.getNumber().accept(this);
         print("i");
@@ -575,6 +593,7 @@ public class ReWriteVisitor implements NodeVisitor {
         return false;
     }
 
+    @Override
     public Object visitCallNode(CallNode iVisited) {
         if (isNegativeNumericNode(iVisited)) return printNegativNumericNode(iVisited);
 
@@ -603,6 +622,7 @@ public class ReWriteVisitor implements NodeVisitor {
         return null;
     }
 
+    @Override
     public Object visitCaseNode(CaseNode iVisited) {
         print("case ");
         visitNode(iVisited.getCase());
@@ -612,6 +632,7 @@ public class ReWriteVisitor implements NodeVisitor {
         return null;
     }
 
+    @Override
     public Object visitClassNode(ClassNode iVisited) {
 
         print("class ");
@@ -629,6 +650,7 @@ public class ReWriteVisitor implements NodeVisitor {
         return null;
     }
 
+    @Override
     public Object visitColon2Node(Colon2Node iVisited) {
         if (iVisited.getLeftNode() != null) {
             visitNode(iVisited.getLeftNode());
@@ -638,26 +660,31 @@ public class ReWriteVisitor implements NodeVisitor {
         return null;
     }
 
+    @Override
     public Object visitColon3Node(Colon3Node iVisited) {
         print(iVisited.getLexicalName());
         return null;
     }
 
+    @Override
     public Object visitCommentNode(CommentNode iVisited) {
         print(iVisited.getContent());
         return null;
     }
 
+    @Override
     public Object visitConstNode(ConstNode iVisited) {
         print(iVisited.getName());
         return null;
     }
 
+    @Override
     public Object visitDAsgnNode(DAsgnNode iVisited) {
         printAsgnNode(iVisited);
         return null;
     }
 
+    @Override
     public Object visitDRegxNode(DRegexpNode iVisited) {
         config.getPrintQuotesInString().set(false);
         print(getFirstRegexpEnclosure(iVisited));
@@ -688,6 +715,7 @@ public class ReWriteVisitor implements NodeVisitor {
         return null;
     }
 
+    @Override
     public Object visitDStrNode(DStrNode iVisited) {
 
         if (firstChild(iVisited) instanceof StrNode && stringIsHereDocument((StrNode) firstChild(iVisited))) {
@@ -709,6 +737,7 @@ public class ReWriteVisitor implements NodeVisitor {
         return null;
     }
 
+    @Override
     public Object visitDSymbolNode(DSymbolNode iVisited) {
         print(':');
         if (config.getPrintQuotesInString().isTrue()) print(getSeparatorForSym(iVisited));
@@ -726,11 +755,13 @@ public class ReWriteVisitor implements NodeVisitor {
         return null;
     }
 
+    @Override
     public Object visitDVarNode(DVarNode iVisited) {
         print(iVisited.getLexicalName());
         return null;
     }
 
+    @Override
     public Object visitDXStrNode(DXStrNode iVisited) {
         config.getPrintQuotesInString().set(false);
         print("%x{");
@@ -740,6 +771,7 @@ public class ReWriteVisitor implements NodeVisitor {
         return null;
     }
 
+    @Override
     public Object visitDefinedNode(DefinedNode iVisited) {
         print("defined? ");
         enterCall();
@@ -774,6 +806,7 @@ public class ReWriteVisitor implements NodeVisitor {
         print("end");
     }
 
+    @Override
     public Object visitDefnNode(DefnNode iVisited) {
         config.getIndentor().indent();
         print("def ");
@@ -781,6 +814,7 @@ public class ReWriteVisitor implements NodeVisitor {
         return null;
     }
 
+    @Override
     public Object visitDefsNode(DefsNode iVisited) {
         config.getIndentor().indent();
         print("def ");
@@ -790,6 +824,7 @@ public class ReWriteVisitor implements NodeVisitor {
         return null;
     }
 
+    @Override
     public Object visitDotNode(DotNode iVisited) {
         enterCall();
         visitNode(iVisited.getBegin());
@@ -800,6 +835,7 @@ public class ReWriteVisitor implements NodeVisitor {
         return null;
     }
 
+    @Override
     public Object visitEnsureNode(EnsureNode iVisited) {
         visitNode(iVisited.getBody());
         config.getIndentor().outdent();
@@ -810,6 +846,7 @@ public class ReWriteVisitor implements NodeVisitor {
         return null;
     }
 
+    @Override
     public Object visitEvStrNode(EvStrNode iVisited) {
         print('#');
         if (!(iVisited.getBody() instanceof NthRefNode)) print('{');
@@ -824,6 +861,7 @@ public class ReWriteVisitor implements NodeVisitor {
         return node instanceof NewlineNode ? ((NewlineNode) node).getNextNode() : node;
     }
 
+    @Override
     public Object visitFCallNode(FCallNode iVisited) {
         print(iVisited.getName());
 
@@ -838,16 +876,19 @@ public class ReWriteVisitor implements NodeVisitor {
         return null;
     }
 
+    @Override
     public Object visitFalseNode(FalseNode iVisited) {
         print("false");
         return null;
     }
 
+    @Override
     public Object visitFixnumNode(FixnumNode iVisited) {
         print(iVisited.getValue());
         return null;
     }
 
+    @Override
     public Object visitFlipNode(FlipNode iVisited) {
         enterCall();
         visitNode(iVisited.getBegin());
@@ -859,11 +900,13 @@ public class ReWriteVisitor implements NodeVisitor {
         return null;
     }
 
+    @Override
     public Object visitFloatNode(FloatNode iVisited) {
         print(iVisited.getValue());
         return null;
     }
 
+    @Override
     public Object visitForNode(ForNode iVisited) {
         print("for ");
         visitNode(iVisited.getVar());
@@ -875,11 +918,13 @@ public class ReWriteVisitor implements NodeVisitor {
         return null;
     }
 
+    @Override
     public Object visitGlobalAsgnNode(GlobalAsgnNode iVisited) {
         printAsgnNode(iVisited);
         return null;
     }
 
+    @Override
     public Object visitGlobalVarNode(GlobalVarNode iVisited) {
         print(iVisited.getLexicalName());
         return null;
@@ -899,6 +944,7 @@ public class ReWriteVisitor implements NodeVisitor {
         print(config.getFormatHelper().afterHashContent());
     }
 
+    @Override
     public Object visitHashNode(HashNode iVisited) {
         print('{');
         printHashNodeContent(iVisited);
@@ -913,11 +959,13 @@ public class ReWriteVisitor implements NodeVisitor {
         visitNewlineInParentheses(n.getValue());
     }
 
+    @Override
     public Object visitInstAsgnNode(InstAsgnNode iVisited) {
         printAsgnNode(iVisited);
         return null;
     }
 
+    @Override
     public Object visitInstVarNode(InstVarNode iVisited) {
         print(iVisited.getLexicalName());
         return null;
@@ -976,6 +1024,7 @@ public class ReWriteVisitor implements NodeVisitor {
                 && !sourceSubStringEquals(getStartOffset(iVisited), 2, "if"));
     }
 
+    @Override
     public Object visitIfNode(IfNode iVisited) {
 
         if (isShortIfStatement(iVisited)) return printShortIfStatement(iVisited);
@@ -1032,10 +1081,12 @@ public class ReWriteVisitor implements NodeVisitor {
         return true;
     }
 
+    @Override
     public Object visitImplicitNilNode(ImplicitNilNode visited) {
         return null;
     }
 
+    @Override
     public Object visitIterNode(IterNode iVisited) {
         if (isOnSingleLine(iVisited)) {
             print(config.getFormatHelper().beforeIterBrackets());
@@ -1056,6 +1107,7 @@ public class ReWriteVisitor implements NodeVisitor {
         return null;
     }
 
+    @Override
     public Object visitLambdaNode(LambdaNode visited) {
         print("->(");
         visitArgsNode(visited.getArgs());
@@ -1079,24 +1131,29 @@ public class ReWriteVisitor implements NodeVisitor {
         return null;
     }
 
+    @Override
     public Object visitListNode(ListNode iVisited) {
         return null;
     }
 
+    @Override
     public Object visitLocalAsgnNode(LocalAsgnNode iVisited) {
         config.getLocalVariables().addLocalVariable(iVisited.getIndex(), iVisited.getLexicalName());
         printAsgnNode(iVisited);
         return null;
     }
 
+    @Override
     public Object visitLocalVarNode(LocalVarNode iVisited) {
         print(iVisited.getLexicalName());
         return null;
     }
+    @Override
     public Object visitMethodNameNode(MethodNameNode iVisited) {
         return null;
     }
 
+    @Override
     public Object visitMultipleAsgnNode(MultipleAsgnNode iVisited) {
         if (iVisited.getPre() != null) {
             factory.createMultipleAssignmentReWriteVisitor().visitAndPrintWithSeparator(iVisited.getPre().childNodes().iterator());
@@ -1118,6 +1175,7 @@ public class ReWriteVisitor implements NodeVisitor {
         return null;
     }
 
+    @Override
     public Object visitMatch2Node(Match2Node iVisited) {
         visitNode(iVisited.getReceiver());
         print(config.getFormatHelper().matchOperator());
@@ -1127,6 +1185,7 @@ public class ReWriteVisitor implements NodeVisitor {
         return null;
     }
 
+    @Override
     public Object visitMatch3Node(Match3Node iVisited) {
         visitNode(iVisited.getValue());
         print(config.getFormatHelper().matchOperator());
@@ -1134,11 +1193,13 @@ public class ReWriteVisitor implements NodeVisitor {
         return null;
     }
 
+    @Override
     public Object visitMatchNode(MatchNode iVisited) {
         visitNode(iVisited.getRegexp());
         return null;
     }
 
+    @Override
     public Object visitModuleNode(ModuleNode iVisited) {
         print("module ");
         config.getIndentor().indent();
@@ -1150,6 +1211,7 @@ public class ReWriteVisitor implements NodeVisitor {
         return null;
     }
 
+    @Override
     public Object visitNewlineNode(NewlineNode iVisited) {
         if (config.isSkipNextNewline()) {
             config.setSkipNextNewline(false);
@@ -1160,16 +1222,19 @@ public class ReWriteVisitor implements NodeVisitor {
         return null;
     }
 
+    @Override
     public Object visitNextNode(NextNode iVisited) {
         print("next");
         return null;
     }
 
+    @Override
     public Object visitNilNode(NilNode iVisited) {
         print("nil");
         return null;
     }
 
+    @Override
     public Object visitNotNode(NotNode iVisited) {
         if (iVisited.getCondition() instanceof CallNode) enterCall();
 
@@ -1181,6 +1246,7 @@ public class ReWriteVisitor implements NodeVisitor {
         return null;
     }
 
+    @Override
     public Object visitNthRefNode(NthRefNode iVisited) {
         print('$');
         print(iVisited.getMatchNumber());
@@ -1194,6 +1260,7 @@ public class ReWriteVisitor implements NodeVisitor {
                 || n instanceof VCallNode || isNumericNode(n));
     }
 
+    @Override
     public Object visitOpElementAsgnNode(OpElementAsgnNode iVisited) {
 
         if (!isSimpleNode(iVisited.getReceiver())) {
@@ -1208,9 +1275,10 @@ public class ReWriteVisitor implements NodeVisitor {
         return null;
     }
 
+    @Override
     public Object visitOpAsgnNode(OpAsgnNode op) {
         visitNode(op.getReceiver());
-        print('.').print(op.getVariableName()).print(' ').print(op.getOperatorName()).print("=").print(config.getFormatHelper().afterAssignment());
+        print(op.isLazy() ? "&." : ".").print(op.getVariableName()).print(' ').print(op.getOperatorName()).print("=").print(config.getFormatHelper().afterAssignment());
         visitNode(op.getValue());
         return null;
     }
@@ -1224,20 +1292,24 @@ public class ReWriteVisitor implements NodeVisitor {
         leaveCall();
     }
 
+    @Override
     public Object visitOpAsgnAndNode(OpAsgnAndNode iVisited) {
         printOpAsgnNode(iVisited.getSecond(), "&&=");
         return null;
     }
 
+    @Override
     public Object visitOpAsgnOrNode(OpAsgnOrNode iVisited) {
         printOpAsgnNode(iVisited.getSecond(), "||=");
         return null;
     }
 
+    @Override
     public Object visitOptArgNode(OptArgNode iVisited) {
         return null;
     }
 
+    @Override
     public Object visitOrNode(OrNode iVisited) {
         enterCall();
         visitNode(iVisited.getFirst());
@@ -1252,18 +1324,21 @@ public class ReWriteVisitor implements NodeVisitor {
         return null;
     }
 
+    @Override
     public Object visitPostExeNode(PostExeNode iVisited) {
         // this node contains nothing but an empty list, so we don't have to
         // process anything
         return null;
     }
 
+    @Override
     public Object visitPreExeNode(PreExeNode iVisited) {
         // this node contains nothing but an empty list, so we don't have to
         // process anything
         return null;
     }
 
+    @Override
     public Object visitRationalNode(RationalNode iVisited) {
         print(iVisited.getNumerator());
         print("/");
@@ -1272,6 +1347,7 @@ public class ReWriteVisitor implements NodeVisitor {
         return null;
     }
 
+    @Override
     public Object visitRedoNode(RedoNode iVisited) {
         print("redo");
         return null;
@@ -1297,6 +1373,7 @@ public class ReWriteVisitor implements NodeVisitor {
         if (option.isMultiline()) print('m');
     }
 
+    @Override
     public Object visitRegexpNode(RegexpNode re) {
         print(getFirstRegexpEnclosure(re)).print(re.getValue().toString()).print(getSecondRegexpEnclosure(re));
         printRegexpOptions(re.getOptions());
@@ -1309,10 +1386,12 @@ public class ReWriteVisitor implements NodeVisitor {
         return (Node) n.childNodes().get(0);
     }
 
+    @Override
     public Object visitRequiredKeywordArgumentValueNode(RequiredKeywordArgumentValueNode iVisted) {
         return null;
     }
 
+    @Override
     public Object visitRescueBodyNode(RescueBodyNode iVisited) {
         if (iVisited.getBody() != null && config.getLastPosition().getStartLine() == getEndLine(iVisited.getBody())) {
             print(" rescue ");
@@ -1361,6 +1440,7 @@ public class ReWriteVisitor implements NodeVisitor {
         }
     }
 
+    @Override
     public Object visitRescueNode(RescueNode iVisited) {
         visitNode(iVisited.getBody());
         config.getIndentor().outdent();
@@ -1387,14 +1467,17 @@ public class ReWriteVisitor implements NodeVisitor {
         return null;
     }
 
+    @Override
     public Object visitKeywordArgNode(KeywordArgNode iVisited) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    @Override
     public Object visitKeywordRestArgNode(KeywordRestArgNode iVisited) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    @Override
     public Object visitRetryNode(RetryNode iVisited) {
         print("retry");
         return null;
@@ -1407,6 +1490,7 @@ public class ReWriteVisitor implements NodeVisitor {
         return firstChild((ArrayNode) n);
     }
 
+    @Override
     public Object visitReturnNode(ReturnNode iVisited) {
         print("return");
         enterCall();
@@ -1418,6 +1502,7 @@ public class ReWriteVisitor implements NodeVisitor {
         return null;
     }
 
+    @Override
     public Object visitSClassNode(SClassNode iVisited) {
         print("class << ");
         config.getIndentor().indent();
@@ -1429,11 +1514,13 @@ public class ReWriteVisitor implements NodeVisitor {
         return null;
     }
 
+    @Override
     public Object visitSelfNode(SelfNode iVisited) {
         print("self");
         return null;
     }
 
+    @Override
     public Object visitSplatNode(SplatNode iVisited) {
         print("*");
         visitNode(iVisited.getValue());
@@ -1466,6 +1553,7 @@ public class ReWriteVisitor implements NodeVisitor {
         return false;
     }
 
+    @Override
     public Object visitStrNode(StrNode iVisited) {
         // look for a here-document:
         if (stringIsHereDocument(iVisited)) {
@@ -1526,6 +1614,7 @@ public class ReWriteVisitor implements NodeVisitor {
                 config.getSource().charAt(getEndOffset(n)) == '(';
     }
 
+    @Override
     public Object visitSuperNode(SuperNode iVisited) {
         print("super");
         printCallArguments(iVisited.getArgs(), iVisited.getIter(), iVisited.hasParens());
@@ -1533,43 +1622,51 @@ public class ReWriteVisitor implements NodeVisitor {
         return null;
     }
 
+    @Override
     public Object visitSValueNode(SValueNode iVisited) {
         visitNode(iVisited.getValue());
         return null;
     }
 
+    @Override
     public Object visitSymbolNode(SymbolNode symbol) {
         print(symbol.getLexicalName());
         return null;
     }
 
+    @Override
     public Object visitSyntaxNode(SyntaxNode iVisited) {
         print(iVisited.getContent());
         return null;
     }
 
+    @Override
     public Object visitToAryNode(ToAryNode iVisited) {
         visitNode(iVisited.getValue());
         return null;
     }
 
+    @Override
     public Object visitTrueNode(TrueNode iVisited) {
         print("true");
         return null;
     }
 
+    @Override
     public Object visitUnaryCallNode(UnaryCallNode iVisited) {
         print(iVisited.getLexicalName());
         visitNode(iVisited.getReceiver());
         return null;
     }
 
+    @Override
     public Object visitUndefNode(UndefNode iVisited) {
         print("undef ");
         visitNode(iVisited.getName());
         return null;
     }
 
+    @Override
     public Object visitUntilNode(UntilNode iVisited) {
         print("until ");
         visitNode(iVisited.getCondition());
@@ -1579,11 +1676,13 @@ public class ReWriteVisitor implements NodeVisitor {
         return null;
     }
 
+    @Override
     public Object visitVAliasNode(VAliasNode iVisited) {
         print("alias ").print(iVisited.getNewName()).print(' ').print(iVisited.getOldName());
         return null;
     }
 
+    @Override
     public Object visitVCallNode(VCallNode iVisited) {
         print(iVisited.getName());
         return null;
@@ -1595,6 +1694,7 @@ public class ReWriteVisitor implements NodeVisitor {
         config.getIndentor().outdent();
     }
 
+    @Override
     public Object visitWhenNode(WhenNode iVisited) {
         printNewlineAndIndentation();
         print("when ");
@@ -1651,6 +1751,7 @@ public class ReWriteVisitor implements NodeVisitor {
         visitNode(iVisited.getCondition());
     }
 
+    @Override
     public Object visitWhileNode(WhileNode iVisited) {
         if (iVisited.evaluateAtStart()) {
             printWhileStatement(iVisited);
@@ -1660,13 +1761,15 @@ public class ReWriteVisitor implements NodeVisitor {
         return null;
     }
 
+    @Override
     public Object visitXStrNode(XStrNode iVisited) {
         print('`');
-        print(iVisited.getValue().toString());
+        print(iVisited.getValue());
         print('`');
         return null;
     }
 
+    @Override
     public Object visitYieldNode(YieldNode iVisited) {
         print("yield");
         printCallArguments(iVisited.getArgs(), null, iVisited.hasParens());
@@ -1674,11 +1777,13 @@ public class ReWriteVisitor implements NodeVisitor {
         return null;
     }
 
+    @Override
     public Object visitZArrayNode(ZArrayNode iVisited) {
         print("[]");
         return null;
     }
 
+    @Override
     public Object visitZSuperNode(ZSuperNode iVisited) {
         print("super");
         return null;
@@ -1716,11 +1821,13 @@ public class ReWriteVisitor implements NodeVisitor {
         return writer.toString();
     }
 
+    @Override
     public Object visitArgsPushNode(ArgsPushNode node) {
         assert false : "Unhandled node";
         return null;
     }
 
+    @Override
     public Object visitAttrAssignNode(AttrAssignNode iVisited) {
         if (iVisited.getName().equals("[]=")) return printIndexAssignment(iVisited);
 
@@ -1744,6 +1851,7 @@ public class ReWriteVisitor implements NodeVisitor {
         print(iVisited.getName().substring(0, iVisited.getName().length() - 1));
     }
 
+    @Override
     public Object visitRootNode(RootNode root) {
         config.getLocalVariables().addLocalVariable(root.getStaticScope());
         for (Node child: root.childNodes()) {
@@ -1754,25 +1862,22 @@ public class ReWriteVisitor implements NodeVisitor {
         return null;
     }
 
+    @Override
     public Object visitRestArgNode(RestArgNode iVisited) {
         print(iVisited.getLexicalName());
         return null;
     }
 
+    @Override
     public Object visitEncodingNode(EncodingNode iVisited) {
         print("__ENCODING__");
         return null;
     }
 
+    @Override
     public Object visitLiteralNode(LiteralNode iVisited) {
         print(iVisited.getName());
         return null;
     }
     
-     public Object visitSafeOpAsgnNode(SafeOpAsgnNode op) {
-        visitNode(op.getReceiver());
-        print("&.").print(op.getVariableName()).print(' ').print(op.getOperatorName()).print("=").print(config.getFormatHelper().afterAssignment());
-        visitNode(op.getValue());
-        return null;
-    }
 }

@@ -3,7 +3,7 @@
 # Run from your JRuby home directory....More smarts needed here.
 
 ###### Change these to tastes ######
-JAY=/Users/daniel/Projects/CC/jay/src/jay
+JAY=jay
 RUBY=/usr/bin/ruby
 PARSER_BASE=DefaultRubyParser
 YYTABLE_PREFIX=

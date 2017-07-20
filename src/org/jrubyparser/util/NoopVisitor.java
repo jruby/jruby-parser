@@ -99,7 +99,6 @@ import org.jrubyparser.ast.ReturnNode;
 import org.jrubyparser.ast.RootNode;
 import org.jrubyparser.ast.SClassNode;
 import org.jrubyparser.ast.SValueNode;
-import org.jrubyparser.ast.SafeOpAsgnNode;
 import org.jrubyparser.ast.SelfNode;
 import org.jrubyparser.ast.SplatNode;
 import org.jrubyparser.ast.StrNode;
@@ -692,11 +691,6 @@ public class NoopVisitor implements NodeVisitor {
 
     @Override
     public Object visitZSuperNode(ZSuperNode iVisited) {
-        return visit(iVisited);
-    }
-    
-    @Override
-    public Object visitSafeOpAsgnNode(SafeOpAsgnNode iVisited) {
         return visit(iVisited);
     }
 }

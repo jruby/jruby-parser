@@ -545,7 +545,7 @@ public class Lexer {
         resetStacks();
         lex_strterm = null;
         commandStart = true;
-        if (parserSupport != null) isTwoZero = parserSupport.getConfiguration().getVersion().is2_3();
+        if (parserSupport != null) isTwoZero = parserSupport.getConfiguration().getVersion().is2_0();
     }
     
     /**
@@ -1179,7 +1179,7 @@ public class Lexer {
             case Tokens.tMATCH: System.err.print("tMATCH,"); break;
             case Tokens.tNMATCH: System.err.print("tNMATCH,"); break;
             case Tokens.tDOT: System.err.print("tDOT,"); break;
-            case Tokens.tLONELY: System.err.print("tLONELY,"); break;
+            case Tokens.tANDDOT: System.err.print("tANDDOT,"); break;
             case Tokens.tDOT2: System.err.print("tDOT2,"); break;
             case Tokens.tDOT3: System.err.print("tDOT3,"); break;
             case Tokens.tAREF: System.err.print("tAREF,"); break;
@@ -1613,7 +1613,7 @@ public class Lexer {
         case '.':
             setState(LexState.EXPR_BEG);
             yaccValue = new Token("&.", getPosition());
-            return Tokens.tLONELY;    
+            return Tokens.tANDDOT;    
         }
         src.unread(c);
         

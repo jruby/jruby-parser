@@ -39,7 +39,9 @@ public class OpAsgnNode extends Node {
     private Node valueNode;
     private String operatorName;
     private String variableName;
+    private boolean isLazy;
 
+    // Be backward compatible for Ruby 1.8 and 1.9
     public OpAsgnNode(SourcePosition position, Node receiverNode, Node valueNode, String variableName, String operatorName) {
         super(position);
 
@@ -50,6 +52,21 @@ public class OpAsgnNode extends Node {
         this.valueNode = adopt(valueNode);
         this.operatorName = operatorName;
         this.variableName = variableName;
+        this.isLazy = false;
+    }
+    
+    
+    public OpAsgnNode(SourcePosition position, Node receiverNode, Node valueNode, String variableName, String operatorName, boolean isLazy) {
+        super(position);
+
+        assert receiverNode != null : "receiverNode is not null";
+        assert valueNode != null : "valueNode is not null";
+
+        this.receiverNode = adopt(receiverNode);
+        this.valueNode = adopt(valueNode);
+        this.operatorName = operatorName;
+        this.variableName = variableName;
+        this.isLazy = isLazy;
     }
 
 
@@ -130,5 +147,9 @@ public class OpAsgnNode extends Node {
 
     public void setValue(Node value) {
         this.valueNode = adopt(value);
+    }
+    
+    public boolean isLazy() {
+        return isLazy;
     }
 }

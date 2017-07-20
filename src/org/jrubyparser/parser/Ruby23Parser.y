@@ -75,7 +75,6 @@ import org.jrubyparser.ast.Node;
 import org.jrubyparser.ast.NumericNode;
 import org.jrubyparser.ast.OpAsgnAndNode;
 import org.jrubyparser.ast.OpAsgnNode;
-import org.jrubyparser.ast.SafeOpAsgnNode;
 import org.jrubyparser.ast.OpAsgnOrNode;
 import org.jrubyparser.ast.OptArgNode;
 import org.jrubyparser.ast.PostExeNode;
@@ -249,7 +248,7 @@ public class Ruby23Parser implements RubyParser {
 %type <Node> bvar
 %type <Token> user_variable, keyword_variable
 %type <Token> call_op
-%token <Token> tLONELY       /* &. */
+%token <Token> tANDDOT       /* &. */
    // ENEBO: end all new types
 
 
@@ -458,20 +457,10 @@ stmt            : kALIAS fitem {
                     $$ = support.new_opElementAsgnNode(support.union($1, $6), $1, (String) $5.getValue(), $3, $6);
                 }
                 | primary_value call_op tIDENTIFIER tOP_ASGN command_call {
-                    String callOp = (String) $2.getValue();
-                    if (callOp.equals("&.")) {
-                      $$ = new SafeOpAsgnNode(support.getPosition($1), $1, $5, (String) $3.getValue(), (String) $4.getValue());
-                    } else {
-                      $$ = new OpAsgnNode(support.getPosition($1), $1, $5, (String) $3.getValue(), (String) $4.getValue());
-                    }
+                    $$ = support.newOpAsgn(support.getPosition($1), $1, (String) $2.getValue(), $5, (String) $3.getValue(), (String) $4.getValue());
                 }
                 | primary_value call_op tCONSTANT tOP_ASGN command_call {
-                    String callOp = (String) $2.getValue();
-                    if (callOp.equals("&.")) {
-                      $$ = new SafeOpAsgnNode(support.getPosition($1), $1, $5, (String) $3.getValue(), (String) $4.getValue());
-                    } else {
-                      $$ = new OpAsgnNode(support.getPosition($1), $1, $5, (String) $3.getValue(), (String) $4.getValue());
-                    }
+                    $$ = support.newOpAsgn(support.getPosition($1), $1, (String) $2.getValue(), $5, (String) $3.getValue(), (String) $4.getValue());
                 }
                 | primary_value tCOLON2 tCONSTANT tOP_ASGN command_call {
                     support.yyerror("can't make alias for the number variables");
@@ -479,7 +468,7 @@ stmt            : kALIAS fitem {
                 }
 
                 | primary_value tCOLON2 tIDENTIFIER tOP_ASGN command_call {
-                    $$ = new OpAsgnNode(support.getPosition($1), $1, $5, (String) $3.getValue(), (String) $4.getValue());
+                    $$ = support.newOpAsgn(support.getPosition($1), $1, (String) $2.getValue(), $5, (String) $3.getValue(), (String) $4.getValue());
                 }
                 | backref tOP_ASGN command_call {
                     support.backrefAssignError($1);
@@ -852,23 +841,13 @@ arg             : lhs '=' arg {
                     $$ = support.new_opElementAsgnNode(support.union($1, $6), $1, (String) $5.getValue(), $3, $6);
                 }
                 | primary_value call_op tIDENTIFIER tOP_ASGN arg {
-                    String callOp = (String) $2.getValue();
-                    if (callOp.equals("&.")) {
-                      $$ = new SafeOpAsgnNode(support.getPosition($1), $1, $5, (String) $3.getValue(), (String) $4.getValue());
-                    } else {
-                      $$ = new OpAsgnNode(support.getPosition($1), $1, $5, (String) $3.getValue(), (String) $4.getValue());
-                    }
+                    $$ = support.newOpAsgn(support.getPosition($1), $1, (String) $2.getValue(), $5, (String) $3.getValue(), (String) $4.getValue());
                 }
                 | primary_value call_op tCONSTANT tOP_ASGN arg {
-                    String callOp = (String) $2.getValue();
-                    if (callOp.equals("&.")) {
-                      $$ = new SafeOpAsgnNode(support.getPosition($1), $1, $5, (String) $3.getValue(), (String) $4.getValue());
-                    } else {
-                      $$ = new OpAsgnNode(support.getPosition($1), $1, $5, (String) $3.getValue(), (String) $4.getValue());
-                    }
+                    $$ = support.newOpAsgn(support.getPosition($1), $1, (String) $2.getValue(), $5, (String) $3.getValue(), (String) $4.getValue());
                 }
                 | primary_value tCOLON2 tIDENTIFIER tOP_ASGN arg {
-                    $$ = new OpAsgnNode(support.getPosition($1), $1, $5, (String) $3.getValue(), (String) $4.getValue());
+                    $$ = support.newOpAsgn(support.getPosition($1), $1, (String) $2.getValue(), $5, (String) $3.getValue(), (String) $4.getValue());
                 }
                 | primary_value tCOLON2 tCONSTANT tOP_ASGN arg {
                     support.yyerror("constant re-assignment");
@@ -2263,7 +2242,7 @@ operation2      : tIDENTIFIER | tCONSTANT | tFID | op
 operation3      : tIDENTIFIER | tFID | op
 dot_or_colon    : tDOT | tCOLON2
 call_op         : tDOT 
-                | tLONELY 
+                | tANDDOT 
 opt_terms       : /* none */ | terms
 opt_nl          : /* none */ | '\n'
 rparen          : opt_nl tRPAREN {

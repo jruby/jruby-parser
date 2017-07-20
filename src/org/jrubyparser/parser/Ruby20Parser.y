@@ -451,10 +451,10 @@ stmt            : kALIAS fitem {
                     $$ = support.new_opElementAsgnNode(support.union($1, $6), $1, (String) $5.getValue(), $3, $6);
                 }
                 | primary_value tDOT tIDENTIFIER tOP_ASGN command_call {
-                    $$ = new OpAsgnNode(support.getPosition($1), $1, $5, (String) $3.getValue(), (String) $4.getValue());
+                    $$ = support.newOpAsgn(support.getPosition($1), $1, (String) $2.getValue(), $5, (String) $3.getValue(), (String) $4.getValue());
                 }
                 | primary_value tDOT tCONSTANT tOP_ASGN command_call {
-                    $$ = new OpAsgnNode(support.getPosition($1), $1, $5, (String) $3.getValue(), (String) $4.getValue());
+                    $$ = support.newOpAsgn(support.getPosition($1), $1, (String) $2.getValue(), $5, (String) $3.getValue(), (String) $4.getValue());
                 }
                 | primary_value tCOLON2 tCONSTANT tOP_ASGN command_call {
                     support.yyerror("can't make alias for the number variables");
@@ -462,7 +462,7 @@ stmt            : kALIAS fitem {
                 }
 
                 | primary_value tCOLON2 tIDENTIFIER tOP_ASGN command_call {
-                    $$ = new OpAsgnNode(support.getPosition($1), $1, $5, (String) $3.getValue(), (String) $4.getValue());
+                    $$ = support.newOpAsgn(support.getPosition($1), $1, (String) $2.getValue(), $5, (String) $3.getValue(), (String) $4.getValue());
                 }
                 | backref tOP_ASGN command_call {
                     support.backrefAssignError($1);
@@ -835,13 +835,13 @@ arg             : lhs '=' arg {
                     $$ = support.new_opElementAsgnNode(support.union($1, $6), $1, (String) $5.getValue(), $3, $6);
                 }
                 | primary_value tDOT tIDENTIFIER tOP_ASGN arg {
-                    $$ = new OpAsgnNode(support.getPosition($1), $1, $5, (String) $3.getValue(), (String) $4.getValue());
+                    $$ = support.newOpAsgn(support.getPosition($1), $1, (String) $2.getValue(), $5, (String) $3.getValue(), (String) $4.getValue());
                 }
                 | primary_value tDOT tCONSTANT tOP_ASGN arg {
-                    $$ = new OpAsgnNode(support.getPosition($1), $1, $5, (String) $3.getValue(), (String) $4.getValue());
+                    $$ = support.newOpAsgn(support.getPosition($1), $1, (String) $2.getValue(), $5, (String) $3.getValue(), (String) $4.getValue());
                 }
                 | primary_value tCOLON2 tIDENTIFIER tOP_ASGN arg {
-                    $$ = new OpAsgnNode(support.getPosition($1), $1, $5, (String) $3.getValue(), (String) $4.getValue());
+                    $$ = support.newOpAsgn(support.getPosition($1), $1, (String) $2.getValue(), $5, (String) $3.getValue(), (String) $4.getValue());
                 }
                 | primary_value tCOLON2 tCONSTANT tOP_ASGN arg {
                     support.yyerror("constant re-assignment");

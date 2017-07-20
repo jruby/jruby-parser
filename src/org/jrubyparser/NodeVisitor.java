@@ -120,7 +120,6 @@ import org.jrubyparser.ast.ReturnNode;
 import org.jrubyparser.ast.RootNode;
 import org.jrubyparser.ast.SClassNode;
 import org.jrubyparser.ast.SValueNode;
-import org.jrubyparser.ast.SafeOpAsgnNode;
 import org.jrubyparser.ast.SelfNode;
 import org.jrubyparser.ast.SplatNode;
 import org.jrubyparser.ast.StrNode;
@@ -323,8 +322,6 @@ public interface NodeVisitor<T> {
   public T visitReturnNode(ReturnNode iVisited);
 
   public T visitRootNode(RootNode iVisited);
-  
-  public T visitSafeOpAsgnNode(SafeOpAsgnNode iVisited);
 
   public T visitSClassNode(SClassNode iVisited);
 

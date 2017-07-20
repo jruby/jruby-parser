@@ -9,7 +9,7 @@ public enum CompatVersion {
     }
 
     public boolean is2_0() {
-        return this == RUBY2_0;
+        return this == RUBY2_0 || this == RUBY2_3;
     }
     
     public boolean is2_3() {
