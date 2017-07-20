@@ -129,6 +129,7 @@ import org.jrubyparser.ast.PreExeNode;
 import org.jrubyparser.ast.RationalNode;
 import org.jrubyparser.ast.RedoNode;
 import org.jrubyparser.ast.RegexpNode;
+import org.jrubyparser.ast.RequiredKeywordArgumentValueNode;
 import org.jrubyparser.ast.RescueBodyNode;
 import org.jrubyparser.ast.RescueNode;
 import org.jrubyparser.ast.RestArgNode;
@@ -1305,6 +1306,10 @@ public class ReWriteVisitor implements NodeVisitor {
         if (n == null || n.childNodes().size() <= 0) return null;
 
         return (Node) n.childNodes().get(0);
+    }
+
+    public Object visitRequiredKeywordArgumentValueNode(RequiredKeywordArgumentValueNode argumentValueNode) {
+        return null;
     }
 
     public Object visitRescueBodyNode(RescueBodyNode iVisited) {

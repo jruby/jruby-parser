@@ -90,6 +90,7 @@ import org.jrubyparser.ast.PreExeNode;
 import org.jrubyparser.ast.RationalNode;
 import org.jrubyparser.ast.RedoNode;
 import org.jrubyparser.ast.RegexpNode;
+import org.jrubyparser.ast.RequiredKeywordArgumentValueNode;
 import org.jrubyparser.ast.RescueBodyNode;
 import org.jrubyparser.ast.RescueNode;
 import org.jrubyparser.ast.RestArgNode;
@@ -466,6 +467,10 @@ public class NoopVisitor implements NodeVisitor {
     }
 
     public Object visitRegexpNode(RegexpNode iVisited) {
+        return visit(iVisited);
+    }
+
+    public Object visitRequiredKeywordArgumentValueNode(RequiredKeywordArgumentValueNode iVisited) {
         return visit(iVisited);
     }
 
