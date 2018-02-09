@@ -36,7 +36,7 @@ public class ParseSomething {
 }
 
 ```
-In the above code, `CompatVersion` is an enum which can be `RUBY1_8`,`RUBY1_9`, or `RUBY2_0`. ParserConfiguration takes
+In the above code, `CompatVersion` is an enum which can be `RUBY1_8`,`RUBY1_9`, `RUBY2_0`, or `RUBY2_3`. ParserConfiguration takes
 several options, including linenumber, version, and optionally a static scope and can be configured with additional information about syntax gathering if necessary. 
 
 ## Ruby
