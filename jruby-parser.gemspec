@@ -15,10 +15,7 @@ Gem::Specification.new do |s|
   s.summary     = %q{A Gem for syntactically correct parse trees of Ruby source}
   s.description = %q{A Gem for syntactically correct parse trees of Ruby source}
 
-  s.rubyforge_project = "jruby-parser"
-
   s.files         = files
   s.test_files    = `git ls-files -- spec/*`.split("\n")
   s.require_paths = ["lib"]
-  s.has_rdoc      = true
 end
