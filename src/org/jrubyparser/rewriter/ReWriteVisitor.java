@@ -1529,7 +1529,8 @@ public class ReWriteVisitor implements NodeVisitor {
 
     private boolean stringIsHereDocument(StrNode n) {
         return sourceRangeEquals(getStartOffset(n) + 1, getStartOffset(n) + 3, "<<")
-                || sourceRangeEquals(getStartOffset(n), getStartOffset(n) + 3, "<<-");
+                || sourceRangeEquals(getStartOffset(n), getStartOffset(n) + 3, "<<-")
+                || sourceRangeEquals(getStartOffset(n), getStartOffset(n) + 3, "<<~");
     }
 
     protected char getSeparatorForSym(Node n) {
