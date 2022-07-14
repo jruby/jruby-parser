@@ -860,9 +860,11 @@ public class Lexer {
     private int hereDocumentIdentifier() throws IOException {
         int c = src.read(); 
         int term;
+        char char_for_unread = '\u0000';
 
         int func = 0;
-        if (c == '-') {
+        if (c == '-' || c == '~') {
+            char_for_unread = (char)c;
             c = src.read();
             func = STR_FUNC_INDENT;
         }
@@ -889,8 +891,8 @@ public class Lexer {
         } else {
             if (!isIdentifierChar(c)) {
                 src.unread(c);
-                if ((func & STR_FUNC_INDENT) != 0) {
-                    src.unread('-');
+                if ((func & STR_FUNC_INDENT) != 0 && char_for_unread != '\u0000') {
+                    src.unread(char_for_unread);
                 }
                 return 0;
             }
