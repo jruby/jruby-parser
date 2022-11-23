@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Run from your JRuby home directory....More smarts needed here.
 
