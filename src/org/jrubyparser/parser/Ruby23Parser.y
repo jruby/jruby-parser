@@ -266,7 +266,6 @@ public class Ruby23Parser implements RubyParser {
  *    precedence table
  */
 
-%token <Node> tSTRING
 %type <Token> call_op
 %token <Token> tANDDOT       /* &. */
 %nonassoc tLBRACE_ARG
@@ -1664,9 +1663,6 @@ strings         : string {
 // [!null]
 string          : tCHAR {
                     $$ = new StrNode($<Token>0.getPosition(), (String) $1.getValue());
-                }
-                | tSTRING {
-                    $$ = $1;
                 }
                 | string1 {
                     $$ = $1;

@@ -2403,7 +2403,7 @@ public class Lexer {
         } else {
             String oneCharBL = "" + (char) c;
             yaccValue = new StrNode(getPosition(), oneCharBL);
-            return Tokens.tSTRING;
+            return Tokens.tCHAR;
         }
         // TODO: This should be something else like a tCHAR
         return Tokens.tINTEGER;
