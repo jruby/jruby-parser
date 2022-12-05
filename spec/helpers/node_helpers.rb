@@ -1,7 +1,7 @@
 require 'java'
 
-import org.jrubyparser.SourcePosition
-import org.jrubyparser.ast.Node
+java_import org.jrubyparser.SourcePosition
+java_import org.jrubyparser.ast.Node
 
 class SourcePosition
   def to_a

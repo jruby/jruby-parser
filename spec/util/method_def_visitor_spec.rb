@@ -1,6 +1,6 @@
 require_relative '../helpers'
 
-import org.jrubyparser.util.MethodDefVisitor
+java_import org.jrubyparser.util.MethodDefVisitor
 
 def modules_in(code)
   find_modules(parse(code))

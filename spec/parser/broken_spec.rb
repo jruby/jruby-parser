@@ -1,7 +1,7 @@
 require_relative '../helpers'
 
-import org.jrubyparser.lexer.StringTerm
-import org.jrubyparser.lexer.SyntaxException
+java_import org.jrubyparser.lexer.StringTerm
+java_import org.jrubyparser.lexer.SyntaxException
 
 # tests for broken files
 describe Parser do

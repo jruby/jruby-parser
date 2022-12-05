@@ -1,10 +1,10 @@
 require 'java'
 
-import java.io.StringReader
-import org.jrubyparser.CompatVersion
-import org.jrubyparser.Parser
-import org.jrubyparser.LocalStaticScope
-import org.jrubyparser.parser.ParserConfiguration
+java_import java.io.StringReader
+java_import org.jrubyparser.CompatVersion
+java_import org.jrubyparser.Parser
+java_import org.jrubyparser.LocalStaticScope
+java_import org.jrubyparser.parser.ParserConfiguration
 
 PARSER = Parser.new
 VERSIONS_MAP = {

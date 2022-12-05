@@ -1,7 +1,7 @@
 require_relative '../helpers'
-import org.jrubyparser.util.diff.SequenceMatcher
-import org.jrubyparser.util.diff.Change
-import org.jrubyparser.util.diff.NodeDiff
+java_import org.jrubyparser.util.diff.SequenceMatcher
+java_import org.jrubyparser.util.diff.Change
+java_import org.jrubyparser.util.diff.NodeDiff
 
 describe org.jrubyparser.util.diff.SequenceMatcher do
 
