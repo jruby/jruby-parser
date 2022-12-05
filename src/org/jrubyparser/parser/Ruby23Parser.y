@@ -199,10 +199,12 @@ public class Ruby23Parser implements RubyParser {
 %token <Node> tNTH_REF tBACK_REF tSTRING_CONTENT tINTEGER
 %token <FloatNode> tFLOAT 
 %token <RegexpNode>  tREGEXP_END
+%token tORDER_ALIGNMENT_01
+%token tORDER_ALIGNMENT_02
+%token tORDER_ALIGNMENT_03
+%nonassoc tLOWEST
 %token <Node> tIMAGINARY
 %token <RationalNode> tRATIONAL
-%token <Node> tSTRING
-
 %type <RestArgNode> f_rest_arg 
 %type <Node> singleton strings string string1 xstring regexp
 %type <Node> string_contents xstring_contents string_content method_call
@@ -247,11 +249,7 @@ public class Ruby23Parser implements RubyParser {
 %type <Node> opt_call_args f_marg f_margs
 %type <Node> bvar
 %type <Token> user_variable, keyword_variable
-%type <Token> call_op
-%token <Token> tANDDOT       /* &. */
    // ENEBO: end all new types
-
-
 
 %type <Token> rparen rbracket reswords f_bad_arg
 %type <Node> top_compstmt top_stmts top_stmt
@@ -263,11 +261,13 @@ public class Ruby23Parser implements RubyParser {
 %type <FCallNode> fcall
 %token <String> tLABEL_END, tSTRING_DEND
 
+
 /*
  *    precedence table
  */
 
-%nonassoc tLOWEST
+%type <Token> call_op
+%token <Token> tANDDOT       /* &. */
 %nonassoc tLBRACE_ARG
 
 %nonassoc  kIF_MOD kUNLESS_MOD kWHILE_MOD kUNTIL_MOD
@@ -1663,9 +1663,6 @@ strings         : string {
 // [!null]
 string          : tCHAR {
                     $$ = new StrNode($<Token>0.getPosition(), (String) $1.getValue());
-                }
-                | tSTRING {
-                    $$ = $1;
                 }
                 | string1 {
                     $$ = $1;

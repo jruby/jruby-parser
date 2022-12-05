@@ -199,6 +199,10 @@ public class Ruby20Parser implements RubyParser {
 %token <Node> tNTH_REF tBACK_REF tSTRING_CONTENT tINTEGER
 %token <FloatNode> tFLOAT 
 %token <RegexpNode>  tREGEXP_END
+%token tORDER_ALIGNMENT_01
+%token tORDER_ALIGNMENT_02
+%token tORDER_ALIGNMENT_03
+%nonassoc tLOWEST
 %token <Node> tIMAGINARY
 %token <RationalNode> tRATIONAL 
 %type <RestArgNode> f_rest_arg 
@@ -261,7 +265,6 @@ public class Ruby20Parser implements RubyParser {
  *    precedence table
  */
 
-%nonassoc tLOWEST
 %nonassoc tLBRACE_ARG
 
 %nonassoc  kIF_MOD kUNLESS_MOD kWHILE_MOD kUNTIL_MOD
