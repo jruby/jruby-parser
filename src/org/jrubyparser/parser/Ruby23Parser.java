@@ -3814,7 +3814,11 @@ states[432] = new ParserState() {
 };
 states[433] = new ParserState() {
   public Object execute(ParserSupport support, Lexer lexer, Object yyVal, Object[] yyVals, int yyTop) {
-                    yyVal = new StrNode(((Token)yyVals[-1+yyTop]).getPosition(), (String) ((Token)yyVals[0+yyTop]).getValue());
+                    if (yyVals[0+yyTop] instanceof StrNode) {
+                        yyVal = ((StrNode)yyVals[0+yyTop]);
+                    } else {
+                        yyVal = new StrNode(((Token)yyVals[-1+yyTop]).getPosition(), (String) ((Token)yyVals[0+yyTop]).getValue());
+                    }
     return yyVal;
   }
 };
@@ -4708,7 +4712,7 @@ states[604] = new ParserState() {
   }
 };
 }
-					// line 2268 "Ruby23Parser.y"
+					// line 2272 "Ruby23Parser.y"
 
     /** The parse method use an lexer stream and parse it to an AST node 
      * structure
@@ -4740,4 +4744,4 @@ states[604] = new ParserState() {
         return support.getResult();
     }
 }
-					// line 8919 "-"
+					// line 8923 "-"
