@@ -1662,7 +1662,11 @@ strings         : string {
 
 // [!null]
 string          : tCHAR {
-                    $$ = new StrNode($<Token>0.getPosition(), (String) $1.getValue());
+                    if ($<Object>1 instanceof StrNode) {
+                        $$ = $<StrNode>1;
+                    } else {
+                        $$ = new StrNode($<Token>0.getPosition(), (String) $1.getValue());
+                    }
                 }
                 | string1 {
                     $$ = $1;
