@@ -41,36 +41,37 @@
   </licenses>
 
   <distributionManagement>
-    <repository>
-      <id>codehaus-jruby-repository</id>
-      <name>JRuby Central Repository</name>
-      <url>dav:https://dav.codehaus.org/repository/jruby</url>
-    </repository>
-    <snapshotRepository>
-      <id>codehaus-jruby-snapshot-repository</id>
-      <name>JRuby Central Development Repository</name>
-      <url>dav:https://dav.codehaus.org/snapshots.repository/jruby</url>
-    </snapshotRepository>
     <site>
-      <id>codehaus-jruby-site</id>
-      <name>JRuby Maven site</name>
-      <url>dav:https://dav.codehaus.org/jruby/info</url>
+      <id>gh-pages</id>
+      <name>JRuby-complete Site</name>
+      <url>https://github.com/jruby/jruby-complete</url>
     </site>
   </distributionManagement>
 
   <repositories>
     <repository>
-      <id>codehaus</id>
-      <name>Codehaus Repository</name>
       <releases>
-        <enabled>true</enabled>
+        <enabled>false</enabled>
       </releases>
       <snapshots>
-        <enabled>false</enabled>
+        <enabled>true</enabled>
       </snapshots>
-      <url>http://repository.codehaus.org</url>
+      <id>sonatype</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
     </repository>
   </repositories>
+  <pluginRepositories>
+    <pluginRepository>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+      <id>sonatype</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+    </pluginRepository>
+  </pluginRepositories>
 
   <developers>
   </developers>
