@@ -161,7 +161,7 @@ public class CallNode extends Node implements INameNode, IArgumentNode, BlockAcc
         this.name = name;
     }
 
-    public void setLexicalName(String lexcicalName) {
+    public void setLexicalName(String lexicalName) {
         this.lexicalName = lexicalName;
     }
 
