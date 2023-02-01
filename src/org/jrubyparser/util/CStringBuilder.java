@@ -1,5 +1,7 @@
 package org.jrubyparser.util;
 
+import java.util.Arrays;
+
 /**
  * The sole purpose of this builder is to allow append(int) do a forced cast to a char.
  * Our lexer returns int's for each character and builder till convert ints to base-10
@@ -32,7 +34,7 @@ public class CStringBuilder implements CharSequence {
     }
 
     public CStringBuilder append(byte[] values) {
-        builder.append(values);
+        builder.append(Arrays.toString(values));
 
         return this;
     }
