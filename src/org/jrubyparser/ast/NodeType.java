@@ -13,6 +13,7 @@
  * rights and limitations under the License.
  *
  * Copyright (C) 2009 Thomas E. Enebo <tom.enebo@gmail.com>
+ * Copyright (C) 2026 Piotr Hoppe <piotrhoppe@users.noreply.github.com>
  * 
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
@@ -46,7 +47,7 @@ public enum NodeType {
     OPTARGNODE, ARGAUXILIARYNODE, LAMBDANODE, RESTARG, ENCODINGNODE,
     LITERALNODE, BLOCKARG18NODE, METHODNAMENODE, KEYWORDARGNODE, KEYWORDRESTARGNODE, SYNTAXNODE,
     IMPLICITNILNODE, COMPLEXNODE, RATIONALNODE, REQUIREDKEYWORDARGNODE,
-    INNODE, ARRAYPATTERNNODE, HASHPATTERNNODE, PATTERNBINDNODE;
+    INNODE, ARRAYPATTERNNODE, HASHPATTERNNODE, PATTERNBINDNODE, FINDPATTERNNODE;
 
     /**
      * Whether this node type would always evaluate as being true.

@@ -13,6 +13,7 @@
  *
  * Copyright (C) 2006-2007 Mirko Stocker <me@misto.ch>
  * Copyright (C) 2006-2009 Thomas E Enebo <enebo@acm.org>
+ * Copyright (C) 2026 Piotr Hoppe <piotrhoppe@users.noreply.github.com>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
@@ -48,6 +49,7 @@ import org.jrubyparser.ast.ArrayPatternNode;
 import org.jrubyparser.ast.HashPatternNode;
 import org.jrubyparser.ast.InNode;
 import org.jrubyparser.ast.PatternBindNode;
+import org.jrubyparser.ast.FindPatternNode;
 import org.jrubyparser.ast.ArgsCatNode;
 import org.jrubyparser.ast.ArgsNode;
 import org.jrubyparser.ast.ArgsPushNode;
@@ -1758,6 +1760,24 @@ public class ReWriteVisitor implements NodeVisitor {
                 first = false;
             }
         }
+        print(']');
+        return null;
+    }
+
+    @Override
+    public Object visitFindPatternNode(FindPatternNode iVisited) {
+        if (iVisited.getConstant() != null) visitNode(iVisited.getConstant());
+        print('[');
+        print('*');
+        if (iVisited.getPreRestArg() != null) visitNode(iVisited.getPreRestArg());
+        if (iVisited.getArgs() != null) {
+            for (Node n : iVisited.getArgs().childNodes()) {
+                print(", ");
+                visitNode(n);
+            }
+        }
+        print(", *");
+        if (iVisited.getPostRestArg() != null) visitNode(iVisited.getPostRestArg());
         print(']');
         return null;
     }

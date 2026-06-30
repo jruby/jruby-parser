@@ -12,6 +12,7 @@
  * rights and limitations under the License.
  *
  * Copyright (C) 2009 Thomas E Enebo <tom.enebo@gmail.com>
+ * Copyright (C) 2026 Piotr Hoppe <piotrhoppe@users.noreply.github.com>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
@@ -33,6 +34,7 @@ import org.jrubyparser.ast.ArrayPatternNode;
 import org.jrubyparser.ast.HashPatternNode;
 import org.jrubyparser.ast.InNode;
 import org.jrubyparser.ast.PatternBindNode;
+import org.jrubyparser.ast.FindPatternNode;
 import org.jrubyparser.ast.ArgsCatNode;
 import org.jrubyparser.ast.ArgsNode;
 import org.jrubyparser.ast.ArgsPushNode;
@@ -366,6 +368,8 @@ public interface NodeVisitor<T> {
   public T visitHashPatternNode(HashPatternNode iVisited);
 
   public T visitPatternBindNode(PatternBindNode iVisited);
+
+  public T visitFindPatternNode(FindPatternNode iVisited);
 
   public T visitWhileNode(WhileNode iVisited);
 

@@ -2,6 +2,10 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
+
+/*
+ * Copyright (C) 2026 Piotr Hoppe <piotrhoppe@users.noreply.github.com>
+ */
 package org.jrubyparser.util;
 
 import org.jrubyparser.NodeVisitor;
@@ -11,6 +15,7 @@ import org.jrubyparser.ast.ArrayPatternNode;
 import org.jrubyparser.ast.HashPatternNode;
 import org.jrubyparser.ast.InNode;
 import org.jrubyparser.ast.PatternBindNode;
+import org.jrubyparser.ast.FindPatternNode;
 import org.jrubyparser.ast.ArgsCatNode;
 import org.jrubyparser.ast.ArgsNode;
 import org.jrubyparser.ast.ArgsPushNode;
@@ -690,6 +695,11 @@ public class NoopVisitor implements NodeVisitor {
 
     @Override
     public Object visitPatternBindNode(PatternBindNode iVisited) {
+        return visit(iVisited);
+    }
+
+    @Override
+    public Object visitFindPatternNode(FindPatternNode iVisited) {
         return visit(iVisited);
     }
 

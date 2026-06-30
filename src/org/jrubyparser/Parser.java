@@ -16,6 +16,7 @@
  * Copyright (C) 2002-2004 Jan Arne Petersen <jpetersen@uni-bonn.de>
  * Copyright (C) 2004 Thomas E Enebo <enebo@acm.org>
  * Copyright (C) 2004 Stefan Matthias Aust <sma@3plus4.de>
+ * Copyright (C) 2026 Piotr Hoppe <piotrhoppe@users.noreply.github.com>
  * 
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
@@ -49,6 +50,7 @@ import org.jrubyparser.parser.Ruby24Parser;
 import org.jrubyparser.parser.Ruby25Parser;
 import org.jrubyparser.parser.Ruby26Parser;
 import org.jrubyparser.parser.Ruby27Parser;
+import org.jrubyparser.parser.Ruby30Parser;
 import org.jrubyparser.parser.RubyParser;
 
 /**
@@ -89,8 +91,10 @@ public class Parser {
             parser = new Ruby25Parser();
         } else if (configuration.getVersion() == CompatVersion.RUBY2_6) {
             parser = new Ruby26Parser();
-        } else {
+        } else if (configuration.getVersion() == CompatVersion.RUBY2_7) {
             parser = new Ruby27Parser();
+        } else {
+            parser = new Ruby30Parser();
         }
 
         // TODO: Warning interface from configuration?
