@@ -26,6 +26,10 @@
  * the provisions above, a recipient may use your version of this file under
  * the terms of any one of the CPL, the GPL or the LGPL.
  ***** END LICENSE BLOCK *****/
+
+/*
+ * Copyright (C) 2026 Piotr Hoppe <piotrhoppe@users.noreply.github.com>
+ */
 package org.jrubyparser.parser;
 
 public interface Tokens {
@@ -167,6 +171,8 @@ public interface Tokens {
     int tRATIONAL = Ruby20Parser.tRATIONAL;
     int tLABEL_END = Ruby23Parser.tLABEL_END;
     int tANDDOT = Ruby23Parser.tANDDOT;    
+    int tBDOT2 = Ruby27Parser.tBDOT2;
+    int tBDOT3 = Ruby27Parser.tBDOT3;
     
     String[] operators = {"+@", "-@", "**", "<=>", "==", "===", "!=", ">=", "<=", "&&",
                           "||", "=~", "!~", "..", "...", "[]", "[]=", "<<", ">>", "::" };

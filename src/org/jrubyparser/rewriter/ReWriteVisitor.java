@@ -44,6 +44,10 @@ import org.jrubyparser.SourcePosition;
 import org.jrubyparser.StaticScope;
 import org.jrubyparser.ast.AliasNode;
 import org.jrubyparser.ast.AndNode;
+import org.jrubyparser.ast.ArrayPatternNode;
+import org.jrubyparser.ast.HashPatternNode;
+import org.jrubyparser.ast.InNode;
+import org.jrubyparser.ast.PatternBindNode;
 import org.jrubyparser.ast.ArgsCatNode;
 import org.jrubyparser.ast.ArgsNode;
 import org.jrubyparser.ast.ArgsPushNode;
@@ -1710,6 +1714,91 @@ public class ReWriteVisitor implements NodeVisitor {
             print("else");
             visitNodeInIndentation(iVisited.getNextCase());
         }
+        return null;
+    }
+
+    @Override
+    public Object visitInNode(InNode iVisited) {
+        printNewlineAndIndentation();
+        print("in ");
+        visitNode(iVisited.getExpression());
+        visitNodeInIndentation(iVisited.getBody());
+        if ((iVisited.getNextCase() instanceof InNode || iVisited.getNextCase() == null)) {
+            visitNode(iVisited.getNextCase());
+        } else {
+            printNewlineAndIndentation();
+            print("else");
+            visitNodeInIndentation(iVisited.getNextCase());
+        }
+        return null;
+    }
+
+    @Override
+    public Object visitArrayPatternNode(ArrayPatternNode iVisited) {
+        if (iVisited.getConstant() != null) visitNode(iVisited.getConstant());
+        print('[');
+        boolean first = true;
+        if (iVisited.getPreArgs() != null) {
+            for (Node n : iVisited.getPreArgs().childNodes()) {
+                if (!first) print(", ");
+                visitNode(n);
+                first = false;
+            }
+        }
+        if (iVisited.hasRestArg()) {
+            if (!first) print(", ");
+            print('*');
+            if (iVisited.getRestArg() != null) visitNode(iVisited.getRestArg());
+            first = false;
+        }
+        if (iVisited.getPostArgs() != null) {
+            for (Node n : iVisited.getPostArgs().childNodes()) {
+                if (!first) print(", ");
+                visitNode(n);
+                first = false;
+            }
+        }
+        print(']');
+        return null;
+    }
+
+    @Override
+    public Object visitHashPatternNode(HashPatternNode iVisited) {
+        if (iVisited.getConstant() != null) visitNode(iVisited.getConstant());
+        print('{');
+        boolean first = true;
+        if (iVisited.getElements() != null) {
+            java.util.List<Node> kids = iVisited.getElements().childNodes();
+            for (int i = 0; i + 1 < kids.size(); i += 2) {
+                if (!first) print(", ");
+                visitNode(kids.get(i));
+                Node value = kids.get(i + 1);
+                if (value != null) {
+                    print(' ');
+                    visitNode(value);
+                }
+                first = false;
+            }
+        }
+        if (iVisited.isNoRest()) {
+            if (!first) print(", ");
+            print("**nil");
+            first = false;
+        } else if (iVisited.getRestArg() != null) {
+            if (!first) print(", ");
+            print("**");
+            visitNode(iVisited.getRestArg());
+            first = false;
+        }
+        print('}');
+        return null;
+    }
+
+    @Override
+    public Object visitPatternBindNode(PatternBindNode iVisited) {
+        visitNode(iVisited.getPattern());
+        print(" => ");
+        visitNode(iVisited.getTarget());
         return null;
     }
 

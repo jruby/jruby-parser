@@ -828,14 +828,14 @@ public class ParserSupport {
     }
 
     public Node getReturnArgsNode(Node node) {
-        if (node instanceof ArrayNode && ((ArrayNode) node).size() == 1) { 
+        if (node instanceof ArrayNode && ((ArrayNode) node).size() == 1) {
             return ((ListNode) node).get(0);
         } else if (node instanceof BlockPassNode) {
             throw new SyntaxException(PID.BLOCK_ARG_UNEXPECTED, node.getPosition(), "Block argument should not be given.");
         }
         return node;
     }
-    
+
     public Node new_opElementAsgnNode(SourcePosition position, Node receiverNode, String operatorName, Node argsNode, Node valueNode) {
         if ("||".equals(operatorName)) {
             return new OpElementAsgnOrNode(position, receiverNode, operatorName, argsNode, valueNode);

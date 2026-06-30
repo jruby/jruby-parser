@@ -7,6 +7,10 @@ package org.jrubyparser.util;
 import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.ast.AliasNode;
 import org.jrubyparser.ast.AndNode;
+import org.jrubyparser.ast.ArrayPatternNode;
+import org.jrubyparser.ast.HashPatternNode;
+import org.jrubyparser.ast.InNode;
+import org.jrubyparser.ast.PatternBindNode;
 import org.jrubyparser.ast.ArgsCatNode;
 import org.jrubyparser.ast.ArgsNode;
 import org.jrubyparser.ast.ArgsPushNode;
@@ -666,6 +670,26 @@ public class NoopVisitor implements NodeVisitor {
 
     @Override
     public Object visitWhenNode(WhenNode iVisited) {
+        return visit(iVisited);
+    }
+
+    @Override
+    public Object visitInNode(InNode iVisited) {
+        return visit(iVisited);
+    }
+
+    @Override
+    public Object visitArrayPatternNode(ArrayPatternNode iVisited) {
+        return visit(iVisited);
+    }
+
+    @Override
+    public Object visitHashPatternNode(HashPatternNode iVisited) {
+        return visit(iVisited);
+    }
+
+    @Override
+    public Object visitPatternBindNode(PatternBindNode iVisited) {
         return visit(iVisited);
     }
 

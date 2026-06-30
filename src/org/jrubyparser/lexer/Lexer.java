@@ -446,6 +446,7 @@ public class Lexer {
     private boolean isOneEight;
     private boolean isTwoZero;
     private boolean isTwoFour;
+    private boolean isTwoSeven;
     // Count of nested parentheses (1.9 only)
     private int parenNest = 0;
     // 1.9 only
@@ -552,6 +553,7 @@ public class Lexer {
         commandStart = true;
         if (parserSupport != null) isTwoZero = parserSupport.getConfiguration().getVersion().is2_0();
         if (parserSupport != null) isTwoFour = parserSupport.getConfiguration().getVersion().is2_4();
+        if (parserSupport != null) isTwoSeven = parserSupport.getConfiguration().getVersion().is2_7();
     }
     
     /**
@@ -1929,15 +1931,16 @@ public class Lexer {
     private int dot() throws IOException {
         int c;
         
+        boolean wasBeg = isBEG();
         setState(LexState.EXPR_BEG);
         if ((c = src.read()) == '.') {
             if ((c = src.read()) == '.') {
                 yaccValue = new Token("...", getPosition());
-                return Tokens.tDOT3;
+                return (isTwoSeven && wasBeg) ? Tokens.tBDOT3 : Tokens.tDOT3;
             }
             src.unread(c);
             yaccValue = new Token("..", getPosition());
-            return Tokens.tDOT2;
+            return (isTwoSeven && wasBeg) ? Tokens.tBDOT2 : Tokens.tDOT2;
         }
         
         src.unread(c);

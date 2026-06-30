@@ -15,8 +15,9 @@ VERSIONS_MAP = {
   2.4 => CompatVersion::RUBY2_4,
   2.5 => CompatVersion::RUBY2_5,
   2.6 => CompatVersion::RUBY2_6,
+  2.7 => CompatVersion::RUBY2_7,
 }
-VERSIONS = [1.8, 1.9, 2.0, 2.3, 2.4, 2.5, 2.6]
+VERSIONS = [1.8, 1.9, 2.0, 2.3, 2.4, 2.5, 2.6, 2.7]
 
 SYNTAX_MAP = {
   nil => ParserConfiguration::SyntaxGathering::NONE,
