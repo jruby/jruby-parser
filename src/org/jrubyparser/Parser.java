@@ -45,6 +45,7 @@ import org.jrubyparser.parser.Ruby18Parser;
 import org.jrubyparser.parser.Ruby19Parser;
 import org.jrubyparser.parser.Ruby20Parser;
 import org.jrubyparser.parser.Ruby23Parser;
+import org.jrubyparser.parser.Ruby24Parser;
 import org.jrubyparser.parser.RubyParser;
 
 /**
@@ -77,8 +78,10 @@ public class Parser {
             parser = new Ruby19Parser();
         } else if (configuration.getVersion() == CompatVersion.RUBY2_0) {
             parser = new Ruby20Parser();
-        } else {
+        } else if (configuration.getVersion() == CompatVersion.RUBY2_3) {
             parser = new Ruby23Parser();
+        } else {
+            parser = new Ruby24Parser();
         }
 
         // TODO: Warning interface from configuration?
