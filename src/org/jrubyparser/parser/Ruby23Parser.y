@@ -13,6 +13,7 @@
  * rights and limitations under the License.
  *
  * Copyright (C) 2008-2009 Thomas E Enebo <enebo@acm.org>
+ * Copyright (C) 2026 Piotr Hoppe <piotrhoppe@users.noreply.github.com>
  * 
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
@@ -2098,6 +2099,10 @@ f_kw            : f_label arg_value {
 f_block_kw      : tLABEL primary_value {
                     support.arg_var(support.formal_argument($1));
                     $$ = support.keyword_arg(support.union($1, $2), support.assignable($1, $2));
+                }
+                | tLABEL {
+                    support.arg_var(support.formal_argument($1));
+                    $$ = support.keyword_arg($1.getPosition(), support.assignable($1, null));
                 }
 
 f_block_kwarg   : f_block_kw {
