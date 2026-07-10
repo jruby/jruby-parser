@@ -1540,6 +1540,14 @@ block_call      : command do_block {
                     $$ = $1;
                     $<Node>$.setPosition(support.union($1, $2));
                 }
+                | method_call do_block {
+                    if ($<BlockAcceptingNode>1.getIter() instanceof BlockPassNode) {
+                        throw new SyntaxException(PID.BLOCK_ARG_AND_BLOCK_GIVEN, $1.getPosition(), lexer.getCurrentLine(), "Both block arg and actual block given.");
+                    }
+                    $<BlockAcceptingNode>1.setIter($2);
+                    $$ = $1;
+                    $<Node>$.setPosition(support.union($1, $2));
+                }
                 | block_call dot_or_colon operation2 opt_paren_args {
                     $$ = support.new_call($1, $3, $4, null);
                 }
@@ -2128,6 +2136,9 @@ kwrest_mark     : tPOW {
 
 f_kwrest        : kwrest_mark tIDENTIFIER {
                     $$ = $2;
+                }
+                | kwrest_mark {
+                    $$ = new Token("**", $1.getPosition());
                 }
 
 f_opt           : f_norm_arg '=' arg_value {
