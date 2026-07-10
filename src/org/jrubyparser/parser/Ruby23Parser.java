@@ -1429,14 +1429,14 @@ public class Ruby23Parser implements RubyParser {
     "none_block_pass :",
     };
 
-  /** debugging support, requires the package <tt>jay.yydebug</tt>.
-      Set to <tt>null</tt> to suppress debugging messages.
+  /** debugging support, requires the package {@code jay.yydebug}.
+      Set to {@code null} to suppress debugging messages.
     */
   protected jay.yydebug.yyDebug yydebug;
 
   /** index-checked interface to {@link #yyNames}.
-      @param token single character or <tt>%token</tt> value.
-      @return token name or <tt>[illegal]</tt> or <tt>[unknown]</tt>.
+      @param token single character or {@code %token} value.
+      @return token name or {@code [illegal]} or {@code [unknown]}.
     */
   public static final String yyName (int token) {
     if (token < 0 || token > yyNames.length) return "[illegal]";
@@ -1478,7 +1478,7 @@ public class Ruby23Parser implements RubyParser {
   /** the generated parser, with debugging messages.
       Maintains a dynamic state and value stack.
       @param yyLex scanner.
-      @param ayydebug debug message writer implementing <tt>yyDebug</tt>, or <tt>null</tt>.
+      @param ayydebug debug message writer implementing {@code yyDebug}, or {@code null}.
       @return result of the last reduction, if any.
       @throws IOException if crap happens
     */
@@ -1495,9 +1495,9 @@ public class Ruby23Parser implements RubyParser {
   protected int yyMax;
 
   /** executed at the beginning of a reduce action.
-      Used as <tt>$$ = yyDefault($1)</tt>, prior to the user-specified action, if any.
+      Used as {@code $$ = yyDefault($1)}, prior to the user-specified action, if any.
       Can be overwritten to provide deep copy, etc.
-      @param first value for <tt>$1</tt>, or <tt>null</tt>.
+      @param first value for {@code $1}, or {@code null}.
       @return first.
     */
   protected Object yyDefault (Object first) {
