@@ -33,6 +33,10 @@
  * the provisions above, a recipient may use your version of this file under
  * the terms of any one of the CPL, the GPL or the LGPL.
  ***** END LICENSE BLOCK *****/
+
+/*
+ * Copyright (C) 2026 Piotr Hoppe <piotrhoppe@users.noreply.github.com>
+ */
 package org.jrubyparser.parser;
 
 import org.jrubyparser.ast.AndNode;
@@ -164,7 +168,17 @@ public class ParserSupport {
     public StaticScope getCurrentScope() {
         return currentScope;
     }
-    
+
+    /** Default no-op: overridden in ParserSupport24 for squiggly heredoc ({@code <<~}). */
+    public boolean isDedentingHeredoc(Token token) {
+        return false;
+    }
+
+    /** Default no-op: overridden in ParserSupport24 for squiggly heredoc ({@code <<~}). */
+    public Node dedentHeredoc(Node node) {
+        return node;
+    }
+
     public ParserConfiguration getConfiguration() {
         return configuration;
     }
@@ -667,7 +681,7 @@ public class ParserSupport {
 	/**
      * assign_in_cond
 	 **/
-    private boolean checkAssignmentInCondition(Node node) {
+    protected boolean checkAssignmentInCondition(Node node) {
         if (node instanceof MultipleAsgnNode) {
             throw new SyntaxException(PID.MULTIPLE_ASSIGNMENT_IN_CONDITIONAL, node.getPosition(), "Multiple assignment in conditional.");
         } else if (node instanceof LocalAsgnNode || node instanceof DAsgnNode || node instanceof GlobalAsgnNode || node instanceof InstAsgnNode) {
@@ -814,14 +828,14 @@ public class ParserSupport {
     }
 
     public Node getReturnArgsNode(Node node) {
-        if (node instanceof ArrayNode && ((ArrayNode) node).size() == 1) { 
+        if (node instanceof ArrayNode && ((ArrayNode) node).size() == 1) {
             return ((ListNode) node).get(0);
         } else if (node instanceof BlockPassNode) {
             throw new SyntaxException(PID.BLOCK_ARG_UNEXPECTED, node.getPosition(), "Block argument should not be given.");
         }
         return node;
     }
-    
+
     public Node new_opElementAsgnNode(SourcePosition position, Node receiverNode, String operatorName, Node argsNode, Node valueNode) {
         if ("||".equals(operatorName)) {
             return new OpElementAsgnOrNode(position, receiverNode, operatorName, argsNode, valueNode);

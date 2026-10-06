@@ -13,7 +13,6 @@
  * rights and limitations under the License.
  *
  * Copyright (C) 2008-2009 Thomas E Enebo <enebo@acm.org>
- * Copyright (C) 2026 Piotr Hoppe <piotrhoppe@users.noreply.github.com>
  * 
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
@@ -27,6 +26,10 @@
  * the provisions above, a recipient may use your version of this file under
  * the terms of any one of the EPL, the GPL or the LGPL.
  ***** END LICENSE BLOCK *****/
+
+/*
+ * Copyright (C) 2026 Piotr Hoppe <piotrhoppe@users.noreply.github.com>
+ */
 package org.jrubyparser.parser;
 
 import java.io.IOException;
@@ -116,15 +119,15 @@ import org.jrubyparser.lexer.SyntaxException;
 import org.jrubyparser.lexer.SyntaxException.PID;
 import org.jrubyparser.lexer.Token;
 
-public class Ruby23Parser implements RubyParser {
-    protected ParserSupport19 support;
+public class Ruby24Parser implements RubyParser {
+    protected ParserSupport24 support;
     protected Lexer lexer;
 
-    public Ruby23Parser() {
-        this(new ParserSupport19());
+    public Ruby24Parser() {
+        this(new ParserSupport24());
     }
 
-    public Ruby23Parser(ParserSupport19 support) {
+    public Ruby24Parser(ParserSupport24 support) {
         this.support = support;
         lexer = new Lexer(false);
         lexer.setParserSupport(support);
@@ -210,7 +213,7 @@ public class Ruby23Parser implements RubyParser {
 %type <Node> singleton strings string string1 xstring regexp
 %type <Node> string_contents xstring_contents string_content method_call
 %type <Node> regexp_contents
-%type <Node> words qwords word literal dsym cpath command_asgn command_call
+%type <Node> words qwords word literal dsym cpath command_asgn command_call command_rhs arg_rhs
 %type <NumericNode> numeric simple_numeric 
 %type <Node> compstmt bodystmt stmts stmt expr arg primary command 
 %type <Node> stmt_or_begin
@@ -431,12 +434,12 @@ stmt            : kALIAS fitem {
                     $$ = new PostExeNode(support.union($1, $4), $3);
                 }
                 | command_asgn
-                | mlhs '=' command_call {
+                | mlhs '=' command_rhs {
                     support.checkExpression($3);
                     $1.setValueNode($3);
                     $$ = $1;
                 }
-                | var_lhs tOP_ASGN command_call {
+                | var_lhs tOP_ASGN command_rhs {
                     support.checkExpression($3);
 
                     SourcePosition pos = support.union($1, $3);
@@ -453,25 +456,25 @@ stmt            : kALIAS fitem {
                         $$ = $1;
                     }
                 }
-                | primary_value '[' opt_call_args rbracket tOP_ASGN command_call {
+                | primary_value '[' opt_call_args rbracket tOP_ASGN command_rhs {
   // FIXME: arg_concat logic missing for opt_call_args
                     $$ = support.new_opElementAsgnNode(support.union($1, $6), $1, (String) $5.getValue(), $3, $6);
                 }
-                | primary_value call_op tIDENTIFIER tOP_ASGN command_call {
+                | primary_value call_op tIDENTIFIER tOP_ASGN command_rhs {
                     $$ = support.newOpAsgn(support.getPosition($1), $1, (String) $2.getValue(), $5, (String) $3.getValue(), (String) $4.getValue());
                 }
-                | primary_value call_op tCONSTANT tOP_ASGN command_call {
+                | primary_value call_op tCONSTANT tOP_ASGN command_rhs {
                     $$ = support.newOpAsgn(support.getPosition($1), $1, (String) $2.getValue(), $5, (String) $3.getValue(), (String) $4.getValue());
                 }
-                | primary_value tCOLON2 tCONSTANT tOP_ASGN command_call {
+                | primary_value tCOLON2 tCONSTANT tOP_ASGN command_rhs {
                     support.yyerror("can't make alias for the number variables");
                     $$ = null;
                 }
 
-                | primary_value tCOLON2 tIDENTIFIER tOP_ASGN command_call {
+                | primary_value tCOLON2 tIDENTIFIER tOP_ASGN command_rhs {
                     $$ = support.newOpAsgn(support.getPosition($1), $1, (String) $2.getValue(), $5, (String) $3.getValue(), (String) $4.getValue());
                 }
-                | backref tOP_ASGN command_call {
+                | backref tOP_ASGN command_rhs {
                     support.backrefAssignError($1);
                 }
                 | lhs '=' mrhs {
@@ -484,14 +487,20 @@ stmt            : kALIAS fitem {
                 }
                 | expr
 
-command_asgn    : lhs '=' command_call {
+command_asgn    : lhs '=' command_rhs {
                     support.checkExpression($3);
                     $$ = support.node_assign($1, $3);
                 }
-                | lhs '=' command_asgn {
-                    support.checkExpression($3);
-                    $$ = support.node_assign($1, $3);
+
+command_rhs     : command_call {
+                    support.checkExpression($1);
+                    $$ = $1;
                 }
+                | command_call kRESCUE_MOD stmt {
+                    Node body = $3;
+                    $$ = new RescueNode(support.union($1, $3), $1, new RescueBodyNode($2.getPosition(), null, body, null), null);
+                }
+                | command_asgn
 
 // Node:expr *CURRENT* all but arg so far
 expr            : command_call
@@ -790,17 +799,12 @@ reswords        : k__LINE__ | k__FILE__ | k__ENCODING__ | klBEGIN | klEND
                 | kTHEN | kTRUE | kUNDEF | kWHEN | kYIELD
                 | kIF_MOD | kUNLESS_MOD | kWHILE_MOD | kUNTIL_MOD | kRESCUE_MOD
 
-arg             : lhs '=' arg {
+arg             : lhs '=' arg_rhs {
                     $$ = support.node_assign($1, $3);
                     // FIXME: Consider fixing node_assign itself rather than single case
                     $<Node>$.setPosition(support.union($1, $3));
                 }
-                | lhs '=' arg kRESCUE_MOD arg {
-                    SourcePosition position = $4.getPosition();
-                    Node body = $5;
-                    $$ = support.node_assign($1, new RescueNode(position, $3, new RescueBodyNode(position, null, body, null), null));
-                }
-                | var_lhs tOP_ASGN arg {
+                | var_lhs tOP_ASGN arg_rhs {
                     support.checkExpression($3);
 
                     SourcePosition pos = support.union($1, $3);
@@ -817,46 +821,26 @@ arg             : lhs '=' arg {
                         $$ = $1;
                     }
                 }
-                | var_lhs tOP_ASGN arg kRESCUE_MOD arg {
-                    support.checkExpression($3);
-                    SourcePosition pos = support.union($4, $5);
-                    Node body = $5;
-                    Node rescue = new RescueNode(pos, $3, new RescueBodyNode($4.getPosition(), null, body, null), null);
-
-                    pos = support.union($1, $3);
-                    String asgnOp = (String) $2.getValue();
-                    if (asgnOp.equals("||")) {
-                        $1.setValueNode(rescue);
-                        $$ = new OpAsgnOrNode(pos, support.gettable2($1), $1);
-                    } else if (asgnOp.equals("&&")) {
-                        $1.setValueNode(rescue);
-                        $$ = new OpAsgnAndNode(pos, support.gettable2($1), $1);
-                    } else {
-                        $1.setValueNode(support.getOperatorCallNode(support.gettable2($1), asgnOp, rescue));
-                        $1.setPosition(pos);
-                        $$ = $1;
-                    }
-                }
-                | primary_value '[' opt_call_args rbracket tOP_ASGN arg {
+                | primary_value '[' opt_call_args rbracket tOP_ASGN arg_rhs {
   // FIXME: arg_concat missing for opt_call_args
                     $$ = support.new_opElementAsgnNode(support.union($1, $6), $1, (String) $5.getValue(), $3, $6);
                 }
-                | primary_value call_op tIDENTIFIER tOP_ASGN arg {
+                | primary_value call_op tIDENTIFIER tOP_ASGN arg_rhs {
                     $$ = support.newOpAsgn(support.getPosition($1), $1, (String) $2.getValue(), $5, (String) $3.getValue(), (String) $4.getValue());
                 }
-                | primary_value call_op tCONSTANT tOP_ASGN arg {
+                | primary_value call_op tCONSTANT tOP_ASGN arg_rhs {
                     $$ = support.newOpAsgn(support.getPosition($1), $1, (String) $2.getValue(), $5, (String) $3.getValue(), (String) $4.getValue());
                 }
-                | primary_value tCOLON2 tIDENTIFIER tOP_ASGN arg {
+                | primary_value tCOLON2 tIDENTIFIER tOP_ASGN arg_rhs {
                     $$ = support.newOpAsgn(support.getPosition($1), $1, (String) $2.getValue(), $5, (String) $3.getValue(), (String) $4.getValue());
                 }
-                | primary_value tCOLON2 tCONSTANT tOP_ASGN arg {
+                | primary_value tCOLON2 tCONSTANT tOP_ASGN arg_rhs {
                     support.yyerror("constant re-assignment");
                 }
-                | tCOLON3 tCONSTANT tOP_ASGN arg {
+                | tCOLON3 tCONSTANT tOP_ASGN arg_rhs {
                     support.yyerror("constant re-assignment");
                 }
-                | backref tOP_ASGN arg {
+                | backref tOP_ASGN arg_rhs {
                     support.backrefAssignError($1);
                 }
                 | arg tDOT2 arg {
@@ -971,6 +955,16 @@ arg             : lhs '=' arg {
                 }
                 | primary {
                     $$ = $1;
+                }
+
+arg_rhs         : arg {
+                    support.checkExpression($1);
+                    $$ = $1;
+                }
+                | arg kRESCUE_MOD arg {
+                    SourcePosition position = support.union($1, $3);
+                    Node body = $3;
+                    $$ = new RescueNode(position, $1, new RescueBodyNode($2.getPosition(), null, body, null), null);
                 }
 
 arg_value       : arg {
@@ -1685,7 +1679,7 @@ string          : tCHAR {
                 }
 
 string1         : tSTRING_BEG string_contents tSTRING_END {
-                    $$ = $2;
+                    $$ = support.isDedentingHeredoc($1) ? support.dedentHeredoc($2) : $2;
 
                     $<ISourcePositionHolder>$.setPosition(support.union($1, $3));
                     int extraLength = ((String) $1.getValue()).length() - 1;
@@ -1700,18 +1694,19 @@ string1         : tSTRING_BEG string_contents tSTRING_END {
                 }
 
 xstring         : tXSTRING_BEG xstring_contents tSTRING_END {
+                    Node xstringContent = support.isDedentingHeredoc($1) ? support.dedentHeredoc($2) : $2;
                     SourcePosition position = support.union($1, $3);
 
-                    if ($2 == null) {
+                    if (xstringContent == null) {
                         $$ = new XStrNode(position, null);
-                    } else if ($2 instanceof StrNode) {
-                        $$ = new XStrNode(position, $<StrNode>2.getValue());
-                    } else if ($2 instanceof DStrNode) {
-                        $$ = new DXStrNode(position, $<DStrNode>2);
+                    } else if (xstringContent instanceof StrNode) {
+                        $$ = new XStrNode(position, ((StrNode) xstringContent).getValue());
+                    } else if (xstringContent instanceof DStrNode) {
+                        $$ = new DXStrNode(position, (DStrNode) xstringContent);
 
                         $<Node>$.setPosition(position);
                     } else {
-                        $$ = new DXStrNode(position).add($2);
+                        $$ = new DXStrNode(position).add(xstringContent);
                     }
                 }
 

@@ -33,6 +33,10 @@
  * the provisions above, a recipient may use your version of this file under
  * the terms of any one of the CPL, the GPL or the LGPL.
  ***** END LICENSE BLOCK *****/
+
+/*
+ * Copyright (C) 2026 Piotr Hoppe <piotrhoppe@users.noreply.github.com>
+ */
 package org.jrubyparser.lexer;
 
 import java.io.IOException;
@@ -430,7 +434,7 @@ public class Lexer {
     static final int STR_FUNC_SYMBOL=0x10;
     // When the heredoc identifier specifies <<-EOF that indents before ident. are ok (the '-').
     static final int STR_FUNC_INDENT=0x20;
-
+    static final int STR_FUNC_DEDENT=0x40;
     private static final int str_squote = 0;
     private static final int str_dquote = STR_FUNC_EXPAND;
     private static final int str_xquote = STR_FUNC_EXPAND;
@@ -441,6 +445,8 @@ public class Lexer {
     // Are we lexing Ruby 1.8 or 1.9+ syntax
     private boolean isOneEight;
     private boolean isTwoZero;
+    private boolean isTwoFour;
+    private boolean isTwoSeven;
     // Count of nested parentheses (1.9 only)
     private int parenNest = 0;
     // 1.9 only
@@ -546,6 +552,8 @@ public class Lexer {
         lex_strterm = null;
         commandStart = true;
         if (parserSupport != null) isTwoZero = parserSupport.getConfiguration().getVersion().is2_0();
+        if (parserSupport != null) isTwoFour = parserSupport.getConfiguration().getVersion().is2_4();
+        if (parserSupport != null) isTwoSeven = parserSupport.getConfiguration().getVersion().is2_7();
     }
     
     /**
@@ -863,10 +871,11 @@ public class Lexer {
         char char_for_unread = '\u0000';
 
         int func = 0;
-        if (c == '-' || c == '~') {
+        if (c == '-' || (c == '~' && isTwoFour)) {
             char_for_unread = (char)c;
             c = src.read();
             func = STR_FUNC_INDENT;
+            if (char_for_unread == '~') func |= STR_FUNC_DEDENT;
         }
         
         CStringBuilder markerValue;
@@ -920,11 +929,11 @@ public class Lexer {
             HeredocTerm h = new HeredocTerm(markerValue.toString(), func, null);
 
             if (term == '`') {
-                yaccValue = new Token("`", getPosition());
+                yaccValue = new Token(heredocBeginToken(func, '`'), getPosition());
                 return Tokens.tXSTRING_BEG;
             }
 
-            yaccValue = new Token("\"", getPosition());
+            yaccValue = new Token(heredocBeginToken(func, '"'), getPosition());
 
             if (heredocContext == null) {
                 heredocContext = new HeredocContext(h);
@@ -940,16 +949,22 @@ public class Lexer {
         lex_strterm = new HeredocTerm(markerValue.toString(), func, lastLine);
 
         if (term == '`') {
-            yaccValue = new Token("`", getPosition());
+            yaccValue = new Token(heredocBeginToken(func, '`'), getPosition());
             return Tokens.tXSTRING_BEG;
         }
         
-        yaccValue = new Token("\"", getPosition());
+        yaccValue = new Token(heredocBeginToken(func, '"'), getPosition());
         // Hacky: Advance position to eat newline here....
         getPosition();
         return Tokens.tSTRING_BEG;
     }
-    
+
+    private String heredocBeginToken(int func, char term) {
+        if ((func & STR_FUNC_DEDENT) != 0) return "<<~" + term;
+        if ((func & STR_FUNC_INDENT) != 0) return "<<-" + term;
+        return String.valueOf(term);
+    }
+
     private void arg_ambiguous() {
         if (warnings.isVerbose()) warnings.warning(ID.AMBIGUOUS_ARGUMENT, getPosition(), "Ambiguous first argument; make sure.");
     }
@@ -1916,15 +1931,16 @@ public class Lexer {
     private int dot() throws IOException {
         int c;
         
+        boolean wasBeg = isBEG();
         setState(LexState.EXPR_BEG);
         if ((c = src.read()) == '.') {
             if ((c = src.read()) == '.') {
                 yaccValue = new Token("...", getPosition());
-                return Tokens.tDOT3;
+                return (isTwoSeven && wasBeg) ? Tokens.tBDOT3 : Tokens.tDOT3;
             }
             src.unread(c);
             yaccValue = new Token("..", getPosition());
-            return Tokens.tDOT2;
+            return (isTwoSeven && wasBeg) ? Tokens.tBDOT2 : Tokens.tDOT2;
         }
         
         src.unread(c);

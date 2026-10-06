@@ -12,8 +12,6 @@
  * implied. See the License for the specific language governing
  * rights and limitations under the License.
  *
- * Copyright (C) 2009 Thomas E. Enebo <tom.enebo@gmail.com>
- *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
  * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
@@ -30,55 +28,10 @@
 /*
  * Copyright (C) 2026 Piotr Hoppe <piotrhoppe@users.noreply.github.com>
  */
-package org.jrubyparser.ast;
-
-import org.jrubyparser.NodeVisitor;
-import org.jrubyparser.SourcePosition;
+package org.jrubyparser.parser;
 
 /**
- * Representing a simple String literal.
+ * Ruby 2.6 parser support. Extends Ruby 2.5 support with 2.6 grammar behavior.
  */
-public class StrNode extends Node implements ILiteralNode {
-    private String value;
-
-    public StrNode(SourcePosition position, String value) {
-        super(position);
-        this.value = value;
-    }
-
-    public StrNode(SourcePosition position, StrNode head, StrNode tail) {
-        super(position);
-
-        this.value = head.getValue();
-
-        value = value + tail.getValue();
-    }
-
-    @Override
-    public boolean isSame(Node other) {
-        return super.isSame(other) && getValue().equals(((StrNode) other).getValue());
-    }
-
-    public NodeType getNodeType() {
-        return NodeType.STRNODE;
-    }
-    /**
-     * Accept for the visitor pattern.
-     * @param iVisitor the visitor
-     **/
-    public <T> T accept(NodeVisitor<T> iVisitor) {
-        return iVisitor.visitStrNode(this);
-    }
-
-    /**
-     * Gets the value.
-     * @return Returns a String
-     */
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
-    }
+public class ParserSupport26 extends ParserSupport25 {
 }

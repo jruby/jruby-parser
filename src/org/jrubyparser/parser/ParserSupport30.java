@@ -12,8 +12,6 @@
  * implied. See the License for the specific language governing
  * rights and limitations under the License.
  *
- * Copyright (C) 2009 Thomas E. Enebo <tom.enebo@gmail.com>
- *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
  * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
@@ -30,55 +28,37 @@
 /*
  * Copyright (C) 2026 Piotr Hoppe <piotrhoppe@users.noreply.github.com>
  */
-package org.jrubyparser.ast;
+package org.jrubyparser.parser;
 
-import org.jrubyparser.NodeVisitor;
 import org.jrubyparser.SourcePosition;
+import org.jrubyparser.lexer.Token;
+import org.jrubyparser.ast.FindPatternNode;
+import org.jrubyparser.ast.ListNode;
+import org.jrubyparser.ast.Node;
 
 /**
- * Representing a simple String literal.
+ * Ruby 3.0 parser support. Extends Ruby 2.7 support with 3.0 grammar behavior.
  */
-public class StrNode extends Node implements ILiteralNode {
-    private String value;
+public class ParserSupport30 extends ParserSupport27 {
 
-    public StrNode(SourcePosition position, String value) {
-        super(position);
-        this.value = value;
+    // ---- Ruby 3.0 find pattern helpers ----
+
+    public FindPatternNode newFindPatternTail(SourcePosition position, Token preRestName, ListNode args,
+            Token postRestName) {
+        Node preRestArg = null;
+        if (preRestName != null) {
+            preRestArg = assignablePatternVariable(preRestName.getPosition(), (String) preRestName.getValue());
+        }
+        Node postRestArg = null;
+        if (postRestName != null) {
+            postRestArg = assignablePatternVariable(postRestName.getPosition(), (String) postRestName.getValue());
+        }
+        return new FindPatternNode(position, preRestArg, args, postRestArg);
     }
 
-    public StrNode(SourcePosition position, StrNode head, StrNode tail) {
-        super(position);
-
-        this.value = head.getValue();
-
-        value = value + tail.getValue();
-    }
-
-    @Override
-    public boolean isSame(Node other) {
-        return super.isSame(other) && getValue().equals(((StrNode) other).getValue());
-    }
-
-    public NodeType getNodeType() {
-        return NodeType.STRNODE;
-    }
-    /**
-     * Accept for the visitor pattern.
-     * @param iVisitor the visitor
-     **/
-    public <T> T accept(NodeVisitor<T> iVisitor) {
-        return iVisitor.visitStrNode(this);
-    }
-
-    /**
-     * Gets the value.
-     * @return Returns a String
-     */
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
+    public Node newFindPattern(SourcePosition position, Node constant, FindPatternNode tail) {
+        tail.setConstant(constant);
+        if (position != null) tail.setPosition(position);
+        return tail;
     }
 }

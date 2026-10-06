@@ -16,6 +16,7 @@
  * Copyright (C) 2002-2004 Jan Arne Petersen <jpetersen@uni-bonn.de>
  * Copyright (C) 2004 Thomas E Enebo <enebo@acm.org>
  * Copyright (C) 2004 Stefan Matthias Aust <sma@3plus4.de>
+ * Copyright (C) 2026 Piotr Hoppe <piotrhoppe@users.noreply.github.com>
  * 
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
@@ -45,6 +46,14 @@ import org.jrubyparser.parser.Ruby18Parser;
 import org.jrubyparser.parser.Ruby19Parser;
 import org.jrubyparser.parser.Ruby20Parser;
 import org.jrubyparser.parser.Ruby23Parser;
+import org.jrubyparser.parser.Ruby24Parser;
+import org.jrubyparser.parser.Ruby25Parser;
+import org.jrubyparser.parser.Ruby26Parser;
+import org.jrubyparser.parser.Ruby27Parser;
+import org.jrubyparser.parser.Ruby30Parser;
+import org.jrubyparser.parser.Ruby31Parser;
+import org.jrubyparser.parser.Ruby32Parser;
+import org.jrubyparser.parser.Ruby33Parser;
 import org.jrubyparser.parser.RubyParser;
 
 /**
@@ -77,8 +86,24 @@ public class Parser {
             parser = new Ruby19Parser();
         } else if (configuration.getVersion() == CompatVersion.RUBY2_0) {
             parser = new Ruby20Parser();
-        } else {
+        } else if (configuration.getVersion() == CompatVersion.RUBY2_3) {
             parser = new Ruby23Parser();
+        } else if (configuration.getVersion() == CompatVersion.RUBY2_4) {
+            parser = new Ruby24Parser();
+        } else if (configuration.getVersion() == CompatVersion.RUBY2_5) {
+            parser = new Ruby25Parser();
+        } else if (configuration.getVersion() == CompatVersion.RUBY2_6) {
+            parser = new Ruby26Parser();
+        } else if (configuration.getVersion() == CompatVersion.RUBY2_7) {
+            parser = new Ruby27Parser();
+        } else if (configuration.getVersion() == CompatVersion.RUBY3_0) {
+            parser = new Ruby30Parser();
+        } else if (configuration.getVersion() == CompatVersion.RUBY3_1) {
+            parser = new Ruby31Parser();
+        } else if (configuration.getVersion() == CompatVersion.RUBY3_2) {
+            parser = new Ruby32Parser();
+        } else {
+            parser = new Ruby33Parser();
         }
 
         // TODO: Warning interface from configuration?
